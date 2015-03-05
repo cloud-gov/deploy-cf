@@ -90,6 +90,10 @@ meta:
   - name: metron_agent
     release: (( meta.release.name ))
 
+  hardening_templates:
+  - name: harden
+    release: fisma
+
 
 
 jobs:
@@ -211,7 +215,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: stats_clock_z1
-    templates: (( merge || meta.stats_templates meta.clock_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.stats_templates meta.clock_templates meta.metron_agent_templates meta.hardening_templates ))
     instances: 1
     resource_pool: small_z1
     networks:

@@ -13,6 +13,8 @@ meta:
   releases:
   - name: cf
     version: latest
+  - name: fisma
+    version: latest
 
   stemcell: (( merge ))
 
