@@ -221,6 +221,8 @@ properties:
   uaa:
     catalina_opts: (( merge ))
 
+    port: (( merge || 8080 ))
+
     url: (( "https://uaa." domain ))
 
     no_ssl: false
