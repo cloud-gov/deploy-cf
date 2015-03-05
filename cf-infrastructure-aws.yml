@@ -3,8 +3,7 @@ meta:
     z1: (( properties.template_only.aws.availability_zone ))
     z2: (( properties.template_only.aws.availability_zone2 ))
 
-  elbs:
-  - (( merge ))
+  elbs: (( merge ))
 
   fog_config:
     provider: AWS
