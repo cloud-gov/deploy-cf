@@ -1,0 +1,465 @@
+empty_hash: {}
+
+networks: (( merge ))
+
+meta:
+  environment: ~
+
+  release:
+    name: cf
+
+  networks:
+    z1:
+      apps: cf1
+
+    z2:
+      apps: cf2
+
+  nfs_server:
+    address: (( jobs.nfs_z1.networks.cf1.static_ips.[0] || nil ))
+    allow_from_entries:
+      - (( .networks.cf1.subnets.[0].range || nil ))
+      - (( .networks.cf2.subnets.[0].range || nil ))
+    share: ~
+
+  api_templates:
+  - name: cloud_controller_ng
+    release: (( meta.release.name ))
+  - name: nfs_mounter
+    release: (( meta.release.name ))
+
+  api_worker_templates:
+  - name: cloud_controller_worker
+    release: (( meta.release.name ))
+
+  clock_templates:
+  - name: cloud_controller_clock
+    release: (( meta.release.name ))
+
+  nats_templates:
+  - name: nats
+    release: (( meta.release.name ))
+  - name: nats_stream_forwarder
+    release: (( meta.release.name ))
+
+  dea_templates:
+  - name: dea_next
+    release: (( meta.release.name ))
+  - name: dea_logging_agent
+    release: (( meta.release.name ))
+
+  router_templates:
+  - name: gorouter
+    release: (( meta.release.name ))
+
+  etcd_templates:
+  - name: etcd
+    release: (( meta.release.name ))
+  - name: etcd_metrics_server
+    release: (( meta.release.name ))
+
+  stats_templates:
+  - name: collector
+    release: (( meta.release.name ))
+
+  nfs_templates:
+  - name: debian_nfs_server
+    release: (( meta.release.name ))
+
+  uaa_templates:
+  - name: uaa
+    release: (( meta.release.name ))
+
+  login_templates:
+  - name: login
+    release: (( meta.release.name ))
+
+  hm9000_templates:
+  - name: hm9000
+    release: (( meta.release.name ))
+
+  loggregator_templates:
+  - name: doppler
+    release: (( meta.release.name ))
+
+  loggregator_trafficcontroller_templates:
+  - name: loggregator_trafficcontroller
+    release: (( meta.release.name ))
+
+  metron_agent_templates:
+  - name: metron_agent
+    release: (( meta.release.name ))
+
+
+
+jobs:
+  - name: nats_z1
+    templates: (( merge || meta.nats_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: small_z1
+    networks:
+      - name: cf1
+        static_ips: (( merge ))
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: nats_z2
+    templates: (( merge || meta.nats_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: small_z2
+    networks:
+      - name: cf2
+        static_ips: (( merge ))
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: etcd_z1
+    templates: (( merge || meta.etcd_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: small_z1
+    networks:
+      - name: cf1
+        static_ips: (( merge ))
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: etcd_z2
+    templates: (( merge || meta.etcd_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: small_z2
+    networks:
+      - name: cf2
+        static_ips: (( merge ))
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: nfs_z1
+    templates: (( merge || meta.nfs_templates meta.metron_agent_templates ))
+    instances: 0
+    resource_pool: medium_z1
+    persistent_disk: 102400
+    networks:
+      - name: cf1
+        static_ips: ~
+    properties:
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: login_uaa_hm9000_z1
+    templates: (( merge || meta.uaa_templates meta.login_templates meta.hm9000_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: medium_z1
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: login_uaa_hm9000_z2
+    templates: (( merge || meta.uaa_templates meta.login_templates meta.hm9000_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: medium_z2
+    networks:
+      - name: cf2
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: api_z1
+    templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: medium_z1
+    persistent_disk: 10000
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+      nfs_server: (( meta.nfs_server ))
+    update: (( merge || empty_hash ))
+
+  - name: api_z2
+    templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: medium_z2
+    persistent_disk: 10000
+    networks:
+      - name: cf2
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+      nfs_server: (( meta.nfs_server ))
+    update: (( merge || empty_hash ))
+
+  - name: stats_clock_z1
+    templates: (( merge || meta.stats_templates meta.clock_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: small_z1
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1  ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: runner_z1
+    templates: (( merge || meta.dea_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: runner_z1
+    networks:
+      - name: cf1
+        static_ips: ~
+    properties:
+      dea_next:
+        zone: (( merge || "z1" ))
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+    persistent_disk: 30000
+    update:
+      max_in_flight: 1
+
+  - name: runner_z2
+    templates: (( merge || meta.dea_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: runner_z2
+    networks:
+      - name: cf2
+        static_ips: ~
+    properties:
+      dea_next:
+        zone: (( merge || "z2" ))
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+    persistent_disk: 30000
+    update:
+      max_in_flight: 1
+
+  - name: loggregator_z1
+    templates: (( merge || meta.loggregator_templates ))
+    instances: 1
+    resource_pool: small_z1
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1 ))
+      doppler:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: loggregator_z2
+    templates: (( merge || meta.loggregator_templates ))
+    instances: 1
+    resource_pool: small_z2
+    networks:
+      - name: cf2
+    properties:
+      networks: (( meta.networks.z2 ))
+      doppler:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: loggregator_controller_z1
+    templates: (( merge || meta.loggregator_trafficcontroller_templates ))
+    instances: 1
+    resource_pool: small_z1
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+      traffic_controller:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: loggregator_controller_z2
+    templates: (( merge || meta.loggregator_trafficcontroller_templates ))
+    instances: 0
+    resource_pool: small_z2
+    networks:
+      - name: cf2
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+      traffic_controller:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: router_z1
+    templates: (( merge || meta.router_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: router_z1
+    networks:
+      - name: cf1
+        static_ips: (( merge ))
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: router_z2
+    templates: (( merge || meta.router_templates meta.metron_agent_templates ))
+    instances: 1
+    resource_pool: router_z2
+    networks:
+      - name: cf2
+        static_ips: (( merge ))
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: acceptance_tests
+    templates:
+    - name: acceptance-tests
+      release: (( meta.release.name ))
+    instances: 0
+    resource_pool: small_errand
+    lifecycle: errand
+    networks:
+      - name: cf1
+
+  - name: smoke_tests
+    templates:
+    - name: smoke-tests
+      release: (( meta.release.name ))
+    instances: 0
+    resource_pool: small_errand
+    lifecycle: errand
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1 ))
+
+properties:
+  <<: (( merge ))
+  dropsonde:
+    enabled: true
+
+  support_address: (( merge || "https://labs.18f.us" ))
+  description: (( merge || "18F Cloud Foundry" ))
+  domain: (( merge ))
+  ssl:
+    skip_cert_verify: (( merge || false ))
+  system_domain: (( domain ))
+  system_domain_organization: ~
+  app_domains: (( [domain] ))
+
+  disk_quota_enabled: true
+
+  request_timeout_in_seconds: 900
+
+  nats:
+    user: (( merge ))
+    password: (( merge ))
+    address: (( jobs.nats_z1.networks.cf1.static_ips.[0] ))
+    port: 4222
+    machines: (( jobs.nats_z1.networks.cf1.static_ips jobs.nats_z2.networks.cf2.static_ips ))
+    debug: false
+    trace: false
+    monitor_port: 0
+    prof_port: 0
+
+  etcd:
+    machines: (( jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips ))
+
+  etcd_metrics_server:
+    nats:
+      machines: (( .properties.nats.machines ))
+      username: (( .properties.nats.user ))
+      password: (( .properties.nats.password ))
+
+  dea_next:
+    memory_mb: (( merge ))
+    memory_overcommit_factor: 3
+    disk_mb: (( merge ))
+    disk_overcommit_factor: 2
+    staging_disk_inode_limit: 200000
+    instance_disk_inode_limit: 200000
+    deny_networks: (( merge || [] ))
+    allow_networks: (( merge || [] ))
+    kernel_network_tuning_enabled: true
+    directory_server_protocol: https
+    evacuation_bail_out_time_in_seconds: 600
+    logging_level: debug
+    staging_disk_limit_mb: 4096
+    staging_memory_limit_mb: 2048
+    default_health_check_timeout: 60
+    advertise_interval_in_seconds: 5
+    heartbeat_interval_in_seconds: 10
+    rlimit_core: (( merge || 0 ))
+
+  loggregator_endpoint:
+    shared_secret: (( merge ))
+
+  doppler_endpoint:
+    shared_secret: (( .properties.loggregator_endpoint.shared_secret ))
+
+  metron_endpoint:
+    shared_secret: (( .properties.loggregator_endpoint.shared_secret ))
+
+  logger_endpoint: ~
+
+  loggregator:
+    maxRetainedLogMessages: 100
+    debug: (( merge || false ))
+    blacklisted_syslog_ranges: ~
+
+  doppler:
+    maxRetainedLogMessages: 100
+    debug: (( merge || false ))
+    blacklisted_syslog_ranges: ~
+
+  cc: (( merge ))
+  ccdb: (( merge ))
+
+  hm9000: (( merge ))
+
+  uaa: (( merge ))
+  uaadb: (( merge ))
+
+  databases: ~
+
+  login: (( merge ))
+
+  router:
+    requested_route_registration_interval_in_seconds: 20
+    status:
+      user: (( merge ))
+      password: (( merge ))
+    secure_cookies: false
+
+  syslog_daemon_config: ~
+
+  nfs_server: (( meta.nfs_server ))
+
+  collector: (( merge || nil ))
+
+  acceptance_tests: (( merge || nil ))
+
+  smoke_tests: (( merge || nil ))

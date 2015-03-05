@@ -1,0 +1,127 @@
+meta:
+  # override this in your stub to set the environment name,
+  # which is used for the deployment name
+  #
+  # i.e. cf-tabasco
+  environment: ~
+
+  default_env:
+    # Default vcap & root password on deployed VMs (ie c1oudc0w)
+    bosh:
+      password: (( merge ))
+
+  releases:
+  - name: cf
+    version: latest
+
+  stemcell: (( merge ))
+
+name: (( meta.environment ))
+
+director_uuid: (( merge ))
+
+releases: (( merge || meta.releases ))
+
+networks: (( merge ))
+
+jobs: (( merge ))
+
+properties: (( merge ))
+
+compilation:
+  workers: 3
+  network: cf1
+  reuse_compilation_vms: true
+  cloud_properties: (( merge ))
+
+update:
+  canaries: 1
+  max_in_flight: 1
+  canary_watch_time: 30000-600000
+  update_watch_time: 5000-600000
+  serial: true
+
+resource_pools:
+  - name: small_z1
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: small_z2
+    network: cf2
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: medium_z1
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: medium_z2
+    network: cf2
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: large_z1
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: large_z2
+    network: cf2
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: runner_z1
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: runner_z2
+    network: cf2
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: router_z1
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: router_z2
+    network: cf2
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: small_errand
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge || resource_pools.small_z1.cloud_properties ))
+    env: (( merge || meta.default_env ))
+
+  - name: xlarge_errand
+    network: cf1
+    size: (( auto ))
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge || resource_pools.large_z1.cloud_properties ))
+    env: (( merge || meta.default_env ))
