@@ -228,7 +228,7 @@ jobs:
 
   - name: runner_z1
     templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates ))
-    instances: 1
+    instances: 2
     resource_pool: runner_z1
     networks:
       - name: cf1
@@ -245,7 +245,7 @@ jobs:
 
   - name: runner_z2
     templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates ))
-    instances: 1
+    instances: 2
     resource_pool: runner_z2
     networks:
       - name: cf2
