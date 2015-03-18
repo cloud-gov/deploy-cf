@@ -15,6 +15,8 @@ meta:
     version: 203
   - name: fisma
     version: latest
+  - name: newrelic
+    version: latest
 
   stemcell: (( merge ))
 
