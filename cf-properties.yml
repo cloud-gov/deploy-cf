@@ -127,7 +127,7 @@ properties:
       environment_name: (( meta.environment ))
       developer_mode: (( cc.development_mode ))
       monitor_mode: true
-      capture_params: false
+      capture_params: true
       transaction_tracer:
         enabled: true
         record_sql: "obfuscated"
