@@ -369,7 +369,7 @@ properties:
   dropsonde:
     enabled: true
 
-  support_address: (( merge || "https://labs.18f.us" ))
+  support_address: (( merge || "https://docs.18f.gov" ))
   description: (( merge || "18F Cloud Foundry" ))
   domain: (( merge ))
   ssl:
