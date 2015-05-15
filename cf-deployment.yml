@@ -12,7 +12,7 @@ meta:
 
   releases:
   - name: cf
-    version: 207
+    version: 208
   - name: fisma
     version: latest
   - name: newrelic
