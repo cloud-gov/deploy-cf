@@ -166,8 +166,8 @@ jobs:
         zone: z1
     update: (( merge || empty_hash ))
 
-  - name: login_uaa_hm9000_z1
-    templates: (( merge || meta.uaa_templates meta.login_templates meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+  - name: login_uaa_z1
+    templates: (( merge || meta.uaa_templates meta.login_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -178,8 +178,32 @@ jobs:
         zone: z1
     update: (( merge || empty_hash ))
 
-  - name: login_uaa_hm9000_z2
-    templates: (( merge || meta.uaa_templates meta.login_templates meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+  - name: login_uaa_z2
+    templates: (( merge || meta.uaa_templates meta.login_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    instances: 1
+    resource_pool: medium_z2
+    networks:
+      - name: cf2
+    properties:
+      networks: (( meta.networks.z2 ))
+      metron_agent:
+        zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: hm9000_z1
+    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    instances: 1
+    resource_pool: medium_z1
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1 ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
+  - name: hm9000_z2
+    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
@@ -192,7 +216,7 @@ jobs:
 
   - name: api_z1
     templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z1
     persistent_disk: 10000
     networks:
@@ -318,7 +342,7 @@ jobs:
 
   - name: router_z1
     templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 2
     resource_pool: router_z1
     networks:
       - name: cf1
@@ -331,7 +355,7 @@ jobs:
 
   - name: router_z2
     templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 2
     resource_pool: router_z2
     networks:
       - name: cf2
