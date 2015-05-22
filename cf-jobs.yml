@@ -8,6 +8,9 @@ meta:
   release:
     name: cf
 
+  custom_release:
+    name: 18f-cf
+
   networks:
     z1:
       apps: cf1
@@ -60,7 +63,7 @@ meta:
 
   stats_templates:
   - name: collector
-    release: (( meta.release.name ))
+    release: (( meta.custom_release.name ))
 
   nfs_templates:
   - name: debian_nfs_server
@@ -190,6 +193,18 @@ jobs:
         zone: z2
     update: (( merge || empty_hash ))
 
+  - name: stats_z1
+    templates: (( merge || meta.stats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    instances: 1
+    resource_pool: small_z1
+    networks:
+      - name: cf1
+    properties:
+      networks: (( meta.networks.z1  ))
+      metron_agent:
+        zone: z1
+    update: (( merge || empty_hash ))
+
   - name: hm9000_z1
     templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
@@ -242,14 +257,15 @@ jobs:
       nfs_server: (( meta.nfs_server ))
     update: (( merge || empty_hash ))
 
-  - name: stats_clock_z1
-    templates: (( merge || meta.stats_templates meta.clock_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+  - name: clock_global
+    templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: small_z1
+    persistent_disk: 0
     networks:
       - name: cf1
     properties:
-      networks: (( meta.networks.z1  ))
+      networks: (( meta.networks.z1 ))
       metron_agent:
         zone: z1
     update: (( merge || empty_hash ))

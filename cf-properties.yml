@@ -41,7 +41,13 @@ properties:
     aws:
       access_key_id: (( merge ))
       secret_access_key: (( merge ))
-
+    use_newrelic_insights: true
+    newrelic_insights:
+      api_key: (( merge ))
+      app_id: (( merge ))
+    use_newrelic_plugin: true
+    newrelic_plugin:
+      license_key: (( merge ))
   cc:
     jobs:
       global:

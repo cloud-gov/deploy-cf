@@ -17,6 +17,8 @@ meta:
     version: latest
   - name: newrelic
     version: latest
+  - name: 18f-cf
+    version: latest
 
   stemcell: (( merge ))
 
