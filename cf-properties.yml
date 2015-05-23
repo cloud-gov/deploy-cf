@@ -37,10 +37,6 @@ properties:
 
   collector:
     deployment_name: (( meta.environment ))
-    use_aws_cloudwatch: true
-    aws:
-      access_key_id: (( merge ))
-      secret_access_key: (( merge ))
     use_newrelic_insights: true
     newrelic_insights:
       api_key: (( merge ))
