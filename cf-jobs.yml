@@ -2,6 +2,8 @@ empty_hash: {}
 
 networks: (( merge ))
 
+lamb_meta: (( merge ))
+
 consul_servers: (( jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.networks.cf2.static_ips ))
 
 meta:
@@ -105,14 +107,6 @@ meta:
 
   hm9000_templates:
   - name: hm9000
-    release: (( meta.release.name ))
-
-  loggregator_templates:
-  - name: doppler
-    release: (( meta.release.name ))
-
-  loggregator_trafficcontroller_templates:
-  - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
 
   consul_templates:
@@ -387,36 +381,39 @@ jobs:
       max_in_flight: 1
 
   - name: loggregator_z1
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || lamb_meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
       - name: cf1
     properties:
+      <<: (( merge ))
       networks: (( meta.networks.z1 ))
       doppler:
         zone: z1
     update: (( merge || empty_hash ))
 
   - name: loggregator_z2
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || lamb_meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: small_z2
     networks:
       - name: cf2
     properties:
+      <<: (( merge ))
       networks: (( meta.networks.z2 ))
       doppler:
         zone: z2
     update: (( merge || empty_hash ))
 
   - name: loggregator_controller_z1
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || lamb_meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
       - name: cf1
     properties:
+      <<: (( merge ))
       networks: (( meta.networks.z1 ))
       metron_agent:
         zone: z1
@@ -425,12 +422,13 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_controller_z2
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || lamb_meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 0
     resource_pool: small_z2
     networks:
       - name: cf2
     properties:
+      <<: (( merge ))
       networks: (( meta.networks.z2 ))
       metron_agent:
         zone: z2
@@ -602,16 +600,6 @@ properties:
     shared_secret: (( .properties.loggregator_endpoint.shared_secret ))
 
   logger_endpoint: ~
-
-  loggregator:
-    maxRetainedLogMessages: 100
-    debug: (( merge || false ))
-    blacklisted_syslog_ranges: ~
-
-  doppler:
-    maxRetainedLogMessages: 100
-    debug: (( merge || false ))
-    blacklisted_syslog_ranges: ~
 
   cc: (( merge ))
   ccdb: (( merge ))

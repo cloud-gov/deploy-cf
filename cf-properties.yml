@@ -30,6 +30,7 @@ meta:
 
 properties:
   <<: (( merge ))
+  app_ssh: ~
   domain: (( merge ))
 
   loggregator_endpoint:
@@ -76,11 +77,10 @@ properties:
 
     billing_event_writing_enabled: true
 
-    diego:
-      staging: disabled
-      running: disabled
-
+    users_can_select_backend: true
     diego_docker: false
+    default_to_diego_backend: false
+    allow_app_ssh_access: true
     default_app_memory: 512
     default_app_disk_in_mb: 1024
     maximum_app_disk_in_mb: 2048
@@ -88,6 +88,9 @@ properties:
 
     default_health_check_timeout: 60
     maximum_health_check_timeout: 180
+
+    min_cli_version: ~
+    min_recommended_cli_version: ~
 
     external_host: api
     srv_api_uri: (( "https://" external_host "." domain ))
@@ -109,6 +112,8 @@ properties:
     disable_custom_buildpacks: false
 
     broker_client_timeout_seconds: 70
+    broker_client_default_async_poll_interval_seconds: (( merge || 60 ))
+    broker_client_max_async_poll_duration_minutes: (( merge || 10080 ))
 
     resource_pool:
       resource_directory_key: (( domain "-cc-resources" ))
@@ -160,6 +165,10 @@ properties:
         package: buildpack_python
       - name: php_buildpack
         package: buildpack_php
+      - name: staticfile_buildpack
+        package: buildpack_staticfile
+      - name: binary_buildpack
+        package: buildpack_binary
 
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
@@ -223,6 +232,8 @@ properties:
       network: ~
       signup-network: ~
 
+    logout: ~
+
     tiles: ~
 
     saml: ~
@@ -235,6 +246,7 @@ properties:
     port: (( merge || 8080 ))
 
     url: (( "https://uaa." domain ))
+    issuer: (( url ))
 
     no_ssl: false
 
@@ -292,8 +304,17 @@ properties:
         authorities: scim.userids
         secret: (( merge ))
         authorized-grant-types: client_credentials
+      gorouter:
+        authorities: clients.read,clients.write,clients.admin,route.admin,route.advertise
+        authorized-grant-types: client_credentials,refresh_token
+        scope: openid,cloud_controller_service_permissions.read
+        secret: (( merge ))
+
+    database: ~
 
     restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
+
+    zones: (( merge || nil ))
 
   newrelic:
     license_key: (( merge ))
