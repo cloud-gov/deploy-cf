@@ -318,3 +318,6 @@ properties:
 
   newrelic:
     license_key: (( merge ))
+
+  metron_agent:
+    deployment: (( meta.environment ))
