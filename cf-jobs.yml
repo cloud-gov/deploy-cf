@@ -194,6 +194,7 @@ jobs:
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: small_z1
+    persistent_disk: 10024
     networks:
       - name: cf1
         static_ips: (( merge ))
@@ -207,6 +208,7 @@ jobs:
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
     instances: 1
     resource_pool: small_z2
+    persistent_disk: 10024
     networks:
       - name: cf2
         static_ips: (( merge ))
