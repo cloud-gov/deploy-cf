@@ -279,6 +279,8 @@ properties:
 
     ldap: ~
 
+    newrelic: ~
+
     spring_profiles: ~
 
     user: ~
@@ -316,8 +318,7 @@ properties:
 
     zones: (( merge || nil ))
 
-  newrelic:
-    license_key: (( merge ))
-
   metron_agent:
     deployment: (( meta.environment ))
+
+  newrelic: ~
