@@ -12,14 +12,6 @@ meta:
     - protocol: all
       destination: 0.0.0.0-9.255.255.255
     - protocol: all
-      destination: 10.10.20.0-0.0.0.255
-    - protocol: all
-      destination: 10.10.21.0-0.0.0.255
-    - protocol: all
-      destination: 10.10.100.0-0.0.0.255
-    - protocol: all
-      destination: 10.10.101.0-0.0.0.255
-    - protocol: all
       destination: 11.0.0.0-169.253.255.255
     - protocol: all
       destination: 169.255.0.0-172.15.255.255
@@ -35,6 +27,12 @@ meta:
     - protocol: udp
       destination: 0.0.0.0/0
       ports: '53'
+  - name: trusted_local_networks
+    rules:
+    - protocol: all
+      destination: 10.10.20.0-10.10.21.255
+    - protocol: all
+      destination: 10.10.100.0-10.10.101.255
 
 properties:
   <<: (( merge ))

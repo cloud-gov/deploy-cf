@@ -203,12 +203,32 @@ jobs:
       - name: cf2
         static_ips: (( static_ips(26) ))
 
-  - name: loggregator_plus_controller_z1
+  - name: loggregator_z1
+    instances: 0
+    networks:
+      - name: cf1
+
+  - name: loggregator_z2
+    instances: 0
+    networks:
+      - name: cf2
+
+  - name: doppler_z1
     instances: 1
     networks:
       - name: cf1
 
-  - name: loggregator_plus_controller_z2
+  - name: doppler_z2
+    instances: 1
+    networks:
+      - name: cf2
+
+  - name: loggregator_trafficcontroller_z1
+    instances: 1
+    networks:
+      - name: cf1
+
+  - name: loggregator_trafficcontroller_z2
     instances: 1
     networks:
       - name: cf2

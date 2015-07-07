@@ -32,9 +32,13 @@ meta:
   api_templates:
   - name: cloud_controller_ng
     release: (( meta.release.name ))
-  - name: nfs_mounter
+  - name: routing-api
     release: (( meta.release.name ))
+  - name: statsd-injector
+    release: (( lamb_meta.release.name ))
   - name: consul_agent
+    release: (( meta.release.name ))
+  - name: nfs_mounter
     release: (( meta.release.name ))
 
   api_worker_templates:
@@ -311,6 +315,7 @@ jobs:
         agent:
           services:
             - cloud_controller_ng
+            - routing-api
       networks: (( meta.networks.z1 ))
       metron_agent:
         zone: z1
@@ -329,6 +334,7 @@ jobs:
         agent:
           services:
             - cloud_controller_ng
+            - routing-api
       networks: (( meta.networks.z2 ))
       metron_agent:
         zone: z2
@@ -384,7 +390,7 @@ jobs:
 
   - name: loggregator_z1
     templates: (( merge || lamb_meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 0
     resource_pool: small_z1
     networks:
       - name: cf1
@@ -397,7 +403,7 @@ jobs:
 
   - name: loggregator_z2
     templates: (( merge || lamb_meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 0
     resource_pool: small_z2
     networks:
       - name: cf2
@@ -406,6 +412,28 @@ jobs:
       networks: (( meta.networks.z2 ))
       doppler:
         zone: z2
+    update: (( merge || empty_hash ))
+
+  - name: doppler_z1
+    templates: (( merge || lamb_meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    instances: 1
+    resource_pool: medium_z1
+    networks:
+      - name: cf1
+    properties:
+      <<: (( merge ))
+      networks: (( meta.networks.z1 ))
+    update: (( merge || empty_hash ))
+
+  - name: doppler_z2
+    templates: (( merge || lamb_meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    instances: 1
+    resource_pool: medium_z2
+    networks:
+      - name: cf2
+    properties:
+      <<: (( merge ))
+      networks: (( meta.networks.z2 ))
     update: (( merge || empty_hash ))
 
   - name: loggregator_controller_z1
@@ -531,6 +559,7 @@ jobs:
 properties:
   <<: (( merge ))
   consul:
+    log_level: (( merge || nil ))
     agent:
       servers:
         lan: (( consul_servers ))
@@ -617,6 +646,7 @@ properties:
 
   router:
     enable_ssl: (( merge || nil ))
+    enable_routing_api: (( merge || nil ))
     ssl_cert: (( merge || nil ))
     ssl_key: (( merge || nil ))
     cipher_suites: (( merge || nil ))
