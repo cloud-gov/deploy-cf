@@ -186,6 +186,9 @@ jobs:
       - name: cf2
         static_ips: (( static_ips(1) ))
 
+  - name: uaa_z2
+    instances: 0
+
   - name: router_z1
     instances: 1
     networks:
@@ -197,6 +200,15 @@ jobs:
     networks:
       - name: cf2
         static_ips: (( static_ips(5, 6, 15, 16, 17, 18, 19, 20) ))
+
+  - name: api_z2
+    instances: 0
+
+  - name: runner_z1
+    instances: 1
+
+  - name: runner_z2
+    instances: 0
 
   - name: routing_api_z1
     instances: 0
@@ -259,7 +271,7 @@ jobs:
         static_ips: (( static_ips(10, 25) ))
 
   - name: etcd_z2
-    instances: 1
+    instances: 0
     networks:
       - name: cf2
         static_ips: (( static_ips(9) ))
