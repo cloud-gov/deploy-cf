@@ -8,3 +8,5 @@ spiff merge \
   cf-infrastructure-aws-staging.yml \
   cf-secrets-staging.yml \
   > manifest-staging.yml
+
+sed -i -- 's/10.10/10.9/g' manifest-staging.yml
