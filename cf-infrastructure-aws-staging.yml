@@ -15,10 +15,6 @@ meta:
     name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
     version: latest
 
-  stemcell_pv:
-    name: bosh-aws-xen-ubuntu-trusty-go_agent
-    version: latest
-
 properties:
   <<: (( merge ))
   template_only: (( merge ))
@@ -28,8 +24,8 @@ properties:
 
   loggregator:
     blacklisted_syslog_ranges:
-    - start: 10.10.0.0
-      end: 10.10.255.255
+    - start: 10.9.0.0
+      end: 10.9.255.255
 
   cc:
     resource_pool:
@@ -51,16 +47,16 @@ properties:
   dea_next:
     deny_networks:
       - 169.254.0.0/16 # AWS Status
-      - 10.10.1.0/16
-    allow_networks: (( merge || ["10.10.1.2/32","10.10.2.2/32", "10.10.3.0/16", "10.10.4.0/16"] )) # Amazon DNS
+      - 10.9.1.0/16
+    allow_networks: (( merge || ["10.9.1.2/32","10.9.2.2/32", "10.9.3.0/24", "10.9.4.0/24"] )) # Amazon DNS and services
 
 compilation:
   cloud_properties:
     instance_type: c3.large
     availability_zone: (( meta.zones.z1 ))
-    disk: 20000
-    persistent_disk: 20000
-
+    ephemeral_disk:
+       size: 30000
+       type: gp2
 
 networks: (( merge ))
 
