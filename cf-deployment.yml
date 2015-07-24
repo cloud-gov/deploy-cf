@@ -12,12 +12,14 @@ meta:
 
   releases:
   - name: cf
-    version: 210
+    version: 212
   - name: fisma
     version: latest
   - name: newrelic
     version: latest
   - name: 18f-cf
+    version: latest
+  - name: secureproxy
     version: latest
 
   stemcell: (( merge ))
