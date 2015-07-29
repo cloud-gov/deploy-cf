@@ -66,6 +66,8 @@ meta:
   router_templates:
   - name: gorouter
     release: (( meta.release.name ))
+  - name: secureproxy
+    release: secureproxy
   - name: consul_agent
     release: (( meta.release.name ))
 
@@ -643,10 +645,15 @@ properties:
     ssl_key: (( merge || nil ))
     cipher_suites: (( merge || nil ))
     requested_route_registration_interval_in_seconds: 20
+    port: 85
     status:
       user: (( merge ))
       password: (( merge ))
     secure_cookies: false
+
+  secureproxy:
+    listen_port: 80
+    proxy_port: 85
 
   syslog_daemon_config: ~
 
