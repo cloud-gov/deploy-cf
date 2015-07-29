@@ -97,14 +97,6 @@ meta:
   - name: consul_agent
     release: (( meta.release.name ))
 
-  routing_api_templates:
-  - name: routing-api
-    release: (( meta.release.name ))
-  - name: metron_agent
-    release: (( meta.release.name ))
-  - name: consul_agent
-    release: (( meta.release.name ))
-
   login_templates:
   - name: login
     release: (( meta.release.name ))
