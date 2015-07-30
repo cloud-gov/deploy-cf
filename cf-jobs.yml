@@ -606,7 +606,7 @@ properties:
     kernel_network_tuning_enabled: true
     directory_server_protocol: https
     evacuation_bail_out_time_in_seconds: 600
-    logging_level: debug
+    logging_level: info
     staging_disk_limit_mb: 4096
     staging_memory_limit_mb: 2048
     default_health_check_timeout: 60
