@@ -276,7 +276,7 @@ jobs:
         static_ips: (( static_ips(9) ))
 
   - name: acceptance_tests
-    instances: 0
+    instances: 1
 
   - name: smoke_tests
-    instances: 0
+    instances: 1
