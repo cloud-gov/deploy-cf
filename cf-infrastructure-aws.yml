@@ -97,7 +97,7 @@ resource_pools:
 
   - name: large_z1
     cloud_properties:
-      instance_type: m3.large
+      instance_type: t2.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -105,7 +105,7 @@ resource_pools:
 
   - name: large_z2
     cloud_properties:
-      instance_type: m3.large
+      instance_type: t2.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -129,18 +129,18 @@ resource_pools:
 
   - name: router_z1
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: c3.large
       ephemeral_disk:
-        size: 102_400
+        size: 30_000
         type: gp2
       availability_zone: (( meta.zones.z1 ))
       elbs: (( merge || meta.elbs ))
 
   - name: router_z2
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: c3.large
       ephemeral_disk:
-        size: 102_400
+        size: 30_000
         type: gp2
       availability_zone: (( meta.zones.z2 ))
       elbs: (( merge || meta.elbs ))
