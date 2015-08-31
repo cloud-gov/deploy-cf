@@ -324,6 +324,21 @@ properties:
 
     zones: (( merge || nil ))
 
+    authentication:
+      policy:
+        lockoutAfterFailures: 5
+        countFailuresWithinSeconds: 3600
+        lockoutPeriodSeconds: 300
+
+    password:
+      policy:
+        minLength: 20
+        requireUpperCaseCharacter: true
+        requireLowerCaseCharacter: true
+        requireDigit: true
+        requireSpecialCharacter: true
+        expirePasswordInMonths: 6
+
   metron_agent:
     deployment: (( meta.environment ))
 
