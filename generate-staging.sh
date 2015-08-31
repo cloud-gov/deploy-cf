@@ -2,6 +2,7 @@
 
 spiff merge \
   cf-deployment.yml \
+  cf-resource-pools.yml \
   cf-jobs.yml \
   cf-lamb.yml \
   cf-properties.yml \
