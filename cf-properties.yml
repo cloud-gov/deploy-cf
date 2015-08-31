@@ -81,10 +81,7 @@ properties:
     audit_events:
       cutoff_age_in_days: 31
 
-    billing_event_writing_enabled: true
-
     users_can_select_backend: true
-    diego_docker: false
     default_to_diego_backend: false
     allow_app_ssh_access: true
     default_app_memory: 512
