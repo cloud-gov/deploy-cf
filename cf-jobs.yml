@@ -445,7 +445,7 @@ jobs:
 
   - name: loggregator_controller_z2
     templates: (( merge || lamb_meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 0
+    instances: 1
     resource_pool: small_z2
     networks:
       - name: cf2
@@ -460,7 +460,7 @@ jobs:
 
   - name: router_z1
     templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 2
     resource_pool: router_z1
     networks:
       - name: cf1

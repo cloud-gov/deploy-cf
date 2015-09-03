@@ -185,7 +185,7 @@ jobs:
         static_ips: (( static_ips(1) ))
 
   - name: router_z1
-    instances: 1
+    instances: 2
     networks:
       - name: cf1
         static_ips: (( static_ips(5, 6, 15, 16, 17, 18, 19, 20) ))
