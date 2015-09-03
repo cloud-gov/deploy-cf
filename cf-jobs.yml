@@ -299,7 +299,7 @@ jobs:
 
   - name: api_z1
     templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 2
     resource_pool: large_z1
     networks:
       - name: cf1
@@ -317,7 +317,7 @@ jobs:
 
   - name: api_z2
     templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
-    instances: 1
+    instances: 2
     resource_pool: large_z2
     networks:
       - name: cf2
