@@ -13,7 +13,7 @@ meta:
 
   stemcell:
     name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
-    version: latest
+    version: 2989
 
 properties:
   <<: (( merge ))
@@ -97,7 +97,7 @@ resource_pools:
 
   - name: large_z1
     cloud_properties:
-      instance_type: c4.large
+      instance_type: t2.large
       ephemeral_disk:
         size: 65_536
         type: gp2
