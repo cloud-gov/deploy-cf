@@ -20,7 +20,7 @@ meta:
   - name: 18f-cf
     version: latest
   - name: secureproxy
-    version: 6
+    version: 7
 
   stemcell: (( merge ))
 
