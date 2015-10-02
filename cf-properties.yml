@@ -206,15 +206,15 @@ properties:
     analytics:
       code: ~
       domain: ~
-    url: ~
+    url: (( "https://login." domain ))
     uaa_certificate: ~
     protocol: https
     brand: oss
     asset_base_url: ~
     uaa_base: ~
-    self_service_links_enabled: ~
-    signups_enabled: ~
-    invitations_enabled: ~
+    self_service_links_enabled: true
+    signups_enabled: true
+    invitations_enabled: true
     spring_profiles: ~
     messages: ~
 
@@ -229,14 +229,15 @@ properties:
 
     links:
       home: (( "https://console." domain ))
-      passwd: (( "https://console." domain "/password_resets/new" ))
-      signup: (( "https://console." domain "/register" ))
+      passwd: (( "https://login." domain "/forgot_password" ))
+      signup: (( "https://login." domain "/create_account" ))
       network: ~
       signup-network: ~
 
     logout: ~
 
-    tiles: ~
+    tiles:
+    - (( "https://console." domain ))
 
     saml: ~
 
