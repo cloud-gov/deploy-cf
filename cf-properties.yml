@@ -237,7 +237,10 @@ properties:
     logout: ~
 
     tiles:
-    - (( "https://console." domain ))
+    - name: console
+      login-link: (( "https://console." domain ))
+      image: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
+      image-hover: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
 
     saml: ~
 
