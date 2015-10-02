@@ -181,6 +181,9 @@ jobs:
   - name: uaa_z2
     instances: 0
 
+  - name: api_z1
+    instances: 1
+
   - name: router_z1
     instances: 1
     networks:
