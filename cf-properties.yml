@@ -43,19 +43,6 @@ properties:
   loggregator_endpoint:
     shared_secret: (( merge ))
 
-  consul:
-    agent:
-      log_level: null
-      servers:
-        lan: [0.0.0.27, 0.0.0.28, 0.0.1.27]
-    ca_cert:
-    agent_cert:
-    agent_key:
-    encrypt_keys: []
-    require_ssl:
-    server_cert:
-    server_key:
-
   collector:
     deployment_name: (( meta.environment ))
     graphite:
