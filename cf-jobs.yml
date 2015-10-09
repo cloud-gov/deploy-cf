@@ -681,6 +681,7 @@ properties:
       freq_min: 20
       rotate: 5
       size: 3M
+    extra_headers_to_log: null
     require_https: ~
     status:
       user: (( merge ))
