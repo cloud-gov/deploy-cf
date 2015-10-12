@@ -230,7 +230,7 @@ properties:
     links:
       home: (( "https://console." domain ))
       passwd: (( "https://login." domain "/forgot_password" ))
-      signup: (( "https://login." domain "/create_account" ))
+      signup: (( "https://login." domain "/" ))
       network: ~
       signup-network: ~
 
