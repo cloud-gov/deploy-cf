@@ -9,6 +9,8 @@ consul_servers: (( jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.network
 meta:
   environment: ~
 
+  app_domains: (( merge ))
+
   release:
     name: cf
 
@@ -567,7 +569,7 @@ properties:
     skip_cert_verify: (( merge || false ))
   system_domain: (( domain ))
   system_domain_organization: ~
-  app_domains: (( [domain] ))
+  app_domains: (( meta.app_domains ))
 
   disk_quota_enabled: true
 
