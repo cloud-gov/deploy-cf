@@ -560,8 +560,8 @@ properties:
   dropsonde:
     enabled: true
 
-  support_address: (( merge || "https://docs.18f.gov" ))
-  description: (( merge || "18F Cloud Foundry" ))
+  support_address: (( merge || "https://docs.cloud.gov" ))
+  description: (( merge || "cloud.gov Cloud Foundry" ))
   domain: (( merge ))
   ssl:
     skip_cert_verify: (( merge || false ))
