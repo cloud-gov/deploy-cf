@@ -581,13 +581,13 @@ properties:
       log_level: (( merge || nil ))
       servers:
         lan: (( consul_servers ))
-    ca_cert:
-    agent_cert:
-    agent_key:
+    ca_cert: ""
+    agent_cert: ""
+    agent_key: ""
     encrypt_keys: (( merge || [] ))
-    require_ssl:
-    server_cert:
-    server_key:
+    require_ssl: false
+    server_cert: ""
+    server_key: ""
 
 
   dropsonde:
