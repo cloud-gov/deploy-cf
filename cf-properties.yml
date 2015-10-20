@@ -45,6 +45,10 @@ properties:
 
   collector:
     deployment_name: (( meta.environment ))
+    graphite:
+      address: 10.10.101.63
+      port: 2003
+    use_graphite: true
     use_newrelic_insights: true
     newrelic_insights:
       api_key: (( merge ))
