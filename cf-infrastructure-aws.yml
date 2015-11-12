@@ -93,7 +93,7 @@ resource_pools:
 
   - name: large_z1
     cloud_properties:
-      instance_type: t2.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -101,7 +101,7 @@ resource_pools:
 
   - name: large_z2
     cloud_properties:
-      instance_type: c4.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -109,7 +109,7 @@ resource_pools:
 
   - name: runner_z1
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.xlarge
       ephemeral_disk:
         size: 102_400
         type: gp2
@@ -117,7 +117,7 @@ resource_pools:
 
   - name: runner_z2
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.xlarge
       ephemeral_disk:
         size: 102_400
         type: gp2
@@ -125,7 +125,7 @@ resource_pools:
 
   - name: router_z1
     cloud_properties:
-      instance_type: c3.large
+      instance_type: c4.large
       ephemeral_disk:
         size: 30_000
         type: gp2
@@ -134,7 +134,7 @@ resource_pools:
 
   - name: router_z2
     cloud_properties:
-      instance_type: c3.large
+      instance_type: c4.large
       ephemeral_disk:
         size: 30_000
         type: gp2
@@ -143,7 +143,7 @@ resource_pools:
 
   - name: small_errand
     cloud_properties:
-      instance_type: t2.medium
+      instance_type: m4.large
       ephemeral_disk:
         size: 10_240
         type: gp2
