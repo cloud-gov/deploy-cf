@@ -628,7 +628,7 @@ properties:
 
   dea_next:
     memory_mb: (( merge ))
-    memory_overcommit_factor: 3
+    memory_overcommit_factor: 4
     disk_mb: (( merge ))
     disk_overcommit_factor: 2
     staging_disk_inode_limit: 200000
