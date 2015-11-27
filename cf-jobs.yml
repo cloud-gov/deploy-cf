@@ -116,7 +116,7 @@ meta:
 
   uaa_templates:
   - name: uaa
-    release: (( meta.release.name ))
+    release: (( meta.custom_release.name ))
   - name: consul_agent
     release: (( meta.release.name ))
   - name: route_registrar
