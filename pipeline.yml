@@ -1,0 +1,78 @@
+---
+jobs:
+- name: smoke-tests
+  plan:
+  - aggregate:
+    - get: pipelines
+      trigger: false
+  - task: run-errand
+    file: pipelines/tasks/bosh-errand.yml
+    config:
+      params:
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USERNAME: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        BOSH_DEPLOYMENT_NAME: {{bosh-deployment-name}}
+        BOSH_ERRAND: smoke_tests
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Smoke Tests PASSED
+          <https://ci-stage.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: Smoke Tests FAILED
+          <https://ci-stage.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+- name: acceptance-tests
+  plan:
+  - aggregate:
+    - get: pipelines
+      trigger: false
+      passed: [smoke-tests]
+  - task: run-errand
+    file: pipelines/tasks/bosh-errand.yml
+    config:
+      params:
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USERNAME: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        BOSH_DEPLOYMENT_NAME: {{bosh-deployment-name}}
+        BOSH_ERRAND: acceptance_tests
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Acceptance Tests PASSED
+          <https://ci-stage.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: Acceptance Tests FAILED
+          <https://ci-stage.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+
+resources:
+- name: pipelines
+  type: git
+  source:
+    uri: {{pipelines-git-url}}
+    branch: {{pipelines-branch}}
+- name: slack
+  type: slack-notification
+  source:
+    url: {{slack-webhook-url}}
