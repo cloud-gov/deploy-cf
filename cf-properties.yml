@@ -216,6 +216,7 @@ properties:
     uaa_certificate: ~
     protocol: https
     brand: oss
+    brand_title: cloud.gov
     asset_base_url: ~
     uaa_base: ~
     self_service_links_enabled: true

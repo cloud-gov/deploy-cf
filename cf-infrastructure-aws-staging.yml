@@ -13,7 +13,7 @@ meta:
 
   stemcell:
     name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
-    version: 3062
+    version: 3147
 
 properties:
   <<: (( merge ))
