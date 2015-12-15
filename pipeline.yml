@@ -34,11 +34,18 @@ jobs:
       run:
         path: cg-manifests/cf/generate-staging.sh
         args: ["cf-decrypt/cf-staging.yml", "staging-manifest.yml"]
+  - task: cf-release-specific-version
+    config:
+      platform: linux
+      image: docker:///tutum/curl#trusty
+      run:
+        path: curl
+        args: ["--retry", "5", "-L", "-f", "https://bosh.io/d/github.com/cloudfoundry/cf-release?v=218", "-o", "release.tgz"]
   - put: cf-deployment-staging
     params:
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
-        - cf-release/*.tgz
+        - cf-release-specific-version/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -175,8 +182,6 @@ resources:
   type: bosh-io-release
   source:
     repository: cloudfoundry/cf-release
-  version:
-    version: 218
 
 - name: cf-deployment-staging
   type: bosh-deployment
