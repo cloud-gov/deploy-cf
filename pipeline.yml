@@ -1,5 +1,22 @@
 ---
 jobs:
+- name: diff-upstream-cf-templates
+  plan:
+  - aggregate:
+    - get: pipelines
+    - get: cg-manifests
+      trigger: true
+    - get: cf-release
+      trigger: true
+  - task: diff-templates
+    file: pipelines/tasks/diff-templates.yml
+    config:
+      inputs:
+        - name: pipelines
+        - name: cg-manifests
+      params:
+        TEMPLATES_DIR: cg-manifests/cf
+
 - name: deploy-cf-staging
   serial: true
   plan:
