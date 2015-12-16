@@ -43,6 +43,20 @@ properties:
   loggregator_endpoint:
     shared_secret: (( merge ))
 
+  loggregator:
+    maxRetainedLogMessages: 100
+    debug: (( merge || false ))
+    blacklisted_syslog_ranges: ~
+
+  doppler:
+    maxRetainedLogMessages: 100
+    debug: (( merge || false ))
+    blacklisted_syslog_ranges: ~
+    unmarshaller_count: (( merge || 5 ))
+
+  metron_agent:
+    deployment: (( meta.environment ))
+
   collector:
     deployment_name: (( meta.environment ))
     graphite:

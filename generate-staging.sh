@@ -17,7 +17,6 @@ spiff merge \
   $SCRIPTPATH/cf-deployment.yml \
   $SCRIPTPATH/cf-resource-pools.yml \
   $SCRIPTPATH/cf-jobs.yml \
-  $SCRIPTPATH/cf-lamb.yml \
   $SCRIPTPATH/cf-properties.yml \
   $SCRIPTPATH/cf-infrastructure-aws-staging.yml \
   $SECRETS \
