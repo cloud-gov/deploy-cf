@@ -25,6 +25,7 @@ jobs:
       trigger: false
     - get: cg-manifests
       trigger: true
+      passed: [diff-upstream-cf-templates]
     - get: cf-private-staging
       trigger: true
     - get: cf-stemcell
