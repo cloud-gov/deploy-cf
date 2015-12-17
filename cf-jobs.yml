@@ -2,8 +2,6 @@ empty_hash: {}
 
 networks: (( merge ))
 
-consul_servers: (( jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.networks.cf2.static_ips ))
-
 meta:
   environment: ~
 
@@ -15,6 +13,8 @@ meta:
   custom_release:
     name: 18f-cf
 
+  consul_servers: (( jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.networks.cf2.static_ips ))
+
   networks:
     z1:
       apps: cf1
@@ -22,11 +22,13 @@ meta:
     z2:
       apps: cf2
 
+  nfs_client_ranges:
+    - (( .networks.cf1.subnets.[0].range || nil ))
+    - (( .networks.cf2.subnets.[0].range || nil ))
+
   nfs_server:
     address: (( jobs.nfs_z1.networks.cf1.static_ips.[0] || nil ))
-    allow_from_entries:
-      - (( .networks.cf1.subnets.[0].range || nil ))
-      - (( .networks.cf2.subnets.[0].range || nil ))
+    allow_from_entries: (( merge || meta.nfs_client_ranges ))
     share: ~
     share_path: (( merge || "" ))
 
@@ -598,7 +600,7 @@ properties:
     agent:
       log_level: (( merge || nil ))
       servers:
-        lan: (( consul_servers ))
+        lan: (( meta.consul_servers ))
     ca_cert: ""
     agent_cert: ""
     agent_key: ""
@@ -664,6 +666,11 @@ properties:
     heartbeat_interval_in_seconds: 10
     rlimit_core: (( merge || 0 ))
     allow_host_access: ~
+
+  loggregator:
+    <<: (( merge ))
+    etcd:
+      machines: (( .properties.etcd.machines ))
 
   loggregator_endpoint:
     shared_secret: (( merge ))
