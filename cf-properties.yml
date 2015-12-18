@@ -47,6 +47,7 @@ properties:
     maxRetainedLogMessages: 100
     debug: (( merge || false ))
     blacklisted_syslog_ranges: ~
+    outgoing_dropsonde_port: 8081
 
   doppler:
     maxRetainedLogMessages: 100
@@ -56,6 +57,9 @@ properties:
 
   metron_agent:
     deployment: (( meta.environment ))
+
+  traffic_controller:
+    outgoing_port: 8080
 
   collector:
     deployment_name: (( meta.environment ))
