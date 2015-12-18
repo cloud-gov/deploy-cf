@@ -93,7 +93,7 @@ jobs:
       put: slack
       params:
         text: |
-          :white_check_mark: Smoke Tests PASSED
+          :white_check_mark: Smoke Tests for CF on staging PASSED
           <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
@@ -102,7 +102,7 @@ jobs:
       put: slack
       params:
         text: |
-          :x: Smoke Tests FAILED
+          :x: Smoke Tests for CF on staging FAILED
           <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
@@ -132,7 +132,7 @@ jobs:
       put: slack
       params:
         text: |
-          :white_check_mark: Acceptance Tests PASSED
+          :white_check_mark: Acceptance Tests for CF on staging PASSED
           <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
@@ -141,7 +141,7 @@ jobs:
       put: slack
       params:
         text: |
-          :x: Acceptance Tests FAILED
+          :x: Acceptance Tests for CF on staging FAILED
           <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
