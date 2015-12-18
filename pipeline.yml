@@ -1,22 +1,5 @@
 ---
 jobs:
-- name: diff-upstream-cf-templates
-  plan:
-  - aggregate:
-    - get: pipelines
-    - get: cg-manifests
-      trigger: true
-    - get: cf-release
-      trigger: true
-  - task: diff-templates
-    file: pipelines/tasks/diff-templates.yml
-    config:
-      inputs:
-        - name: pipelines
-        - name: cg-manifests
-      params:
-        TEMPLATES_DIR: cg-manifests/cf
-
 - name: deploy-cf-staging
   serial: true
   plan:
@@ -25,13 +8,12 @@ jobs:
       trigger: false
     - get: cg-manifests
       trigger: true
-      passed: [diff-upstream-cf-templates]
     - get: cf-private-staging
       trigger: true
     - get: cf-stemcell
       trigger: false
     - get: cf-release
-      trigger: false
+      trigger: true
   - task: cf-decrypt
     file: pipelines/tasks/decrypt.yml
     config:
@@ -52,18 +34,11 @@ jobs:
       run:
         path: cg-manifests/cf/generate-staging.sh
         args: ["cf-decrypt/cf-staging.yml", "staging-manifest.yml"]
-  - task: cf-release-specific-version
-    config:
-      platform: linux
-      image: docker:///tutum/curl#trusty
-      run:
-        path: curl
-        args: ["--retry", "5", "-L", "-f", "https://bosh.io/d/github.com/cloudfoundry/cf-release?v=218", "-o", "release.tgz"]
   - put: cf-deployment-staging
     params:
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
-        - cf-release-specific-version/*.tgz
+        - cf-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -84,6 +59,15 @@ jobs:
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
+    ensure:
+      task: diff-upstream-templates
+      file: pipelines/tasks/diff-templates.yml
+      config:
+        inputs:
+          - name: pipelines
+          - name: cg-manifests
+        params:
+          TEMPLATES_DIR: cg-manifests/cf
 
 - name: smoke-tests
   plan:
