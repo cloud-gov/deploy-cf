@@ -6,7 +6,7 @@ jobs:
   - aggregate:
     - get: pipelines
       trigger: false
-    - get: cg-manifests
+    - get: cg-manifests-staging
       trigger: true
     - get: cf-private-staging
       trigger: true
@@ -29,10 +29,10 @@ jobs:
       platform: linux
       image: docker:///18fgsa/concourse-task
       inputs:
-      - name: cg-manifests
+      - name: cg-manifests-staging
       - name: cf-decrypt
       run:
-        path: cg-manifests/cf/generate-staging.sh
+        path: cg-manifests-staging/cf/generate-staging.sh
         args: ["cf-decrypt/cf-staging.yml", "staging-manifest.yml"]
   - put: cf-deployment-staging
     params:
@@ -65,19 +65,25 @@ jobs:
       config:
         inputs:
           - name: pipelines
-          - name: cg-manifests
+          - name: cg-manifests-staging
         params:
-          TEMPLATES_DIR: cg-manifests/cf
+          TEMPLATES_DIR: cg-manifests-staging/cf
 
-- name: smoke-tests
+- name: smoke-tests-staging
   plan:
   - aggregate:
     - get: pipelines
       trigger: false
-    - get: cg-manifests
+    - get: cg-manifests-staging
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-private-staging
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cf-stemcell
+      trigger: false
+      passed: [deploy-cf-staging]
+    - get: cf-release
       trigger: true
       passed: [deploy-cf-staging]
   - task: run-errand
@@ -108,17 +114,23 @@ jobs:
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
-- name: acceptance-tests
+- name: acceptance-tests-staging
   plan:
   - aggregate:
     - get: pipelines
       trigger: false
-    - get: cg-manifests
+    - get: cg-manifests-staging
       trigger: true
-      passed: [smoke-tests]
+      passed: [smoke-tests-staging]
     - get: cf-private-staging
       trigger: true
-      passed: [smoke-tests]
+      passed: [smoke-tests-staging]
+    - get: cf-stemcell
+      trigger: false
+      passed: [smoke-tests-staging]
+    - get: cf-release
+      trigger: true
+      passed: [smoke-tests-staging]
   - task: run-errand
     file: pipelines/tasks/bosh-errand.yml
     config:
@@ -147,6 +159,158 @@ jobs:
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
+- name: deploy-cf-prod
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipelines
+      trigger: false
+    - get: cg-manifests-prod
+      trigger: false
+    - get: cf-private-prod
+      trigger: false
+    - get: cf-stemcell
+      trigger: false
+      passed: [acceptance-tests-staging]
+    - get: cf-release
+      trigger: false
+      passed: [acceptance-tests-staging]
+  - task: cf-decrypt
+    file: pipelines/tasks/decrypt.yml
+    config:
+      inputs:
+        - name: pipelines
+        - name: cf-private-prod
+      params:
+        INPUT_FILE: cf-private-prod/cf.yml
+        OUTPUT_FILE: cf.yml
+        PASSPHRASE: {{cf-private-prod-passphrase}}
+  - task: cf-prod-manifest
+    config:
+      platform: linux
+      image: docker:///18fgsa/concourse-task
+      inputs:
+      - name: cg-manifests-prod
+      - name: cf-decrypt
+      run:
+        path: cg-manifests-prod/cf/generate.sh
+        args: ["cf-decrypt/cf.yml", "manifest.yml"]
+  - put: cf-deployment-prod
+    params:
+      manifest: cf-prod-manifest/manifest.yml
+      releases:
+        - cf-release/*.tgz
+      stemcells:
+        - cf-stemcell/*.tgz
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Successfully deployed CF on prod
+          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: FAILED to deploy CF on prod
+          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+
+- name: smoke-tests-prod
+  plan:
+  - aggregate:
+    - get: pipelines
+      trigger: false
+    - get: cg-manifests-prod
+      trigger: false
+      passed: [deploy-cf-prod]
+    - get: cf-private-prod
+      trigger: false
+      passed: [deploy-cf-prod]
+    - get: cf-stemcell
+      trigger: false
+      passed: [deploy-cf-prod]
+    - get: cf-release
+      trigger: false
+      passed: [deploy-cf-prod]
+  - task: run-errand
+    file: pipelines/tasks/bosh-errand.yml
+    config:
+      params:
+        BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
+        BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
+        BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
+        BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
+        BOSH_ERRAND: smoke_tests
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Smoke Tests for CF on prod PASSED
+          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: Smoke Tests for CF on prod FAILED
+          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+
+- name: acceptance-tests-prod
+  plan:
+  - aggregate:
+    - get: pipelines
+      trigger: false
+    - get: cg-manifests-prod
+      trigger: false
+      passed: [smoke-tests-prod]
+    - get: cf-private-prod
+      trigger: false
+      passed: [smoke-tests-prod]
+    - get: cf-stemcell
+      trigger: false
+      passed: [smoke-tests-prod]
+    - get: cf-release
+      trigger: false
+      passed: [smoke-tests-prod]
+  - task: run-errand
+    file: pipelines/tasks/bosh-errand.yml
+    config:
+      params:
+        BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
+        BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
+        BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
+        BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
+        BOSH_ERRAND: acceptance_tests
+    on_success:
+      put: slack
+      params:
+        text: |
+          :white_check_mark: Acceptance Tests for CF on prod PASSED
+          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+    on_failure:
+      put: slack
+      params:
+        text: |
+          :x: Acceptance Tests for CF on prod FAILED
+          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+        channel: {{slack-channel}}
+        username: {{slack-username}}
+        icon_url: {{slack-icon-url}}
+
 resources:
 - name: pipelines
   type: git
@@ -159,17 +323,33 @@ resources:
   source:
     url: {{slack-webhook-url}}
 
-- name: cg-manifests
+- name: cg-manifests-staging
   type: git
   source:
     uri: {{cg-manifests-git-url}}
-    branch: {{cg-manifests-git-branch}}
+    branch: {{cg-manifests-git-branch-staging}}
+
+- name: cg-manifests-prod
+  type: git
+  source:
+    uri: {{cg-manifests-git-url}}
+    branch: {{cg-manifests-git-branch-prod}}
 
 - name: cf-private-staging
   type: s3
   source:
     bucket: {{cf-private-staging-bucket}}
     versioned_file: cf-staging.yml
+    access_key_id: {{cf-private-access-key-id}}
+    secret_access_key: {{cf-private-secret-access-key}}
+    region_name: {{cf-private-region-name}}
+    private: true
+
+- name: cf-private-prod
+  type: s3
+  source:
+    bucket: {{cf-private-prod-bucket}}
+    versioned_file: cf.yml
     access_key_id: {{cf-private-access-key-id}}
     secret_access_key: {{cf-private-secret-access-key}}
     region_name: {{cf-private-region-name}}
@@ -193,3 +373,24 @@ resources:
     password: {{cf-deployment-staging-bosh-password}}
     deployment: {{cf-deployment-staging-bosh-deployment}}
     ignore_ssl: true
+
+- name: cf-deployment-prod
+  type: bosh-deployment
+  source:
+    target: {{cf-deployment-prod-bosh-target}}
+    username: {{cf-deployment-prod-bosh-username}}
+    password: {{cf-deployment-prod-bosh-password}}
+    deployment: {{cf-deployment-prod-bosh-deployment}}
+    ignore_ssl: true
+
+groups:
+- name: staging
+  jobs:
+  - deploy-cf-staging
+  - smoke-tests-staging
+  - acceptance-tests-staging
+- name: production
+  jobs:
+  - deploy-cf-prod
+  - smoke-tests-prod
+  - acceptance-tests-prod
