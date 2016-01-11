@@ -45,8 +45,8 @@ meta:
     release: (( meta.release.name ))
   - name: statsd-injector
     release: (( meta.release.name ))
-  - name: consul_agent
-    release: (( meta.release.name ))
+  # - name: consul_agent
+  #   release: (( meta.release.name ))
   - name: nfs_mounter
     release: (( meta.release.name ))
   - name: route_registrar
@@ -80,16 +80,16 @@ meta:
     release: secureproxy
   - name: gorouter
     release: (( meta.release.name ))
-  - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+  # - name: consul_agent
+  #   release: (( meta.consul_templates.consul_agent.release ))
 
   routing_api_templates:
   - name: routing-api
     release: (( meta.release.name ))
   - name: metron_agent
     release: (( meta.release.name ))
-  - name: consul_agent
-    release: (( meta.release.name ))
+  # - name: consul_agent
+  #   release: (( meta.release.name ))
 
   etcd_templates:
   - name: etcd
@@ -117,8 +117,8 @@ meta:
   uaa_templates:
   - name: uaa
     release: (( meta.custom_release.name ))
-  - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+  # - name: consul_agent
+  #   release: (( meta.consul_templates.consul_agent.release ))
   - name: route_registrar
     release: (( meta.release.name ))
   - name: statsd-injector
