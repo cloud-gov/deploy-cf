@@ -34,8 +34,15 @@ jobs:
       run:
         path: cg-manifests-staging/cf/generate-staging.sh
         args: ["cf-decrypt/cf-staging.yml", "staging-manifest.yml"]
+  - task: bosh-ssl-cert-staging
+    file: pipelines/tasks/write_file.yml
+    config:
+      params:
+        FILE_NAME: BOSHRootCA.pem
+        CONTENT: {{cf-deployment-bosh-cert}}
   - put: cf-deployment-staging
     params:
+      cert: bosh-ssl-cert-staging/BOSHRootCA.pem
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
         - cf-release/*.tgz
@@ -195,8 +202,15 @@ jobs:
       run:
         path: cg-manifests-prod/cf/generate.sh
         args: ["cf-decrypt/cf.yml", "manifest.yml"]
+  - task: bosh-ssl-cert
+    file: pipelines/tasks/write_file.yml
+    config:
+      params:
+        FILE_NAME: BOSHRootCA.pem
+        CONTENT: {{cf-deployment-bosh-cert}}
   - put: cf-deployment-prod
     params:
+      cert: bosh-ssl-cert/BOSHRootCA.pem
       manifest: cf-prod-manifest/manifest.yml
       releases:
         - cf-release/*.tgz
