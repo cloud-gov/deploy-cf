@@ -93,12 +93,6 @@ jobs:
     - get: cf-release
       trigger: true
       passed: [deploy-cf-staging]
-  - task: bosh-ssl-cert-staging
-    file: pipelines/tasks/write_file.yml
-    config:
-      params:
-        FILE_NAME: BOSHRootCA.pem
-        CONTENT: {{cf-deployment-bosh-cert}}
   - task: run-errand
     file: pipelines/tasks/bosh-errand.yml
     config:
@@ -108,7 +102,7 @@ jobs:
         BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
         BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
         BOSH_ERRAND: smoke_tests
-        BOSH_CACERT: bosh-ssl-cert-staging/BOSHRootCA.pem
+        BOSH_CACERT: {{cf-deployment-bosh-cert}}
     on_success:
       put: slack
       params:
@@ -154,6 +148,7 @@ jobs:
         BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
         BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
         BOSH_ERRAND: acceptance_tests
+        BOSH_CACERT: {{cf-deployment-bosh-cert}}
     on_success:
       put: slack
       params:
@@ -268,6 +263,7 @@ jobs:
         BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
         BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
         BOSH_ERRAND: smoke_tests
+        BOSH_CACERT: {{cf-deployment-bosh-cert}}
     on_success:
       put: slack
       params:
@@ -313,6 +309,7 @@ jobs:
         BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
         BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
         BOSH_ERRAND: acceptance_tests
+        BOSH_CACERT: {{cf-deployment-bosh-cert}}
     on_success:
       put: slack
       params:
