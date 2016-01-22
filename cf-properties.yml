@@ -323,6 +323,7 @@ properties:
         secret: (( merge ))
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         redirect-uri: (( properties.login.protocol "://login." domain ))
+        autoapprove: true
       notifications:
         secret: (( merge ))
         authorities: cloud_controller.admin,scim.read
@@ -335,6 +336,7 @@ properties:
         authorities: uaa.none
         access-token-validity: 600
         refresh-token-validity: 2592000
+        autoapprove: true
       doppler:
         override: true
         authorities: uaa.resource
