@@ -22,7 +22,7 @@ jobs:
         - name: cf-private-staging
       params:
         INPUT_FILE: cf-private-staging/cf-staging.yml
-        OUTPUT_FILE: cf-staging.yml
+        OUTPUT_FILE: decrypt/cf-staging.yml
         PASSPHRASE: {{cf-private-staging-passphrase}}
   - task: cf-stage-manifest
     config:
@@ -30,19 +30,21 @@ jobs:
       image: docker:///18fgsa/concourse-task
       inputs:
       - name: cg-manifests-staging
-      - name: cf-decrypt
+      - name: decrypt
       run:
         path: cg-manifests-staging/cf/generate-staging.sh
-        args: ["cf-decrypt/cf-staging.yml", "staging-manifest.yml"]
+        args: ["decrypt/cf-staging.yml", "cf-stage-manifest/staging-manifest.yml"]
+      outputs:
+      - name: cf-stage-manifest
   - task: bosh-ssl-cert-staging
     file: pipelines/tasks/write_file.yml
     config:
       params:
-        FILE_NAME: BOSHRootCA.pem
+        FILE_NAME: write_file/BOSHRootCA.pem
         CONTENT: {{cf-deployment-bosh-cert}}
   - put: cf-deployment-staging
     params:
-      cert: bosh-ssl-cert-staging/BOSHRootCA.pem
+      cert: write_file/BOSHRootCA.pem
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
         - cf-release/*.tgz
@@ -192,7 +194,7 @@ jobs:
         - name: cf-private-prod
       params:
         INPUT_FILE: cf-private-prod/cf.yml
-        OUTPUT_FILE: cf.yml
+        OUTPUT_FILE: decrypt/cf.yml
         PASSPHRASE: {{cf-private-prod-passphrase}}
   - task: cf-prod-manifest
     config:
@@ -200,19 +202,21 @@ jobs:
       image: docker:///18fgsa/concourse-task
       inputs:
       - name: cg-manifests-prod
-      - name: cf-decrypt
+      - name: decrypt
       run:
         path: cg-manifests-prod/cf/generate.sh
-        args: ["cf-decrypt/cf.yml", "manifest.yml"]
+        args: ["decrypt/cf.yml", "cf-prod-manifest/manifest.yml"]
+      outputs:
+      - name: cf-prod-manifest
   - task: bosh-ssl-cert
     file: pipelines/tasks/write_file.yml
     config:
       params:
-        FILE_NAME: BOSHRootCA.pem
+        FILE_NAME: write_file/BOSHRootCA.pem
         CONTENT: {{cf-deployment-bosh-cert}}
   - put: cf-deployment-prod
     params:
-      cert: bosh-ssl-cert/BOSHRootCA.pem
+      cert: write_file/BOSHRootCA.pem
       manifest: cf-prod-manifest/manifest.yml
       releases:
         - cf-release/*.tgz
