@@ -4,9 +4,9 @@ jobs:
   serial: true
   plan:
   - aggregate:
-    - get: pipelines
+    - get: pipeline-tasks
       trigger: false
-    - get: cg-manifests-staging
+    - get: cf-manifests-staging
       trigger: true
     - get: cf-private-staging
       trigger: true
@@ -15,10 +15,10 @@ jobs:
     - get: cf-release
       trigger: true
   - task: cf-decrypt
-    file: pipelines/tasks/decrypt.yml
+    file: pipeline-tasks/decrypt.yml
     config:
       inputs:
-        - name: pipelines
+        - name: pipeline-tasks
         - name: cf-private-staging
       params:
         INPUT_FILE: cf-private-staging/cf-staging.yml
@@ -29,15 +29,15 @@ jobs:
       platform: linux
       image: docker:///18fgsa/concourse-task
       inputs:
-      - name: cg-manifests-staging
+      - name: cf-manifests-staging
       - name: decrypt
       run:
-        path: cg-manifests-staging/cf/generate-staging.sh
+        path: cf-manifests-staging/generate-staging.sh
         args: ["decrypt/cf-staging.yml", "cf-stage-manifest/staging-manifest.yml"]
       outputs:
       - name: cf-stage-manifest
   - task: bosh-ssl-cert-staging
-    file: pipelines/tasks/write_file.yml
+    file: pipeline-tasks/write_file.yml
     config:
       params:
         FILE_NAME: write_file/BOSHRootCA.pem
@@ -70,20 +70,20 @@ jobs:
         icon_url: {{slack-icon-url}}
     ensure:
       task: diff-upstream-templates
-      file: pipelines/tasks/diff-templates.yml
+      file: pipeline-tasks/diff-templates.yml
       config:
         inputs:
-          - name: pipelines
-          - name: cg-manifests-staging
+          - name: pipeline-tasks
+          - name: cf-manifests-staging
         params:
-          TEMPLATES_DIR: cg-manifests-staging/cf
+          TEMPLATES_DIR: cf-manifests-staging/cf
 
 - name: smoke-tests-staging
   plan:
   - aggregate:
-    - get: pipelines
+    - get: pipeline-tasks
       trigger: false
-    - get: cg-manifests-staging
+    - get: cf-manifests-staging
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-private-staging
@@ -96,7 +96,7 @@ jobs:
       trigger: true
       passed: [deploy-cf-staging]
   - task: run-errand
-    file: pipelines/tasks/bosh-errand.yml
+    file: pipeline-tasks/bosh-errand.yml
     config:
       params:
         BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
@@ -127,9 +127,9 @@ jobs:
 - name: acceptance-tests-staging
   plan:
   - aggregate:
-    - get: pipelines
+    - get: pipeline-tasks
       trigger: false
-    - get: cg-manifests-staging
+    - get: cf-manifests-staging
       trigger: true
       passed: [smoke-tests-staging]
     - get: cf-private-staging
@@ -142,7 +142,7 @@ jobs:
       trigger: true
       passed: [smoke-tests-staging]
   - task: run-errand
-    file: pipelines/tasks/bosh-errand.yml
+    file: pipeline-tasks/bosh-errand.yml
     config:
       params:
         BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
@@ -174,9 +174,9 @@ jobs:
   serial: true
   plan:
   - aggregate:
-    - get: pipelines
+    - get: pipeline-tasks
       trigger: false
-    - get: cg-manifests-prod
+    - get: cf-manifests-prod
       trigger: false
     - get: cf-private-prod
       trigger: false
@@ -187,10 +187,10 @@ jobs:
       trigger: false
       passed: [acceptance-tests-staging]
   - task: cf-decrypt
-    file: pipelines/tasks/decrypt.yml
+    file: pipeline-tasks/decrypt.yml
     config:
       inputs:
-        - name: pipelines
+        - name: pipeline-tasks
         - name: cf-private-prod
       params:
         INPUT_FILE: cf-private-prod/cf.yml
@@ -201,15 +201,15 @@ jobs:
       platform: linux
       image: docker:///18fgsa/concourse-task
       inputs:
-      - name: cg-manifests-prod
+      - name: cf-manifests-prod
       - name: decrypt
       run:
-        path: cg-manifests-prod/cf/generate.sh
+        path: cf-manifests-prod/generate.sh
         args: ["decrypt/cf.yml", "cf-prod-manifest/manifest.yml"]
       outputs:
       - name: cf-prod-manifest
   - task: bosh-ssl-cert
-    file: pipelines/tasks/write_file.yml
+    file: pipeline-tasks/write_file.yml
     config:
       params:
         FILE_NAME: write_file/BOSHRootCA.pem
@@ -244,9 +244,9 @@ jobs:
 - name: smoke-tests-prod
   plan:
   - aggregate:
-    - get: pipelines
+    - get: pipeline-tasks
       trigger: false
-    - get: cg-manifests-prod
+    - get: cf-manifests-prod
       trigger: false
       passed: [deploy-cf-prod]
     - get: cf-private-prod
@@ -259,7 +259,7 @@ jobs:
       trigger: false
       passed: [deploy-cf-prod]
   - task: run-errand
-    file: pipelines/tasks/bosh-errand.yml
+    file: pipeline-tasks/bosh-errand.yml
     config:
       params:
         BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
@@ -290,9 +290,9 @@ jobs:
 - name: acceptance-tests-prod
   plan:
   - aggregate:
-    - get: pipelines
+    - get: pipeline-tasks
       trigger: false
-    - get: cg-manifests-prod
+    - get: cf-manifests-prod
       trigger: false
       passed: [smoke-tests-prod]
     - get: cf-private-prod
@@ -305,7 +305,7 @@ jobs:
       trigger: false
       passed: [smoke-tests-prod]
   - task: run-errand
-    file: pipelines/tasks/bosh-errand.yml
+    file: pipeline-tasks/bosh-errand.yml
     config:
       params:
         BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
@@ -334,28 +334,28 @@ jobs:
         icon_url: {{slack-icon-url}}
 
 resources:
-- name: pipelines
+- name: pipeline-tasks
   type: git
   source:
-    uri: {{pipelines-git-url}}
-    branch: {{pipelines-branch}}
+    uri: {{pipeline-tasks-git-url}}
+    branch: {{pipeline-tasks-git-branch}}
 
 - name: slack
   type: slack-notification
   source:
     url: {{slack-webhook-url}}
 
-- name: cg-manifests-staging
+- name: cf-manifests-staging
   type: git
   source:
-    uri: {{cg-manifests-git-url}}
-    branch: {{cg-manifests-git-branch-staging}}
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-staging}}
 
-- name: cg-manifests-prod
+- name: cf-manifests-prod
   type: git
   source:
-    uri: {{cg-manifests-git-url}}
-    branch: {{cg-manifests-git-branch-prod}}
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-prod}}
 
 - name: cf-private-staging
   type: s3
