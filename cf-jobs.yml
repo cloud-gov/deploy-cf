@@ -35,6 +35,7 @@ meta:
   api_routes:
   - name: api
     port: (( .properties.cc.external_port ))
+    registration_interval: 20s
     uris:
     - (( "api." .properties.domain ))
 
@@ -42,12 +43,26 @@ meta:
     cloud_controller_ng: {}
 
   api_templates:
+  # - name: consul_agent
+  #   release: (( meta.release.name ))
+  - name: go-buildpack
+    release: (( meta.release.name ))
+  - name: binary-buildpack
+    release: (( meta.release.name ))
+  - name: nodejs-buildpack
+    release: (( meta.release.name ))
+  - name: ruby-buildpack
+    release: (( meta.release.name ))
+  - name: php-buildpack
+    release: (( meta.release.name ))
+  - name: python-buildpack
+    release: (( meta.release.name ))
+  - name: staticfile-buildpack
+    release: (( meta.release.name ))
   - name: cloud_controller_ng
     release: (( meta.release.name ))
   - name: statsd-injector
     release: (( meta.release.name ))
-  # - name: consul_agent
-  #   release: (( meta.release.name ))
   - name: nfs_mounter
     release: (( meta.release.name ))
   - name: route_registrar
@@ -55,10 +70,10 @@ meta:
 
 
   api_worker_templates:
-  - name: cloud_controller_worker
-    release: (( meta.release.name ))
   # - name: consul_agent
   #   release: (( meta.release.name ))
+  - name: cloud_controller_worker
+    release: (( meta.release.name ))
 
   clock_templates:
   - name: cloud_controller_clock
@@ -94,13 +109,31 @@ meta:
   - name: collector
     release: (( meta.custom_release.name ))
 
+  blobstore_routes:
+  - name: blobstore
+    port: (( .properties.blobstore.port ))
+    registration_interval: 20s
+    tags:
+      component: blobstore
+    uris:
+    - (( "blobstore." .properties.domain ))
+
+  blobstore_templates:
+  - name: blobstore
+    release: (( meta.release.name ))
+  - name: route_registrar
+    release: (( meta.release.name ))
+
   nfs_templates:
   - name: debian_nfs_server
+    release: (( meta.release.name ))
+  - name: route_registrar
     release: (( meta.release.name ))
 
   uaa_routes:
   - name: uaa
     port: (( .properties.uaa.port ))
+    registration_interval: 20s
     uris:
     - (( "uaa." .properties.domain ))
     - (( "*.uaa." .properties.domain ))
@@ -124,6 +157,7 @@ meta:
   hm9000_routes:
   - name: hm9000
     port: 5155
+    registration_interval: 20s
     uris:
     - (( "hm9000." .properties.domain ))
 
@@ -144,10 +178,12 @@ meta:
   loggregator_trafficcontroller_routes:
   - name: doppler
     port: (( .properties.loggregator.outgoing_dropsonde_port ))
+    registration_interval: 20s
     uris:
     - (( "doppler." .properties.domain ))
   - name: loggregator
     port: (( .properties.traffic_controller.outgoing_port ))
+    registration_interval: 20s
     uris:
     - (( "loggregator." .properties.domain ))
 
@@ -277,8 +313,14 @@ jobs:
       - name: cf1
         static_ips: ~
     properties:
+      consul:
+        agent:
+          services:
+            blobstore: {}
       metron_agent:
         zone: z1
+      route_registrar:
+        routes: (( merge || meta.blobstore_routes ))
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
@@ -693,9 +735,12 @@ properties:
     route_services_secret: (( merge || nil ))
     route_services_secret_decrypt_only: (( merge || nil ))
     route_services_timeout: (( merge || nil ))
+    route_services_recommend_https: (( merge || nil ))
     logrotate: (( merge || nil ))
     extra_headers_to_log: (( merge || nil ))
     debug_addr: (( merge || nil ))
+    enable_routing_api: (( merge || nil ))
+    drain_wait: (( merge || nil ))
 
   secureproxy:
     listen_port: 80

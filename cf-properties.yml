@@ -40,6 +40,12 @@ properties:
   app_ssh: ~
   domain: (( merge ))
 
+  blobstore:
+    port: (( merge || 80 ))
+    admin_users: (( merge || nil ))
+    secure_link:
+      secret: (( merge || nil ))
+
   loggregator_endpoint:
     shared_secret: (( merge ))
 
@@ -60,6 +66,8 @@ properties:
 
   traffic_controller:
     outgoing_port: 8080
+    zone: (( merge || nil ))
+    disable_access_control: (( merge || nil ))
 
   collector:
     deployment_name: (( meta.environment ))
@@ -145,17 +153,23 @@ properties:
     broker_client_max_async_poll_duration_minutes: (( merge || 10080 ))
 
     resource_pool:
+      blobstore_type: (( merge || "fog" ))
+      webdav_config: (( merge || properties.cc.webdav_config ))
       resource_directory_key: (( meta.resource_key "-cc-resources" ))
       fog_connection: ~
       cdn: ~
 
     packages:
+      blobstore_type: (( merge || "fog" ))
+      webdav_config: (( merge || properties.cc.webdav_config ))
       app_package_directory_key: (( meta.resource_key "-cc-packages" ))
       fog_connection: ~
       cdn: ~
       max_package_size: 1073741824
 
     droplets:
+      blobstore_type: (( merge || "fog" ))
+      webdav_config: (( merge || properties.cc.webdav_config ))
       droplet_directory_key: (( meta.resource_key "-cc-droplets" ))
       fog_connection: ~
       cdn: ~
@@ -177,6 +191,8 @@ properties:
         record_sql: "obfuscated"
 
     buildpacks:
+      blobstore_type: (( merge || "fog" ))
+      webdav_config: (( merge || properties.cc.webdav_config ))
       buildpack_directory_key: (( meta.resource_key "-cc-buildpacks" ))
       fog_connection: ~
       cdn: ~
@@ -187,21 +203,21 @@ properties:
     system_buildpacks: (( merge || default_buildpacks ))
     default_buildpacks:
       - name: staticfile_buildpack
-        package: buildpack_staticfile
+        package: staticfile-buildpack
       - name: java_buildpack
         package: buildpack_java
       - name: ruby_buildpack
-        package: buildpack_ruby
+        package: ruby-buildpack
       - name: nodejs_buildpack
-        package: buildpack_nodejs
+        package: nodejs-buildpack
       - name: go_buildpack
-        package: buildpack_go
+        package: go-buildpack
       - name: python_buildpack
-        package: buildpack_python
+        package: python-buildpack
       - name: php_buildpack
-        package: buildpack_php
+        package: php-buildpack
       - name: binary_buildpack
-        package: buildpack_binary
+        package: binary-buildpack
 
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
@@ -227,6 +243,13 @@ properties:
         restart_if_consistently_above_mb: ~
         restart_if_above_mb: ~
     external_protocol: "https"
+
+    webdav_config:
+      private_endpoint: "http://blobstore.service.cf.internal"
+      public_endpoint: (( "http://blobstore." domain || nil))
+      secret: (( properties.blobstore.secure_link.secret || nil ))
+      username: ((  properties.blobstore.admin_users.[0].username || nil ))
+      password: ((  properties.blobstore.admin_users.[0].password || nil ))
 
   hm9000:
     url: (( "https://hm9000." domain ))
