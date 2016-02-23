@@ -162,10 +162,6 @@ properties:
 
     development_mode: false
 
-    collectd:
-      hostname_prefix: (( meta.environment ".cf.collectd." ))
-      riemann_server: (( merge ))
-
     newrelic:
       license_key: ~
       environment_name: (( meta.environment ))
@@ -227,6 +223,10 @@ properties:
         restart_if_consistently_above_mb: ~
         restart_if_above_mb: ~
     external_protocol: "https"
+
+  collectd:
+    hostname_prefix: (( meta.environment ".cf.collectd." ))
+    riemann_server: (( merge ))
 
   hm9000:
     url: (( "https://hm9000." domain ))
