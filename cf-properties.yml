@@ -176,10 +176,6 @@ properties:
 
     development_mode: false
 
-    collectd:
-      hostname_prefix: (( meta.environment ".cf.collectd." ))
-      riemann_server: (( merge ))
-
     newrelic:
       license_key: ~
       environment_name: (( meta.environment ))
@@ -250,6 +246,10 @@ properties:
       secret: (( properties.blobstore.secure_link.secret || nil ))
       username: ((  properties.blobstore.admin_users.[0].username || nil ))
       password: ((  properties.blobstore.admin_users.[0].password || nil ))
+
+  collectd:
+    hostname_prefix: (( meta.environment ".cf.collectd." ))
+    riemann_server: (( merge ))
 
   hm9000:
     url: (( "https://hm9000." domain ))
