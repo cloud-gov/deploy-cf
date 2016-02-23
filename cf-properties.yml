@@ -162,6 +162,10 @@ properties:
 
     development_mode: false
 
+    collectd:
+      hostname_prefix: (( meta.environment ".cf.collectd." ))
+      riemann_server: 10.10.30.30
+
     newrelic:
       license_key: ~
       environment_name: (( meta.environment ))

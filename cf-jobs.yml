@@ -167,6 +167,10 @@ meta:
   - name: metron_agent
     release: (( meta.release.name ))
 
+  collectd_agent_templates:
+  - name: collectd
+    release: collectd
+
   hardening_templates:
   - name: harden
     release: fisma
@@ -179,7 +183,7 @@ meta:
 
 jobs:
   - name: consul_z1
-    templates: (( merge || meta.consul_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.consul_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 0
     persistent_disk: 1024
     resource_pool: medium_z1
@@ -197,7 +201,7 @@ jobs:
         zone: z1
 
   - name: consul_z2
-    templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 0
     persistent_disk: 1024
     resource_pool: medium_z2
@@ -215,7 +219,7 @@ jobs:
         zone: z2
 
   - name: nats_z1
-    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -227,7 +231,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: nats_z2
-    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z2
     networks:
@@ -239,7 +243,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: etcd_z1
-    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z1
     persistent_disk: 10024
@@ -252,7 +256,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: etcd_z2
-    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z2
     persistent_disk: 10024
@@ -265,7 +269,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: nfs_z1
-    templates: (( merge || meta.nfs_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.nfs_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 0
     resource_pool: medium_z1
     persistent_disk: 102400
@@ -278,7 +282,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -298,7 +302,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z2
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
@@ -318,7 +322,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: stats_z1
-    templates: (( merge || meta.stats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.stats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -329,7 +333,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z1
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -342,7 +346,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z2
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z2
     networks:
@@ -355,7 +359,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z1
-    templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 2
     resource_pool: large_z1
     networks:
@@ -372,7 +376,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z2
-    templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.api_templates meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 2
     resource_pool: large_z2
     networks:
@@ -389,7 +393,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: clock_global
-    templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z1
     persistent_disk: 0
@@ -401,7 +405,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: runner_z1
-    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 5
     resource_pool: runner_z1
     networks:
@@ -417,7 +421,7 @@ jobs:
       max_in_flight: 1
 
   - name: runner_z2
-    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 5
     resource_pool: runner_z2
     networks:
@@ -433,7 +437,7 @@ jobs:
       max_in_flight: 1
 
   - name: loggregator_z1
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 0
     resource_pool: small_z1
     networks:
@@ -446,7 +450,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_z2
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 0
     resource_pool: small_z2
     networks:
@@ -459,7 +463,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: doppler_z1
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -472,7 +476,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: doppler_z2
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
@@ -485,7 +489,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z1
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -500,7 +504,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z2
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: small_z2
     networks:
@@ -515,7 +519,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z1
-    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 2
     resource_pool: router_z1
     networks:
@@ -531,7 +535,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z2
-    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates ))
+    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
     instances: 1
     resource_pool: router_z2
     networks:
