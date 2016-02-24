@@ -200,6 +200,18 @@ jobs:
       - name: cf2
         static_ips: (( static_ips(1) ))
 
+  - name: api_z1
+    instances: 2
+
+  - name: api_z2
+    instances: 1
+
+  - name: api_worker_z1
+    instances: 2
+
+  - name: api_worker_z2
+    instances: 1
+
   - name: router_z1
     instances: 2
     networks:
