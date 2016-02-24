@@ -33,12 +33,16 @@ properties:
 
   cc:
     resource_pool:
+      blobstore_type: fog
       fog_connection: (( meta.fog_config ))
     packages:
+      blobstore_type: fog
       fog_connection: (( meta.fog_config ))
     droplets:
+      blobstore_type: fog
       fog_connection: (( meta.fog_config ))
     buildpacks:
+      blobstore_type: fog
       fog_connection: (( meta.fog_config ))
 
   uaa:
@@ -196,6 +200,18 @@ jobs:
       - name: cf2
         static_ips: (( static_ips(1) ))
 
+  - name: api_z1
+    instances: 2
+
+  - name: api_z2
+    instances: 1
+
+  - name: api_worker_z1
+    instances: 2
+
+  - name: api_worker_z2
+    instances: 1
+
   - name: router_z1
     instances: 2
     networks:
@@ -239,13 +255,13 @@ jobs:
       - name: cf2
 
   - name: consul_z1
-    instances: 0
+    instances: 2
     networks:
       - name: cf1
         static_ips: (( static_ips(27, 28, 29) ))
 
   - name: consul_z2
-    instances: 0
+    instances: 1
     networks:
       - name: cf2
         static_ips: (( static_ips(27, 28, 29) ))
