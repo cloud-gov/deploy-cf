@@ -76,7 +76,7 @@ jobs:
           - name: pipeline-tasks
           - name: cf-manifests-staging
         params:
-          TEMPLATES_DIR: cf-manifests-staging/cf
+          TEMPLATES_DIR: cf-manifests-staging
 
 - name: smoke-tests-staging
   plan:
