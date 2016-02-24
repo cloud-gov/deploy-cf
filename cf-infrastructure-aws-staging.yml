@@ -216,6 +216,15 @@ jobs:
   - name: api_z1
     instances: 1
 
+  - name: api_z2
+    instances: 0
+
+  - name: api_worker_z1
+    instances: 1
+
+  - name: api_worker_z2
+    instances: 0
+
   - name: router_z1
     instances: 1
     networks:
@@ -229,9 +238,6 @@ jobs:
         static_ips: (( static_ips(5, 6, 15, 16, 17, 18, 19, 20) ))
 
   - name: hm9000_z2
-    instances: 0
-
-  - name: api_z2
     instances: 0
 
   - name: runner_z1
