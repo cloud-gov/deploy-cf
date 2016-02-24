@@ -34,6 +34,8 @@ meta:
 
   api_routes:
   - name: api
+    tags:
+      component: CloudController
     port: (( .properties.cc.external_port ))
     registration_interval: 20s
     uris:
@@ -43,8 +45,8 @@ meta:
     cloud_controller_ng: {}
 
   api_templates:
-  # - name: consul_agent
-  #   release: (( meta.release.name ))
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: go-buildpack
     release: (( meta.release.name ))
   - name: binary-buildpack
@@ -70,8 +72,8 @@ meta:
 
 
   api_worker_templates:
-  # - name: consul_agent
-  #   release: (( meta.release.name ))
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: cloud_controller_worker
     release: (( meta.release.name ))
 
@@ -86,6 +88,8 @@ meta:
     release: (( meta.release.name ))
 
   dea_templates:
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: dea_next
     release: (( meta.release.name ))
   - name: dea_logging_agent
@@ -94,10 +98,10 @@ meta:
   router_templates:
   - name: secureproxy
     release: secureproxy
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: gorouter
     release: (( meta.release.name ))
-  # - name: consul_agent
-  #   release: (( meta.consul_templates.consul_agent.release ))
 
   etcd_templates:
   - name: etcd
@@ -119,12 +123,16 @@ meta:
     - (( "blobstore." .properties.domain ))
 
   blobstore_templates:
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: blobstore
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
 
   nfs_templates:
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: debian_nfs_server
     release: (( meta.release.name ))
   - name: route_registrar
@@ -143,8 +151,8 @@ meta:
   uaa_templates:
   - name: uaa
     release: (( meta.custom_release.name ))
-  # - name: consul_agent
-  #   release: (( meta.consul_templates.consul_agent.release ))
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: route_registrar
     release: (( meta.release.name ))
   - name: statsd-injector
@@ -162,6 +170,8 @@ meta:
     - (( "hm9000." .properties.domain ))
 
   hm9000_templates:
+  - name: consul_agent
+    release: (( meta.consul_templates.consul_agent.release ))
   - name: hm9000
     release: (( meta.release.name ))
   - name: route_registrar
@@ -220,7 +230,7 @@ meta:
 jobs:
   - name: consul_z1
     templates: (( merge || meta.consul_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
-    instances: 0
+    instances: 2
     persistent_disk: 1024
     resource_pool: medium_z1
     networks:
@@ -238,7 +248,7 @@ jobs:
 
   - name: consul_z2
     templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
-    instances: 0
+    instances: 1
     persistent_disk: 1024
     resource_pool: medium_z2
     networks:
