@@ -412,5 +412,7 @@ properties:
 
   metron_agent:
     deployment: (( meta.environment ))
+  hm:
+    cloud_watch_enabled: true
 
   newrelic: ~
