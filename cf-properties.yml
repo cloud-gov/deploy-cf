@@ -71,10 +71,6 @@ properties:
 
   collector:
     deployment_name: (( meta.environment ))
-    #graphite:
-    #  address: 10.10.101.63
-    #  port: 2003
-    #use_graphite: true
     use_newrelic_insights: true
     newrelic_insights:
       api_key: (( merge ))
@@ -249,7 +245,7 @@ properties:
 
   collectd:
     hostname_prefix: (( meta.environment ".cf.collectd." ))
-    riemann_server: (( merge ))
+    riemann_server: "(( merge ))"
 
   hm9000:
     url: (( "https://hm9000." domain ))
@@ -355,6 +351,13 @@ properties:
         secret: (( merge ))
         authorities: cloud_controller.admin,scim.read
         authorized-grant-types: client_credentials
+      influxdb-firehose-nozzle:
+        access-token-validity: 600
+        authorized-grant-types: authorization_code,client_credentials,refresh_token
+        override: true
+        secret: (( merge ))
+        scope: openid,oauth.approvals,doppler.firehose
+        authorities: oauth.login,doppler.firehose
       cf:
         id: cf
         override: true
