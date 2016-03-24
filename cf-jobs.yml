@@ -775,6 +775,7 @@ properties:
     debug_addr: (( merge || nil ))
     enable_routing_api: (( merge || nil ))
     drain_wait: (( merge || nil ))
+    skip_oauth_tls_verification: false
 
   secureproxy:
     listen_port: 80

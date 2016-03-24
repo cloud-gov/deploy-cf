@@ -301,6 +301,9 @@ properties:
 
     port: (( merge || 8080 ))
 
+    ssl:
+      port: (( merge || 8443 ))
+
     url: (( "https://uaa." domain ))
     issuer: (( url ))
 
