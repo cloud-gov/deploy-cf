@@ -12,6 +12,7 @@ jobs:
       trigger: true
     - get: cf-stemcell
       trigger: false
+    - get: cg-s3-nessus-agent-release
     - get: cf-release
       trigger: true
   - task: cf-decrypt
@@ -48,6 +49,7 @@ jobs:
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
         - cf-release/*.tgz
+        - nessus-agent/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -183,6 +185,8 @@ jobs:
     - get: cf-stemcell
       trigger: false
       passed: [acceptance-tests-staging]
+    - get: cg-s3-nessus-agent-release
+      trigger: false
     - get: cf-release
       trigger: false
       passed: [acceptance-tests-staging]
@@ -220,6 +224,7 @@ jobs:
       manifest: cf-prod-manifest/manifest.yml
       releases:
         - cf-release/*.tgz
+        - nessus-agent/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -395,6 +400,15 @@ resources:
     password: {{cf-deployment-staging-bosh-password}}
     deployment: {{cf-deployment-staging-bosh-deployment}}
     ignore_ssl: true
+
+- name: cg-s3-nessus-agent-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: nessus-agent-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 - name: cf-deployment-prod
   type: bosh-deployment
