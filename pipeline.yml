@@ -49,6 +49,7 @@ jobs:
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
         - cf-release/*.tgz
+        - nessus-agent/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -223,6 +224,7 @@ jobs:
       manifest: cf-prod-manifest/manifest.yml
       releases:
         - cf-release/*.tgz
+        - nessus-agent/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
