@@ -172,9 +172,6 @@ properties:
 
     development_mode: false
 
-    nessus-agent:
-      key: (( merge ))
-
     newrelic:
       license_key: ~
       environment_name: (( meta.environment ))
@@ -418,5 +415,9 @@ properties:
 
   metron_agent:
     deployment: (( meta.environment ))
+
+
+  nessus-agent:
+    key: (( merge ))
 
   newrelic: ~
