@@ -144,8 +144,7 @@ meta:
   - name: debian_nfs_server
     release: (( meta.capi_release.name ))
   - name: blobstore
-    release: (( meta.capi_release.name
-    ))
+    release: (( meta.capi_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
 
