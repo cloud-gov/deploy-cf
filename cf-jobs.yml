@@ -400,7 +400,7 @@ jobs:
   - name: hm9000_z1
     templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    resource_pool: small_z1
+    resource_pool: medium_z1
     networks:
       - name: cf1
     properties:
@@ -417,7 +417,7 @@ jobs:
   - name: hm9000_z2
     templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    resource_pool: small_z2
+    resource_pool: medium_z2
     networks:
       - name: cf2
     properties:
