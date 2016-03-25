@@ -389,6 +389,10 @@ jobs:
     networks:
       - name: cf1
     properties:
+      consul:
+        agent:
+          services:
+            hm9000: {}
       metron_agent:
         zone: z1
       route_registrar:
@@ -402,6 +406,10 @@ jobs:
     networks:
       - name: cf2
     properties:
+      consul:
+        agent:
+          services:
+            hm9000: {}
       metron_agent:
         zone: z2
       route_registrar:
@@ -488,6 +496,15 @@ jobs:
       - name: cf1
         static_ips: ~
     properties:
+      consul:
+        agent:
+          services:
+            dea:
+              check:
+                name: dns_health_check
+                script: /var/vcap/jobs/dea_next/bin/dns_health_check
+                interval: 5m
+                status: passing
       dea_next:
         zone: (( merge || "z1" ))
       metron_agent:
@@ -504,6 +521,15 @@ jobs:
       - name: cf2
         static_ips: ~
     properties:
+      consul:
+        agent:
+          services:
+            dea:
+              check:
+                name: dns_health_check
+                script: /var/vcap/jobs/dea_next/bin/dns_health_check
+                interval: 5m
+                status: passing
       dea_next:
         zone: (( merge || "z2" ))
       metron_agent:
