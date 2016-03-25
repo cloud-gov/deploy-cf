@@ -9,6 +9,12 @@ meta:
 
   release:
     name: cf
+  capi_release:
+    name: cf
+  consul_release:
+    name: cf
+  etcd_release:
+    name: cf
 
   custom_release:
     name: 18f-cf
@@ -46,7 +52,11 @@ meta:
 
   api_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
+  - name: java-buildpack
+    release: (( meta.release.name ))
+  - name: java-offline-buildpack
+    release: (( meta.release.name ))
   - name: go-buildpack
     release: (( meta.release.name ))
   - name: binary-buildpack
@@ -62,10 +72,8 @@ meta:
   - name: staticfile-buildpack
     release: (( meta.release.name ))
   - name: cloud_controller_ng
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
   - name: statsd-injector
-    release: (( meta.release.name ))
-  - name: nfs_mounter
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -73,15 +81,13 @@ meta:
 
   api_worker_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
-  - name: nfs_mounter
-    release: (( meta.release.name ))
+    release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
 
   clock_templates:
   - name: cloud_controller_clock
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
 
   nats_templates:
   - name: nats
@@ -91,7 +97,7 @@ meta:
 
   dea_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: dea_next
     release: (( meta.release.name ))
   - name: dea_logging_agent
@@ -101,15 +107,15 @@ meta:
   - name: secureproxy
     release: secureproxy
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
 
   etcd_templates:
   - name: etcd
-    release: (( meta.release.name ))
+    release: (( meta.etcd_release.name ))
   - name: etcd_metrics_server
-    release: (( meta.release.name ))
+    release: (( meta.etcd_release.name ))
 
   stats_templates:
   - name: collector
@@ -126,35 +132,43 @@ meta:
 
   blobstore_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: blobstore
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
 
   nfs_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: debian_nfs_server
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
+  - name: blobstore
+    release: (( meta.capi_release.name
+    ))
   - name: route_registrar
     release: (( meta.release.name ))
 
   uaa_routes:
   - name: uaa
     port: (( .properties.uaa.port ))
-    registration_interval: 20s
+    registration_interval: 4s
+    tags:
+      component: uaa
     uris:
     - (( "uaa." .properties.domain ))
     - (( "*.uaa." .properties.domain ))
     - (( "login." .properties.domain ))
     - (( "*.login." .properties.domain ))
+    health_check:
+      name: uaa-healthcheck
+      script_path: /var/vcap/jobs/uaa/bin/health_check
 
   uaa_templates:
   - name: uaa
     release: (( meta.custom_release.name ))
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
   - name: statsd-injector
@@ -173,7 +187,7 @@ meta:
 
   hm9000_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: hm9000
     release: (( meta.release.name ))
   - name: route_registrar
@@ -209,7 +223,7 @@ meta:
 
   consul_templates:
   - name: consul_agent
-    release: (( meta.release.name ))
+    release: (( meta.consul_release.name ))
 
   metron_agent_templates:
   - name: metron_agent
@@ -231,9 +245,10 @@ jobs:
     instances: 2
     persistent_disk: 1024
     resource_pool: medium_z1
-    networks:
+    default_networks:
       - name: cf1
-        static_ips: (( merge ))
+        static_ips: ~
+    networks: (( merge || default_networks ))
     update:
       serial: true
       max_in_flight: 1
@@ -249,9 +264,10 @@ jobs:
     instances: 1
     persistent_disk: 1024
     resource_pool: medium_z2
-    networks:
+    default_networks:
       - name: cf2
-        static_ips: (( merge ))
+        static_ips: ~
+    networks: (( merge || default_networks ))
     update:
       serial: true
       max_in_flight: 1
@@ -677,6 +693,7 @@ properties:
   <<: (( merge ))
   consul:
     agent:
+      domain: cf.internal
       log_level: (( merge || nil ))
       servers:
         lan: (( meta.consul_servers ))
@@ -719,6 +736,7 @@ properties:
     machines: (( jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips ))
     peer_require_ssl: false
     require_ssl: false
+    advertise_urls_dns_suffix: (( merge || "etcd.service.cf.internal" ))
 
   etcd_metrics_server:
     nats:
@@ -727,6 +745,8 @@ properties:
       password: (( .properties.nats.password ))
 
   dea_next:
+    instance_bandwidth_limit: (( merge || nil ))
+    staging_bandwidth_limit: (( merge || nil ))
     memory_mb: (( merge ))
     memory_overcommit_factor: 10
     disk_mb: (( merge ))
@@ -746,6 +766,15 @@ properties:
     heartbeat_interval_in_seconds: 10
     rlimit_core: (( merge || 0 ))
     allow_host_access: ~
+    mtu: (( merge || nil ))
+    post_setup_hook: null
+
+    ca_cert:
+    client_cert:
+    client_key:
+    enable_ssl: false
+    server_cert:
+    server_key:
 
   loggregator:
     <<: (( merge ))
@@ -801,7 +830,10 @@ properties:
     debug_addr: (( merge || nil ))
     enable_routing_api: (( merge || nil ))
     drain_wait: (( merge || nil ))
-    skip_oauth_tls_verification: false
+    skip_oauth_tls_verification: (( merge || nil ))
+
+  routing_api:
+    enabled: (( merge || nil ))
 
   secureproxy:
     listen_port: 80
