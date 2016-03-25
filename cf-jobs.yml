@@ -231,8 +231,8 @@ meta:
   common_templates:
   - name: newrelic-monitor
     release: newrelic
-  - name: nessus-agent
-    release: nessus-agent
+  # - name: nessus-agent
+  #   release: nessus-agent
   - name: harden
     release: fisma
   - name: collectd
