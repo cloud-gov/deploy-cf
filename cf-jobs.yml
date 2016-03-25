@@ -159,9 +159,9 @@ meta:
     - (( "*.uaa." .properties.domain ))
     - (( "login." .properties.domain ))
     - (( "*.login." .properties.domain ))
-    health_check:
-      name: uaa-healthcheck
-      script_path: /var/vcap/jobs/uaa/bin/health_check
+    # health_check:
+    #   name: uaa-healthcheck
+    #   script_path: /var/vcap/jobs/uaa/bin/health_check
 
   uaa_templates:
   - name: uaa
