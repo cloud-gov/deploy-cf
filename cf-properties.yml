@@ -430,7 +430,6 @@ properties:
     deployment: (( meta.environment ))
 
 
-  nessus-agent:
-    key: (( merge ))
+  nessus-agent: (( merge ))
 
   newrelic: ~
