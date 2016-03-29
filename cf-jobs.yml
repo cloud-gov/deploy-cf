@@ -9,6 +9,12 @@ meta:
 
   release:
     name: cf
+  capi_release:
+    name: cf
+  consul_release:
+    name: cf
+  etcd_release:
+    name: cf
 
   custom_release:
     name: 18f-cf
@@ -46,7 +52,11 @@ meta:
 
   api_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
+  - name: java-buildpack
+    release: (( meta.release.name ))
+  - name: java-offline-buildpack
+    release: (( meta.release.name ))
   - name: go-buildpack
     release: (( meta.release.name ))
   - name: binary-buildpack
@@ -62,10 +72,8 @@ meta:
   - name: staticfile-buildpack
     release: (( meta.release.name ))
   - name: cloud_controller_ng
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
   - name: statsd-injector
-    release: (( meta.release.name ))
-  - name: nfs_mounter
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -73,15 +81,13 @@ meta:
 
   api_worker_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
-  - name: nfs_mounter
-    release: (( meta.release.name ))
+    release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
 
   clock_templates:
   - name: cloud_controller_clock
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
 
   nats_templates:
   - name: nats
@@ -91,7 +97,7 @@ meta:
 
   dea_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: dea_next
     release: (( meta.release.name ))
   - name: dea_logging_agent
@@ -101,15 +107,15 @@ meta:
   - name: secureproxy
     release: secureproxy
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
 
   etcd_templates:
   - name: etcd
-    release: (( meta.release.name ))
+    release: (( meta.etcd_release.name ))
   - name: etcd_metrics_server
-    release: (( meta.release.name ))
+    release: (( meta.etcd_release.name ))
 
   stats_templates:
   - name: collector
@@ -126,35 +132,42 @@ meta:
 
   blobstore_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: blobstore
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
 
   nfs_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: debian_nfs_server
-    release: (( meta.release.name ))
+    release: (( meta.capi_release.name ))
+  - name: blobstore
+    release: (( meta.capi_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
 
   uaa_routes:
   - name: uaa
     port: (( .properties.uaa.port ))
-    registration_interval: 20s
+    registration_interval: 4s
+    tags:
+      component: uaa
     uris:
     - (( "uaa." .properties.domain ))
     - (( "*.uaa." .properties.domain ))
     - (( "login." .properties.domain ))
     - (( "*.login." .properties.domain ))
+    # health_check:
+    #   name: uaa-healthcheck
+    #   script_path: /var/vcap/jobs/uaa/bin/health_check
 
   uaa_templates:
   - name: uaa
     release: (( meta.custom_release.name ))
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
   - name: statsd-injector
@@ -173,7 +186,7 @@ meta:
 
   hm9000_templates:
   - name: consul_agent
-    release: (( meta.consul_templates.consul_agent.release ))
+    release: (( meta.consul_release.name ))
   - name: hm9000
     release: (( meta.release.name ))
   - name: route_registrar
@@ -209,35 +222,32 @@ meta:
 
   consul_templates:
   - name: consul_agent
-    release: (( meta.release.name ))
+    release: (( meta.consul_release.name ))
 
   metron_agent_templates:
   - name: metron_agent
     release: (( meta.release.name ))
 
-  collectd_agent_templates:
+  common_templates:
+  - name: newrelic-monitor
+    release: newrelic
+  - name: nessus-agent
+    release: nessus-agent
+  - name: harden
+    release: fisma
   - name: collectd
     release: collectd
 
-  hardening_templates:
-  - name: harden
-    release: fisma
-
-  newrelic_templates:
-  - name: newrelic-monitor
-    release: newrelic
-
-
-
 jobs:
   - name: consul_z1
-    templates: (( merge || meta.consul_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.consul_templates meta.metron_agent_templates meta.common_templates ))
     instances: 2
     persistent_disk: 1024
     resource_pool: medium_z1
-    networks:
+    default_networks:
       - name: cf1
-        static_ips: (( merge ))
+        static_ips: ~
+    networks: (( merge || default_networks ))
     update:
       serial: true
       max_in_flight: 1
@@ -249,13 +259,14 @@ jobs:
         zone: z1
 
   - name: consul_z2
-    templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.common_templates ))
     instances: 1
     persistent_disk: 1024
     resource_pool: medium_z2
-    networks:
+    default_networks:
       - name: cf2
-        static_ips: (( merge ))
+        static_ips: ~
+    networks: (( merge || default_networks ))
     update:
       serial: true
       max_in_flight: 1
@@ -267,7 +278,7 @@ jobs:
         zone: z2
 
   - name: nats_z1
-    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -279,7 +290,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: nats_z2
-    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z2
     networks:
@@ -291,7 +302,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: etcd_z1
-    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
     persistent_disk: 10024
@@ -304,7 +315,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: etcd_z2
-    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z2
     persistent_disk: 10024
@@ -317,7 +328,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: nfs_z1
-    templates: (( merge || meta.nfs_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.nfs_templates meta.metron_agent_templates meta.common_templates ))
     instances: 0
     resource_pool: medium_z1
     persistent_disk: 102400
@@ -336,7 +347,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -356,7 +367,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z2
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
@@ -376,7 +387,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: stats_z1
-    templates: (( merge || meta.stats_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.stats_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -387,12 +398,16 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z1
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    resource_pool: small_z1
+    resource_pool: medium_z1
     networks:
       - name: cf1
     properties:
+      consul:
+        agent:
+          services:
+            hm9000: {}
       metron_agent:
         zone: z1
       route_registrar:
@@ -400,12 +415,16 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z2
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    resource_pool: small_z2
+    resource_pool: medium_z2
     networks:
       - name: cf2
     properties:
+      consul:
+        agent:
+          services:
+            hm9000: {}
       metron_agent:
         zone: z2
       route_registrar:
@@ -413,7 +432,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z1
-    templates: (( merge || meta.api_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.api_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -430,7 +449,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z2
-    templates: (( merge || meta.api_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.api_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
@@ -447,7 +466,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: clock_global
-    templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
     persistent_disk: 0
@@ -459,7 +478,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z1
-    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
     persistent_disk: 0
@@ -472,7 +491,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z2
-    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z2
     persistent_disk: 0
@@ -485,13 +504,22 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: runner_z1
-    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.common_templates ))
     instances: 5
     resource_pool: runner_z1
     networks:
       - name: cf1
         static_ips: ~
     properties:
+      consul:
+        agent:
+          services:
+            dea:
+              check:
+                name: dns_health_check
+                script: /var/vcap/jobs/dea_next/bin/dns_health_check
+                interval: 5m
+                status: passing
       dea_next:
         zone: (( merge || "z1" ))
       metron_agent:
@@ -501,13 +529,22 @@ jobs:
       max_in_flight: 1
 
   - name: runner_z2
-    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.common_templates ))
     instances: 5
     resource_pool: runner_z2
     networks:
       - name: cf2
         static_ips: ~
     properties:
+      consul:
+        agent:
+          services:
+            dea:
+              check:
+                name: dns_health_check
+                script: /var/vcap/jobs/dea_next/bin/dns_health_check
+                interval: 5m
+                status: passing
       dea_next:
         zone: (( merge || "z2" ))
       metron_agent:
@@ -517,7 +554,7 @@ jobs:
       max_in_flight: 1
 
   - name: loggregator_z1
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 0
     resource_pool: small_z1
     networks:
@@ -530,7 +567,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_z2
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 0
     resource_pool: small_z2
     networks:
@@ -543,7 +580,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: doppler_z1
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -556,7 +593,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: doppler_z2
-    templates: (( merge || meta.loggregator_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
@@ -569,7 +606,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z1
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
     networks:
@@ -584,7 +621,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z2
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z2
     networks:
@@ -599,7 +636,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z1
-    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.common_templates ))
     instances: 2
     resource_pool: router_z1
     networks:
@@ -615,7 +652,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z2
-    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.hardening_templates meta.newrelic_templates meta.collectd_agent_templates ))
+    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: router_z2
     networks:
@@ -655,6 +692,7 @@ properties:
   <<: (( merge ))
   consul:
     agent:
+      domain: cf.internal
       log_level: (( merge || nil ))
       servers:
         lan: (( meta.consul_servers ))
@@ -697,6 +735,7 @@ properties:
     machines: (( jobs.etcd_z1.networks.cf1.static_ips jobs.etcd_z2.networks.cf2.static_ips ))
     peer_require_ssl: false
     require_ssl: false
+    advertise_urls_dns_suffix: (( merge || "etcd.service.cf.internal" ))
 
   etcd_metrics_server:
     nats:
@@ -705,6 +744,8 @@ properties:
       password: (( .properties.nats.password ))
 
   dea_next:
+    instance_bandwidth_limit: (( merge || nil ))
+    staging_bandwidth_limit: (( merge || nil ))
     memory_mb: (( merge ))
     memory_overcommit_factor: 10
     disk_mb: (( merge ))
@@ -724,6 +765,15 @@ properties:
     heartbeat_interval_in_seconds: 10
     rlimit_core: (( merge || 0 ))
     allow_host_access: ~
+    mtu: (( merge || nil ))
+    post_setup_hook: null
+
+    ca_cert:
+    client_cert:
+    client_key:
+    enable_ssl: false
+    server_cert:
+    server_key:
 
   loggregator:
     <<: (( merge ))
@@ -779,6 +829,10 @@ properties:
     debug_addr: (( merge || nil ))
     enable_routing_api: (( merge || nil ))
     drain_wait: (( merge || nil ))
+    skip_oauth_tls_verification: (( merge || nil ))
+
+  routing_api:
+    enabled: (( merge || nil ))
 
   secureproxy:
     listen_port: 80
