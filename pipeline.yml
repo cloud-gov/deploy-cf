@@ -393,7 +393,7 @@ resources:
     repository: cloudfoundry/cf-release
 
 - name: cf-deployment-staging
-  type: bosh-deployment
+  type: 18f-bosh-deployment
   source:
     target: {{cf-deployment-staging-bosh-target}}
     username: {{cf-deployment-staging-bosh-username}}
@@ -411,7 +411,7 @@ resources:
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 - name: cf-deployment-prod
-  type: bosh-deployment
+  type: 18f-bosh-deployment
   source:
     target: {{cf-deployment-prod-bosh-target}}
     username: {{cf-deployment-prod-bosh-username}}
