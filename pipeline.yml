@@ -13,6 +13,7 @@ jobs:
     - get: cf-stemcell
       trigger: false
     - get: cg-s3-nessus-agent-release
+    - get: cg-s3-fisma-release
     - get: cf-release
       trigger: true
   - task: cf-decrypt
@@ -50,6 +51,7 @@ jobs:
       releases:
         - cf-release/*.tgz
         - nessus-agent/*.tgz
+        - fisma/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -187,6 +189,8 @@ jobs:
       passed: [acceptance-tests-staging]
     - get: cg-s3-nessus-agent-release
       trigger: false
+    - get: cg-s3-fisma-release
+      trigger: false
     - get: cf-release
       trigger: false
       passed: [acceptance-tests-staging]
@@ -225,6 +229,7 @@ jobs:
       releases:
         - cf-release/*.tgz
         - nessus-agent/*.tgz
+        - fisma/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -408,6 +413,15 @@ resources:
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: nessus-agent-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-fisma-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: fisma-(.*).tgz
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 - name: cf-deployment-prod
