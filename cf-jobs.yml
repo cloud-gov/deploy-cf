@@ -696,13 +696,12 @@ properties:
       log_level: (( merge || nil ))
       servers:
         lan: (( meta.consul_servers ))
-    ca_cert: ""
-    agent_cert: ""
-    agent_key: ""
-    encrypt_keys: (( merge || [] ))
-    require_ssl: false
-    server_cert: ""
-    server_key: ""
+    ca_cert: (( merge ))
+    agent_cert: (( merge ))
+    agent_key: (( merge ))
+    encrypt_keys: (( merge ))
+    server_cert: (( merge ))
+    server_key: (( merge ))
 
 
   dropsonde:
