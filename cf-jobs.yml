@@ -826,7 +826,6 @@ properties:
     logrotate: (( merge || nil ))
     extra_headers_to_log: (( merge || nil ))
     debug_addr: (( merge || nil ))
-    enable_routing_api: (( merge || nil ))
     drain_wait: (( merge || nil ))
     skip_oauth_tls_verification: (( merge || nil ))
 
