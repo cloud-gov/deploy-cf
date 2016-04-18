@@ -1,5 +1,84 @@
 ---
 jobs:
+- name: build-newrelic-release
+  plan:
+  - aggregate:
+    - get: release-git-repo
+      resource: newrelic-release-git-repo
+      trigger: true
+    - get: pipeline-tasks
+    - get: final-builds-dir-tarball
+      resource: newrelic-final-builds-dir-tarball
+    - get: releases-dir-tarball
+      resource: newrelic-releases-dir-tarball
+  - task: finalize-release
+    file: pipeline-tasks/finalize-bosh-release.yml
+    params:
+      PRIVATE_YML_CONTENT: {{newrelic-private-yml}}
+      FINAL_YML_CONTENT: {{newrelic-final-yml}}
+  - aggregate:
+    - put: newrelic-release-tarball
+      params:
+        file: finalized-release/newrelic-*.tgz
+    - put: newrelic-final-builds-dir-tarball
+      params:
+        file: finalized-release/final-builds-dir-newrelic.tgz
+    - put: newrelic-releases-dir-tarball
+      params:
+        file: finalized-release/releases-dir-newrelic.tgz
+
+- name: build-18f-cf-release
+  plan:
+  - aggregate:
+    - get: release-git-repo
+      resource: 18f-cf-release-git-repo
+      trigger: true
+    - get: pipeline-tasks
+    - get: final-builds-dir-tarball
+      resource: 18f-cf-final-builds-dir-tarball
+    - get: releases-dir-tarball
+      resource: 18f-cf-releases-dir-tarball
+  - task: finalize-release
+    file: pipeline-tasks/finalize-bosh-release.yml
+    params:
+      PRIVATE_YML_CONTENT: {{18f-cf-private-yml}}
+  - aggregate:
+    - put: 18f-cf-release-tarball
+      params:
+        file: finalized-release/18f-cf-*.tgz
+    - put: 18f-cf-final-builds-dir-tarball
+      params:
+        file: finalized-release/final-builds-dir-18f-cf.tgz
+    - put: 18f-cf-releases-dir-tarball
+      params:
+        file: finalized-release/releases-dir-18f-cf.tgz
+
+- name: build-secureproxy-release
+  plan:
+  - aggregate:
+    - get: release-git-repo
+      resource: secureproxy-release-git-repo
+      trigger: true
+    - get: pipeline-tasks
+    - get: final-builds-dir-tarball
+      resource: secureproxy-final-builds-dir-tarball
+    - get: releases-dir-tarball
+      resource: secureproxy-releases-dir-tarball
+  - task: finalize-release
+    file: pipeline-tasks/finalize-bosh-release.yml
+    params:
+      PRIVATE_YML_CONTENT: {{secureproxy-private-yml}}
+  - aggregate:
+    - put: secureproxy-release-tarball
+      params:
+        file: finalized-release/secureproxy-*.tgz
+    - put: secureproxy-final-builds-dir-tarball
+      params:
+        file: finalized-release/final-builds-dir-secureproxy.tgz
+    - put: secureproxy-releases-dir-tarball
+      params:
+        file: finalized-release/releases-dir-secureproxy.tgz
+
 - name: deploy-cf-staging
   serial: true
   plan:
@@ -8,48 +87,42 @@ jobs:
       trigger: false
     - get: cf-manifests-staging
       trigger: true
-    - get: cf-private-staging
+    - get: common-staging
       trigger: true
     - get: cf-stemcell
       trigger: false
     - get: cg-s3-nessus-agent-release
+    - get: cg-s3-fisma-release
+    - get: cg-s3-newrelic-release
+    - get: cg-s3-collectd-release
+    - get: cg-s3-18f-cf-release
+    - get: cg-s3-secureproxy-release
     - get: cf-release
       trigger: true
-  - task: cf-decrypt
-    file: pipeline-tasks/decrypt.yml
-    config:
-      inputs:
-        - name: pipeline-tasks
-        - name: cf-private-staging
-      params:
-        INPUT_FILE: cf-private-staging/cf-staging.yml
-        OUTPUT_FILE: decrypt/cf-staging.yml
-        PASSPHRASE: {{cf-private-staging-passphrase}}
   - task: cf-stage-manifest
     config:
       platform: linux
       image: docker:///18fgsa/concourse-task
       inputs:
       - name: cf-manifests-staging
-      - name: decrypt
+      - name: common-staging
       run:
         path: cf-manifests-staging/generate-staging.sh
-        args: ["decrypt/cf-staging.yml", "cf-stage-manifest/staging-manifest.yml"]
+        args: ["common-staging/secrets.yml", "cf-stage-manifest/staging-manifest.yml"]
       outputs:
       - name: cf-stage-manifest
-  - task: bosh-ssl-cert-staging
-    file: pipeline-tasks/write_file.yml
-    config:
-      params:
-        FILE_NAME: write_file/BOSHRootCA.pem
-        CONTENT: {{cf-deployment-bosh-cert}}
   - put: cf-deployment-staging
     params:
-      cert: write_file/BOSHRootCA.pem
+      cert: common-staging/boshCA.crt
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
         - cf-release/*.tgz
-        - nessus-agent/*.tgz
+        - cg-s3-nessus-agent-release/*.tgz
+        - cg-s3-fisma-release/*.tgz
+        - cg-s3-newrelic-release/*.tgz
+        - cg-s3-collectd-release/*.tgz
+        - cg-s3-18f-cf-release/*.tgz
+        - cg-s3-secureproxy-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -70,15 +143,6 @@ jobs:
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
-    ensure:
-      task: diff-upstream-templates
-      file: pipeline-tasks/diff-templates.yml
-      config:
-        inputs:
-          - name: pipeline-tasks
-          - name: cf-manifests-staging
-        params:
-          TEMPLATES_DIR: cf-manifests-staging
 
 - name: smoke-tests-staging
   plan:
@@ -88,7 +152,8 @@ jobs:
     - get: cf-manifests-staging
       trigger: true
       passed: [deploy-cf-staging]
-    - get: cf-private-staging
+    - get: common
+      resource: common-staging
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-stemcell
@@ -99,14 +164,13 @@ jobs:
       passed: [deploy-cf-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
-    config:
-      params:
-        BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
-        BOSH_USERNAME: {{cf-deployment-staging-bosh-username}}
-        BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
-        BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
-        BOSH_ERRAND: smoke_tests
-        BOSH_CACERT: {{cf-deployment-bosh-cert}}
+    params:
+      BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
+      BOSH_USERNAME: {{cf-deployment-staging-bosh-username}}
+      BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
+      BOSH_ERRAND: smoke_tests
+      BOSH_CACERT: common/boshCA.crt
     on_success:
       put: slack
       params:
@@ -134,7 +198,8 @@ jobs:
     - get: cf-manifests-staging
       trigger: true
       passed: [smoke-tests-staging]
-    - get: cf-private-staging
+    - get: common
+      resource: common-staging
       trigger: true
       passed: [smoke-tests-staging]
     - get: cf-stemcell
@@ -145,14 +210,13 @@ jobs:
       passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
-    config:
-      params:
-        BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
-        BOSH_USERNAME: {{cf-deployment-staging-bosh-username}}
-        BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
-        BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
-        BOSH_ERRAND: acceptance_tests
-        BOSH_CACERT: {{cf-deployment-bosh-cert}}
+    params:
+      BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
+      BOSH_USERNAME: {{cf-deployment-staging-bosh-username}}
+      BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
+      BOSH_ERRAND: acceptance_tests
+      BOSH_CACERT: common/boshCA.crt
     on_success:
       put: slack
       params:
@@ -180,26 +244,26 @@ jobs:
       trigger: false
     - get: cf-manifests-prod
       trigger: false
-    - get: cf-private-prod
+    - get: common-prod
       trigger: false
     - get: cf-stemcell
       trigger: false
       passed: [acceptance-tests-staging]
     - get: cg-s3-nessus-agent-release
       trigger: false
+    - get: cg-s3-fisma-release
+      trigger: false
+    - get: cg-s3-newrelic-release
+      trigger: false
+    - get: cg-s3-collectd-release
+      trigger: false
+    - get: cg-s3-18f-cf-release
+      trigger: false
+    - get: cg-s3-secureproxy-release
+      trigger: false
     - get: cf-release
       trigger: false
       passed: [acceptance-tests-staging]
-  - task: cf-decrypt
-    file: pipeline-tasks/decrypt.yml
-    config:
-      inputs:
-        - name: pipeline-tasks
-        - name: cf-private-prod
-      params:
-        INPUT_FILE: cf-private-prod/cf.yml
-        OUTPUT_FILE: decrypt/cf.yml
-        PASSPHRASE: {{cf-private-prod-passphrase}}
   - task: cf-prod-manifest
     config:
       platform: linux
@@ -209,22 +273,21 @@ jobs:
       - name: decrypt
       run:
         path: cf-manifests-prod/generate.sh
-        args: ["decrypt/cf.yml", "cf-prod-manifest/manifest.yml"]
+        args: ["common-prod/secrets.yml", "cf-prod-manifest/manifest.yml"]
       outputs:
       - name: cf-prod-manifest
-  - task: bosh-ssl-cert
-    file: pipeline-tasks/write_file.yml
-    config:
-      params:
-        FILE_NAME: write_file/BOSHRootCA.pem
-        CONTENT: {{cf-deployment-bosh-cert}}
   - put: cf-deployment-prod
     params:
-      cert: write_file/BOSHRootCA.pem
+      cert: common-prod/boshCA.crt
       manifest: cf-prod-manifest/manifest.yml
       releases:
         - cf-release/*.tgz
-        - nessus-agent/*.tgz
+        - cg-s3-nessus-agent-release/*.tgz
+        - cg-s3-fisma-release/*.tgz
+        - cg-s3-newrelic-release/*.tgz
+        - cg-s3-collectd-release/*.tgz
+        - cg-s3-18f-cf-release/*.tgz
+        - cg-s3-secureproxy-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -254,7 +317,8 @@ jobs:
     - get: cf-manifests-prod
       trigger: false
       passed: [deploy-cf-prod]
-    - get: cf-private-prod
+    - get: common
+      resource: common-prod
       trigger: false
       passed: [deploy-cf-prod]
     - get: cf-stemcell
@@ -265,14 +329,13 @@ jobs:
       passed: [deploy-cf-prod]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
-    config:
-      params:
-        BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
-        BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
-        BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
-        BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
-        BOSH_ERRAND: smoke_tests
-        BOSH_CACERT: {{cf-deployment-bosh-cert}}
+    params:
+      BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
+      BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
+      BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
+      BOSH_ERRAND: smoke_tests
+      BOSH_CACERT: common-prod/boshCA.crt
     on_success:
       put: slack
       params:
@@ -300,7 +363,8 @@ jobs:
     - get: cf-manifests-prod
       trigger: false
       passed: [smoke-tests-prod]
-    - get: cf-private-prod
+    - get: common
+      resource: common-prod
       trigger: false
       passed: [smoke-tests-prod]
     - get: cf-stemcell
@@ -311,14 +375,13 @@ jobs:
       passed: [smoke-tests-prod]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
-    config:
-      params:
-        BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
-        BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
-        BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
-        BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
-        BOSH_ERRAND: acceptance_tests
-        BOSH_CACERT: {{cf-deployment-bosh-cert}}
+    params:
+      BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
+      BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
+      BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
+      BOSH_ERRAND: acceptance_tests
+      BOSH_CACERT: common/boshCA.crt
     on_success:
       put: slack
       params:
@@ -362,25 +425,25 @@ resources:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-prod}}
 
-- name: cf-private-staging
-  type: s3
+- name: common-staging
+  type: cg-common
   source:
-    bucket: {{cf-private-staging-bucket}}
-    versioned_file: cf-staging.yml
+    bucket_name: {{cf-private-staging-bucket}}
     access_key_id: {{cf-private-access-key-id}}
     secret_access_key: {{cf-private-secret-access-key}}
-    region_name: {{cf-private-region-name}}
-    private: true
+    secrets_file: cf-staging.yml
+    secrets_passphrase: {{cf-private-staging-passphrase}}
+    bosh_cert: bosh.pem
 
-- name: cf-private-prod
-  type: s3
+- name: common-prod
+  type: cg-common
   source:
-    bucket: {{cf-private-prod-bucket}}
-    versioned_file: cf.yml
+    bucket_name: {{cf-private-prod-bucket}}
     access_key_id: {{cf-private-access-key-id}}
     secret_access_key: {{cf-private-secret-access-key}}
-    region_name: {{cf-private-region-name}}
-    private: true
+    secrets_file: cf.yml
+    secrets_passphrase: {{cf-private-prod-passphrase}}
+    bosh_cert: bosh.pem
 
 - name: cf-stemcell
   type: bosh-io-stemcell
@@ -393,7 +456,7 @@ resources:
     repository: cloudfoundry/cf-release
 
 - name: cf-deployment-staging
-  type: bosh-deployment
+  type: 18f-bosh-deployment
   source:
     target: {{cf-deployment-staging-bosh-target}}
     username: {{cf-deployment-staging-bosh-username}}
@@ -410,8 +473,53 @@ resources:
     regexp: nessus-agent-(.*).tgz
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
+- name: cg-s3-fisma-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: fisma-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-newrelic-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: newrelic-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-collectd-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: collectd-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-18f-cf-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: 18f-cf-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-secureproxy-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: secureproxy-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
 - name: cf-deployment-prod
-  type: bosh-deployment
+  type: 18f-bosh-deployment
   source:
     target: {{cf-deployment-prod-bosh-target}}
     username: {{cf-deployment-prod-bosh-username}}
@@ -419,9 +527,102 @@ resources:
     deployment: {{cf-deployment-prod-bosh-deployment}}
     ignore_ssl: true
 
+- name: newrelic-release-git-repo
+  type: git
+  source:
+    uri: {{newrelic-release-git-url}}
+    branch: {{newrelic-release-git-branch}}
+
+- name: newrelic-release-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    regexp: newrelic-(.*).tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: newrelic-final-builds-dir-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    versioned_file: final-builds-dir-newrelic.tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: newrelic-releases-dir-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    versioned_file: releases-dir-newrelic.tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: 18f-cf-release-git-repo
+  type: git
+  source:
+    uri: {{18f-cf-release-git-url}}
+    branch: {{18f-cf-release-git-branch}}
+
+- name: 18f-cf-release-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    regexp: 18f-cf-(.*).tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: 18f-cf-final-builds-dir-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    versioned_file: final-builds-dir-18f-cf.tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: 18f-cf-releases-dir-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    versioned_file: releases-dir-18f-cf.tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: secureproxy-release-git-repo
+  type: git
+  source:
+    uri: {{secureproxy-release-git-url}}
+    branch: {{secureproxy-release-git-branch}}
+
+- name: secureproxy-release-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    regexp: secureproxy-(.*).tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: secureproxy-final-builds-dir-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    versioned_file: final-builds-dir-secureproxy.tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: secureproxy-releases-dir-tarball
+  type: s3
+  source:
+    bucket: {{s3-bosh-releases-bucket}}
+    versioned_file: releases-dir-secureproxy.tgz
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
 groups:
 - name: staging
   jobs:
+  - build-newrelic-release
+  - build-18f-cf-release
+  - build-secureproxy-release
   - deploy-cf-staging
   - smoke-tests-staging
   - acceptance-tests-staging
