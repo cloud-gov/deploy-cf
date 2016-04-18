@@ -270,7 +270,7 @@ jobs:
       image: docker:///18fgsa/concourse-task
       inputs:
       - name: cf-manifests-prod
-      - name: decrypt
+      - name: common-prod
       run:
         path: cf-manifests-prod/generate.sh
         args: ["common-prod/secrets.yml", "cf-prod-manifest/manifest.yml"]
