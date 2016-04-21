@@ -303,32 +303,7 @@ properties:
       image: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
       image-hover: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
 
-    saml:
-      providers:
-        okta:
-          idpMetadata: |
-            <?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="http://www.okta.com/exk67ehklqFGgMaSp0h7"><md:IDPSSODescriptor WantAuthnRequestsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"><md:KeyDescriptor use="signing"><ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:X509Data><ds:X509Certificate>MIIDpDCCAoygAwIBAgIGAVQW4HeRMA0GCSqGSIb3DQEBBQUAMIGSMQswCQYDVQQGEwJVUzETMBEG
-            A1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzENMAsGA1UECgwET2t0YTEU
-            MBIGA1UECwwLU1NPUHJvdmlkZXIxEzARBgNVBAMMCmRldi0yNTgwMjgxHDAaBgkqhkiG9w0BCQEW
-            DWluZm9Ab2t0YS5jb20wHhcNMTYwNDE0MjIyMzUwWhcNMjYwNDE0MjIyNDUwWjCBkjELMAkGA1UE
-            BhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xDTALBgNV
-            BAoMBE9rdGExFDASBgNVBAsMC1NTT1Byb3ZpZGVyMRMwEQYDVQQDDApkZXYtMjU4MDI4MRwwGgYJ
-            KoZIhvcNAQkBFg1pbmZvQG9rdGEuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-            iBIIFfjg8VZe0GUtoHb0D1VPIPVnV4X9PDzQX/UJdK8dQl3PmWzUvQibbH/kdRUu2vac7dWBHcfp
-            8PZXCg90mnjeknymzj87/X63tme03Hi9t+WuEMp9afirYptQg2KFecfGtH5BweHdjgrui6xzOkgy
-            S2IGdEmVW95u0KBDTA89RSB6InRzmIx0eWA52snveyzPLZZPBLoCKPfXHvaMdFAFSybWipIK/BYZ
-            UXeyFklZ7WI+yhMiSW9H1pxwgE0YXpPkxgSt16KTSJq767qRBZeK7TESoZ5hvFkfr/u3lcUwdc2h
-            1AlOiKRXhDppcgqaYgHuFrRlisqd9RHh31kH8QIDAQABMA0GCSqGSIb3DQEBBQUAA4IBAQATY6et
-            jt7TfpTubYwOIAKU72OWKr0/gbFBdmOg6560u+j/08U/bswO4AhJ5vs2y00CRS4enDjsNOXB6/v4
-            ww22IGOXuysZSKwCv4QUvZPgy7pkRCCGgUoOVSbm2J3Xyk9w30uh9wT6TPgnVnkDHqNE8G1mktbg
-            BiB4uW4/ISqTeU/VjUjb8s2ukAzHNec48cO9FPeoOEM4Nau3F+oedOolb/65tD/rQedF1JxLnDBb
-            L60L4koDwWO7nZTv6VbxFsVOw1zL7VLaYYVoSrC6Q+gjYKO1ldUOjQsaqDbBLyMvCA6o3m1udRn7
-            GVk/LviSrYGdNxVBpXdKakM3XKsV6yZx</ds:X509Certificate></ds:X509Data></ds:KeyInfo></md:KeyDescriptor><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat><md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat><md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://dev-258028.oktapreview.com/app/testidpdev258028_boshliteuaa_1/exk67ehklqFGgMaSp0h7/sso/saml"/><md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://dev-258028.oktapreview.com/app/testidpdev258028_boshliteuaa_1/exk67ehklqFGgMaSp0h7/sso/saml"/></md:IDPSSODescriptor></md:EntityDescriptor>
-          nameID: urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-          assertionConsumerIndex: 0
-          metadataTrustCheck: true
-          showSamlLoginLink: true
-          linkText: 'Okta'
+    saml: (( merge || ~ ))
 
     restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
 
