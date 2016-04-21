@@ -303,7 +303,7 @@ properties:
       image: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
       image-hover: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
 
-    saml: ~
+    saml: (( merge || ~ ))
 
     restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
 
