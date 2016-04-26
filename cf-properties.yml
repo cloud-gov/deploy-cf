@@ -318,7 +318,6 @@ properties:
     issuer: (( url ))
 
     no_ssl: false
-    require_https: true
 
     scim:
       userids_enabled: (( merge || true ))
