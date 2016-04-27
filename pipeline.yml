@@ -335,7 +335,7 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common-prod/boshCA.crt
+      BOSH_CACERT: common/boshCA.crt
     on_success:
       put: slack
       params:
