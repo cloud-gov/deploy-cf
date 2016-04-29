@@ -92,11 +92,17 @@ jobs:
     - get: cf-stemcell
       trigger: false
     - get: cg-s3-nessus-agent-release
+      trigger: true
     - get: cg-s3-fisma-release
+      trigger: true
     - get: cg-s3-newrelic-release
+      trigger: true
     - get: cg-s3-collectd-release
+      trigger: true
     - get: cg-s3-18f-cf-release
+      trigger: true
     - get: cg-s3-secureproxy-release
+      trigger: true
     - get: cf-release
       trigger: true
   - task: cf-stage-manifest
@@ -159,6 +165,24 @@ jobs:
     - get: cf-stemcell
       trigger: false
       passed: [deploy-cf-staging]
+    - get: cg-s3-nessus-agent-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-fisma-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-newrelic-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-collectd-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-18f-cf-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-staging]
     - get: cf-release
       trigger: true
       passed: [deploy-cf-staging]
@@ -204,6 +228,24 @@ jobs:
       passed: [smoke-tests-staging]
     - get: cf-stemcell
       trigger: false
+      passed: [smoke-tests-staging]
+    - get: cg-s3-nessus-agent-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-fisma-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-newrelic-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-collectd-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-18f-cf-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-secureproxy-release
+      trigger: true
       passed: [smoke-tests-staging]
     - get: cf-release
       trigger: true
@@ -418,12 +460,16 @@ resources:
   source:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-staging}}
+    paths:
+    - cf-*.yml
 
 - name: cf-manifests-prod
   type: git
   source:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-prod}}
+    paths:
+    - cf-*.yml
 
 - name: common-staging
   type: cg-common
@@ -618,6 +664,17 @@ resources:
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 groups:
+- name: all
+  jobs:
+  - build-newrelic-release
+  - build-18f-cf-release
+  - build-secureproxy-release
+  - deploy-cf-staging
+  - smoke-tests-staging
+  - acceptance-tests-staging
+  - deploy-cf-prod
+  - smoke-tests-prod
+  - acceptance-tests-prod
 - name: staging
   jobs:
   - build-newrelic-release
