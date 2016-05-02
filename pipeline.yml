@@ -309,6 +309,8 @@ jobs:
       trigger: false
     - get: cg-s3-secureproxy-release
       trigger: false
+    - get: cg-s3-tripwire-release
+      trigger: false
     - get: cf-release
       trigger: false
       passed: [acceptance-tests-staging]
@@ -336,6 +338,7 @@ jobs:
         - cg-s3-collectd-release/*.tgz
         - cg-s3-18f-cf-release/*.tgz
         - cg-s3-secureproxy-release/*.tgz
+        - cg-s3-tripwire-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -568,6 +571,15 @@ resources:
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: secureproxy-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-tripwire-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: tripwire-(.*).tgz
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 - name: cf-deployment-prod
