@@ -103,6 +103,8 @@ jobs:
       trigger: true
     - get: cg-s3-secureproxy-release
       trigger: true
+    - get: cg-s3-tripwire-release
+      trigger: true
     - get: cf-release
       trigger: true
   - task: cf-stage-manifest
@@ -129,6 +131,7 @@ jobs:
         - cg-s3-collectd-release/*.tgz
         - cg-s3-18f-cf-release/*.tgz
         - cg-s3-secureproxy-release/*.tgz
+        - cg-s3-tripwire-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -181,6 +184,9 @@ jobs:
       trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-tripwire-release
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-release
