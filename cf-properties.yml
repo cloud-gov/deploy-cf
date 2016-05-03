@@ -276,7 +276,7 @@ properties:
     uaa_base: ~
     self_service_links_enabled: true
     signups_enabled: true
-    invitationsEnabled: true
+    invitations_enabled: true
     spring_profiles: ~
     messages: ~
 
