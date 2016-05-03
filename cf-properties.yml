@@ -262,6 +262,7 @@ properties:
     port: 5155
 
   login:
+    branding: ~
     enabled: true
     analytics:
       code: ~
@@ -275,7 +276,7 @@ properties:
     uaa_base: ~
     self_service_links_enabled: true
     signups_enabled: true
-    invitations_enabled: true
+    invitationsEnabled: true
     spring_profiles: ~
     messages: ~
 
