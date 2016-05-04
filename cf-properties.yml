@@ -262,6 +262,7 @@ properties:
     port: 5155
 
   login:
+    branding: ~
     enabled: true
     analytics:
       code: ~

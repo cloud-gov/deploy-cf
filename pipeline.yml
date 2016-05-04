@@ -92,11 +92,19 @@ jobs:
     - get: cf-stemcell
       trigger: false
     - get: cg-s3-nessus-agent-release
+      trigger: true
     - get: cg-s3-fisma-release
+      trigger: true
     - get: cg-s3-newrelic-release
+      trigger: true
     - get: cg-s3-collectd-release
+      trigger: true
     - get: cg-s3-18f-cf-release
+      trigger: true
     - get: cg-s3-secureproxy-release
+      trigger: true
+    - get: cg-s3-tripwire-release
+      trigger: true
     - get: cf-release
       trigger: true
   - task: cf-stage-manifest
@@ -123,6 +131,7 @@ jobs:
         - cg-s3-collectd-release/*.tgz
         - cg-s3-18f-cf-release/*.tgz
         - cg-s3-secureproxy-release/*.tgz
+        - cg-s3-tripwire-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -158,6 +167,27 @@ jobs:
       passed: [deploy-cf-staging]
     - get: cf-stemcell
       trigger: false
+      passed: [deploy-cf-staging]
+    - get: cg-s3-nessus-agent-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-fisma-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-newrelic-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-collectd-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-18f-cf-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-tripwire-release
+      trigger: true
       passed: [deploy-cf-staging]
     - get: cf-release
       trigger: true
@@ -204,6 +234,24 @@ jobs:
       passed: [smoke-tests-staging]
     - get: cf-stemcell
       trigger: false
+      passed: [smoke-tests-staging]
+    - get: cg-s3-nessus-agent-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-fisma-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-newrelic-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-collectd-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-18f-cf-release
+      trigger: true
+      passed: [smoke-tests-staging]
+    - get: cg-s3-secureproxy-release
+      trigger: true
       passed: [smoke-tests-staging]
     - get: cf-release
       trigger: true
@@ -261,6 +309,8 @@ jobs:
       trigger: false
     - get: cg-s3-secureproxy-release
       trigger: false
+    - get: cg-s3-tripwire-release
+      trigger: false
     - get: cf-release
       trigger: false
       passed: [acceptance-tests-staging]
@@ -288,6 +338,7 @@ jobs:
         - cg-s3-collectd-release/*.tgz
         - cg-s3-18f-cf-release/*.tgz
         - cg-s3-secureproxy-release/*.tgz
+        - cg-s3-tripwire-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -418,12 +469,16 @@ resources:
   source:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-staging}}
+    paths:
+    - cf-*.yml
 
 - name: cf-manifests-prod
   type: git
   source:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-prod}}
+    paths:
+    - cf-*.yml
 
 - name: common-staging
   type: cg-common
@@ -516,6 +571,15 @@ resources:
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: secureproxy-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-tripwire-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: tripwire-(.*).tgz
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 - name: cf-deployment-prod
@@ -618,6 +682,17 @@ resources:
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 groups:
+- name: all
+  jobs:
+  - build-newrelic-release
+  - build-18f-cf-release
+  - build-secureproxy-release
+  - deploy-cf-staging
+  - smoke-tests-staging
+  - acceptance-tests-staging
+  - deploy-cf-prod
+  - smoke-tests-prod
+  - acceptance-tests-prod
 - name: staging
   jobs:
   - build-newrelic-release
