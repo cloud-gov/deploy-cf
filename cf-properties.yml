@@ -262,6 +262,7 @@ properties:
     port: 5155
 
   login:
+    branding: ~
     enabled: true
     analytics:
       code: ~
@@ -428,6 +429,7 @@ properties:
 
   metron_agent:
     deployment: (( meta.environment ))
+    dropsonde_incoming_port: 3457
 
 
   nessus-agent: (( merge ))

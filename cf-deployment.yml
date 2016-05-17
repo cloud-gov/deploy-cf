@@ -18,6 +18,8 @@ meta:
     version: latest
   - name: secureproxy
     version: 7
+  - name: tripwire
+    version: latest
   - name: nessus-agent
     version: latest
 

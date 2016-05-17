@@ -237,6 +237,8 @@ meta:
     release: fisma
   - name: collectd
     release: collectd
+  - name: tripwire
+    release: tripwire
 
 jobs:
   - name: consul_z1
