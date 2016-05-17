@@ -429,6 +429,7 @@ properties:
         secret: (( merge ))
         redirect-uri: (( "https://invite." domain "/oauth/login"))
         name: UAA Invite
+        autoapprove: true
 
     database: ~
 
