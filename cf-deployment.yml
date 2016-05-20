@@ -20,6 +20,8 @@ meta:
     version: 7
   - name: tripwire
     version: latest
+  - name: awslogs
+    version: latest
   - name: nessus-agent
     version: latest
 

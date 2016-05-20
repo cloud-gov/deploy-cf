@@ -105,6 +105,8 @@ jobs:
       trigger: true
     - get: cg-s3-tripwire-release
       trigger: true
+    - get: cg-s3-awslogs-release
+      trigger: true
     - get: cf-release
       trigger: true
   - task: cf-stage-manifest
@@ -132,6 +134,7 @@ jobs:
         - cg-s3-18f-cf-release/*.tgz
         - cg-s3-secureproxy-release/*.tgz
         - cg-s3-tripwire-release/*.tgz
+        - cg-s3-awslogs-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
@@ -187,6 +190,9 @@ jobs:
       trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-tripwire-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cg-s3-awslogs-release
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-release
@@ -580,6 +586,15 @@ resources:
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: tripwire-(.*).tgz
+    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+
+- name: cg-s3-awslogs-release
+  type: s3
+  source:
+    access_key_id: {{s3-bosh-releases-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: awslogs-(.*).tgz
     secret_access_key: {{s3-bosh-releases-secret-access-key}}
 
 - name: cf-deployment-prod
