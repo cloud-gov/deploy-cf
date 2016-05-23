@@ -43,9 +43,6 @@ properties:
   ssl:
     skip_cert_verify: (( merge || false ))
 
-  acceptance_tests:
-    nodes: 6
-
   blobstore:
     port: (( merge || 80 ))
     admin_users: (( merge || nil ))
