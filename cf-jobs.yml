@@ -676,7 +676,7 @@ jobs:
     - name: acceptance-tests
       release: (( meta.release.name ))
     instances: 1
-    resource_pool: small_errand
+    resource_pool: xlarge_errand
     lifecycle: errand
     networks:
       - name: cf1
@@ -686,7 +686,7 @@ jobs:
     - name: smoke-tests
       release: (( meta.release.name ))
     instances: 1
-    resource_pool: small_errand
+    resource_pool: xlarge_errand
     lifecycle: errand
     networks:
       - name: cf1
