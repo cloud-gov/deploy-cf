@@ -239,6 +239,8 @@ meta:
     release: collectd
   - name: tripwire
     release: tripwire
+  - name: awslogs
+    release: awslogs
 
 jobs:
   - name: consul_z1
