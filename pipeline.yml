@@ -323,6 +323,8 @@ jobs:
       trigger: false
     - get: cg-s3-tripwire-release
       trigger: false
+    - get: cg-s3-awslogs-release
+      trigger: false
     - get: cf-release
       trigger: false
       passed: [acceptance-tests-staging]
@@ -351,6 +353,7 @@ jobs:
         - cg-s3-18f-cf-release/*.tgz
         - cg-s3-secureproxy-release/*.tgz
         - cg-s3-tripwire-release/*.tgz
+        - cg-s3-awslogs-release/*.tgz
       stemcells:
         - cf-stemcell/*.tgz
     on_success:
