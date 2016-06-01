@@ -8,22 +8,12 @@ meta:
   releases:
   - name: cf
     version: 218
-  - name: fisma
-    version: latest
-  - name: newrelic
-    version: latest
   - name: collectd
     version: latest
   - name: 18f-cf
     version: latest
   - name: secureproxy
     version: 7
-  - name: tripwire
-    version: latest
-  - name: awslogs
-    version: latest
-  - name: nessus-agent
-    version: latest
 
 name: (( meta.environment ))
 
