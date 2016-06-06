@@ -38,16 +38,16 @@ jobs: (( merge ))
 properties: (( merge ))
 
 compilation:
-  workers: 3
+  workers: 5
   network: cf1
   reuse_compilation_vms: true
   cloud_properties: (( merge ))
 
 update:
   canaries: 1
-  max_in_flight: 1
+  max_in_flight: 2
   canary_watch_time: 30000-600000
   update_watch_time: 5000-600000
-  serial: true
+  serial: false
 
 resource_pools: (( merge ))
