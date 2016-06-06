@@ -264,7 +264,7 @@ jobs:
 
   - name: consul_z2
     templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     persistent_disk: 1024
     resource_pool: medium_z2
     default_networks:
@@ -283,7 +283,7 @@ jobs:
 
   - name: nats_z1
     templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z1
     networks:
       - name: cf1
@@ -295,7 +295,7 @@ jobs:
 
   - name: nats_z2
     templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z2
     networks:
       - name: cf2
@@ -307,7 +307,7 @@ jobs:
 
   - name: etcd_z1
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z1
     persistent_disk: 10024
     networks:
@@ -320,7 +320,7 @@ jobs:
 
   - name: etcd_z2
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z2
     persistent_disk: 10024
     networks:
@@ -352,7 +352,7 @@ jobs:
 
   - name: uaa_z1
     templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z1
     networks:
       - name: cf1
@@ -372,7 +372,7 @@ jobs:
 
   - name: uaa_z2
     templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z2
     networks:
       - name: cf2
@@ -403,7 +403,7 @@ jobs:
 
   - name: hm9000_z1
     templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z1
     networks:
       - name: cf1
@@ -420,7 +420,7 @@ jobs:
 
   - name: hm9000_z2
     templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z2
     networks:
       - name: cf2
@@ -437,7 +437,7 @@ jobs:
 
   - name: api_z1
     templates: (( merge || meta.api_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: large_z1
     networks:
       - name: cf1
@@ -454,7 +454,7 @@ jobs:
 
   - name: api_z2
     templates: (( merge || meta.api_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: large_z2
     networks:
       - name: cf2
@@ -483,7 +483,7 @@ jobs:
 
   - name: api_worker_z1
     templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z1
     persistent_disk: 0
     networks:
@@ -496,7 +496,7 @@ jobs:
 
   - name: api_worker_z2
     templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z2
     persistent_disk: 0
     networks:
@@ -585,7 +585,7 @@ jobs:
 
   - name: doppler_z1
     templates: (( merge || meta.loggregator_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z1
     networks:
       - name: cf1
@@ -598,7 +598,7 @@ jobs:
 
   - name: doppler_z2
     templates: (( merge || meta.loggregator_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: medium_z2
     networks:
       - name: cf2
@@ -611,7 +611,7 @@ jobs:
 
   - name: loggregator_trafficcontroller_z1
     templates: (( merge || meta.loggregator_trafficcontroller_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z1
     networks:
       - name: cf1
@@ -626,7 +626,7 @@ jobs:
 
   - name: loggregator_trafficcontroller_z2
     templates: (( merge || meta.loggregator_trafficcontroller_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: small_z2
     networks:
       - name: cf2
@@ -657,7 +657,7 @@ jobs:
 
   - name: router_z2
     templates: (( merge || meta.router_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 1
+    instances: 2
     resource_pool: router_z2
     networks:
       - name: cf2
