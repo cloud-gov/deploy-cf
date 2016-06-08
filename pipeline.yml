@@ -516,9 +516,13 @@ resources:
     bosh_cert: bosh.pem
 
 - name: cf-stemcell
-  type: bosh-io-stemcell
+  type: s3
   source:
-    name: {{cf-stemcell}}
+    access_key_id: {{stemcell-access-key-id}}
+    bucket: {{stemcell-bucket}}
+    regexp: light-bosh-stemcell-(.*)-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
+    region_name: {{aws-region}}
+    secret_access_key: {{stemcell-access-key}}
 
 - name: cf-release
   type: bosh-io-release
