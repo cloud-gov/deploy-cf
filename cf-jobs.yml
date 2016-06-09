@@ -241,6 +241,10 @@ meta:
     release: tripwire
   - name: awslogs
     release: awslogs
+  - name: riemannc
+    release: riemannc
+  - name: clamav
+    release: clamav
 
 jobs:
   - name: consul_z1

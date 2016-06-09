@@ -257,6 +257,10 @@ properties:
     hostname_prefix: (( meta.environment ".cf.collectd." ))
     riemann_server: "(( merge ))"
 
+  riemann:
+    server: (( properties.collectd.riemann_server ))
+    port: 5555
+
   hm9000:
     url: (( "https://hm9000." domain ))
     port: 5155
