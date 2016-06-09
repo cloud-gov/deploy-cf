@@ -17,7 +17,7 @@ meta:
   - name: 18f-cf
     version: latest
   - name: secureproxy
-    version: 7
+    version: latest
   - name: tripwire
     version: latest
   - name: awslogs
@@ -48,6 +48,6 @@ update:
   max_in_flight: 1
   canary_watch_time: 30000-600000
   update_watch_time: 5000-600000
-  serial: true
+  serial: false
 
 resource_pools: (( merge ))
