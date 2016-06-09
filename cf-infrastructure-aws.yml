@@ -9,7 +9,7 @@ meta:
     provider: AWS
     aws_access_key_id: (( properties.template_only.aws.access_key_id ))
     aws_secret_access_key: (( properties.template_only.aws.secret_access_key ))
-    region: us-east-1
+    region: (( properties.template_only.aws.region ))
 
   stemcell: (( merge || .meta.default_stemcell ))
 
