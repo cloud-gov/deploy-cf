@@ -443,7 +443,7 @@ properties:
 
     authentication:
       policy:
-        lockoutAfterFailures: 5
+        lockoutAfterFailures: 3
         countFailuresWithinSeconds: 3600
         lockoutPeriodSeconds: 300
 
