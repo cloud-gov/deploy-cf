@@ -454,7 +454,7 @@ properties:
         requireLowerCaseCharacter: 1
         requireDigit: 1
         requireSpecialCharacter: 1
-        expirePasswordInMonths: 6
+        expirePasswordInMonths: 1 # Expire password after one month per FedRAMP requirement IA-5 (1)
 
   metron_agent:
     deployment: (( meta.environment ))
