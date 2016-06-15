@@ -443,7 +443,7 @@ properties:
 
     authentication:
       policy:
-        lockoutAfterFailures: 5
+        lockoutAfterFailures: 3 # Lock after 3 attempts to match FedRAMP requirement
         countFailuresWithinSeconds: 3600
         lockoutPeriodSeconds: 300
 
