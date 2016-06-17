@@ -19,6 +19,9 @@ meta:
   aws:
     key_name: ~
 
+update:
+  serial: true
+
 properties:
   <<: (( merge ))
   template_only: (( merge ))
