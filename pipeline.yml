@@ -1,83 +1,5 @@
 ---
 jobs:
-- name: build-newrelic-release
-  plan:
-  - aggregate:
-    - get: release-git-repo
-      resource: newrelic-release-git-repo
-      trigger: true
-    - get: pipeline-tasks
-    - get: final-builds-dir-tarball
-      resource: newrelic-final-builds-dir-tarball
-    - get: releases-dir-tarball
-      resource: newrelic-releases-dir-tarball
-  - task: finalize-release
-    file: pipeline-tasks/finalize-bosh-release.yml
-    params:
-      PRIVATE_YML_CONTENT: {{newrelic-private-yml}}
-      FINAL_YML_CONTENT: {{newrelic-final-yml}}
-  - aggregate:
-    - put: newrelic-release-tarball
-      params:
-        file: finalized-release/newrelic-*.tgz
-    - put: newrelic-final-builds-dir-tarball
-      params:
-        file: finalized-release/final-builds-dir-newrelic.tgz
-    - put: newrelic-releases-dir-tarball
-      params:
-        file: finalized-release/releases-dir-newrelic.tgz
-
-- name: build-18f-cf-release
-  plan:
-  - aggregate:
-    - get: release-git-repo
-      resource: 18f-cf-release-git-repo
-      trigger: true
-    - get: pipeline-tasks
-    - get: final-builds-dir-tarball
-      resource: 18f-cf-final-builds-dir-tarball
-    - get: releases-dir-tarball
-      resource: 18f-cf-releases-dir-tarball
-  - task: finalize-release
-    file: pipeline-tasks/finalize-bosh-release.yml
-    params:
-      PRIVATE_YML_CONTENT: {{18f-cf-private-yml}}
-  - aggregate:
-    - put: 18f-cf-release-tarball
-      params:
-        file: finalized-release/18f-cf-*.tgz
-    - put: 18f-cf-final-builds-dir-tarball
-      params:
-        file: finalized-release/final-builds-dir-18f-cf.tgz
-    - put: 18f-cf-releases-dir-tarball
-      params:
-        file: finalized-release/releases-dir-18f-cf.tgz
-
-- name: build-secureproxy-release
-  plan:
-  - aggregate:
-    - get: release-git-repo
-      resource: secureproxy-release-git-repo
-      trigger: true
-    - get: pipeline-tasks
-    - get: final-builds-dir-tarball
-      resource: secureproxy-final-builds-dir-tarball
-    - get: releases-dir-tarball
-      resource: secureproxy-releases-dir-tarball
-  - task: finalize-release
-    file: pipeline-tasks/finalize-bosh-release.yml
-    params:
-      PRIVATE_YML_CONTENT: {{secureproxy-private-yml}}
-  - aggregate:
-    - put: secureproxy-release-tarball
-      params:
-        file: finalized-release/secureproxy-*.tgz
-    - put: secureproxy-final-builds-dir-tarball
-      params:
-        file: finalized-release/final-builds-dir-secureproxy.tgz
-    - put: secureproxy-releases-dir-tarball
-      params:
-        file: finalized-release/releases-dir-secureproxy.tgz
 
 - name: deploy-cf-staging
   serial: true
@@ -112,7 +34,10 @@ jobs:
   - task: cf-stage-manifest
     config:
       platform: linux
-      image: docker:///18fgsa/concourse-task
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
       inputs:
       - name: cf-manifests-staging
       - name: common-staging
@@ -331,7 +256,10 @@ jobs:
   - task: cf-prod-manifest
     config:
       platform: linux
-      image: docker:///18fgsa/concourse-task
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
       inputs:
       - name: cf-manifests-prod
       - name: common-prod
@@ -499,30 +427,32 @@ resources:
   type: cg-common
   source:
     bucket_name: {{cf-private-staging-bucket}}
-    access_key_id: {{cf-private-access-key-id}}
-    secret_access_key: {{cf-private-secret-access-key}}
+    access_key_id: {{ci-access-key-id}}
+    secret_access_key: {{ci-secret-access-key}}
     secrets_file: cf-staging.yml
     secrets_passphrase: {{cf-private-staging-passphrase}}
     bosh_cert: bosh.pem
+    region: {{aws-region}}
 
 - name: common-prod
   type: cg-common
   source:
     bucket_name: {{cf-private-prod-bucket}}
-    access_key_id: {{cf-private-access-key-id}}
-    secret_access_key: {{cf-private-secret-access-key}}
+    access_key_id: {{ci-access-key-id}}
+    secret_access_key: {{ci-secret-access-key}}
     secrets_file: cf.yml
     secrets_passphrase: {{cf-private-prod-passphrase}}
     bosh_cert: bosh.pem
+    region: {{aws-region}}
 
 - name: cf-stemcell
   type: s3
   source:
-    access_key_id: {{stemcell-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{stemcell-bucket}}
     regexp: light-bosh-stemcell-(.*)-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
     region_name: {{aws-region}}
-    secret_access_key: {{stemcell-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
 
 - name: cf-release
   type: bosh-io-release
@@ -541,74 +471,82 @@ resources:
 - name: cg-s3-nessus-agent-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: nessus-agent-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-fisma-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: fisma-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-newrelic-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: newrelic-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-collectd-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: collectd-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-18f-cf-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: 18f-cf-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-secureproxy-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: secureproxy-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-tripwire-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: tripwire-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cg-s3-awslogs-release
   type: s3
   source:
-    access_key_id: {{s3-bosh-releases-access-key-id}}
+    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: awslogs-(.*).tgz
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
 
 - name: cf-deployment-prod
   type: 18f-bosh-deployment
@@ -619,102 +557,23 @@ resources:
     deployment: {{cf-deployment-prod-bosh-deployment}}
     ignore_ssl: true
 
-- name: newrelic-release-git-repo
-  type: git
+resource_types:
+- name: slack-notification
+  type: docker-image
   source:
-    uri: {{newrelic-release-git-url}}
-    branch: {{newrelic-release-git-branch}}
-
-- name: newrelic-release-tarball
-  type: s3
+    repository: cfcommunity/slack-notification-resource
+- name: 18f-bosh-deployment
+  type: docker-image
   source:
-    bucket: {{s3-bosh-releases-bucket}}
-    regexp: newrelic-(.*).tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: newrelic-final-builds-dir-tarball
-  type: s3
+    repository: 18fgsa/bosh-deployment-resource
+- name: cg-common
+  type: docker-image
   source:
-    bucket: {{s3-bosh-releases-bucket}}
-    versioned_file: final-builds-dir-newrelic.tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: newrelic-releases-dir-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    versioned_file: releases-dir-newrelic.tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: 18f-cf-release-git-repo
-  type: git
-  source:
-    uri: {{18f-cf-release-git-url}}
-    branch: {{18f-cf-release-git-branch}}
-
-- name: 18f-cf-release-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    regexp: 18f-cf-(.*).tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: 18f-cf-final-builds-dir-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    versioned_file: final-builds-dir-18f-cf.tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: 18f-cf-releases-dir-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    versioned_file: releases-dir-18f-cf.tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: secureproxy-release-git-repo
-  type: git
-  source:
-    uri: {{secureproxy-release-git-url}}
-    branch: {{secureproxy-release-git-branch}}
-
-- name: secureproxy-release-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    regexp: secureproxy-(.*).tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: secureproxy-final-builds-dir-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    versioned_file: final-builds-dir-secureproxy.tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
-
-- name: secureproxy-releases-dir-tarball
-  type: s3
-  source:
-    bucket: {{s3-bosh-releases-bucket}}
-    versioned_file: releases-dir-secureproxy.tgz
-    access_key_id: {{s3-bosh-releases-access-key-id}}
-    secret_access_key: {{s3-bosh-releases-secret-access-key}}
+    repository: 18fgsa/cg-common-resource
 
 groups:
 - name: all
   jobs:
-  - build-newrelic-release
-  - build-18f-cf-release
-  - build-secureproxy-release
   - deploy-cf-staging
   - smoke-tests-staging
   - acceptance-tests-staging
@@ -723,9 +582,6 @@ groups:
   - acceptance-tests-prod
 - name: staging
   jobs:
-  - build-newrelic-release
-  - build-18f-cf-release
-  - build-secureproxy-release
   - deploy-cf-staging
   - smoke-tests-staging
   - acceptance-tests-staging
