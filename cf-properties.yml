@@ -264,6 +264,7 @@ properties:
     port: 5555
 
   hm9000:
+    <<: (( merge || nil ))
     url: (( "https://hm9000." domain ))
     port: 5155
 
