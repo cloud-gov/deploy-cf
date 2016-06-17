@@ -24,6 +24,10 @@ meta:
     version: latest
   - name: nessus-agent
     version: latest
+  - name: riemannc
+    version: latest
+  - name: clamav
+    version: latest
 
 name: (( meta.environment ))
 

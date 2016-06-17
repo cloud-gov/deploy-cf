@@ -241,6 +241,10 @@ meta:
     release: tripwire
   - name: awslogs
     release: awslogs
+  - name: riemannc
+    release: riemannc
+  - name: clamav
+    release: clamav
 
 jobs:
   - name: consul_z1
@@ -509,7 +513,7 @@ jobs:
 
   - name: runner_z1
     templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 2
+    instances: 6
     resource_pool: runner_z1
     networks:
       - name: cf1
@@ -534,7 +538,7 @@ jobs:
 
   - name: runner_z2
     templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 2
+    instances: 6
     resource_pool: runner_z2
     networks:
       - name: cf2
