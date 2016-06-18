@@ -16,3 +16,6 @@ credentials.yml
 # Temporary directory
 tmp/
 
+# Certs
+
+*-certs
