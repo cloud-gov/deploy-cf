@@ -68,6 +68,27 @@ compilation:
 
 networks: (( merge ))
 
+disk_pools:
+- name: tiny
+  disk_size: 10_240
+  cloud_properties:
+    type: gp2
+    encrypted: true
+- name: small
+  disk_size: 30_000
+  cloud_properties:
+    type: gp2
+    encrypted: true
+- name: medium
+  disk_size: 65_536
+  cloud_properties:
+    type: gp2
+    encrypted: true
+- name: big
+  disk_size: 102_400
+  cloud_properties:
+    type: gp2
+    encrypted: true
 
 resource_pools:
   - name: small_z1
