@@ -6,6 +6,8 @@ meta:
   environment: ~
 
   app_domains: (( merge ))
+  
+  service_domain: (( merge ))
 
   release:
     name: cf
@@ -46,6 +48,7 @@ meta:
     registration_interval: 20s
     uris:
     - (( "api." .properties.domain ))
+    - (( "api." .meta.service_domain ))
 
   api_consul_services:
     cloud_controller_ng: {}
@@ -159,6 +162,10 @@ meta:
     - (( "*.uaa." .properties.domain ))
     - (( "login." .properties.domain ))
     - (( "*.login." .properties.domain ))
+    - (( "login." .meta.service_domain )) 
+    - (( "*.login." .meta.service_domain ))
+    - (( "uaa." .meta.service_domain ))
+    - (( "*.uaa." .meta.service_domain ))
     # health_check:
     #   name: uaa-healthcheck
     #   script_path: /var/vcap/jobs/uaa/bin/health_check
