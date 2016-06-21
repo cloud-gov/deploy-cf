@@ -259,7 +259,7 @@ jobs:
   - name: consul_z1
     templates: (( merge || meta.consul_templates meta.metron_agent_templates meta.common_templates ))
     instances: 2
-    persistent_disk: 1024
+    persistent_disk_pool: tiny
     resource_pool: medium_z1
     default_networks:
       - name: cf1
@@ -278,7 +278,7 @@ jobs:
   - name: consul_z2
     templates: (( merge || meta.consul_templates  meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    persistent_disk: 1024
+    persistent_disk_pool: tiny
     resource_pool: medium_z2
     default_networks:
       - name: cf2
@@ -322,7 +322,7 @@ jobs:
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
-    persistent_disk: 10024
+    persistent_disk_pool: small
     networks:
       - name: cf1
         static_ips: (( merge ))
@@ -335,7 +335,7 @@ jobs:
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z2
-    persistent_disk: 10024
+    persistent_disk_pool: small
     networks:
       - name: cf2
         static_ips: (( merge ))
@@ -348,7 +348,7 @@ jobs:
     templates: (( merge || meta.nfs_templates meta.metron_agent_templates meta.common_templates ))
     instances: 0
     resource_pool: medium_z1
-    persistent_disk: 102400
+    persistent_disk_pool: big
     networks:
       - name: cf1
         static_ips: ~
@@ -486,7 +486,6 @@ jobs:
     templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
-    persistent_disk: 0
     networks:
       - name: cf1
     properties:
@@ -498,7 +497,6 @@ jobs:
     templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z1
-    persistent_disk: 0
     networks:
       - name: cf1
     properties:
@@ -511,7 +509,6 @@ jobs:
     templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: small_z2
-    persistent_disk: 0
     networks:
       - name: cf2
     properties:
@@ -541,7 +538,7 @@ jobs:
         zone: (( merge || "z1" ))
       metron_agent:
         zone: z1
-    persistent_disk: 30000
+    persistent_disk_pool: medium
     update:
       max_in_flight: 1
 
@@ -566,7 +563,7 @@ jobs:
         zone: (( merge || "z2" ))
       metron_agent:
         zone: z2
-    persistent_disk: 30000
+    persistent_disk_pool: medium
     update:
       max_in_flight: 1
 
