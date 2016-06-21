@@ -6,7 +6,7 @@ meta:
   environment: ~
 
   app_domains: (( merge ))
-  
+
   service_domain: (( merge ))
 
   release:
@@ -162,7 +162,7 @@ meta:
     - (( "*.uaa." .properties.domain ))
     - (( "login." .properties.domain ))
     - (( "*.login." .properties.domain ))
-    - (( "login." .meta.service_domain )) 
+    - (( "login." .meta.service_domain ))
     - (( "*.login." .meta.service_domain ))
     - (( "uaa." .meta.service_domain ))
     - (( "*.uaa." .meta.service_domain ))
@@ -213,11 +213,13 @@ meta:
     registration_interval: 20s
     uris:
     - (( "doppler." .properties.domain ))
+    - (( "doppler." .meta.service_domain ))
   - name: loggregator
     port: (( .properties.traffic_controller.outgoing_port ))
     registration_interval: 20s
     uris:
     - (( "loggregator." .properties.domain ))
+    - (( "loggregator." .meta.service_domain ))
 
   loggregator_trafficcontroller_templates:
   - name: loggregator_trafficcontroller
