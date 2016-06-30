@@ -254,6 +254,8 @@ meta:
     release: riemannc
   - name: clamav
     release: clamav
+  - name: snort
+    release: snort
 
 jobs:
   - name: consul_z1
