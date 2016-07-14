@@ -162,7 +162,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       resource_directory_key: (( meta.resource_key "-cc-resources" ))
-      encryption: AES256
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
 
@@ -170,7 +171,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       app_package_directory_key: (( meta.resource_key "-cc-packages" ))
-      encryption: AES256
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
       max_package_size: 1073741824
@@ -179,7 +181,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       droplet_directory_key: (( meta.resource_key "-cc-droplets" ))
-      encryption: AES256
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
 
@@ -199,6 +202,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       buildpack_directory_key: (( meta.resource_key "-cc-buildpacks" ))
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
     quota_definitions: (( merge || meta.default_quota_definitions ))
