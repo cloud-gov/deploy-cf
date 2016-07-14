@@ -798,6 +798,7 @@ properties:
   ccdb: (( merge ))
 
   hm9000:
+    port: 5155
     ca_cert: (( merge ))
     server_cert: (( merge ))
     server_key: (( merge ))
