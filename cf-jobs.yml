@@ -797,7 +797,14 @@ properties:
   cc: (( merge ))
   ccdb: (( merge ))
 
-  hm9000: (( merge ))
+  hm9000:
+    ca_cert: (( merge ))
+    server_cert: (( merge ))
+    server_key: (( merge ))
+    client_cert: (( merge ))
+    client_key: (( merge ))
+    etcd:
+      machines: (( properties.etcd.machines ))
 
   uaa: (( merge ))
   uaadb: (( merge ))
