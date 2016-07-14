@@ -35,15 +35,19 @@ properties:
     resource_pool:
       blobstore_type: fog
       fog_connection: (( meta.fog_config ))
+      encryption: AES256
     packages:
       blobstore_type: fog
       fog_connection: (( meta.fog_config ))
+      encryption: AES256
     droplets:
       blobstore_type: fog
       fog_connection: (( meta.fog_config ))
+      encryption: AES256
     buildpacks:
       blobstore_type: fog
       fog_connection: (( meta.fog_config ))
+      encryption: AES256
 
   uaa:
     port: 8081
