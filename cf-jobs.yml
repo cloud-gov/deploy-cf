@@ -509,7 +509,7 @@ jobs:
 
   - name: runner_z1
     templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 6
+    instances: 10
     resource_pool: runner_z1
     networks:
       - name: cf1
@@ -534,7 +534,7 @@ jobs:
 
   - name: runner_z2
     templates: (( merge || meta.dea_templates meta.metron_agent_templates meta.common_templates ))
-    instances: 6
+    instances: 10
     resource_pool: runner_z2
     networks:
       - name: cf2
