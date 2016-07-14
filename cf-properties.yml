@@ -221,8 +221,6 @@ properties:
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
     stacks:
-    - name: "lucid64"
-      description: "Ubuntu 10.04 on x86-64"
     - name: "cflinuxfs2"
       description: "Cloud Foundry Linux-based filesystem"
     default_stack: "cflinuxfs2"
