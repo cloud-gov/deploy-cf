@@ -304,7 +304,7 @@ properties:
       password: ~
 
     links:
-      home: (( "https://console." meta.service_domain ))
+      home: (( "https://dashboard." meta.service_domain ))
       passwd: (( "https://login." meta.service_domain "/forgot_password" ))
       signup: (( "https://login." meta.service_domain "/" ))
       network: ~
@@ -313,8 +313,8 @@ properties:
     logout: ~
 
     tiles:
-    - name: console
-      login-link: (( "https://console." meta.service_domain ))
+    - name: dashboard
+      login-link: (( "https://dashboard." meta.service_domain ))
       image: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
       image-hover: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
     - name: Invite Users
