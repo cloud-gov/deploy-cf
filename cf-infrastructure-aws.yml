@@ -9,7 +9,7 @@ meta:
     provider: AWS
     aws_access_key_id: (( properties.template_only.aws.access_key_id ))
     aws_secret_access_key: (( properties.template_only.aws.secret_access_key ))
-    region: us-east-1
+    region: (( properties.template_only.aws.region ))
 
   stemcell: (( merge || .meta.default_stemcell ))
 
@@ -18,6 +18,9 @@ meta:
     version: 3062
   aws:
     key_name: ~
+
+update:
+  serial: true
 
 properties:
   <<: (( merge ))
@@ -73,6 +76,7 @@ resource_pools:
       ephemeral_disk:
         size: 30_000
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
@@ -82,6 +86,7 @@ resource_pools:
       ephemeral_disk:
         size: 30_000
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
 
@@ -91,6 +96,7 @@ resource_pools:
       ephemeral_disk:
         size: 30_000
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
@@ -100,6 +106,7 @@ resource_pools:
       ephemeral_disk:
         size: 30_000
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
 
@@ -109,6 +116,7 @@ resource_pools:
       ephemeral_disk:
         size: 65_536
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
@@ -118,6 +126,7 @@ resource_pools:
       ephemeral_disk:
         size: 65_536
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
 
@@ -127,6 +136,7 @@ resource_pools:
       ephemeral_disk:
         size: 102_400
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
@@ -136,6 +146,7 @@ resource_pools:
       ephemeral_disk:
         size: 102_400
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
 
@@ -145,6 +156,7 @@ resource_pools:
       ephemeral_disk:
         size: 30_000
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z1 ))
       elbs: (( merge || meta.elbs ))
       key_name: (( meta.aws.key_name ))
@@ -155,6 +167,7 @@ resource_pools:
       ephemeral_disk:
         size: 30_000
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z2 ))
       elbs: (( merge || meta.elbs ))
       key_name: (( meta.aws.key_name ))
@@ -165,6 +178,7 @@ resource_pools:
       ephemeral_disk:
         size: 10_240
         type: gp2
+        encrypted: true
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 

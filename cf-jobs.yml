@@ -7,6 +7,8 @@ meta:
 
   app_domains: (( merge ))
 
+  service_domain: (( merge ))
+
   release:
     name: cf
   capi_release:
@@ -46,6 +48,7 @@ meta:
     registration_interval: 20s
     uris:
     - (( "api." .properties.domain ))
+    - (( "api." .meta.service_domain ))
 
   api_consul_services:
     cloud_controller_ng: {}
@@ -159,6 +162,10 @@ meta:
     - (( "*.uaa." .properties.domain ))
     - (( "login." .properties.domain ))
     - (( "*.login." .properties.domain ))
+    - (( "login." .meta.service_domain ))
+    - (( "*.login." .meta.service_domain ))
+    - (( "uaa." .meta.service_domain ))
+    - (( "*.uaa." .meta.service_domain ))
     # health_check:
     #   name: uaa-healthcheck
     #   script_path: /var/vcap/jobs/uaa/bin/health_check
@@ -206,11 +213,13 @@ meta:
     registration_interval: 20s
     uris:
     - (( "doppler." .properties.domain ))
+    - (( "doppler." .meta.service_domain ))
   - name: loggregator
     port: (( .properties.traffic_controller.outgoing_port ))
     registration_interval: 20s
     uris:
     - (( "loggregator." .properties.domain ))
+    - (( "loggregator." .meta.service_domain ))
 
   loggregator_trafficcontroller_templates:
   - name: loggregator_trafficcontroller
@@ -241,6 +250,10 @@ meta:
     release: tripwire
   - name: awslogs
     release: awslogs
+  - name: riemannc
+    release: riemannc
+  - name: clamav
+    release: clamav
 
 jobs:
   - name: consul_z1
