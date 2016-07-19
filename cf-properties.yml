@@ -315,7 +315,7 @@ properties:
     tiles:
     - name: dashboard
       login-link: (( "https://dashboard." meta.service_domain ))
-      image: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
+      image: https://dashboard.cloud.gov/assets/img/dashboard-uaa-icon.jpg
       image-hover: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
     - name: Invite Users
       login-link: (( "https://invite." meta.service_domain ))
