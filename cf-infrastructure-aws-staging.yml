@@ -271,7 +271,7 @@ jobs:
     instances: 0
 
   - name: runner_z1
-    instances: 1
+    instances: 2
 
   - name: runner_z2
     instances: 1
