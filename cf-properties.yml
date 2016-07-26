@@ -162,6 +162,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       resource_directory_key: (( meta.resource_key "-cc-resources" ))
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
 
@@ -169,6 +171,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       app_package_directory_key: (( meta.resource_key "-cc-packages" ))
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
       max_package_size: 1073741824
@@ -177,6 +181,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       droplet_directory_key: (( meta.resource_key "-cc-droplets" ))
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
 
@@ -196,6 +202,8 @@ properties:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
       buildpack_directory_key: (( meta.resource_key "-cc-buildpacks" ))
+      fog_aws_storage_options:
+        encryption: AES256
       fog_connection: ~
       cdn: ~
     quota_definitions: (( merge || meta.default_quota_definitions ))
@@ -224,8 +232,6 @@ properties:
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
     stacks:
-    - name: "lucid64"
-      description: "Ubuntu 10.04 on x86-64"
     - name: "cflinuxfs2"
       description: "Cloud Foundry Linux-based filesystem"
     default_stack: "cflinuxfs2"
@@ -298,7 +304,7 @@ properties:
       password: ~
 
     links:
-      home: (( "https://console." meta.service_domain ))
+      home: (( "https://dashboard." meta.service_domain ))
       passwd: (( "https://login." meta.service_domain "/forgot_password" ))
       signup: (( "https://login." meta.service_domain "/" ))
       network: ~
@@ -307,9 +313,9 @@ properties:
     logout: ~
 
     tiles:
-    - name: console
-      login-link: (( "https://console." meta.service_domain ))
-      image: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
+    - name: dashboard
+      login-link: (( "https://dashboard." meta.service_domain ))
+      image: https://dashboard.cloud.gov/assets/img/dashboard-uaa-icon.jpg
       image-hover: https://18f-cloud-gov.s3.amazonaws.com/deck.jpg
     - name: Invite Users
       login-link: (( "https://invite." meta.service_domain ))

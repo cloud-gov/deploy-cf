@@ -28,6 +28,8 @@ meta:
     version: latest
   - name: clamav
     version: latest
+  - name: snort
+    version: latest
 
 name: (( meta.environment ))
 
@@ -55,3 +57,5 @@ update:
   serial: false
 
 resource_pools: (( merge ))
+
+disk_pools: (( merge ))
