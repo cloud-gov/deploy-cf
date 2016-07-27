@@ -19,6 +19,7 @@ spiff merge \
   $SCRIPTPATH/cf-jobs.yml \
   $SCRIPTPATH/cf-properties.yml \
   $SCRIPTPATH/cf-infrastructure-aws-staging.yml \
+  $SCRIPTPATH/diego-stub.yml \
   $SECRETS \
   > $MANIFEST
 
