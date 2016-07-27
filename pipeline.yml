@@ -414,6 +414,7 @@ resources:
     branch: {{cf-manifests-git-branch-staging}}
     paths:
     - cf-*.yml
+    - diego-stub.yml
 
 - name: cf-manifests-prod
   type: git
@@ -422,6 +423,7 @@ resources:
     branch: {{cf-manifests-git-branch-prod}}
     paths:
     - cf-*.yml
+    - diego-stub.yml
 
 - name: common-staging
   type: cg-common
