@@ -1,4 +1,5 @@
 properties:
+  <<: (( merge ))
   app_ssh:
     host_key_fingerprint: (( merge ))
     oauth_client_id: ssh-proxy
