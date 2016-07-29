@@ -83,9 +83,15 @@ jobs:
 
 - name: smoke-tests-staging
   plan:
-  - get: cf-deployment-staging
-    passed: [deploy-cf-staging]
-    trigger: true
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: common
+      resource: common-staging
+      trigger: false
+    - get: cf-deployment-staging
+      passed: [deploy-cf-staging]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -116,9 +122,15 @@ jobs:
 
 - name: acceptance-tests-staging
   plan:
-  - get: cf-deployment-staging
-    passed: [smoke-tests-staging]
-    trigger: true
+  - aggregate:
+    - get: pipeline-tasks
+      trigger: false
+    - get: common
+      resource: common-staging
+      trigger: false
+    - get: cf-deployment-staging
+      passed: [smoke-tests-staging]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
