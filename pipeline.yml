@@ -80,8 +80,6 @@ jobs:
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
-  - put: deploy-cf-staging-version
-    params: {bump: patch}
 
 - name: smoke-tests-staging
   plan:
@@ -123,9 +121,6 @@ jobs:
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: deploy-cf-staging-version
       trigger: true
       passed: [deploy-cf-staging]
   - task: run-errand
@@ -196,9 +191,6 @@ jobs:
       trigger: true
       passed: [smoke-tests-staging]
     - get: cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: deploy-cf-staging-version
       trigger: true
       passed: [smoke-tests-staging]
   - task: run-errand
@@ -566,16 +558,6 @@ resources:
     password: {{cf-deployment-prod-bosh-password}}
     deployment: {{cf-deployment-prod-bosh-deployment}}
     ignore_ssl: true
-
-- name: deploy-cf-staging-version
-  type: semver
-  source:
-    driver: s3
-    bucket: {{cf-private-staging-bucket}}
-    key: deploy-cf-staging-version
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
 
 resource_types:
 - name: slack-notification
