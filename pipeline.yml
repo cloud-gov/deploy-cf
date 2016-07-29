@@ -86,43 +86,12 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-staging
-      trigger: true
-      passed: [deploy-cf-staging]
     - get: common
       resource: common-staging
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cf-stemcell
       trigger: false
+    - get: cf-deployment-staging
       passed: [deploy-cf-staging]
-    - get: cg-s3-nessus-agent-release
       trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-fisma-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-newrelic-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-collectd-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-18f-cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-tripwire-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-awslogs-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -156,43 +125,12 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-staging
-      trigger: true
-      passed: [smoke-tests-staging]
     - get: common
       resource: common-staging
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cf-stemcell
       trigger: false
+    - get: cf-deployment-staging
       passed: [smoke-tests-staging]
-    - get: cg-s3-tripwire-release
       trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-awslogs-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-nessus-agent-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-fisma-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-newrelic-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-collectd-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-18f-cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
