@@ -80,54 +80,12 @@ jobs:
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
-  - put: deploy-cf-staging-version
-    params: {bump: patch}
 
 - name: smoke-tests-staging
   plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: cf-manifests-staging
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: common
-      resource: common-staging
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cf-stemcell
-      trigger: false
-      passed: [deploy-cf-staging]
-    - get: cg-s3-nessus-agent-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-fisma-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-newrelic-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-collectd-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-18f-cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-tripwire-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-awslogs-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: deploy-cf-staging-version
-      trigger: true
-      passed: [deploy-cf-staging]
+  - get: cf-deployment-staging
+    trigger: true
+    passed: [deploy-cf-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -158,49 +116,9 @@ jobs:
 
 - name: acceptance-tests-staging
   plan:
-  - aggregate:
-    - get: pipeline-tasks
-      trigger: false
-    - get: cf-manifests-staging
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: common
-      resource: common-staging
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cf-stemcell
-      trigger: false
-      passed: [smoke-tests-staging]
-    - get: cg-s3-tripwire-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-awslogs-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-nessus-agent-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-fisma-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-newrelic-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-collectd-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-18f-cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: deploy-cf-staging-version
-      trigger: true
-      passed: [smoke-tests-staging]
+  - get: cf-deployment-staging
+    trigger: true
+    passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -566,16 +484,6 @@ resources:
     password: {{cf-deployment-prod-bosh-password}}
     deployment: {{cf-deployment-prod-bosh-deployment}}
     ignore_ssl: true
-
-- name: deploy-cf-staging-version
-  type: semver
-  source:
-    driver: s3
-    bucket: {{cf-private-staging-bucket}}
-    key: deploy-cf-staging-version
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
 
 resource_types:
 - name: slack-notification
