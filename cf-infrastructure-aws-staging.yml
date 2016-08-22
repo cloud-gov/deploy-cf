@@ -158,7 +158,7 @@ resource_pools:
 
   - name: runner_z1
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: m3.large
       ephemeral_disk:
         size: 65_000
         type: gp2
@@ -271,10 +271,10 @@ jobs:
     instances: 0
 
   - name: runner_z1
-    instances: 2
+    instances: 1
 
   - name: runner_z2
-    instances: 1
+    instances: 0
 
   - name: loggregator_z1
     instances: 0
