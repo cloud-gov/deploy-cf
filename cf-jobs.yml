@@ -95,6 +95,7 @@ meta:
   nats_templates:
   - name: nats
     release: (( meta.release.name ))
+    consumes: {nats: nil}
   - name: nats_stream_forwarder
     release: (( meta.release.name ))
 
