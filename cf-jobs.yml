@@ -323,7 +323,7 @@ jobs:
   - name: etcd_z1
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    resource_pool: small_z1
+    resource_pool: medium_z1
     persistent_disk_pool: small
     networks:
       - name: cf1
@@ -336,7 +336,7 @@ jobs:
   - name: etcd_z2
     templates: (( merge || meta.etcd_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
-    resource_pool: small_z2
+    resource_pool: medium_z2
     persistent_disk_pool: small
     networks:
       - name: cf2
