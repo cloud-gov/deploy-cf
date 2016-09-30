@@ -26,9 +26,6 @@ properties:
   logger_endpoint:
     port: 4443
 
-  doppler:
-    port: 4443
-    
   loggregator:
     blacklisted_syslog_ranges:
     - start: 10.9.0.0
