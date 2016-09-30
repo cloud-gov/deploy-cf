@@ -2,6 +2,7 @@
 jobs:
 
 - name: deploy-cf-staging
+  serial_groups: [staging]
   serial: true
   plan:
   - aggregate:
@@ -82,6 +83,7 @@ jobs:
         icon_url: {{slack-icon-url}}
 
 - name: smoke-tests-staging
+  serial_groups: [staging]
   plan:
   - aggregate:
     - get: pipeline-tasks
@@ -121,6 +123,7 @@ jobs:
         icon_url: {{slack-icon-url}}
 
 - name: acceptance-tests-staging
+  serial_groups: [staging]
   plan:
   - aggregate:
     - get: pipeline-tasks
@@ -160,6 +163,7 @@ jobs:
         icon_url: {{slack-icon-url}}
 
 - name: deploy-cf-prod
+  serial_groups: [production]
   serial: true
   plan:
   - aggregate:
@@ -242,6 +246,7 @@ jobs:
         icon_url: {{slack-icon-url}}
 
 - name: smoke-tests-prod
+  serial_groups: [production]
   plan:
   - aggregate:
     - get: pipeline-tasks
@@ -288,6 +293,7 @@ jobs:
         icon_url: {{slack-icon-url}}
 
 - name: acceptance-tests-prod
+  serial_groups: [production]
   plan:
   - aggregate:
     - get: pipeline-tasks
