@@ -12,7 +12,7 @@ jobs:
     - get: common-staging
       trigger: true
     - get: cf-stemcell
-      trigger: false
+      trigger: true
     - get: cg-s3-nessus-agent-release
       trigger: true
     - get: cg-s3-fisma-release
@@ -94,7 +94,7 @@ jobs:
       trigger: true
       passed: [deploy-cf-staging]
     - get: cf-stemcell
-      trigger: false
+      trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-nessus-agent-release
       trigger: true
@@ -164,7 +164,7 @@ jobs:
       trigger: true
       passed: [smoke-tests-staging]
     - get: cf-stemcell
-      trigger: false
+      trigger: true
       passed: [smoke-tests-staging]
     - get: cg-s3-tripwire-release
       trigger: true
