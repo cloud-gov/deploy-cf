@@ -251,19 +251,12 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-prod
-      trigger: false
-      passed: [deploy-cf-prod]
     - get: common
       resource: common-prod
       trigger: false
+    - get: cf-deployment-prod
       passed: [deploy-cf-prod]
-    - get: cf-stemcell
-      trigger: false
-      passed: [deploy-cf-prod]
-    - get: cf-release
-      trigger: false
-      passed: [deploy-cf-prod]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -298,19 +291,12 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-prod
-      trigger: false
-      passed: [smoke-tests-prod]
     - get: common
       resource: common-prod
       trigger: false
+    - get: cf-deployment-prod
       passed: [smoke-tests-prod]
-    - get: cf-stemcell
-      trigger: false
-      passed: [smoke-tests-prod]
-    - get: cf-release
-      trigger: false
-      passed: [smoke-tests-prod]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
