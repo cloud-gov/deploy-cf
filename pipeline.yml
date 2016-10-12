@@ -2,6 +2,7 @@
 jobs:
 
 - name: deploy-cf-staging
+  serial_groups: [staging]
   serial: true
   plan:
   - aggregate:
@@ -67,7 +68,7 @@ jobs:
       params:
         text: |
           :white_check_mark: Successfully deployed CF on staging
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -76,53 +77,23 @@ jobs:
       params:
         text: |
           :x: FAILED to deploy CF on staging
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
 - name: smoke-tests-staging
+  serial_groups: [staging]
   plan:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-staging
-      trigger: true
-      passed: [deploy-cf-staging]
     - get: common
       resource: common-staging
-      trigger: true
+      trigger: false
+    - get: cf-deployment-staging
       passed: [deploy-cf-staging]
-    - get: cf-stemcell
       trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-nessus-agent-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-fisma-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-newrelic-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-collectd-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-18f-cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-tripwire-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cg-s3-awslogs-release
-      trigger: true
-      passed: [deploy-cf-staging]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -137,7 +108,7 @@ jobs:
       params:
         text: |
           :white_check_mark: Smoke Tests for CF on staging PASSED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -146,53 +117,23 @@ jobs:
       params:
         text: |
           :x: Smoke Tests for CF on staging FAILED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
 - name: acceptance-tests-staging
+  serial_groups: [staging]
   plan:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-staging
-      trigger: true
-      passed: [smoke-tests-staging]
     - get: common
       resource: common-staging
-      trigger: true
+      trigger: false
+    - get: cf-deployment-staging
       passed: [smoke-tests-staging]
-    - get: cf-stemcell
       trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-tripwire-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-awslogs-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-nessus-agent-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-fisma-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-newrelic-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-collectd-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-18f-cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [smoke-tests-staging]
-    - get: cf-release
-      trigger: true
-      passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -207,7 +148,7 @@ jobs:
       params:
         text: |
           :white_check_mark: Acceptance Tests for CF on staging PASSED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -216,12 +157,13 @@ jobs:
       params:
         text: |
           :x: Acceptance Tests for CF on staging FAILED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
 - name: deploy-cf-prod
+  serial_groups: [production]
   serial: true
   plan:
   - aggregate:
@@ -289,7 +231,7 @@ jobs:
       params:
         text: |
           :white_check_mark: Successfully deployed CF on prod
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -298,29 +240,23 @@ jobs:
       params:
         text: |
           :x: FAILED to deploy CF on prod
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
 - name: smoke-tests-prod
+  serial_groups: [production]
   plan:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-prod
-      trigger: false
-      passed: [deploy-cf-prod]
     - get: common
       resource: common-prod
       trigger: false
+    - get: cf-deployment-prod
       passed: [deploy-cf-prod]
-    - get: cf-stemcell
-      trigger: false
-      passed: [deploy-cf-prod]
-    - get: cf-release
-      trigger: false
-      passed: [deploy-cf-prod]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -335,7 +271,7 @@ jobs:
       params:
         text: |
           :white_check_mark: Smoke Tests for CF on prod PASSED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -344,29 +280,23 @@ jobs:
       params:
         text: |
           :x: Smoke Tests for CF on prod FAILED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
 
 - name: acceptance-tests-prod
+  serial_groups: [production]
   plan:
   - aggregate:
     - get: pipeline-tasks
       trigger: false
-    - get: cf-manifests-prod
-      trigger: false
-      passed: [smoke-tests-prod]
     - get: common
       resource: common-prod
       trigger: false
+    - get: cf-deployment-prod
       passed: [smoke-tests-prod]
-    - get: cf-stemcell
-      trigger: false
-      passed: [smoke-tests-prod]
-    - get: cf-release
-      trigger: false
-      passed: [smoke-tests-prod]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -381,7 +311,7 @@ jobs:
       params:
         text: |
           :white_check_mark: Acceptance Tests for CF on prod PASSED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -390,7 +320,7 @@ jobs:
       params:
         text: |
           :x: Acceptance Tests for CF on prod FAILED
-          <https://ci.cloud.gov/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
         channel: {{slack-channel}}
         username: {{slack-username}}
         icon_url: {{slack-icon-url}}
@@ -414,6 +344,7 @@ resources:
     branch: {{cf-manifests-git-branch-staging}}
     paths:
     - cf-*.yml
+    - diego-stub.yml
 
 - name: cf-manifests-prod
   type: git
@@ -422,6 +353,7 @@ resources:
     branch: {{cf-manifests-git-branch-prod}}
     paths:
     - cf-*.yml
+    - diego-stub.yml
 
 - name: common-staging
   type: cg-common
