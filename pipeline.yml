@@ -174,7 +174,7 @@ jobs:
     - get: common-prod
       trigger: false
     - get: cf-stemcell
-      trigger: false
+      trigger: true
       passed: [acceptance-tests-staging]
     - get: cg-s3-nessus-agent-release
       trigger: false
