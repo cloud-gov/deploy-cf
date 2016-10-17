@@ -1,18 +1,21 @@
 ---
 jobs:
-
 - name: deploy-cf-staging
   serial_groups: [staging]
   serial: true
   plan:
   - aggregate:
     - get: pipeline-tasks
-      trigger: false
     - get: cf-manifests-staging
       trigger: true
-    - get: common-staging
+    - get: common
+      resource: common-staging
       trigger: true
     - get: cf-stemcell
+      trigger: true
+    - get: cf-release
+      trigger: true
+    - get: cg-s3-18f-cf-release
       trigger: true
     - get: cg-s3-nessus-agent-release
       trigger: true
@@ -22,18 +25,14 @@ jobs:
       trigger: true
     - get: cg-s3-collectd-release
       trigger: true
-    - get: cg-s3-18f-cf-release
-      trigger: true
     - get: cg-s3-secureproxy-release
       trigger: true
     - get: cg-s3-tripwire-release
       trigger: true
     - get: cg-s3-awslogs-release
       trigger: true
-    - get: cf-release
-      trigger: true
   - task: cf-stage-manifest
-    config:
+    config: &manifest-config
       platform: linux
       image_resource:
         type: docker-image
@@ -41,28 +40,28 @@ jobs:
           repository: 18fgsa/concourse-task
       inputs:
       - name: cf-manifests-staging
-      - name: common-staging
+      - name: common
       run:
         path: cf-manifests-staging/generate-staging.sh
-        args: ["common-staging/secrets.yml", "cf-stage-manifest/staging-manifest.yml"]
+        args: ["common/secrets.yml", "cf-stage-manifest/staging-manifest.yml"]
       outputs:
       - name: cf-stage-manifest
   - put: cf-deployment-staging
-    params:
-      cert: common-staging/boshCA.crt
+    params: &deploy-params
+      cert: common/boshCA.crt
       manifest: cf-stage-manifest/staging-manifest.yml
       releases:
-        - cf-release/*.tgz
-        - cg-s3-nessus-agent-release/*.tgz
-        - cg-s3-fisma-release/*.tgz
-        - cg-s3-newrelic-release/*.tgz
-        - cg-s3-collectd-release/*.tgz
-        - cg-s3-18f-cf-release/*.tgz
-        - cg-s3-secureproxy-release/*.tgz
-        - cg-s3-tripwire-release/*.tgz
-        - cg-s3-awslogs-release/*.tgz
+      - cf-release/*.tgz
+      - cg-s3-nessus-agent-release/*.tgz
+      - cg-s3-fisma-release/*.tgz
+      - cg-s3-newrelic-release/*.tgz
+      - cg-s3-collectd-release/*.tgz
+      - cg-s3-18f-cf-release/*.tgz
+      - cg-s3-secureproxy-release/*.tgz
+      - cg-s3-tripwire-release/*.tgz
+      - cg-s3-awslogs-release/*.tgz
       stemcells:
-        - cf-stemcell/*.tgz
+      - cf-stemcell/*.tgz
     on_success:
       put: slack
       params:
@@ -87,13 +86,32 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-      trigger: false
     - get: common
       resource: common-staging
-      trigger: false
-    - get: cf-deployment-staging
       passed: [deploy-cf-staging]
+    - get: cf-deployment-staging
       trigger: true
+    # Get resources from upstream jobs for use in production deploy
+    - get: cf-stemcell
+      passed: [deploy-cf-staging]
+    - get: cf-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-18f-cf-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-nessus-agent-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-fisma-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-newrelic-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-collectd-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-tripwire-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-awslogs-release
+      passed: [deploy-cf-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -127,13 +145,35 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-      trigger: false
     - get: common
       resource: common-staging
-      trigger: false
+      passed: [smoke-tests-staging]
     - get: cf-deployment-staging
       passed: [smoke-tests-staging]
       trigger: true
+    # Get resources from upstream jobs for use in production deploy
+    - get: cf-stemcell
+      passed: [smoke-tests-staging]
+    - get: cf-deployment-staging
+      passed: [smoke-tests-staging]
+    - get: cf-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-18f-cf-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-nessus-agent-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-fisma-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-newrelic-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-collectd-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-tripwire-release
+      passed: [smoke-tests-staging]
+    - get: cg-s3-awslogs-release
+      passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -168,64 +208,34 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-      trigger: false
     - get: cf-manifests-prod
-      trigger: false
-    - get: common-prod
-      trigger: false
+    - get: common
+      resource: common-prod
     - get: cf-stemcell
+      passed: [acceptance-tests-staging]
       trigger: true
+    - get: cf-release
+      passed: [acceptance-tests-staging]
+    - get: cg-s3-18f-cf-release
       passed: [acceptance-tests-staging]
     - get: cg-s3-nessus-agent-release
-      trigger: false
+      passed: [acceptance-tests-staging]
     - get: cg-s3-fisma-release
-      trigger: false
+      passed: [acceptance-tests-staging]
     - get: cg-s3-newrelic-release
-      trigger: false
+      passed: [acceptance-tests-staging]
     - get: cg-s3-collectd-release
-      trigger: false
-    - get: cg-s3-18f-cf-release
-      trigger: false
+      passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
-      trigger: false
+      passed: [acceptance-tests-staging]
     - get: cg-s3-tripwire-release
-      trigger: false
+      passed: [acceptance-tests-staging]
     - get: cg-s3-awslogs-release
-      trigger: false
-    - get: cf-release
-      trigger: false
       passed: [acceptance-tests-staging]
   - task: cf-prod-manifest
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: 18fgsa/concourse-task
-      inputs:
-      - name: cf-manifests-prod
-      - name: common-prod
-      run:
-        path: cf-manifests-prod/generate.sh
-        args: ["common-prod/secrets.yml", "cf-prod-manifest/manifest.yml"]
-      outputs:
-      - name: cf-prod-manifest
+    config: *manifest-config
   - put: cf-deployment-prod
-    params:
-      cert: common-prod/boshCA.crt
-      manifest: cf-prod-manifest/manifest.yml
-      releases:
-        - cf-release/*.tgz
-        - cg-s3-nessus-agent-release/*.tgz
-        - cg-s3-fisma-release/*.tgz
-        - cg-s3-newrelic-release/*.tgz
-        - cg-s3-collectd-release/*.tgz
-        - cg-s3-18f-cf-release/*.tgz
-        - cg-s3-secureproxy-release/*.tgz
-        - cg-s3-tripwire-release/*.tgz
-        - cg-s3-awslogs-release/*.tgz
-      stemcells:
-        - cf-stemcell/*.tgz
+    params: *deploy-params
     on_success:
       put: slack
       params:
@@ -250,12 +260,10 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-      trigger: false
     - get: common
       resource: common-prod
-      trigger: false
-    - get: cf-deployment-prod
       passed: [deploy-cf-prod]
+    - get: cf-deployment-prod
       trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
@@ -290,10 +298,9 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-      trigger: false
     - get: common
       resource: common-prod
-      trigger: false
+      passed: [smoke-tests-prod]
     - get: cf-deployment-prod
       passed: [smoke-tests-prod]
       trigger: true
