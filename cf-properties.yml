@@ -36,6 +36,8 @@ meta:
     - protocol: all
       destination: 10.10.30.0-10.10.31.255
     - protocol: all
+      destination: 10.99.31.0-10.99.32.255
+    - protocol: all
       destination: 10.10.100.0-10.10.101.255
   resource_key: (( merge ))
 
