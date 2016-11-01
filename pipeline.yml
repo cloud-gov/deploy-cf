@@ -32,7 +32,7 @@ jobs:
     - get: cg-s3-awslogs-release
       trigger: true
   - task: cf-stage-manifest
-    config: &manifest-config
+    config:
       platform: linux
       image_resource:
         type: docker-image
@@ -43,13 +43,13 @@ jobs:
       - name: common
       run:
         path: cf-manifests-staging/generate-staging.sh
-        args: ["common/secrets.yml", "cf-stage-manifest/staging-manifest.yml"]
+        args: ["common/secrets.yml", "cf-manifest/manifest.yml"]
       outputs:
-      - name: cf-stage-manifest
+      - name: cf-manifest
   - put: cf-deployment-staging
     params: &deploy-params
       cert: common/boshCA.crt
-      manifest: cf-stage-manifest/staging-manifest.yml
+      manifest: cf-manifest/manifest.yml
       releases:
       - cf-release/*.tgz
       - cg-s3-nessus-agent-release/*.tgz
@@ -62,24 +62,24 @@ jobs:
       - cg-s3-awslogs-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed CF on staging
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: FAILED to deploy CF on staging
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 - name: smoke-tests-staging
   serial_groups: [staging]
@@ -121,24 +121,24 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/boshCA.crt
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Smoke Tests for CF on staging PASSED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: Smoke Tests for CF on staging FAILED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on staging PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on staging FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 - name: acceptance-tests-staging
   serial_groups: [staging]
@@ -183,24 +183,24 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: acceptance_tests
       BOSH_CACERT: common/boshCA.crt
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Acceptance Tests for CF on staging PASSED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: Acceptance Tests for CF on staging FAILED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Acceptance Tests for CF on staging PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Acceptance Tests for CF on staging FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 - name: deploy-cf-prod
   serial_groups: [production]
@@ -233,27 +233,40 @@ jobs:
     - get: cg-s3-awslogs-release
       passed: [acceptance-tests-staging]
   - task: cf-prod-manifest
-    config: *manifest-config
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+      - name: cf-manifests-prod
+      - name: common
+      run:
+        path: cf-manifests-prod/generate.sh
+        args: ["common/secrets.yml", "cf-manifest/manifest.yml"]
+      outputs:
+      - name: cf-manifest
   - put: cf-deployment-prod
     params: *deploy-params
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed CF on prod
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: FAILED to deploy CF on prod
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on prod
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on prod
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 - name: smoke-tests-prod
   serial_groups: [production]
@@ -274,24 +287,24 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/boshCA.crt
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Smoke Tests for CF on prod PASSED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: Smoke Tests for CF on prod FAILED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on prod PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on prod FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 - name: acceptance-tests-prod
   serial_groups: [production]
@@ -313,24 +326,24 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: acceptance_tests
       BOSH_CACERT: common/boshCA.crt
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Acceptance Tests for CF on prod PASSED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
-    on_failure:
-      put: slack
-      params:
-        text: |
-          :x: Acceptance Tests for CF on prod FAILED
-          <$ATC_EXTERNAL_URL/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: {{slack-channel}}
-        username: {{slack-username}}
-        icon_url: {{slack-icon-url}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Acceptance Tests for CF on prod PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Acceptance Tests for CF on prod FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
 resources:
 - name: pipeline-tasks
