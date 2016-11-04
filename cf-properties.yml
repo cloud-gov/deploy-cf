@@ -229,6 +229,8 @@ properties:
         package: php-buildpack
       - name: binary_buildpack
         package: binary-buildpack
+      - name: dotnet_core_buildpack
+        package: dotnet-core-buildpack
 
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
