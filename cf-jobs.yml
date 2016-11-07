@@ -56,31 +56,22 @@ meta:
   api_templates:
   - name: consul_agent
     release: (( meta.consul_release.name ))
-  - name: java-buildpack
-    release: (( meta.release.name ))
-  - name: java-offline-buildpack
-    release: (( meta.release.name ))
-  - name: go-buildpack
-    release: (( meta.release.name ))
-  - name: binary-buildpack
-    release: (( meta.release.name ))
-  - name: nodejs-buildpack
-    release: (( meta.release.name ))
-  - name: ruby-buildpack
-    release: (( meta.release.name ))
-  - name: php-buildpack
-    release: (( meta.release.name ))
-  - name: python-buildpack
-    release: (( meta.release.name ))
-  - name: staticfile-buildpack
-    release: (( meta.release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
   - name: statsd-injector
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
-
+  - {name: java-buildpack, release: java-buildpack}
+  - {name: java-offline-buildpack, release: java-offline-buildpack}
+  - {name: go-buildpack, release: go-buildpack}
+  - {name: binary-buildpack, release: binary-buildpack}
+  - {name: nodejs-buildpack, release: nodejs-buildpack}
+  - {name: ruby-buildpack, release: ruby-buildpack}
+  - {name: php-buildpack, release: php-buildpack}
+  - {name: python-buildpack, release: python-buildpack}
+  - {name: staticfile-buildpack, release: staticfile-buildpack}
+  - {name: dotnet-core-buildpack, release: dotnet-core-buildpack}
 
   api_worker_templates:
   - name: consul_agent
