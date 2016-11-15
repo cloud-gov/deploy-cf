@@ -202,8 +202,6 @@ jobs:
     # Get resources from upstream jobs for use in production deploy
     - get: cf-stemcell
       passed: [smoke-tests-staging]
-    - get: cf-deployment-staging
-      passed: [smoke-tests-staging]
     - get: cf-release
       passed: [smoke-tests-staging]
     - get: cg-s3-18f-cf-release
