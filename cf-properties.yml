@@ -227,10 +227,10 @@ properties:
         package: python-buildpack
       - name: php_buildpack
         package: php-buildpack
-      - name: binary_buildpack
-        package: binary-buildpack
       - name: dotnet_core_buildpack
         package: dotnet-core-buildpack
+      - name: binary_buildpack
+        package: binary-buildpack
 
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
