@@ -3,11 +3,11 @@ meta:
   service_domain: (( merge ))
   default_quota_definitions:
     default:
-       memory_limit: 10240
-       total_services: 100
-       total_service_keys: 1000
-       non_basic_services_allowed: true
-       total_routes: 1000
+      memory_limit: 10240
+      total_services: 100
+      total_service_keys: 1000
+      non_basic_services_allowed: true
+      total_routes: 1000
   default_security_group_definitions:
   - name: public_networks
     rules:
@@ -213,24 +213,24 @@ properties:
     user_buildpacks: (( merge || [] ))
     system_buildpacks: (( merge || default_buildpacks ))
     default_buildpacks:
-      - name: staticfile_buildpack
-        package: staticfile-buildpack
-      - name: java_buildpack
-        package: buildpack_java
-      - name: ruby_buildpack
-        package: ruby-buildpack
-      - name: nodejs_buildpack
-        package: nodejs-buildpack
-      - name: go_buildpack
-        package: go-buildpack
-      - name: python_buildpack
-        package: python-buildpack
-      - name: php_buildpack
-        package: php-buildpack
-      - name: binary_buildpack
-        package: binary-buildpack
-      - name: dotnet_core_buildpack
-        package: dotnet-core-buildpack
+    - name: staticfile_buildpack
+      package: staticfile-buildpack
+    - name: java_buildpack
+      package: buildpack_java
+    - name: ruby_buildpack
+      package: ruby-buildpack
+    - name: nodejs_buildpack
+      package: nodejs-buildpack
+    - name: go_buildpack
+      package: go-buildpack
+    - name: python_buildpack
+      package: python-buildpack
+    - name: php_buildpack
+      package: php-buildpack
+    - name: binary_buildpack
+      package: binary-buildpack
+    - name: dotnet_core_buildpack
+      package: dotnet-core-buildpack
 
     install_buildpacks: (( system_buildpacks user_buildpacks ))
 
@@ -322,7 +322,6 @@ properties:
     restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
 
   uaa:
-  
     servlet:
       session-cookie:
         max-age: 900 # 15 minutes per FedRAMP requirement
@@ -368,20 +367,20 @@ properties:
 
     user:
       authorities:
-        - openid
-        - scim.me
-        - cloud_controller.read
-        - cloud_controller.write
-        - cloud_controller_service_permissions.read
-        - password.write
-        - scim.userids
-        - uaa.user
-        - approvals.me
-        - oauth.approvals
-        - profile
-        - roles
-        - user_attributes
-        - scim.invite
+      - openid
+      - scim.me
+      - cloud_controller.read
+      - cloud_controller.write
+      - cloud_controller_service_permissions.read
+      - password.write
+      - scim.userids
+      - uaa.user
+      - approvals.me
+      - oauth.approvals
+      - profile
+      - roles
+      - user_attributes
+      - scim.invite
 
     clients:
       <<: (( merge || nil ))
@@ -479,7 +478,24 @@ properties:
     deployment: (( meta.environment ))
     dropsonde_incoming_port: 3457
 
-
   nessus-agent: (( merge ))
 
   newrelic: ~
+
+  smoke_tests:
+    <<: (( merge ))
+    backend: diego
+
+  acceptance_tests:
+    <<: (( merge ))
+    backend: diego
+    include_apps: true
+    include_services: true
+    include_internet_dependent: true
+    include_v3: true
+    include_tasks: true
+    include_diego_ssh: true
+    include_diego_docker: true
+    include_route_services: true
+    include_routing_api: true
+    include_sso: true
