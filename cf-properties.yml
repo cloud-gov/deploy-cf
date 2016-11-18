@@ -60,6 +60,7 @@ properties:
     shared_secret: (( merge ))
 
   loggregator:
+    <<: (( merge ))
     maxRetainedLogMessages: 100
     debug: (( merge || false ))
     blacklisted_syslog_ranges: ~
@@ -492,7 +493,6 @@ properties:
     include_apps: true
     include_services: true
     include_internet_dependent: true
-    include_v3: true
     include_tasks: true
     include_diego_ssh: true
     include_diego_docker: true
