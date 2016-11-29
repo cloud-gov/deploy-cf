@@ -37,19 +37,9 @@ jobs:
       trigger: true
     - get: dotnet-core-buildpack-release
       trigger: true
-    - get: cg-s3-nessus-agent-release
-      trigger: true
-    - get: cg-s3-fisma-release
-      trigger: true
-    - get: cg-s3-newrelic-release
-      trigger: true
     - get: cg-s3-collectd-release
       trigger: true
     - get: cg-s3-secureproxy-release
-      trigger: true
-    - get: cg-s3-tripwire-release
-      trigger: true
-    - get: cg-s3-awslogs-release
       trigger: true
   - task: cf-stage-manifest
     config:
@@ -83,13 +73,8 @@ jobs:
       - python-buildpack-release/*.tgz
       - staticfile-buildpack-release/*.tgz
       - dotnet-core-buildpack-release/*.tgz
-      - cg-s3-nessus-agent-release/*.tgz
-      - cg-s3-fisma-release/*.tgz
-      - cg-s3-newrelic-release/*.tgz
       - cg-s3-collectd-release/*.tgz
       - cg-s3-secureproxy-release/*.tgz
-      - cg-s3-tripwire-release/*.tgz
-      - cg-s3-awslogs-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
   on_success:
@@ -146,19 +131,9 @@ jobs:
       passed: [deploy-cf-staging]
     - get: staticfile-buildpack-release
       passed: [deploy-cf-staging]
-    - get: cg-s3-nessus-agent-release
-      passed: [deploy-cf-staging]
-    - get: cg-s3-fisma-release
-      passed: [deploy-cf-staging]
-    - get: cg-s3-newrelic-release
-      passed: [deploy-cf-staging]
     - get: cg-s3-collectd-release
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
-      passed: [deploy-cf-staging]
-    - get: cg-s3-tripwire-release
-      passed: [deploy-cf-staging]
-    - get: cg-s3-awslogs-release
       passed: [deploy-cf-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
@@ -202,8 +177,6 @@ jobs:
     # Get resources from upstream jobs for use in production deploy
     - get: cf-stemcell
       passed: [smoke-tests-staging]
-    - get: cf-deployment-staging
-      passed: [smoke-tests-staging]
     - get: cf-release
       passed: [smoke-tests-staging]
     - get: cg-s3-18f-cf-release
@@ -228,19 +201,9 @@ jobs:
       passed: [deploy-cf-staging]
     - get: dotnet-core-buildpack-release
       passed: [deploy-cf-staging]
-    - get: cg-s3-nessus-agent-release
-      passed: [smoke-tests-staging]
-    - get: cg-s3-fisma-release
-      passed: [smoke-tests-staging]
-    - get: cg-s3-newrelic-release
-      passed: [smoke-tests-staging]
     - get: cg-s3-collectd-release
       passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
-      passed: [smoke-tests-staging]
-    - get: cg-s3-tripwire-release
-      passed: [smoke-tests-staging]
-    - get: cg-s3-awslogs-release
       passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
@@ -306,19 +269,9 @@ jobs:
       passed: [acceptance-tests-staging]
     - get: dotnet-core-buildpack-release
       passed: [acceptance-tests-staging]
-    - get: cg-s3-nessus-agent-release
-      passed: [acceptance-tests-staging]
-    - get: cg-s3-fisma-release
-      passed: [acceptance-tests-staging]
-    - get: cg-s3-newrelic-release
-      passed: [acceptance-tests-staging]
     - get: cg-s3-collectd-release
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
-      passed: [acceptance-tests-staging]
-    - get: cg-s3-tripwire-release
-      passed: [acceptance-tests-staging]
-    - get: cg-s3-awslogs-release
       passed: [acceptance-tests-staging]
   - task: cf-prod-manifest
     config:
@@ -558,36 +511,6 @@ resources:
     deployment: {{cf-deployment-staging-bosh-deployment}}
     ignore_ssl: true
 
-- name: cg-s3-nessus-agent-release
-  type: s3
-  source:
-    access_key_id: {{ci-access-key-id}}
-    bucket: {{s3-bosh-releases-bucket}}
-    private: true
-    regexp: nessus-agent-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
-
-- name: cg-s3-fisma-release
-  type: s3
-  source:
-    access_key_id: {{ci-access-key-id}}
-    bucket: {{s3-bosh-releases-bucket}}
-    private: true
-    regexp: fisma-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
-
-- name: cg-s3-newrelic-release
-  type: s3
-  source:
-    access_key_id: {{ci-access-key-id}}
-    bucket: {{s3-bosh-releases-bucket}}
-    private: true
-    regexp: newrelic-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
-
 - name: cg-s3-collectd-release
   type: s3
   source:
@@ -615,26 +538,6 @@ resources:
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: secureproxy-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
-
-- name: cg-s3-tripwire-release
-  type: s3
-  source:
-    access_key_id: {{ci-access-key-id}}
-    bucket: {{s3-bosh-releases-bucket}}
-    private: true
-    regexp: tripwire-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
-    region_name: {{aws-region}}
-
-- name: cg-s3-awslogs-release
-  type: s3
-  source:
-    access_key_id: {{ci-access-key-id}}
-    bucket: {{s3-bosh-releases-bucket}}
-    private: true
-    regexp: awslogs-(.*).tgz
     secret_access_key: {{ci-secret-access-key}}
     region_name: {{aws-region}}
 
