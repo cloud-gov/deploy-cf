@@ -191,7 +191,6 @@ properties:
     development_mode: false
 
     newrelic:
-      license_key: ~
       environment_name: (( meta.environment ))
       developer_mode: (( cc.development_mode ))
       monitor_mode: true
@@ -265,14 +264,6 @@ properties:
     reserved_private_domains: ~
 
     dea_use_https: false
-
-  collectd:
-    hostname_prefix: (( meta.environment ".cf.collectd." ))
-    riemann_server: "(( merge ))"
-
-  riemann:
-    server: (( properties.collectd.riemann_server ))
-    port: 5555
 
   hm9000:
     <<: (( merge || nil ))
