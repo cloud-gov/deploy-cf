@@ -659,8 +659,6 @@ jobs:
     templates:
     - name: acceptance-tests
       release: (( meta.release.name ))
-    - name: awslogs
-      release: awslogs
     instances: 1
     resource_pool: small_errand
     lifecycle: errand
@@ -671,8 +669,6 @@ jobs:
     templates:
     - name: smoke-tests
       release: (( meta.release.name ))
-    - name: awslogs
-      release: awslogs
     instances: 1
     resource_pool: small_errand
     lifecycle: errand
