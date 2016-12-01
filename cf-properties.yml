@@ -428,15 +428,16 @@ properties:
         authorities: routing.routes.read,routing.router_groups.read
         authorized-grant-types: client_credentials,refresh_token
         secret: (( merge ))
-      invite_app:
-        scope: scim.invite
-        authorized-grant-types: authorization_code
+      uaa_extras_app:
+        scope: scim.invite,password.write
+        authorized-grant-types: authorization_code,client_credentials
+        authorities: scim.read,password.write,uaa.admin
         secret: (( merge ))
-        redirect-uri: (( "https://invite." meta.service_domain "/oauth/login"))
+        redirect-uri: (( "https://account." meta.service_domain "/oauth/login"))
         name: Invite Users
         autoapprove: true
         show-on-homepage: true
-        app-launch-url: (( "https://invite." meta.service_domain ))
+        app-launch-url: (( "https://account." meta.service_domain "/invite"))
         app-icon: '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'
       dashboard_tile:
         name: Dashboard
