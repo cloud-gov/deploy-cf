@@ -676,6 +676,17 @@ jobs:
       - name: cf1
     properties: {}
 
+  - name: verify_origins
+    templates:
+    - name: cron
+      release: cron
+    instances: 1
+    resource_pool: small_errand
+    lifecycle: errand
+    networks:
+      - name: cf1
+    properties: {}
+
 properties:
   <<: (( merge ))
   consul:

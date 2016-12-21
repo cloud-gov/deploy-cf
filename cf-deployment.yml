@@ -19,6 +19,7 @@ meta:
   - {name: staticfile-buildpack, version: latest}
   - {name: dotnet-core-buildpack, version: latest}
   - {name: secureproxy, version: latest}
+  - {name: cron, version: latest}
 
 name: (( meta.environment ))
 
