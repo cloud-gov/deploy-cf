@@ -171,7 +171,7 @@ meta:
     release: (( meta.release.name ))
   - name: statsd-injector
     release: (( meta.release.name ))
-  - name: cron
+  - name: uaa_cron
     release: cron
 
   login_templates:
