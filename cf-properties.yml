@@ -320,8 +320,8 @@ properties:
   - script:
       name: verify-origins
       contents: (( file "cronjobs/verify-origins.sh" ))
-    minute: '*'
-    hour: '*'
+    minute: '00'
+    hour: '9'
     day: '*'
     month: '*'
     wday: '*'
