@@ -793,7 +793,7 @@ properties:
 
   cc: (( merge ))
   ccdb: (( merge ))
-  hm9000: 
+  hm9000:
     <<: (( merge ))
     etcd:
       machines: (( properties.etcd.machines ))
