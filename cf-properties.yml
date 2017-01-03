@@ -307,6 +307,7 @@ properties:
       user: ~
       password: ~
       auth: ~
+      from_address: ~
 
     links:
       home: (( "https://dashboard." meta.service_domain ))
