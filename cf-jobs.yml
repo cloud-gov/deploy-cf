@@ -192,6 +192,8 @@ meta:
     release: (( meta.release.name ))
 
   loggregator_templates:
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
   - name: doppler
     release: (( meta.release.name ))
   - name: syslog_drain_binder
@@ -214,6 +216,8 @@ meta:
     - (( "loggregator." .meta.service_domain ))
 
   loggregator_trafficcontroller_templates:
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
   - name: metron_agent
