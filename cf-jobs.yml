@@ -604,6 +604,10 @@ jobs:
     networks:
       - name: cf1
     properties:
+      consul:
+        agent:
+          services:
+            loggregator_trafficcontroller: {}
       metron_agent:
         zone: z1
       traffic_controller:
@@ -619,6 +623,10 @@ jobs:
     networks:
       - name: cf2
     properties:
+      consul:
+        agent:
+          services:
+            loggregator_trafficcontroller: {}
       metron_agent:
         zone: z2
       traffic_controller:
