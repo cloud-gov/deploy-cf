@@ -332,6 +332,7 @@ properties:
     scim:
       userids_enabled: (( merge || true ))
       users: (( merge ))
+      groups: ~
       external_groups: ~
 
     jwt:
