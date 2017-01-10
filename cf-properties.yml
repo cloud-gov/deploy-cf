@@ -297,6 +297,7 @@ properties:
       port: ~
       user: ~
       password: ~
+      auth: ~
 
     links:
       home: (( "https://dashboard." meta.service_domain ))
