@@ -5,6 +5,7 @@ jobs:
   serial: true
   plan:
   - aggregate:
+    - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-manifests-staging
       trigger: true
@@ -56,7 +57,7 @@ jobs:
       - name: cf-manifest
   - put: cf-deployment-staging
     params: &deploy-params
-      cert: common/boshCA.crt
+      cert: master-bosh-root-cert/master-bosh.crt
       manifest: cf-manifest/manifest.yml
       releases:
       - cf-release/*.tgz
@@ -99,7 +100,7 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: common-staging
+      resource: master-bosh-root-cert
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
       trigger: true
@@ -138,7 +139,7 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/boshCA.crt
+      BOSH_CACERT: common/master-bosh.crt
   on_success:
     put: slack
     params:
@@ -164,7 +165,7 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: common-staging
+      resource: master-bosh-root-cert
       passed: [smoke-tests-staging]
     - get: cf-deployment-staging
       passed: [smoke-tests-staging]
@@ -206,7 +207,7 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: acceptance_tests
-      BOSH_CACERT: common/boshCA.crt
+      BOSH_CACERT: common/master-bosh.crt
   on_success:
     put: slack
     params:
@@ -231,6 +232,7 @@ jobs:
   serial: true
   plan:
   - aggregate:
+    - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-manifests-prod
     - get: common
@@ -306,7 +308,7 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: common-prod
+      resource: master-bosh-root-cert
       passed: [deploy-cf-prod]
     - get: cf-deployment-prod
       trigger: true
@@ -318,7 +320,7 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/boshCA.crt
+      BOSH_CACERT: common/master-bosh.crt
   on_success:
     put: slack
     params:
@@ -344,7 +346,7 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: common-prod
+      resource: master-bosh-root-cert
       passed: [smoke-tests-prod]
     - get: cf-deployment-prod
       passed: [smoke-tests-prod]
@@ -357,7 +359,7 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: acceptance_tests
-      BOSH_CACERT: common/boshCA.crt
+      BOSH_CACERT: common/master-bosh.crt
   on_success:
     put: slack
     params:
@@ -378,6 +380,15 @@ jobs:
       icon_url: {{slack-icon-url}}
 
 resources:
+- name: master-bosh-root-cert
+  type: s3
+  source:
+    access_key_id: {{ci-access-key-id}}
+    bucket: {{cf-private-prod-bucket}}
+    region_name: {{aws-region}}
+    secret_access_key: {{ci-secret-access-key}}
+    versioned_file: master-bosh.crt
+
 - name: pipeline-tasks
   type: git
   source:
