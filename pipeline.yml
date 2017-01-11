@@ -340,45 +340,6 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
-- name: acceptance-tests-prod
-  serial_groups: [production]
-  plan:
-  - aggregate:
-    - get: pipeline-tasks
-    - get: common
-      resource: master-bosh-root-cert
-      passed: [smoke-tests-prod]
-    - get: cf-deployment-prod
-      passed: [smoke-tests-prod]
-      trigger: true
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
-    params:
-      BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
-      BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
-      BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
-      BOSH_ERRAND: acceptance_tests
-      BOSH_CACERT: common/master-bosh.crt
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Acceptance Tests for CF on prod PASSED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: Acceptance Tests for CF on prod FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
-
 resources:
 - name: master-bosh-root-cert
   type: s3
@@ -564,7 +525,6 @@ groups:
   - acceptance-tests-staging
   - deploy-cf-prod
   - smoke-tests-prod
-  - acceptance-tests-prod
 - name: staging
   jobs:
   - deploy-cf-staging
@@ -574,4 +534,3 @@ groups:
   jobs:
   - deploy-cf-prod
   - smoke-tests-prod
-  - acceptance-tests-prod
