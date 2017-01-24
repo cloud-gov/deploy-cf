@@ -475,7 +475,7 @@ properties:
         autoapprove: true
       kubernetes_client:
         scope: cloud_controller.admin
-        authorized-grant-types: authorization_code,refresh_token
+        authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin
         secret: (( merge ))
       deploy-to-cf:
@@ -512,13 +512,19 @@ properties:
         secret: (( merge ))
         redirect-uri: (( "https://concourse-ci." meta.service_domain "/auth/uaa/callback" ))
         autoapprove: true
-
-
-
-
-
-
-
+      uaaproxy:
+        scope: openid
+        authorized-grant-types: authorization_code,refresh_token
+        authorities: uaa.none
+        access-token-validity: 600
+        refresh-token-validity: 2592000
+        secret: (( merge ))
+        autoapprove: true
+      uaamonitor:
+        scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
+        authorized-grant-types: authorization_code,client_credentials,refresh_token
+        authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
+        secret: (( merge ))
 
     database: ~
 
