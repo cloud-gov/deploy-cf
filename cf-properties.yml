@@ -389,6 +389,7 @@ properties:
         secret: (( merge ))
         authorities: cloud_controller.admin,scim.read
         authorized-grant-types: client_credentials
+        override: true
       influxdb-firehose-nozzle:
         access-token-validity: 600
         authorized-grant-types: authorization_code,client_credentials,refresh_token
@@ -396,6 +397,11 @@ properties:
         secret: (( merge ))
         scope: openid,oauth.approvals,doppler.firehose
         authorities: oauth.login,doppler.firehose
+      logsearch_firehose_ingestor:
+        authorized-grant-types: client_credentials
+        authorities: doppler.firehose,cloud_controller.admin
+        override: true
+        secret: (( merge ))
       cf:
         id: cf
         override: true
@@ -413,13 +419,16 @@ properties:
         authorities: scim.userids
         secret: (( merge ))
         authorized-grant-types: client_credentials
+        override: true
       cc_routing:
         authorities: routing.router_groups.read
         secret: (( merge ))
         authorized-grant-types: client_credentials
+        override: true
       gorouter:
         authorities: routing.routes.read
         authorized-grant-types: client_credentials,refresh_token
+        override: true
         secret: (( merge ))
       tcp_emitter:
         authorities: routing.routes.write,routing.routes.read,routing.router_groups.read
@@ -442,6 +451,7 @@ properties:
         scope: scim.invite,password.write
         authorized-grant-types: authorization_code,client_credentials
         authorities: scim.read,password.write,uaa.admin
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -455,6 +465,7 @@ properties:
         scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: uaa.none
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -467,6 +478,7 @@ properties:
         scope: cloud_controller.read,oauth.approvals,openid,scim.userids
         authorized-grant-types: authorization_code,refresh_token
         authorities: uaa.none
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -477,11 +489,13 @@ properties:
         scope: cloud_controller.admin
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin
+        override: true
         secret: (( merge ))
       admin-ui:
         scope: admin_ui.admin,admin_ui.user,openid
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: clients.write,cloud_controller.admin,cloud_controller.read,cloud_controller.write,doppler.firehose,openid,scim.read,scim.write
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -490,6 +504,7 @@ properties:
         scope: openid
         authorized-grant-types: authorization_code,refresh_token
         authorities: uaa.none
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -499,6 +514,7 @@ properties:
         scope: cloud_controller.read
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -508,6 +524,7 @@ properties:
         scope: openid
         authorized-grant-types: authorization_code,refresh_token
         authorities: uaa.none
+        override: true
         access-token-validity: 600
         refresh-token-validity: 2592000
         secret: (( merge ))
@@ -516,6 +533,7 @@ properties:
         scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
+        override: true
         secret: (( merge ))
 
     database: ~
