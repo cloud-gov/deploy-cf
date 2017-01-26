@@ -478,14 +478,6 @@ properties:
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin
         secret: (( merge ))
-      deploy-to-cf:
-        scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid
-        authorized-grant-types: authorization_code,refresh_token
-        authorities: uaa.none
-        access-token-validity: 600
-        refresh-token-validity: 2592000
-        secret: (( merge ))
-        autoapprove: true
       admin-ui:
         scope: admin_ui.admin,admin_ui.user,openid
         authorized-grant-types: authorization_code,client_credentials,refresh_token
