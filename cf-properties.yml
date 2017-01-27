@@ -191,6 +191,7 @@ properties:
     development_mode: false
 
     newrelic:
+      license_key: (( merge ))
       environment_name: (( meta.environment ))
       developer_mode: (( cc.development_mode ))
       monitor_mode: true
