@@ -282,7 +282,7 @@ properties:
     protocol: https
     brand: oss
     brand_title: cloud.gov
-    asset_base_url: /resources/cg
+    asset_base_url: /resources/govcloud
     uaa_base: ~
     self_service_links_enabled: true
     signups_enabled: true
