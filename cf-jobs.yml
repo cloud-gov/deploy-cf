@@ -89,6 +89,9 @@ meta:
     consumes:
       nats:
         from: nats_z1
+    provides:
+      nats:
+        as: nats_z1
   - name: nats_stream_forwarder
     release: (( meta.release.name ))
 
@@ -98,6 +101,9 @@ meta:
     consumes:
       nats:
         from: nats_z2
+      provides:
+      nats:
+        as: nats_z2
   - name: nats_stream_forwarder
     release: (( meta.release.name ))
 
@@ -173,7 +179,7 @@ meta:
     #   name: uaa-healthcheck
     #   script_path: /var/vcap/jobs/uaa/bin/health_check
 
-  uaa_templates:
+  uaa_z1_templates:
   - name: uaa
     release: (( meta.custom_release.name ))
   - name: consul_agent
@@ -182,6 +188,24 @@ meta:
     release: (( meta.release.name ))
   - name: statsd-injector
     release: (( meta.release.name ))
+  - name: nats
+    release: (( meta.release.name ))
+    consumes:
+      nats: nats_z1
+
+  uaa_z2_templates:
+  - name: uaa
+    release: (( meta.custom_release.name ))
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
+  - name: route_registrar
+    release: (( meta.release.name ))
+  - name: statsd-injector
+    release: (( meta.release.name ))
+  - name: nats
+    release: (( meta.release.name ))
+    consumes:
+      nats: nats_z2
 
   login_templates:
   - name: login
@@ -284,9 +308,6 @@ jobs:
         zone: z2
 
   - name: nats_z1
-    provides:
-      nats:
-        as: nats_z1
     templates: (( merge || meta.nats_z1_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: medium_z1
@@ -299,9 +320,6 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: nats_z2
-    provides:
-      nats:
-        as: nats_z2
     templates: (( merge || meta.nats_z2_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: medium_z2
@@ -359,7 +377,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.uaa_z1_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -379,7 +397,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z2
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.uaa_z2_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
