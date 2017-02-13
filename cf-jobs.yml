@@ -101,7 +101,7 @@ meta:
     consumes:
       nats:
         from: nats_z2
-      provides:
+    provides:
       nats:
         as: nats_z2
   - name: nats_stream_forwarder
