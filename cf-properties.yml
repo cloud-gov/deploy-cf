@@ -160,7 +160,7 @@ properties:
     broker_client_default_async_poll_interval_seconds: (( merge || 60 ))
     broker_client_max_async_poll_duration_minutes: (( merge || 10080 ))
 
-    mutal_tls: ~
+    mutual_tls: ~
 
     resource_pool:
       blobstore_type: (( merge || "fog" ))
