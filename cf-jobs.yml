@@ -191,7 +191,8 @@ meta:
   - name: nats
     release: (( meta.release.name ))
     consumes:
-      nats: nats_z1
+      nats:
+        from: nats_z1
 
   uaa_z2_templates:
   - name: uaa
@@ -205,7 +206,8 @@ meta:
   - name: nats
     release: (( meta.release.name ))
     consumes:
-      nats: nats_z2
+      nats:
+        from: nats_z1
 
   login_templates:
   - name: login
