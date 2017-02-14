@@ -688,6 +688,13 @@ jobs:
         zone: z1
       metron_agent:
         zone: z1
+      consul:
+          agent:
+            services:
+              doppler:
+                name: doppler
+                tags:
+                - z1
     update: (( merge || empty_hash ))
 
   - name: doppler_z2
@@ -701,6 +708,13 @@ jobs:
         zone: z2
       metron_agent:
         zone: z2
+      consul:
+          agent:
+            services:
+              doppler:
+                name: doppler
+                tags:
+                - z2
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z1
