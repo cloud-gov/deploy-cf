@@ -411,7 +411,7 @@ properties:
         scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read
         authorities: uaa.none
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         autoapprove: true
       doppler:
         override: true
@@ -455,7 +455,7 @@ properties:
         authorities: scim.read,password.write,uaa.admin
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         redirect-uri: (( "https://account." meta.service_domain "/oauth/login"))
         name: Invite Users
@@ -469,7 +469,7 @@ properties:
         authorities: uaa.none
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         name: Dashboard
         autoapprove: true
@@ -482,7 +482,7 @@ properties:
         authorities: uaa.none
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         redirect-uri: (( "https://logs." meta.service_domain "/login" ))
         name: Logsearch
@@ -499,7 +499,7 @@ properties:
         authorities: clients.write,cloud_controller.admin,cloud_controller.read,cloud_controller.write,doppler.firehose,openid,scim.read,scim.write
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         autoapprove: true
       cloud-gov-community:
@@ -508,7 +508,7 @@ properties:
         authorities: uaa.none
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         redirect-uri: (( "https://community." meta.service_domain "/auth/oauth2_basic/callback" ))
         autoapprove: true
@@ -518,7 +518,7 @@ properties:
         authorities: cloud_controller.admin
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         redirect-uri: (( "https://concourse-ci." meta.service_domain "/auth/uaa/callback" ))
         autoapprove: true
@@ -528,7 +528,7 @@ properties:
         authorities: uaa.none
         override: true
         access-token-validity: 600
-        refresh-token-validity: 2592000
+        refresh-token-validity: 259200
         secret: (( merge ))
         autoapprove: true
       uaamonitor:
