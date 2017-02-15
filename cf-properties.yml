@@ -537,6 +537,11 @@ properties:
         authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
         override: true
         secret: (( merge ))
+      uaa-token-audit:
+        authorized-grant-types: client_credentials
+        authorities: scim.read,tokens.list,uaa.admin
+        override: true
+        secret: (( merge ))
 
     database: ~
 
