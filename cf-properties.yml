@@ -536,7 +536,7 @@ properties:
         refresh-token-validity: 259200
         secret: (( merge ))
         autoapprove: true
-      uaamonitor:
+      sandbox-bot:
         scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
