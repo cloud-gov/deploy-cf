@@ -160,6 +160,8 @@ properties:
     broker_client_default_async_poll_interval_seconds: (( merge || 60 ))
     broker_client_max_async_poll_duration_minutes: (( merge || 10080 ))
 
+    mutual_tls: ~
+
     resource_pool:
       blobstore_type: (( merge || "fog" ))
       webdav_config: (( merge || properties.cc.webdav_config ))
@@ -217,7 +219,7 @@ properties:
     - name: staticfile_buildpack
       package: staticfile-buildpack
     - name: java_buildpack
-      package: buildpack_java
+      package: java-offline-buildpack
     - name: ruby_buildpack
       package: ruby-buildpack
     - name: nodejs_buildpack
@@ -282,7 +284,7 @@ properties:
     protocol: https
     brand: oss
     brand_title: cloud.gov
-    asset_base_url: /resources/cg
+    asset_base_url: /resources/govcloud
     uaa_base: ~
     self_service_links_enabled: true
     signups_enabled: true
@@ -316,6 +318,9 @@ properties:
     restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
 
   uaa:
+    ca_cert: (( merge ))
+    sslCertificate: (( merge ))
+    sslPrivateKey: (( merge ))
     servlet:
       session-cookie:
         max-age: 900 # 15 minutes per FedRAMP requirement
@@ -531,7 +536,7 @@ properties:
         refresh-token-validity: 259200
         secret: (( merge ))
         autoapprove: true
-      uaamonitor:
+      sandbox-bot:
         scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
@@ -547,8 +552,10 @@ properties:
 
     restricted_ips_regex: 10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|169\.254\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.1[6-9]{1}\.\d{1,3}\.\d{1,3}|172\.2[0-9]{1}\.\d{1,3}\.\d{1,3}|172\.3[0-1]{1}\.\d{1,3}\.\d{1,3}
 
-    zones: (( merge || nil ))
-
+    zones:
+      internal:
+        hostnames:
+          - uaa.service.cf.internal
     authentication:
       policy:
         lockoutAfterFailures: 3 # Lock after 3 attempts to match FedRAMP requirement
