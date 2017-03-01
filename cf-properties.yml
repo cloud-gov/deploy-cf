@@ -515,7 +515,7 @@ properties:
         access-token-validity: 600
         refresh-token-validity: 259200
         secret: (( merge ))
-        redirect-uri: (( "https://community." meta.service_domain "/auth/oauth2_basic/callback" ))
+        redirect-uri: https://community.app.cloud.gov/auth/oauth2_basic/callback
         autoapprove: true
       concourse-broker:
         scope: cloud_controller.read
