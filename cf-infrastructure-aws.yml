@@ -27,7 +27,7 @@ properties:
   template_only: (( merge ))
 
   logger_endpoint:
-    port: 4443
+    port: 443
 
   loggregator:
     <<: (( merge ))
