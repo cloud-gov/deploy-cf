@@ -131,6 +131,8 @@ jobs:
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
+    - get: tests-timer
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -140,13 +142,14 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
+      BOSH_FLAGS: "--keep-alive"
   on_success:
     put: slack
     params:
       text: |
         :white_check_mark: Smoke Tests for CF on staging PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
+      channel: {{slack-news-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
   on_failure:
@@ -312,6 +315,8 @@ jobs:
       passed: [deploy-cf-prod]
     - get: cf-deployment-prod
       trigger: true
+    - get: tests-timer
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -321,13 +326,14 @@ jobs:
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
+      BOSH_FLAGS: "--keep-alive"
   on_success:
     put: slack
     params:
       text: |
         :white_check_mark: Smoke Tests for CF on prod PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
+      channel: {{slack-news-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
   on_failure:
@@ -502,6 +508,11 @@ resources:
     password: {{cf-deployment-prod-bosh-password}}
     deployment: {{cf-deployment-prod-bosh-deployment}}
     ignore_ssl: true
+
+- name: tests-timer
+  type: time
+  source:
+    interval: 10m
 
 resource_types:
 - name: slack-notification
