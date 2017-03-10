@@ -547,6 +547,11 @@ properties:
         authorities: scim.read,tokens.list,uaa.admin
         override: true
         secret: (( merge ))
+      firehose_exporter:
+        override: true
+        authorized-grant-types: client_credentials,refresh_token
+        authorities: doppler.firehose
+        secret: (( merge ))
 
     database: ~
 
