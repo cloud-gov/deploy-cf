@@ -58,7 +58,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -81,7 +81,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -232,7 +232,7 @@ meta:
     consumes:
       nats:
         from: nats_z1
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
 
   uaa_z2_templates:
@@ -245,7 +245,7 @@ meta:
     consumes:
       nats:
         from: nats_z2
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
 
   login_templates:
