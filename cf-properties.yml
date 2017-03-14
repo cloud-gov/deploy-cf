@@ -576,6 +576,9 @@ properties:
         requireSpecialCharacter: 1
         expirePasswordInMonths: 6
 
+  statsd_injector:
+    deployment: (( meta.environment ))
+
   metron_agent:
     deployment: (( meta.environment ))
     dropsonde_incoming_port: 3457
