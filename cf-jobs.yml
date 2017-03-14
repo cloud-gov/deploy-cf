@@ -275,6 +275,8 @@ meta:
         from: nats_z2
   - name: statsd_injector
     release: (( meta.release.name ))
+  - name: uaa_cron
+    release: cron
 
   login_templates:
   - name: login
@@ -836,6 +838,17 @@ jobs:
       - name: cf1
     properties: {}
 
+  - name: verify_origins
+    templates:
+    - name: cron
+      release: cron
+    instances: 1
+    resource_pool: small_errand
+    lifecycle: errand
+    networks:
+      - name: cf1
+    properties: {}
+
 properties:
   <<: (( merge ))
   consul:
@@ -940,7 +953,7 @@ properties:
 
   cc: (( merge ))
   ccdb: (( merge ))
-  hm9000: 
+  hm9000:
     <<: (( merge ))
     etcd:
       machines: (( properties.etcd.machines ))
