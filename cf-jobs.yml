@@ -53,21 +53,15 @@ meta:
   api_consul_services:
     cloud_controller_ng: {}
 
-  api_z1_templates:
+  api_templates:
   - name: consul_agent
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z1
-  - name: statsd_injector
+  - name: statsd-injector
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
-    consumes:
-      nats:
-        from: nats_z1
   - {name: java-buildpack, release: java-buildpack}
   - {name: java-offline-buildpack, release: java-offline-buildpack}
   - {name: go-buildpack, release: go-buildpack}
@@ -79,82 +73,20 @@ meta:
   - {name: staticfile-buildpack, release: staticfile-buildpack}
   - {name: dotnet-core-buildpack, release: dotnet-core-buildpack}
 
-  api_z2_templates:
-  - name: consul_agent
-    release: (( meta.consul_release.name ))
-  - name: cloud_controller_ng
-    release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z2
-  - name: statsd_injector
-    release: (( meta.release.name ))
-  - name: route_registrar
-    release: (( meta.release.name ))
-    consumes:
-      nats:
-        from: nats_z2
-  - {name: java-buildpack, release: java-buildpack}
-  - {name: java-offline-buildpack, release: java-offline-buildpack}
-  - {name: go-buildpack, release: go-buildpack}
-  - {name: binary-buildpack, release: binary-buildpack}
-  - {name: nodejs-buildpack, release: nodejs-buildpack}
-  - {name: ruby-buildpack, release: ruby-buildpack}
-  - {name: php-buildpack, release: php-buildpack}
-  - {name: python-buildpack, release: python-buildpack}
-  - {name: staticfile-buildpack, release: staticfile-buildpack}
-  - {name: dotnet-core-buildpack, release: dotnet-core-buildpack}
-
-  api_worker_z1_templates:
+  api_worker_templates:
   - name: consul_agent
     release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z1
 
-  api_worker_z2_templates:
-  - name: consul_agent
-    release: (( meta.consul_release.name ))
-  - name: cloud_controller_worker
-    release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z2
-
-  clock_z1_templates:
-  - name: cloud_controller_clock
-    release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z1
-     
--  clock_templates:   +  clock_z2_templates:
+  clock_templates:
   - name: cloud_controller_clock
     release: (( meta.capi_release.name ))
 
-  nats_z1_templates:
+  nats_templates:
   - name: nats
     release: (( meta.release.name ))
-    provides:
-      nats:
-        as: nats_z1
-    consumes:
-      nats:
-        from: nats_z1
-  - name: nats_stream_forwarder
-    release: (( meta.release.name ))
-
-  nats_z2_templates:
-  - name: nats
-    release: (( meta.release.name ))
-    provides:
-      nats:
-        as: nats_z2
-    consumes:
-      nats:
-        from: nats_z2
+    consumes: {nats: nil}
   - name: nats_stream_forwarder
     release: (( meta.release.name ))
 
@@ -166,18 +98,7 @@ meta:
   - name: dea_logging_agent
     release: (( meta.release.name ))
 
-  router_z1_templates:
-  - name: secureproxy
-    release: secureproxy
-  - name: consul_agent
-    release: (( meta.consul_release.name ))
-  - name: gorouter
-    release: (( meta.release.name ))
-    consumes:
-      nats:
-        from: nats_z1
-
-  router_z2_templates:
+  router_templates:
   - name: secureproxy
     release: secureproxy
   - name: consul_agent
