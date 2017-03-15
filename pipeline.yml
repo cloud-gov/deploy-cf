@@ -5,7 +5,6 @@ jobs:
   serial: true
   plan:
   - aggregate:
-    - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-manifests-staging
       trigger: true
@@ -38,6 +37,8 @@ jobs:
       trigger: true
     - get: dotnet-core-buildpack-release
       trigger: true
+    - get: cg-s3-collectd-release
+      trigger: true
     - get: cg-s3-secureproxy-release
       trigger: true
   - task: cf-stage-manifest
@@ -57,7 +58,7 @@ jobs:
       - name: cf-manifest
   - put: cf-deployment-staging
     params: &deploy-params
-      cert: master-bosh-root-cert/master-bosh.crt
+      cert: common/boshCA.crt
       manifest: cf-manifest/manifest.yml
       releases:
       - cf-release/*.tgz
@@ -72,6 +73,7 @@ jobs:
       - python-buildpack-release/*.tgz
       - staticfile-buildpack-release/*.tgz
       - dotnet-core-buildpack-release/*.tgz
+      - cg-s3-collectd-release/*.tgz
       - cg-s3-secureproxy-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
@@ -100,7 +102,7 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: master-bosh-root-cert
+      resource: common-staging
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
       trigger: true
@@ -129,10 +131,10 @@ jobs:
       passed: [deploy-cf-staging]
     - get: staticfile-buildpack-release
       passed: [deploy-cf-staging]
+    - get: cg-s3-collectd-release
+      passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
-    - get: tests-timer
-      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -141,15 +143,14 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/master-bosh.crt
-      BOSH_FLAGS: "--keep-alive"
+      BOSH_CACERT: common/boshCA.crt
   on_success:
     put: slack
     params:
       text: |
         :white_check_mark: Smoke Tests for CF on staging PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-news-channel}}
+      channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
   on_failure:
@@ -168,7 +169,7 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: master-bosh-root-cert
+      resource: common-staging
       passed: [smoke-tests-staging]
     - get: cf-deployment-staging
       passed: [smoke-tests-staging]
@@ -200,6 +201,8 @@ jobs:
       passed: [deploy-cf-staging]
     - get: dotnet-core-buildpack-release
       passed: [deploy-cf-staging]
+    - get: cg-s3-collectd-release
+      passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [smoke-tests-staging]
   - task: run-errand
@@ -210,7 +213,7 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
       BOSH_ERRAND: acceptance_tests
-      BOSH_CACERT: common/master-bosh.crt
+      BOSH_CACERT: common/boshCA.crt
   on_success:
     put: slack
     params:
@@ -235,7 +238,6 @@ jobs:
   serial: true
   plan:
   - aggregate:
-    - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-manifests-prod
     - get: common
@@ -266,6 +268,8 @@ jobs:
     - get: staticfile-buildpack-release
       passed: [acceptance-tests-staging]
     - get: dotnet-core-buildpack-release
+      passed: [acceptance-tests-staging]
+    - get: cg-s3-collectd-release
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [acceptance-tests-staging]
@@ -311,11 +315,9 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: common
-      resource: master-bosh-root-cert
+      resource: common-prod
       passed: [deploy-cf-prod]
     - get: cf-deployment-prod
-      trigger: true
-    - get: tests-timer
       trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
@@ -325,15 +327,14 @@ jobs:
       BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
       BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/master-bosh.crt
-      BOSH_FLAGS: "--keep-alive"
+      BOSH_CACERT: common/boshCA.crt
   on_success:
     put: slack
     params:
       text: |
         :white_check_mark: Smoke Tests for CF on prod PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-news-channel}}
+      channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
   on_failure:
@@ -346,16 +347,46 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
-resources:
-- name: master-bosh-root-cert
-  type: s3
-  source:
-    access_key_id: {{ci-access-key-id}}
-    bucket: {{cf-private-prod-bucket}}
-    region_name: {{aws-region}}
-    secret_access_key: {{ci-secret-access-key}}
-    versioned_file: master-bosh.crt
+- name: acceptance-tests-prod
+  serial_groups: [production]
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+    - get: common
+      resource: common-prod
+      passed: [smoke-tests-prod]
+    - get: cf-deployment-prod
+      passed: [smoke-tests-prod]
+      trigger: true
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
+      BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
+      BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
+      BOSH_ERRAND: acceptance_tests
+      BOSH_CACERT: common/boshCA.crt
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Acceptance Tests for CF on prod PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Acceptance Tests for CF on prod FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
 
+resources:
 - name: pipeline-tasks
   type: git
   source:
@@ -480,6 +511,16 @@ resources:
     deployment: {{cf-deployment-staging-bosh-deployment}}
     ignore_ssl: true
 
+- name: cg-s3-collectd-release
+  type: s3
+  source:
+    access_key_id: {{ci-access-key-id}}
+    bucket: {{s3-bosh-releases-bucket}}
+    private: true
+    regexp: collectd-(.*).tgz
+    secret_access_key: {{ci-secret-access-key}}
+    region_name: {{aws-region}}
+
 - name: cg-s3-18f-cf-release
   type: s3
   source:
@@ -509,11 +550,6 @@ resources:
     deployment: {{cf-deployment-prod-bosh-deployment}}
     ignore_ssl: true
 
-- name: tests-timer
-  type: time
-  source:
-    interval: 10m
-
 resource_types:
 - name: slack-notification
   type: docker-image
@@ -536,6 +572,7 @@ groups:
   - acceptance-tests-staging
   - deploy-cf-prod
   - smoke-tests-prod
+  - acceptance-tests-prod
 - name: staging
   jobs:
   - deploy-cf-staging
@@ -545,3 +582,4 @@ groups:
   jobs:
   - deploy-cf-prod
   - smoke-tests-prod
+  - acceptance-tests-prod
