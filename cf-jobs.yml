@@ -62,7 +62,29 @@ meta:
     release: (( meta.release.name ))
     consumes:
       nats:    
-        from: nats_z1   
+        from: nats_z1  
+  - name: route_registrar
+    release: cf
+  - name: java-buildpack
+    release: java-buildpack
+  - name: java-offline-buildpack
+    release: java-offline-buildpack
+  - name: go-buildpack
+    release: go-buildpack
+  - name: binary-buildpack
+    release: binary-buildpack
+  - name: nodejs-buildpack
+    release: nodejs-buildpack
+  - name: ruby-buildpack
+    release: ruby-buildpack
+  - name: php-buildpack
+    release: php-buildpack
+  - name: python-buildpack
+    release: python-buildpack
+  - name: staticfile-buildpack
+    release: staticfile-buildpack
+  - name: dotnet-core-buildpack
+    release: dotnet-core-buildpack 
   api_z2_templates:    
   - name: consul_agent    
     release: (( meta.consul_release.name ))   
