@@ -359,7 +359,7 @@ jobs:
         zone: z2
 
   - name: nats_z1
-    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.nats_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -371,7 +371,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: nats_z2
-    templates: (( merge || meta.nats_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.nats_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
@@ -428,7 +428,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.uaa_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -448,7 +448,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z2
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.uaa_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
@@ -479,7 +479,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z1
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.hm9000_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -496,7 +496,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z2
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.hm9000_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
@@ -513,7 +513,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z1
-    templates: (( merge || meta.api_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.api_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -530,7 +530,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z2
-    templates: (( merge || meta.api_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.api_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
@@ -547,7 +547,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: clock_global
-    templates: (( merge || meta.clock_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.clock_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -558,7 +558,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z1
-    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.api_worker_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -570,7 +570,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z2
-    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.api_worker_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
