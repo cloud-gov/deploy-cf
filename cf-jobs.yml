@@ -58,7 +58,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
     consumes:
       nats:    
@@ -259,7 +259,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
 
   login_templates:
