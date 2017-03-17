@@ -191,7 +191,6 @@ meta:
       nats:
         from: nats_z2
 
-
   etcd_templates:
   - name: etcd
     release: (( meta.etcd_release.name ))
@@ -228,7 +227,9 @@ meta:
     release: (( meta.capi_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
-
+    consumes:
+      nats:
+        from: nats_z1
   uaa_routes:
   - name: uaa
     port: (( .properties.uaa.port ))
@@ -803,7 +804,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z1
-    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.router_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 2
     resource_pool: router_z1
     networks:
@@ -819,7 +820,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z2
-    templates: (( merge || meta.router_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.router_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: router_z2
     networks:
