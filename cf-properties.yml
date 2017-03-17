@@ -268,6 +268,14 @@ properties:
 
     dea_use_https: false
 
+  collectd:
+    hostname_prefix: (( meta.environment ".cf.collectd." ))
+    riemann_server: "(( merge ))"
+
+  riemann:
+    server: (( properties.collectd.riemann_server ))
+    port: 5555
+
   hm9000:
     <<: (( merge || nil ))
     url: (( "https://hm9000." domain ))
@@ -301,6 +309,7 @@ properties:
       user: ~
       password: ~
       auth: ~
+      from_address: ~
 
     links:
       home: (( "https://dashboard." meta.service_domain ))
@@ -475,9 +484,6 @@ properties:
         requireDigit: 1
         requireSpecialCharacter: 1
         expirePasswordInMonths: 6
-  statsd_injector:   
-    deployment: (( meta.environment ))    
-
 
   statsd_injector:
     deployment: (( meta.environment ))
@@ -505,3 +511,4 @@ properties:
     include_diego_docker: true
     include_route_services: true
     include_routing_api: true
+    include_sso: true
