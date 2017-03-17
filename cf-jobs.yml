@@ -105,6 +105,9 @@ meta:
         from: nats_z1
   - name: route_registrar
     release: (( meta.release.name ))
+    consumes:
+      nats:
+        from: nats_z1
   - {name: java-buildpack, release: java-buildpack}
   - {name: java-offline-buildpack, release: java-offline-buildpack}
   - {name: go-buildpack, release: go-buildpack}
@@ -144,6 +147,21 @@ meta:
   clock_z2_templates:
   - name: cloud_controller_clock
     release: (( meta.capi_release.name ))
+    consumes:
+      nats:
+        from: nats_z2
+
+  nats_z1_templates:
+  - name: nats
+    release: (( meta.release.name ))
+    provides:
+      nats:
+        as: nats_z1
+    consumes:
+      nats:
+        from: nats_z1
+  - name: nats_stream_forwarder
+    release: (( meta.release.name ))
 
   nats_z1_templates:
   - name: nats
@@ -195,6 +213,10 @@ meta:
     release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
+    consumes:
+      nats:
+        from: nats_z2
+
 
   etcd_templates:
   - name: etcd
@@ -252,7 +274,8 @@ meta:
     #   name: uaa-healthcheck
     #   script_path: /var/vcap/jobs/uaa/bin/health_check
 
-  uaa_templates:
+
+  uaa_z1_templates:
   - name: uaa
     release: (( meta.custom_release.name ))
   - name: consul_agent
@@ -273,13 +296,27 @@ meta:
     uris:
     - (( "hm9000." .properties.domain ))
 
-  hm9000_templates:
+  hm9000_z1_templates:
   - name: consul_agent
     release: (( meta.consul_release.name ))
   - name: hm9000
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
+    consumes:
+      nats:
+        from: nats_z1
+
+  hm9000_z2_templates:
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
+  - name: hm9000
+    release: (( meta.release.name ))
+  - name: route_registrar
+    release: (( meta.release.name ))
+    consumes:
+      nats:
+        from: nats_z2
 
   loggregator_templates:
   - name: consul_agent
@@ -305,13 +342,31 @@ meta:
     - (( "loggregator." .properties.domain ))
     - (( "loggregator." .meta.service_domain ))
 
-  loggregator_trafficcontroller_templates:
+  loggregator_trafficcontroller_z1_templates:
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
   - name: metron_agent
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
+    consumes:
+      nats:
+        from: nats_z1
+
+  loggregator_trafficcontroller_z2_templates:
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
+  - name: loggregator_trafficcontroller
+    release: (( meta.release.name ))
+  - name: metron_agent
+    release: (( meta.release.name ))
+  - name: route_registrar
+    release: (( meta.release.name ))
+    consumes:
+      nats:
+        from: nats_z2
 
   consul_templates:
   - name: consul_agent
@@ -450,7 +505,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.uaa_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -470,7 +525,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z2
-    templates: (( merge || meta.uaa_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.uaa_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
@@ -501,7 +556,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z1
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.hm9000_z1_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
@@ -518,7 +573,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: hm9000_z2
-    templates: (( merge || meta.hm9000_templates meta.metron_agent_templates meta.common_templates ))
+    templates: (( merge || meta.hm9000_z2_templates meta.metron_agent_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
@@ -720,7 +775,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z1
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.common_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -739,7 +794,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z2
-    templates: (( merge || meta.loggregator_trafficcontroller_templates meta.common_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
