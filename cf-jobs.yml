@@ -563,6 +563,8 @@ jobs:
           services: (( merge || meta.api_consul_services ))
       metron_agent:
         zone: z2
+      route_registrar:
+        routes: (( merge || meta.api_routes ))
       nfs_server: (( meta.nfs_server ))
     update: (( merge || empty_hash ))
 
