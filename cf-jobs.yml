@@ -995,3 +995,6 @@ properties:
   acceptance_tests: (( merge || nil ))
 
   smoke_tests: (( merge || nil ))
+
+  doppler:
+    message_drain_buffer_size: 100000
