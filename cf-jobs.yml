@@ -58,7 +58,10 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-  - name: statsd-injector
+    consumes:
+      nats:
+        from: nats_z1
+  - name: statsd_injector
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -81,7 +84,10 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-  - name: statsd-injector
+    consumes:
+      nats:
+        from: nats_z2
+  - name: statsd_injector
     release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -99,15 +105,37 @@ meta:
   - {name: staticfile-buildpack, release: staticfile-buildpack}
   - {name: dotnet-core-buildpack, release: dotnet-core-buildpack}
 
-  api_worker_templates:
+  api_worker_z1_templates:
   - name: consul_agent
     release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
+    consumes:
+      nats:
+        from: nats_z1
 
-  clock_templates:
+  api_worker_z2_templates:
+  - name: consul_agent
+    release: (( meta.consul_release.name ))
+  - name: cloud_controller_worker
+    release: (( meta.capi_release.name ))
+    consumes:
+      nats:
+        from: nats_z2
+
+  clock_z1_templates:
   - name: cloud_controller_clock
     release: (( meta.capi_release.name ))
+    consumes:
+      nats:
+        from: nats_z1
+
+  clock_z2_templates:
+  - name: cloud_controller_clock
+    release: (( meta.capi_release.name ))
+    consumes:
+      nats:
+        from: nats_z2
 
   nats_z1_templates:
   - name: nats
@@ -232,7 +260,7 @@ meta:
     consumes:
       nats:
         from: nats_z1
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
 
   uaa_z2_templates:
@@ -245,7 +273,7 @@ meta:
     consumes:
       nats:
         from: nats_z2
-  - name: statsd-injector
+  - name: statsd_injector
     release: (( meta.release.name ))
 
   login_templates:
@@ -567,7 +595,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: clock_global
-    templates: (( merge || meta.clock_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.clock_z1_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -578,7 +606,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z1
-    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.api_worker_z1_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -590,7 +618,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z2
-    templates: (( merge || meta.api_worker_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.api_worker_z2_templates meta.metron_agent_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
