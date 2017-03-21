@@ -139,7 +139,7 @@ resource_pools:
 
   - name: large_z1
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: t2.large
       ephemeral_disk:
         size: 30_000
         type: gp2
@@ -149,7 +149,7 @@ resource_pools:
 
   - name: large_z2
     cloud_properties:
-      instance_type: m3.medium
+      instance_type: t2.large
       ephemeral_disk:
         size: 30_000
         type: gp2
