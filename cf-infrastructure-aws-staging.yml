@@ -76,12 +76,12 @@ networks: (( merge ))
 
 disk_pools:
 - name: tiny
-  disk_size: 5000
+  disk_size: 10000
   cloud_properties:
     type: gp2
     encrypted: true
 - name: small
-  disk_size: 5000
+  disk_size: 10000
   cloud_properties:
     type: gp2
     encrypted: true
