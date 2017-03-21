@@ -67,8 +67,7 @@ properties:
     outgoing_dropsonde_port: 8081
 
   doppler:
-    message_drain_buffer_size: 100000
-    maxRetainedLogMessages: 1000
+    maxRetainedLogMessages: 100
     debug: (( merge || false ))
     blacklisted_syslog_ranges: ~
     unmarshaller_count: (( merge || 5 ))
