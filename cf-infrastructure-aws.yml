@@ -142,7 +142,7 @@ resource_pools:
 
   - name: large_z1
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -152,7 +152,7 @@ resource_pools:
 
   - name: large_z2
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -162,7 +162,7 @@ resource_pools:
 
   - name: runner_z1
     cloud_properties:
-      instance_type: m3.xlarge
+      instance_type: m4.xlarge
       ephemeral_disk:
         size: 102_400
         type: gp2
@@ -172,7 +172,7 @@ resource_pools:
 
   - name: runner_z2
     cloud_properties:
-      instance_type: m3.xlarge
+      instance_type: m4.xlarge
       ephemeral_disk:
         size: 102_400
         type: gp2
@@ -204,7 +204,7 @@ resource_pools:
 
   - name: small_errand
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 10_240
         type: gp2
@@ -279,12 +279,12 @@ jobs:
       - name: cf2
 
   - name: doppler_z1
-    instances: 1
+    instances: 2
     networks:
       - name: cf1
 
   - name: doppler_z2
-    instances: 1
+    instances: 2
     networks:
       - name: cf2
 
