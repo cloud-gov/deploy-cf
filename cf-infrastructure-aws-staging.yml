@@ -76,12 +76,12 @@ networks: (( merge ))
 
 disk_pools:
 - name: tiny
-  disk_size: 10000
+  disk_size: 10_240
   cloud_properties:
     type: gp2
     encrypted: true
 - name: small
-  disk_size: 10000
+  disk_size: 30_000
   cloud_properties:
     type: gp2
     encrypted: true
@@ -101,7 +101,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.small
       ephemeral_disk:
-        size: 10_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z1 ))
@@ -111,7 +111,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.small
       ephemeral_disk:
-        size: 10_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
@@ -121,7 +121,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.medium
       ephemeral_disk:
-        size: 10_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z1 ))
@@ -131,7 +131,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.medium
       ephemeral_disk:
-        size: 10_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
@@ -141,7 +141,7 @@ resource_pools:
     cloud_properties:
       instance_type: m4.large
       ephemeral_disk:
-        size: 10_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z1 ))
@@ -151,7 +151,7 @@ resource_pools:
     cloud_properties:
       instance_type: m4.large
       ephemeral_disk:
-        size: 10_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
