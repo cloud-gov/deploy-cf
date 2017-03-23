@@ -299,12 +299,12 @@ jobs:
       - name: cf2
 
   - name: doppler_z1
-    instances: 2
+    instances: 3
     networks:
       - name: cf1
 
   - name: doppler_z2
-    instances: 2
+    instances: 3
     networks:
       - name: cf2
 
