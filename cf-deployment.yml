@@ -7,7 +7,7 @@ meta:
 
   releases:
   - {name: cf, version: 218}
-  - {name: 18f-cf, version: latest}
+  - {name: uaa-customized, version: latest}
   - {name: java-buildpack, version: latest}
   - {name: java-offline-buildpack, version: latest}
   - {name: go-buildpack, version: latest}
