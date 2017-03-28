@@ -83,10 +83,6 @@ properties:
 
   collector:
     deployment_name: (( meta.environment ))
-    use_newrelic_insights: true
-    newrelic_insights:
-      api_key: (( merge ))
-      app_id: (( merge ))
     use_newrelic_plugin: true
     newrelic_plugin:
       license_key: (( merge ))
@@ -292,7 +288,6 @@ properties:
     protocol: https
     brand: oss
     brand_title: cloud.gov
-    asset_base_url: /resources/eastwest
     uaa_base: ~
     self_service_links_enabled: true
     signups_enabled: true
@@ -484,6 +479,10 @@ properties:
         requireDigit: 1
         requireSpecialCharacter: 1
         expirePasswordInMonths: 6
+
+  uaa-customized:
+    template-directory:
+      east
 
   statsd_injector:
     deployment: (( meta.environment ))
