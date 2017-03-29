@@ -19,7 +19,7 @@ meta:
     name: cf
 
   custom_release:
-    name: 18f-cf
+    name: uaa-customized
 
   consul_servers: (( jobs.consul_z1.networks.cf1.static_ips jobs.consul_z2.networks.cf2.static_ips ))
 
@@ -199,7 +199,7 @@ meta:
 
   stats_templates:
   - name: collector
-    release: (( meta.custom_release.name ))
+    release: (( meta.release.name ))
 
   blobstore_routes:
   - name: blobstore
@@ -252,6 +252,8 @@ meta:
 
   uaa_z1_templates:
   - name: uaa
+    release: (( meta.release.name ))
+  - name: uaa-customized
     release: (( meta.custom_release.name ))
   - name: consul_agent
     release: (( meta.consul_release.name ))
@@ -265,6 +267,8 @@ meta:
 
   uaa_z2_templates:
   - name: uaa
+    release: (( meta.release.name ))
+  - name: uaa-customized
     release: (( meta.custom_release.name ))
   - name: consul_agent
     release: (( meta.consul_release.name ))

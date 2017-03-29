@@ -101,7 +101,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.small
       ephemeral_disk:
-        size: 30_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z1 ))
@@ -111,7 +111,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.small
       ephemeral_disk:
-        size: 30_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
@@ -121,7 +121,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.medium
       ephemeral_disk:
-        size: 30_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z1 ))
@@ -131,7 +131,7 @@ resource_pools:
     cloud_properties:
       instance_type: t2.medium
       ephemeral_disk:
-        size: 30_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
@@ -141,7 +141,7 @@ resource_pools:
     cloud_properties:
       instance_type: m3.medium
       ephemeral_disk:
-        size: 30_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z1 ))
@@ -151,7 +151,7 @@ resource_pools:
     cloud_properties:
       instance_type: m3.medium
       ephemeral_disk:
-        size: 30_000
+        size: 20_000
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
@@ -265,13 +265,13 @@ jobs:
     instances: 0
 
   - name: api_z1
-    instances: 1
+    instances: 2
 
   - name: api_z2
     instances: 0
 
   - name: api_worker_z1
-    instances: 1
+    instances: 2
 
   - name: api_worker_z2
     instances: 0
@@ -308,7 +308,7 @@ jobs:
       - name: cf2
 
   - name: doppler_z1
-    instances: 1
+    instances: 2
     networks:
       - name: cf1
 

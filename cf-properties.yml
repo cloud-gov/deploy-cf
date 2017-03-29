@@ -83,10 +83,6 @@ properties:
 
   collector:
     deployment_name: (( meta.environment ))
-    use_newrelic_insights: true
-    newrelic_insights:
-      api_key: (( merge ))
-      app_id: (( merge ))
     use_newrelic_plugin: true
     newrelic_plugin:
       license_key: (( merge ))
@@ -284,7 +280,6 @@ properties:
     protocol: https
     brand: oss
     brand_title: cloud.gov
-    asset_base_url: /resources/govcloud
     uaa_base: ~
     self_service_links_enabled: true
     signups_enabled: true
@@ -547,6 +542,11 @@ properties:
         authorities: scim.read,tokens.list,uaa.admin
         override: true
         secret: (( merge ))
+      firehose_exporter:
+        override: true
+        authorized-grant-types: client_credentials,refresh_token
+        authorities: doppler.firehose
+        secret: (( merge ))
 
     database: ~
 
@@ -570,6 +570,10 @@ properties:
         requireDigit: 1
         requireSpecialCharacter: 1
         expirePasswordInMonths: 6
+
+  uaa-customized:
+    template-directory:
+      govcloud
 
   statsd_injector:
     deployment: (( meta.environment ))
