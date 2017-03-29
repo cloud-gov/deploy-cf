@@ -16,7 +16,7 @@ jobs:
       trigger: true
     - get: cf-release
       trigger: true
-    - get: cg-s3-18f-cf-release
+    - get: uaa-customized-release
       trigger: true
     - get: java-buildpack-release
       trigger: true
@@ -61,7 +61,7 @@ jobs:
       manifest: cf-manifest/manifest.yml
       releases:
       - cf-release/*.tgz
-      - cg-s3-18f-cf-release/*.tgz
+      - uaa-customized-release/*.tgz
       - java-buildpack-release/*.tgz
       - java-offline-buildpack-release/*.tgz
       - go-buildpack-release/*.tgz
@@ -109,7 +109,7 @@ jobs:
       passed: [deploy-cf-staging]
     - get: cf-release
       passed: [deploy-cf-staging]
-    - get: cg-s3-18f-cf-release
+    - get: uaa-customized-release
       passed: [deploy-cf-staging]
     - get: java-buildpack-release
       passed: [deploy-cf-staging]
@@ -178,7 +178,7 @@ jobs:
       passed: [smoke-tests-staging]
     - get: cf-release
       passed: [smoke-tests-staging]
-    - get: cg-s3-18f-cf-release
+    - get: uaa-customized-release
       passed: [smoke-tests-staging]
     - get: java-buildpack-release
       passed: [deploy-cf-staging]
@@ -245,7 +245,7 @@ jobs:
       trigger: true
     - get: cf-release
       passed: [acceptance-tests-staging]
-    - get: cg-s3-18f-cf-release
+    - get: uaa-customized-release
       passed: [acceptance-tests-staging]
     - get: java-buildpack-release
       passed: [acceptance-tests-staging]
@@ -480,13 +480,13 @@ resources:
     deployment: {{cf-deployment-staging-bosh-deployment}}
     ignore_ssl: true
 
-- name: cg-s3-18f-cf-release
+- name: uaa-customized-release
   type: s3
   source:
     access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
-    regexp: 18f-cf-(.*).tgz
+    regexp: uaa-customized-(.*).tgz
     secret_access_key: {{ci-secret-access-key}}
     region_name: {{aws-region}}
 
