@@ -612,7 +612,7 @@ jobs:
   - name: api_worker_z1
     templates: (( merge || meta.api_worker_z1_templates meta.metron_agent_templates ))
     instances: 1
-    resource_pool: medium_z1
+    resource_pool: api_worker_z1
     networks:
       - name: cf1
     properties:
@@ -624,7 +624,7 @@ jobs:
   - name: api_worker_z2
     templates: (( merge || meta.api_worker_z2_templates meta.metron_agent_templates ))
     instances: 1
-    resource_pool: medium_z2
+    resource_pool: api_worker_z2
     networks:
       - name: cf2
     properties:

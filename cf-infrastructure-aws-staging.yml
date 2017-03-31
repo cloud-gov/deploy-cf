@@ -178,6 +178,28 @@ resource_pools:
       key_name: (( meta.aws.key_name ))
       iam_instance_profile: staging-cf-blobstore
 
+  - name: api_worker_z1
+    cloud_properties:
+      instance_type: t2.medium
+      ephemeral_disk:
+        size: 20_000
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z1 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: staging-cf-blobstore
+
+  - name: api_worker_z2
+    cloud_properties:
+      instance_type: t2.medium
+      ephemeral_disk:
+        size: 20_000
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z2 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: staging-cf-blobstore
+
   - name: doppler_z1
     cloud_properties:
       instance_type: m4.large

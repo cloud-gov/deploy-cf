@@ -55,6 +55,18 @@ resource_pools:
     cloud_properties: (( merge ))
     env: (( merge || meta.default_env ))
 
+  - name: api_worker_z1
+    network: cf1
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: api_worker_z2
+    network: cf2
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
   - name: doppler_z1
     network: cf1
     stemcell: (( merge || meta.stemcell ))
