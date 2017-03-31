@@ -7,8 +7,7 @@ meta:
 
   fog_config:
     provider: AWS
-    aws_access_key_id: (( properties.template_only.aws.access_key_id ))
-    aws_secret_access_key: (( properties.template_only.aws.secret_access_key ))
+    use_iam_profile: true
     region: (( properties.template_only.aws.region ))
 
   stemcell: (( merge || .meta.default_stemcell ))
@@ -156,6 +155,28 @@ resource_pools:
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
+
+  - name: api_z1
+    cloud_properties:
+      instance_type: m3.large
+      ephemeral_disk:
+        size: 65_536
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z1 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: staging-cf-blobstore
+
+  - name: api_z2
+    cloud_properties:
+      instance_type: m3.large
+      ephemeral_disk:
+        size: 65_536
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z2 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: staging-cf-blobstore
 
   - name: doppler_z1
     cloud_properties:
