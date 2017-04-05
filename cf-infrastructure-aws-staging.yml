@@ -66,6 +66,7 @@ compilation:
   cloud_properties:
     instance_type: c3.large
     availability_zone: (( meta.zones.z1 ))
+    iam_instance_profile: staging-bosh-compilation
     ephemeral_disk:
        size: 30000
        type: gp2
@@ -269,12 +270,14 @@ resource_pools:
         size: 10_240
         type: gp2
         encrypted: true
+      iam_instance_profile: staging-bosh-compilation
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
   - name: xlarge_errand
     cloud_properties:
       instance_type: c3.xlarge
+      iam_instance_profile: staging-bosh-compilation
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
