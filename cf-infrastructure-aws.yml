@@ -7,8 +7,7 @@ meta:
 
   fog_config:
     provider: AWS
-    aws_access_key_id: (( properties.template_only.aws.access_key_id ))
-    aws_secret_access_key: (( properties.template_only.aws.secret_access_key ))
+    use_iam_profile: true
     region: (( properties.template_only.aws.region ))
 
   stemcell: (( merge || .meta.default_stemcell ))
@@ -70,6 +69,7 @@ compilation:
   cloud_properties:
     instance_type: c3.large
     availability_zone: (( meta.zones.z1 ))
+    iam_instance_profile: production-bosh-compilation
     ephemeral_disk:
       size: 30000
       type: gp2
@@ -142,7 +142,7 @@ resource_pools:
 
   - name: large_z1
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 65_536
         type: gp2
@@ -152,13 +152,57 @@ resource_pools:
 
   - name: large_z2
     cloud_properties:
-      instance_type: m3.large
+      instance_type: m4.large
       ephemeral_disk:
         size: 65_536
         type: gp2
         encrypted: true
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
+
+  - name: api_z1
+    cloud_properties:
+      instance_type: m4.large
+      ephemeral_disk:
+        size: 65_536
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z1 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: production-cf-blobstore
+
+  - name: api_z2
+    cloud_properties:
+      instance_type: m4.large
+      ephemeral_disk:
+        size: 65_536
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z2 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: production-cf-blobstore
+
+  - name: api_worker_z1
+    cloud_properties:
+      instance_type: t2.medium
+      ephemeral_disk:
+        size: 30_000
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z1 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: production-cf-blobstore
+
+  - name: api_worker_z2
+    cloud_properties:
+      instance_type: t2.medium
+      ephemeral_disk:
+        size: 30_000
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z2 ))
+      key_name: (( meta.aws.key_name ))
+      iam_instance_profile: production-cf-blobstore
 
   - name: doppler_z1
     cloud_properties:
@@ -229,12 +273,14 @@ resource_pools:
         size: 10_240
         type: gp2
         encrypted: true
+      iam_instance_profile: production-bosh-compilation
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
   - name: xlarge_errand
     cloud_properties:
       instance_type: c3.xlarge
+      iam_instance_profile: production-bosh-compilation
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 

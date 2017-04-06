@@ -94,6 +94,28 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: uaa-smoke-tests-staging
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+    - get: uaa-customized-release
+      passed: [deploy-cf-staging]
+    - get: cf-deployment-staging
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: {{uaa-url-staging}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on staging FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
 - name: smoke-tests-staging
   serial_groups: [staging]
   plan:
@@ -179,7 +201,7 @@ jobs:
     - get: cf-release
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
-      passed: [smoke-tests-staging]
+      passed: [smoke-tests-staging, uaa-smoke-tests-staging]
     - get: java-buildpack-release
       passed: [deploy-cf-staging]
     - get: java-offline-buildpack-release
@@ -300,6 +322,28 @@ jobs:
     params:
       text: |
         :x: FAILED to deploy CF on prod
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: uaa-smoke-tests-production
+  plan:
+  - aggregate:
+    - get: pipeline-tasks
+    - get: uaa-customized-release
+      passed: [deploy-cf-prod]
+    - get: cf-deployment-prod
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: {{uaa-url-production}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: {{slack-channel}}
       username: {{slack-username}}
@@ -533,15 +577,19 @@ groups:
   jobs:
   - deploy-cf-staging
   - smoke-tests-staging
+  - uaa-smoke-tests-staging
   - acceptance-tests-staging
   - deploy-cf-prod
   - smoke-tests-prod
+  - uaa-smoke-tests-production
 - name: staging
   jobs:
   - deploy-cf-staging
+  - smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
 - name: production
   jobs:
   - deploy-cf-prod
   - smoke-tests-prod
+  - uaa-smoke-tests-production
