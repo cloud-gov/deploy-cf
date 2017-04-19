@@ -194,6 +194,7 @@ meta:
   etcd_templates:
   - name: etcd
     release: (( meta.etcd_release.name ))
+    consumes: {etcd: nil}
   - name: etcd_metrics_server
     release: (( meta.etcd_release.name ))
 
@@ -318,6 +319,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: doppler
     release: (( meta.release.name ))
+    consumes: {doppler: nil}
   - name: syslog_drain_binder
     release: (( meta.release.name ))
   - name: metron_agent
@@ -443,6 +445,11 @@ jobs:
       - name: cf1
         static_ips: (( merge ))
     properties:
+      consul:
+          agent:
+            services:
+              etcd:
+                name: cf-etcd
       metron_agent:
         zone: z1
     update: (( merge || empty_hash ))
@@ -456,6 +463,11 @@ jobs:
       - name: cf2
         static_ips: (( merge ))
     properties:
+      consul:
+          agent:
+            services:
+              etcd:
+                name: cf-etcd
       metron_agent:
         zone: z2
     update: (( merge || empty_hash ))
