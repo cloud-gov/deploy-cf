@@ -319,7 +319,6 @@ meta:
     release: (( meta.consul_release.name ))
   - name: doppler
     release: (( meta.release.name ))
-    consumes: {doppler: nil}
   - name: syslog_drain_binder
     release: (( meta.release.name ))
   - name: metron_agent
@@ -344,6 +343,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
+    consumes: {doppler: nil}
   - name: metron_agent
     release: (( meta.release.name ))
   - name: route_registrar
@@ -357,6 +357,7 @@ meta:
     release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
+    consumes: {doppler: nil}
   - name: metron_agent
     release: (( meta.release.name ))
   - name: route_registrar
