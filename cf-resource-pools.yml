@@ -4,7 +4,10 @@ meta:
     bosh:
       password: (( merge ))
 
-  stemcell: (( merge ))
+  default_stemcell:
+    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    version: latest
+  stemcell: (( merge || .meta.default_stemcell ))
 
 resource_pools:
   - name: small_z1
