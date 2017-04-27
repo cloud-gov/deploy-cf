@@ -10,11 +10,6 @@ meta:
     use_iam_profile: true
     region: (( properties.template_only.aws.region ))
 
-  stemcell: (( merge || .meta.default_stemcell ))
-
-  default_stemcell:
-    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
-    version: 3147
   aws:
     key_name: ~
 
