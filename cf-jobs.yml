@@ -1015,6 +1015,15 @@ properties:
     listen_port: 80
     proxy_port: 85
 
+    # Expose gorouter health check for ELB
+    custom_server_config: |-
+      server {
+        listen 81;
+        location / {
+          proxy_pass http://localhost:8080/health;
+        }
+      }
+
   syslog_daemon_config: ~
 
   nfs_server: (( meta.nfs_server ))
