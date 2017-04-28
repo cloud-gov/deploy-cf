@@ -176,6 +176,9 @@ meta:
     release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
+    provides:
+      gorouter:
+        as: router_z1
     consumes:
       nats:
         from: nats_z1
@@ -187,6 +190,9 @@ meta:
     release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
+    provides:
+      gorouter:
+        as: router_z2
     consumes:
       nats:
         from: nats_z2
@@ -254,6 +260,9 @@ meta:
   uaa_z1_templates:
   - name: uaa
     release: (( meta.release.name ))
+    consumes:
+      router:
+        from: router_z1
   - name: uaa-customized
     release: (( meta.custom_release.name ))
   - name: consul_agent
@@ -269,6 +278,9 @@ meta:
   uaa_z2_templates:
   - name: uaa
     release: (( meta.release.name ))
+    consumes:
+      router:
+        from: router_z2
   - name: uaa-customized
     release: (( meta.custom_release.name ))
   - name: consul_agent
