@@ -354,7 +354,7 @@ jobs:
       - name: cf1
 
   - name: doppler_z2
-    instances: 0
+    instances: 2
     networks:
       - name: cf2
 
@@ -364,7 +364,7 @@ jobs:
       - name: cf1
 
   - name: loggregator_trafficcontroller_z2
-    instances: 0
+    instances: 1
     networks:
       - name: cf2
 
