@@ -71,6 +71,10 @@ mv -f ${depot_path}/etcd.service.consul.key ${depot_path}/etcd_peer.key
 mv -f ${depot_path}/etcd.service.consul.csr ${depot_path}/etcd_peer.csr
 mv -f ${depot_path}/etcd.service.consul.crt ${depot_path}/etcd_peer.crt
 
+# Statsd injector certificate
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name statsdinjector
+certstrap --depot-path ${depot_path} sign statsdinjector --CA master-bosh
+
 # Doppler certificate
 certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name doppler
 certstrap --depot-path ${depot_path} sign doppler --CA master-bosh
