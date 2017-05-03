@@ -92,7 +92,9 @@ then
   )
   $CG_PIPELINE/decrypt.sh
   local_ca_cert_name=$(echo $CA_KEY_ENCRYPTED | sed 's/\.pem//')
+  echo -e "${GREEN}Signing certificates with ${YELLOW}${local_ca_cert_name}${NC} key"
 else
+  echo -e "${GREEN}Creating${NC} ${YELLOW}new${NC} certificate authority and key ${YELLOW}${local_ca_cert_name}${NC}"
   certstrap --depot-path ${depot_path} init --passphrase '' --common-name $local_ca_cert_name
 fi
 
