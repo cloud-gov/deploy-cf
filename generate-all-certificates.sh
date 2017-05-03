@@ -10,10 +10,17 @@ YELLOW='\033[0;33m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-# usage ./generate-all-certificates [<ca-cert> <ca-private-key>]
-# For generating all the Cloud Foundry certificates and private keys based on a
-# "single" root CA certificate. All of these certstrap commands have been taken
-# from various `cf-release/scripts/generate-*` files.
+if [[ -n $1 && $1 =~ (-h|--help)$ ]] 
+then
+  echo "
+  ./generate-all-certificates [--help, -h] [--grab-cert, -g] [<ca-cert> <ca-private-key>]
+  
+  For generating all the Cloud Foundry certificates and private keys based on a
+  'single' root CA certificate. All of these certstrap commands have been taken
+  from various \`cf-release/scripts/generate-*\` files.
+  "
+  exit
+fi
 
 local_ca_cert_name='cloud-foundry'
 depot_path="all-cf-certs"
@@ -92,9 +99,15 @@ then
   )
   $CG_PIPELINE/decrypt.sh
   local_ca_cert_name=$(echo $CA_KEY_ENCRYPTED | sed 's/\.pem//')
-  echo -e "${GREEN}Signing certificates with ${YELLOW}${local_ca_cert_name}${NC} key"
+  echo -e "${GREEN}Signing${NC} certificates with certificate authority ${YELLOW}${local_ca_cert_name}${NC} and key"
+elif [[ -n $1 && -n $2 ]]
+then
+  echo -e "${YELLOW}Copying ${1},${2} to ${depot_path}${NC}"
+  cp -p {$1,$2} ${depot_path}/.
+  local_ca_cert_name=$(echo $1 | sed 's/\.crt//')
+  echo -e "${GREEN}Signing${NC} certificates with supplied certificate authority ${YELLOW}${local_ca_cert_name}${NC} and key"
 else
-  echo -e "${GREEN}Creating${NC} ${YELLOW}new${NC} certificate authority and key ${YELLOW}${local_ca_cert_name}${NC}"
+  echo -e "${GREEN}Creating${NC} ${YELLOW}new${NC} certificate authority ${YELLOW}${local_ca_cert_name}${NC} and key"
   certstrap --depot-path ${depot_path} init --passphrase '' --common-name $local_ca_cert_name
 fi
 
