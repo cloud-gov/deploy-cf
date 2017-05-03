@@ -104,7 +104,7 @@ elif [[ -n $1 && -n $2 ]]
 then
   echo -e "${YELLOW}Copying ${1},${2} to ${depot_path}${NC}"
   cp -p {$1,$2} ${depot_path}/.
-  local_ca_cert_name=$(echo $1 | sed 's/\.crt//')
+  local_ca_cert_name=$(basename $1 | sed 's/\.crt//')
   echo -e "${GREEN}Signing${NC} certificates with supplied certificate authority ${YELLOW}${local_ca_cert_name}${NC} and key"
 else
   echo -e "${GREEN}Creating${NC} ${YELLOW}new${NC} certificate authority ${YELLOW}${local_ca_cert_name}${NC} and key"
