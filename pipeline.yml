@@ -1,5 +1,391 @@
 ---
 jobs:
+- name: deploy-cf-development
+  serial_groups: [development]
+  serial: true
+  plan:
+  - aggregate:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-manifests-development
+      trigger: true
+    - get: common-development
+      trigger: true
+    - get: cf-stemcell
+      trigger: true
+    - get: cf-release
+      trigger: true
+    - get: uaa-customized-release
+      trigger: true
+    - get: java-buildpack-release
+      trigger: true
+    - get: java-offline-buildpack-release
+      trigger: true
+    - get: go-buildpack-release
+      trigger: true
+    - get: binary-buildpack-release
+      trigger: true
+    - get: nodejs-buildpack-release
+      trigger: true
+    - get: ruby-buildpack-release
+      trigger: true
+    - get: php-buildpack-release
+      trigger: true
+    - get: python-buildpack-release
+      trigger: true
+    - get: staticfile-buildpack-release
+      trigger: true
+    - get: dotnet-core-buildpack-release
+      trigger: true
+    - get: cg-s3-secureproxy-release
+      trigger: true
+  - task: cf-development-manifest
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+      - name: cf-manifests-development
+      - name: common-development
+      run:
+        path: cf-manifests-development/generate-development.sh
+        args:
+         - "common-development/decrypted-cf-development.yml"
+         - "generated-manifest/cf-development.yml"
+      outputs:
+      - name: generated-manifest
+  - put: cf-deployment-development
+    params: &deploy-params
+      cert: master-bosh-root-cert/master-bosh.crt
+      manifest: generated-manifest/cf-development.yml
+      releases:
+      - binary-buildpack-release/*.tgz
+      - cf-release/*.tgz
+      - cg-s3-secureproxy-release/*.tgz
+      - dotnet-core-buildpack-release/*.tgz
+      - go-buildpack-release/*.tgz
+      - java-buildpack-release/*.tgz
+      - java-offline-buildpack-release/*.tgz
+      - nodejs-buildpack-release/*.tgz
+      - php-buildpack-release/*.tgz
+      - python-buildpack-release/*.tgz
+      - ruby-buildpack-release/*.tgz
+      - staticfile-buildpack-release/*.tgz
+      - uaa-customized-release/*.tgz
+      stemcells:
+      - stemcell/*.tgz
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+- name: deploy-diego-development
+  serial: true
+  plan:
+  - aggregate:
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: master-bosh-root-cert
+      passed: [deploy-cf-development]
+    - get: pipeline-tasks
+    - get: diego-manifests
+      trigger: true
+    - get: diego-release-repo
+      params: {submodules: none}
+    - get: common-development
+      trigger: true
+    - get: cf-stemcell
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: diego-release
+      trigger: true
+    - get: cflinuxfs2-rootfs-release
+      trigger: true
+    - get: garden-runc-release
+      trigger: true
+  - aggregate:
+    - task: upload-cflinuxfs2-rootfs-release
+      file: pipeline-tasks/upload-release.yml
+      input_mapping:
+        release: cflinuxfs2-rootfs-release
+        certificate: master-bosh-root-cert
+      params:
+        BOSH_USERNAME: {{development-bosh-username}}
+        BOSH_PASSWORD: {{development-bosh-password}}
+        BOSH_TARGET: {{development-bosh-target}}
+        BOSH_CERT: master-bosh.crt
+    - task: upload-garden-runc-release
+      file: pipeline-tasks/upload-release.yml
+      input_mapping:
+        release: garden-runc-release
+        certificate: master-bosh-root-cert
+      params:
+        BOSH_USERNAME: {{development-bosh-username}}
+        BOSH_PASSWORD: {{development-bosh-password}}
+        BOSH_TARGET: {{development-bosh-target}}
+        BOSH_CERT: master-bosh.crt
+    - task: generate-diego-development-manifest
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: 18fgsa/concourse-task
+        inputs:
+        - name: master-bosh-root-cert
+        - name: common-development
+        - name: diego-manifests
+        - name: diego-release-repo
+        run:
+          path: diego-manifests/generate.sh
+          args:
+          - common-development/decrypted-diego-development.yml
+          - {{cf-development-bosh-deployment}}
+          - master-bosh-root-cert/master-bosh.crt
+          - {{development-bosh-target}}
+          - {{development-bosh-username}}
+          - {{development-bosh-password}}
+          - instance-count-overrides-staging.yml
+          - generated-manifest/diego-development.yml
+        outputs:
+        - name: generated-manifest
+  - put: diego-development-deployment
+    params:
+      cert: master-bosh-root-cert/master-bosh.crt
+      manifest: generated-manifest/diego-development.yml
+      stemcells:
+      - stemcell/*.tgz
+      releases:
+      - diego-release/*.tgz
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed Diego on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy Diego on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+- name: smoke-tests-development
+  serial_groups: [development]
+  plan:
+  - aggregate:
+    - get: binary-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-diego-development]
+    - get: diego-development-deployment
+      trigger: true
+      passed: [deploy-diego-development]
+    - get: cf-release
+      trigger: true
+      passed: [deploy-diego-development]
+    - get: cf-stemcell
+      trigger: true
+      passed: [deploy-diego-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: common
+      resource: master-bosh-root-cert
+      passed: [deploy-diego-development]
+    - get: dotnet-core-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: go-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: java-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: java-offline-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: nodejs-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: php-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: pipeline-tasks
+    - get: python-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: ruby-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: staticfile-buildpack-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [uaa-smoke-tests-development]
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{development-bosh-target}}
+      BOSH_USERNAME: {{development-bosh-username}}
+      BOSH_PASSWORD: {{development-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-development-bosh-deployment}}
+      BOSH_ERRAND: smoke_tests
+      BOSH_CACERT: common/master-bosh.crt
+      BOSH_FLAGS: "--keep-alive"
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+- name: acceptance-tests-development
+  serial_groups: [development]
+  plan:
+  - aggregate:
+    - get: binary-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: cf-deployment-development
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: diego-development-deployment
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: cf-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: cf-stemcell
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: common
+      trigger: true
+      resource: master-bosh-root-cert
+      passed: [smoke-tests-development]
+    - get: dotnet-core-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: go-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: java-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: java-offline-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: nodejs-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: php-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: pipeline-tasks
+    - get: python-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: ruby-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: staticfile-buildpack-release
+      trigger: true
+      passed: [smoke-tests-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [smoke-tests-development]
+  - task: run-errand
+    file: pipeline-tasks/bosh-errand.yml
+    params:
+      BOSH_TARGET: {{development-bosh-target}}
+      BOSH_USERNAME: {{development-bosh-username}}
+      BOSH_PASSWORD: {{development-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-development-bosh-deployment}}
+      BOSH_ERRAND: acceptance_tests
+      BOSH_CACERT: common/master-bosh.crt
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Acceptance Tests for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Acceptance Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+- name: uaa-smoke-tests-development
+  plan:
+  - aggregate:
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: pipeline-tasks
+    - get: uaa-customized-release
+      trigger: true
+      passed: [deploy-cf-development]
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: {{uaa-url-development}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
 - name: deploy-cf-staging
   serial_groups: [staging]
   serial: true
@@ -411,6 +797,15 @@ resources:
   source:
     url: {{slack-webhook-url}}
 
+- name: cf-manifests-development
+  type: git
+  source:
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-development}}
+    paths:
+    - cf-*.yml
+    - diego-*.yml
+
 - name: cf-manifests-staging
   type: git
   source:
@@ -418,7 +813,7 @@ resources:
     branch: {{cf-manifests-git-branch-staging}}
     paths:
     - cf-*.yml
-    - diego-stub.yml
+    - diego-*.yml
 
 - name: cf-manifests-prod
   type: git
@@ -427,14 +822,23 @@ resources:
     branch: {{cf-manifests-git-branch-prod}}
     paths:
     - cf-*.yml
-    - diego-stub.yml
+    - diego-*.yml
+
+- name: common-development
+  type: cg-common
+  source:
+    bucket_name: {{cf-private-development-bucket}}
+    secrets_files:
+    - cf-development.yml
+    - diego-development.yml
+    secrets_passphrase: {{cf-private-development-passphrase}}
+    bosh_cert: bosh.pem
+    region: {{aws-region}}
 
 - name: common-staging
   type: cg-common
   source:
     bucket_name: {{cf-private-staging-bucket}}
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
     secrets_file: cf-staging.yml
     secrets_passphrase: {{cf-private-staging-passphrase}}
     bosh_cert: bosh.pem
@@ -444,8 +848,6 @@ resources:
   type: cg-common
   source:
     bucket_name: {{cf-private-prod-bucket}}
-    access_key_id: {{ci-access-key-id}}
-    secret_access_key: {{ci-secret-access-key}}
     secrets_file: cf.yml
     secrets_passphrase: {{cf-private-prod-passphrase}}
     bosh_cert: bosh.pem
@@ -515,6 +917,53 @@ resources:
   source:
     repository: cloudfoundry/dotnet-core-buildpack-release
 
+- name: diego-manifests
+  type: git
+  source:
+    uri: {{diego-manifests-git-url}}
+    branch: {{diego-manifests-git-branch}}
+
+- name: diego-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/diego-release
+
+- name: diego-release-repo
+  type: git
+  source:
+    uri: {{diego-release-repo-git-url}}
+    branch: {{diego-release-repo-git-branch}}
+    paths:
+    - releases/diego-*.yml
+
+- name: diego-development-deployment
+  type: 18f-bosh-deployment
+  source:
+    target: {{development-bosh-target}}
+    username: {{development-bosh-username}}
+    password: {{development-bosh-password}}
+    deployment: {{diego-development-bosh-deployment}}
+    ignore_ssl: true
+
+- name: garden-runc-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/garden-runc-release
+
+- name: cflinuxfs2-rootfs-release
+  type: bosh-io-release
+  source:
+    repository: cloudfoundry/cflinuxfs2-rootfs-release
+
+- name: cf-deployment-development
+  type: 18f-bosh-deployment
+  source:
+    target: {{development-bosh-target}}
+    username: {{development-bosh-username}}
+    password: {{development-bosh-password}}
+    deployment: {{cf-development-bosh-deployment}}
+    ignore_ssl: true
+
 - name: cf-deployment-staging
   type: 18f-bosh-deployment
   source:
@@ -575,17 +1024,29 @@ resource_types:
 groups:
 - name: all
   jobs:
+  - deploy-cf-development
+  - deploy-diego-development
+  - uaa-smoke-tests-development
+  - smoke-tests-development
+  - acceptance-tests-development
   - deploy-cf-staging
-  - smoke-tests-staging
   - uaa-smoke-tests-staging
+  - smoke-tests-staging
   - acceptance-tests-staging
   - deploy-cf-prod
   - smoke-tests-prod
   - uaa-smoke-tests-production
+- name: development
+  jobs:
+  - deploy-cf-development
+  - deploy-diego-development
+  - uaa-smoke-tests-development
+  - smoke-tests-development
+  - acceptance-tests-development
 - name: staging
   jobs:
   - deploy-cf-staging
-  - smoke-tests-staging
+  - uaa-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
 - name: production
