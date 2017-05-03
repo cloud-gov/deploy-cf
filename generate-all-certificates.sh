@@ -96,6 +96,11 @@ else
   certstrap --depot-path ${depot_path} init --passphrase '' --common-name $local_ca_cert_name
 fi
 
+echo -e "${GREEN}Creating${NC} JWT key pairs"
+openssl genrsa -out ${depot_path}/jwt_privkey.pem 2048
+openssl genrsa -out ${depot_path}/jwt_privkey.pem 2048
+openssl rsa -pubout -in ${depot_path}/jwt_privkey.pem -out ${depot_path}/jwt_pubkey.pem
+
 echo -e "${GREEN}Creating${NC} Cloud Controller key and certificate pairs"
 cc_server_cn=cloud-controller-ng.service.cf.internal
 certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name $cc_server_cn
