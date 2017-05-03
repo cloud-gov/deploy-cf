@@ -1007,6 +1007,7 @@ properties:
     debug_addr: (( merge || nil ))
     drain_wait: (( merge || nil ))
     skip_oauth_tls_verification: (( merge || nil ))
+    load_balancer_healthy_threshold: 0
 
   routing_api:
     enabled: (( merge || nil ))
@@ -1015,23 +1016,12 @@ properties:
     listen_port: 80
     proxy_port: 85
 
-    # Custom gorouter health check
-    # Verify that gorouter returns expected 404
-    # TODO(jmcarp) find a better solution
+    # Expose gorouter health check for ELB
     custom_server_config: |-
       server {
         listen 81;
-
         location / {
-          error_page 404 =200 /health;
-          proxy_pass http://localhost:85/;
-          proxy_intercept_errors on;
-          proxy_redirect off;
-        }
-
-        location /health {
           proxy_pass http://localhost:8080/health;
-          internal;
         }
       }
 
