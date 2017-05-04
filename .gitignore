@@ -6,6 +6,7 @@ cf-secrets-staging.yml
 manifest-staging.yml
 manifest-staging.yml--
 credentials.yml
+credentials.dev.yml
 
 # Mac files
 .DS_Store
