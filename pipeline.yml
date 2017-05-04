@@ -75,7 +75,7 @@ jobs:
       - staticfile-buildpack-release/*.tgz
       - uaa-customized-release/*.tgz
       stemcells:
-      - stemcell/*.tgz
+      - cf-stemcell/*.tgz
   on_success:
     put: slack
     params:
@@ -174,7 +174,7 @@ jobs:
       cert: master-bosh-root-cert/master-bosh.crt
       manifest: generated-manifest/diego-development.yml
       stemcells:
-      - stemcell/*.tgz
+      - cf-stemcell/*.tgz
       releases:
       - diego-release/*.tgz
   on_success:
