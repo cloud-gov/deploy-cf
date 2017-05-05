@@ -6,11 +6,14 @@ SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 
 SECRETS=$SCRIPTPATH/cf-secrets.yml
 MANIFEST=$SCRIPTPATH/manifest.yml
-if [ ! -z "$1" ]; then
-  SECRETS=$1
-fi
-if [ ! -z "$2" ]; then
-  MANIFEST=$2
+
+declare -a files=($@)
+length=${#@}
+
+if [ $length -gt 0 ]
+then
+  SECRETS="${files[@]:0:length-1}"
+  MANIFEST="${files[@]:length-1}"
 fi
 
 spiff merge \

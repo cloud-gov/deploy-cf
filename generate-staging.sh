@@ -9,20 +9,11 @@ MANIFEST=$SCRIPTPATH/manifest-staging.yml
 
 declare -a files=($@)
 length=${#@}
-last_file=$length-1
 
 if [ $length -gt 0 ]
 then
-  SECRETS=''
-  for file in "${files[@]}"
-  do
-    if [[ $file == "${files[last_file]}" ]]
-    then
-      MANIFEST=$file
-    else
-      SECRETS="${SECRETS} ${file}"
-    fi
-  done
+  SECRETS="${files[@]:0:length-1}"
+  MANIFEST="${files[@]:length-1}"
 fi
 
 spiff merge \
