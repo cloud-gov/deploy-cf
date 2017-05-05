@@ -52,7 +52,8 @@ jobs:
       run:
         path: cf-manifests-development/generate-development.sh
         args:
-         - "common-development/decrypted-cf-development.yml"
+         - "common-development/decrypted-cf-development.main.yml"
+         - "common-development/decrypted-cf-development.clients.yml"
          - "generated-manifest/cf-development.yml"
       outputs:
       - name: generated-manifest
