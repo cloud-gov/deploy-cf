@@ -13,7 +13,7 @@ then
   eval MANIFEST=\${$#}
   for file in "$@"
   do
-    if [[ $file != "${MANIFEST}" ]]
+    if test $file != "${MANIFEST}"
     then
       SECRETS="${SECRETS} ${file}"
     fi
