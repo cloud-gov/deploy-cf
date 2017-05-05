@@ -6,11 +6,23 @@ SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 
 SECRETS=$SCRIPTPATH/cf-secrets-staging.yml
 MANIFEST=$SCRIPTPATH/manifest-staging.yml
-if [ ! -z "$1" ]; then
-  SECRETS=$1
-fi
-if [ ! -z "$2" ]; then
-  MANIFEST=$2
+
+declare -a files=($@)
+length=${#@}
+last_file=$length-1
+
+if [ $length -gt 0 ]
+then
+  SECRETS=''
+  for file in "${files[@]}"
+  do
+    if [[ $file == "${files[last_file]}" ]]
+    then
+      MANIFEST=$file
+    else
+      SECRETS="${SECRETS} ${file}"
+    fi
+  done
 fi
 
 spiff merge \
