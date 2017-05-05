@@ -7,13 +7,17 @@ SCRIPTPATH=$( cd $(dirname $0) ; pwd -P )
 SECRETS=$SCRIPTPATH/cf-secrets-development.yml
 MANIFEST=$SCRIPTPATH/manifest-development.yml
 
-declare -a files=($@)
-length=${#@}
-
-if [ $length -gt 0 ]
+if [ "${#@}" -gt 0 ]
 then
-  SECRETS="${files[@]:0:length-1}"
-  MANIFEST="${files[@]:length-1}"
+  SECRETS=''
+  eval MANIFEST=\${$#}
+  for file in "$@"
+  do
+    if [[ $file != "${MANIFEST}" ]]
+    then
+      SECRETS="${SECRETS} ${file}"
+    fi
+  done
 fi
 
 spiff merge \
