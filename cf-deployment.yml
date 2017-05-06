@@ -6,7 +6,7 @@ meta:
   environment: ~
 
   releases:
-  - {name: cf, version: 218}
+  - {name: cf, version: latest}
   - {name: uaa-customized, version: latest}
   - {name: java-buildpack, version: latest}
   - {name: java-offline-buildpack, version: latest}
