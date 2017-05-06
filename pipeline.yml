@@ -357,7 +357,8 @@ jobs:
       run:
         path: cf-manifests-staging/generate-staging.sh
         args:
-          - "common/secrets.yml"
+          - "common/decrypted-cf-staging.main.yml"
+          - "common/decrypted-cf-staging.external.yml"
           - "cf-manifest/manifest.yml"
       outputs:
       - name: cf-manifest
@@ -609,7 +610,10 @@ jobs:
       - name: common
       run:
         path: cf-manifests-prod/generate.sh
-        args: ["common/secrets.yml", "cf-manifest/manifest.yml"]
+        args:
+        - "common/decrypted-cf.main.yml"
+        - "common/decrypted-cf.external.yml"
+        - "cf-manifest/manifest.yml"]
       outputs:
       - name: cf-manifest
   - put: cf-deployment-prod
@@ -761,7 +765,9 @@ resources:
   type: cg-common
   source:
     bucket_name: {{cf-private-staging-bucket}}
-    secrets_file: cf-staging.yml
+    secrets_files:
+    - cf-staging.main.yml
+    - cf-staging.external.yml
     secrets_passphrase: {{cf-private-staging-passphrase}}
     bosh_cert: bosh.pem
     region: {{aws-region}}
@@ -770,7 +776,9 @@ resources:
   type: cg-common
   source:
     bucket_name: {{cf-private-prod-bucket}}
-    secrets_file: cf.yml
+    secrets_files:
+    - cf.main.yml
+    - cf.external.yml
     secrets_passphrase: {{cf-private-prod-passphrase}}
     bosh_cert: bosh.pem
     region: {{aws-region}}
