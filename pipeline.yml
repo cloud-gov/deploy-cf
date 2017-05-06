@@ -727,7 +727,6 @@ resources:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-development}}
     paths:
-    - generate-development.sh
     - cf-*.yml
     - diego-*.yml
 
