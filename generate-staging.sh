@@ -20,7 +20,6 @@ then
   done
 fi
 
-
 spiff merge \
   $SCRIPTPATH/cf-deployment.yml \
   $SCRIPTPATH/cf-resource-pools.yml \
