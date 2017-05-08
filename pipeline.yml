@@ -613,7 +613,7 @@ jobs:
         args:
         - "common/decrypted-cf.main.yml"
         - "common/decrypted-cf.external.yml"
-        - "cf-manifest/manifest.yml"]
+        - "cf-manifest/manifest.yml"
       outputs:
       - name: cf-manifest
   - put: cf-deployment-prod
