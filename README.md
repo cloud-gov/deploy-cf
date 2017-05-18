@@ -24,3 +24,10 @@ Wherever you have your bosh installation run:
 1. `CREATE EXTENSION "uuid-ossp"` on the Postgres RDS instance for ccdb
 1. `bosh deployment manifest.yml`
 1. `bosh deploy`
+
+### How to generate all certificates:
+
+Run the certificate generation script. For more information use the `--help`
+flag.
+
+1. `./generate-all-certificates.sh`
