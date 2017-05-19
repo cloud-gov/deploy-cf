@@ -534,7 +534,7 @@ properties:
         access-token-validity: 600
         refresh-token-validity: 259200
         secret: (( merge ))
-        redirect-uri: "https://**"
+        redirect-uri: "https://**.18f.gov/**"
         autoapprove: true
       sandbox-bot:
         authorized-grant-types: client_credentials
