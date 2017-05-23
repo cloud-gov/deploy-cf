@@ -161,14 +161,6 @@ meta:
   - name: nats_stream_forwarder
     release: (( meta.release.name ))
 
-  dea_templates:
-  - name: consul_agent
-    release: (( meta.consul_release.name ))
-  - name: dea_next
-    release: (( meta.release.name ))
-  - name: dea_logging_agent
-    release: (( meta.release.name ))
-
   router_z1_templates:
   - name: secureproxy
     release: secureproxy
@@ -296,35 +288,6 @@ meta:
   login_templates:
   - name: login
     release: (( meta.release.name ))
-
-  hm9000_routes:
-  - name: hm9000
-    port: 5155
-    registration_interval: 20s
-    uris:
-    - (( "hm9000." .properties.domain ))
-
-  hm9000_z1_templates:
-  - name: consul_agent
-    release: (( meta.consul_release.name ))
-  - name: hm9000
-    release: (( meta.release.name ))
-  - name: route_registrar
-    release: (( meta.release.name ))
-    consumes:
-      nats:
-        from: nats_z1
-
-  hm9000_z2_templates:
-  - name: consul_agent
-    release: (( meta.consul_release.name ))
-  - name: hm9000
-    release: (( meta.release.name ))
-  - name: route_registrar
-    release: (( meta.release.name ))
-    consumes:
-      nats:
-        from: nats_z2
 
   loggregator_templates:
   - name: consul_agent
@@ -555,40 +518,6 @@ jobs:
         zone: z1
     update: (( merge || empty_hash ))
 
-  - name: hm9000_z1
-    templates: (( merge || meta.hm9000_z1_templates meta.metron_agent_templates ))
-    instances: 1
-    resource_pool: large_z1
-    networks:
-      - name: cf1
-    properties:
-      consul:
-        agent:
-          services:
-            hm9000: {}
-      metron_agent:
-        zone: z1
-      route_registrar:
-        routes: (( merge || meta.hm9000_routes ))
-    update: (( merge || empty_hash ))
-
-  - name: hm9000_z2
-    templates: (( merge || meta.hm9000_z2_templates meta.metron_agent_templates ))
-    instances: 1
-    resource_pool: large_z2
-    networks:
-      - name: cf2
-    properties:
-      consul:
-        agent:
-          services:
-            hm9000: {}
-      metron_agent:
-        zone: z2
-      route_registrar:
-        routes: (( merge || meta.hm9000_routes ))
-    update: (( merge || empty_hash ))
-
   - name: api_z1
     templates: (( merge || meta.api_z1_templates meta.metron_agent_templates ))
     instances: 1
@@ -657,56 +586,6 @@ jobs:
         zone: z2
       nfs_server: (( meta.nfs_server ))
     update: (( merge || empty_hash ))
-
-  - name: runner_z1
-    templates: (( merge || meta.dea_templates meta.metron_agent_templates ))
-    instances: 6
-    resource_pool: runner_z1
-    networks:
-      - name: cf1
-        static_ips: ~
-    properties:
-      consul:
-        agent:
-          services:
-            dea:
-              check:
-                name: dns_health_check
-                script: /var/vcap/jobs/dea_next/bin/dns_health_check
-                interval: 5m
-                status: passing
-      dea_next:
-        zone: (( merge || "z1" ))
-      metron_agent:
-        zone: z1
-    persistent_disk_pool: medium
-    update:
-      max_in_flight: 1
-
-  - name: runner_z2
-    templates: (( merge || meta.dea_templates meta.metron_agent_templates ))
-    instances: 6
-    resource_pool: runner_z2
-    networks:
-      - name: cf2
-        static_ips: ~
-    properties:
-      consul:
-        agent:
-          services:
-            dea:
-              check:
-                name: dns_health_check
-                script: /var/vcap/jobs/dea_next/bin/dns_health_check
-                interval: 5m
-                status: passing
-      dea_next:
-        zone: (( merge || "z2" ))
-      metron_agent:
-        zone: z2
-    persistent_disk_pool: medium
-    update:
-      max_in_flight: 1
 
   - name: loggregator_z1
     templates: (( merge || meta.loggregator_templates ))
@@ -919,38 +798,6 @@ properties:
       username: (( .properties.nats.user ))
       password: (( .properties.nats.password ))
 
-  dea_next:
-    instance_bandwidth_limit: (( merge || nil ))
-    staging_bandwidth_limit: (( merge || nil ))
-    memory_mb: (( merge ))
-    memory_overcommit_factor: 10
-    disk_mb: (( merge ))
-    disk_overcommit_factor: 10
-    staging_disk_inode_limit: 200000
-    instance_disk_inode_limit: 200000
-    deny_networks: (( merge || [] ))
-    allow_networks: (( merge || [] ))
-    kernel_network_tuning_enabled: true
-    directory_server_protocol: https
-    evacuation_bail_out_time_in_seconds: 600
-    logging_level: info
-    staging_disk_limit_mb: 4096
-    staging_memory_limit_mb: 2048
-    default_health_check_timeout: 60
-    advertise_interval_in_seconds: 5
-    heartbeat_interval_in_seconds: 10
-    rlimit_core: (( merge || 0 ))
-    allow_host_access: ~
-    mtu: (( merge || nil ))
-    post_setup_hook: null
-
-    ca_cert:
-    client_cert:
-    client_key:
-    enable_ssl: false
-    server_cert:
-    server_key:
-
   loggregator:
     <<: (( merge ))
     etcd:
@@ -969,10 +816,6 @@ properties:
 
   cc: (( merge ))
   ccdb: (( merge ))
-  hm9000: 
-    <<: (( merge ))
-    etcd:
-      machines: (( properties.etcd.machines ))
 
   uaa: (( merge ))
   uaadb: (( merge ))

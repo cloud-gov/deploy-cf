@@ -264,11 +264,6 @@ properties:
 
     dea_use_https: false
 
-  hm9000:
-    <<: (( merge || nil ))
-    url: (( "https://hm9000." domain ))
-    port: 5155
-
   login:
     branding: ~
     enabled: true

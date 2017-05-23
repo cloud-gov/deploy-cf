@@ -134,17 +134,6 @@ mv -f ${depot_path}/$consul_server_cn.crt ${depot_path}/consul_server.crt
 certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name 'consul agent'
 certstrap --depot-path ${depot_path} sign consul_agent --CA $local_ca_cert_name
 
-echo -e "${GREEN}Creating${NC} HM9000 key and certificate pairs"
-hm9000_server_cn=listener-hm9000.service.cf.internal
-hm9000_server_domain='*.listener-hm9000.service.cf.internal'
-certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name $hm9000_server_cn --domain "${hm9000_server_domain},${hm9000_server_cn}"
-certstrap --depot-path ${depot_path} sign $hm9000_server_cn --CA $local_ca_cert_name
-mv -f ${depot_path}/$hm9000_server_cn.key ${depot_path}/hm9000_server.key
-mv -f ${depot_path}/$hm9000_server_cn.csr ${depot_path}/hm9000_server.csr
-mv -f ${depot_path}/$hm9000_server_cn.crt ${depot_path}/hm9000_server.crt
-certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name 'hm9000_client'
-certstrap --depot-path ${depot_path} sign hm9000_client --CA $local_ca_cert_name
-
 echo -e "${GREEN}Creating${NC} UAA key and certificate pairs"
 uaa_server_cn="uaa.service.cf.internal"
 certstrap --depot-path "${depot_path}" request-cert --passphrase '' --common-name "${uaa_server_cn}"
