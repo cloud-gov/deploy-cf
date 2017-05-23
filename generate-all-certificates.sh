@@ -30,14 +30,14 @@ if [[ -n $1 && $1 =~ (-g|--grab-cert)$ ]]
 then
   if [[ -z $CG_PIPELINE ]]
   then
-    echo -e "Please set a ${YELLOW}\$CG_PIPELINE${NC} variable pointing to a clone of ${YELLOW}https://github.com/18F/cg-pipeline-tasks${NC}"
+    echo -e "${RED}ERROR${NC} Please set a ${YELLOW}\$CG_PIPELINE${NC} variable pointing to a clone of ${YELLOW}https://github.com/18F/cg-pipeline-tasks${NC}"
     echo -e "eg, ${PURPLE}CG_PIPELINE=~/dev/cg-pipeline-tasks ./generate-all-certificates.sh --grab-cert${NC}"
     exit 98
   fi
 
   if [[ -z $ci_env ]]
   then
-    echo -e "Please set a ${YELLOW}\$ci_env${NC} variable to continue from ${YELLOW}fly targets${NC}"
+    echo -e "${RED}ERROR${NC} Please set a ${YELLOW}\$ci_env${NC} variable to continue from ${YELLOW}fly targets${NC}"
     echo -e "eg, ${PURPLE}ci_env=fr ./generate-all-certificates.sh --grab-cert${NC}"
     exit 99
   fi
@@ -110,6 +110,8 @@ else
   echo -e "${GREEN}Creating${NC} ${YELLOW}new${NC} certificate authority ${YELLOW}${local_ca_cert_name}${NC} and key"
   certstrap --depot-path ${depot_path} init --passphrase '' --common-name $local_ca_cert_name
 fi
+
+echo -e "${CYAN}Generating${NC} all Cloud Foundry key and certificate pairs"
 
 echo -e "${GREEN}Creating${NC} JWT key pairs"
 openssl genrsa -out ${depot_path}/jwt_privkey.pem 2048
