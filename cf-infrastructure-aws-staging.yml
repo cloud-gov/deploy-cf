@@ -51,12 +51,6 @@ properties:
   uaa:
     port: 8081
 
-  dea_next:
-    deny_networks:
-      - 169.254.0.0/16 # AWS Status
-      - 10.9.1.0/16
-    allow_networks: (( merge || ["10.9.1.2/32","10.9.2.2/32", "10.9.3.0/24", "10.9.4.0/24"] )) # Amazon DNS and services
-
 compilation:
   cloud_properties:
     instance_type: c3.large
@@ -216,26 +210,6 @@ resource_pools:
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
 
-  - name: runner_z1
-    cloud_properties:
-      instance_type: m3.large
-      ephemeral_disk:
-        size: 65_000
-        type: gp2
-        encrypted: true
-      availability_zone: (( meta.zones.z1 ))
-      key_name: (( meta.aws.key_name ))
-
-  - name: runner_z2
-    cloud_properties:
-      instance_type: m3.medium
-      ephemeral_disk:
-        size: 65_000
-        type: gp2
-        encrypted: true
-      availability_zone: (( meta.zones.z2 ))
-      key_name: (( meta.aws.key_name ))
-
   - name: router_z1
     cloud_properties:
       instance_type: t2.medium
@@ -328,15 +302,6 @@ jobs:
     networks:
       - name: cf2
         static_ips: (( static_ips(5, 6, 15, 16, 17, 18, 19, 20) ))
-
-  - name: hm9000_z2
-    instances: 0
-
-  - name: runner_z1
-    instances: 1
-
-  - name: runner_z2
-    instances: 0
 
   - name: loggregator_z1
     instances: 0
