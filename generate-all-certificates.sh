@@ -10,11 +10,11 @@ YELLOW='\033[0;33m'
 PURPLE='\033[0;35m'
 NC='\033[0m'
 
-if [[ -n $1 && $1 =~ (-h|--help)$ ]] 
+if [[ -n $1 && $1 =~ (-h|--help)$ ]]
 then
   echo "
   ./generate-all-certificates [--help, -h] [--grab-cert, -g] [<ca-cert> <ca-private-key>]
-  
+
   For generating all the Cloud Foundry certificates and private keys based on a
   'single' root CA certificate. All of these certstrap commands have been taken
   from various \`cf-release/scripts/generate-*\` files.
