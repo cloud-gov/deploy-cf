@@ -189,3 +189,59 @@ certstrap --depot-path ${depot_path} sign reverselogproxy --CA $local_ca_cert_na
 echo -e "${GREEN}Creating${NC} Syslog drain binder key and certificate pairs"
 certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name syslogdrainbinder
 certstrap --depot-path ${depot_path} sign syslogdrainbinder --CA $local_ca_cert_name
+
+echo -e "${CYAN}Generating${NC} all Diego key and certificate pairs"
+
+echo -e "${GREEN}Generating${NC} BBS server key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name bbs.service.cf.internal --domain '*.bbs.service.cf.internal,bbs.service.cf.internal'
+certstrap --depot-path ${depot_path} sign bbs.service.cf.internal --CA $local_ca_cert_name
+mv -f ${depot_path}/bbs.service.cf.internal.key ${depot_path}/bbs_server.key
+mv -f ${depot_path}/bbs.service.cf.internal.csr ${depot_path}/bbs_server.csr
+mv -f ${depot_path}/bbs.service.cf.internal.crt ${depot_path}/bbs_server.crt
+
+echo -e "${GREEN}Generating${NC} BBS client key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name 'bbs client'
+certstrap --depot-path ${depot_path} sign bbs_client --CA $local_ca_cert_name
+
+echo -e "${GREEN}Generating${NC} REP server key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name cell.service.cf.internal --domain '*.cell.service.cf.internal,cell.service.cf.internal'
+certstrap --depot-path ${depot_path} sign cell.service.cf.internal --CA $local_ca_cert_name
+mv -f ${depot_path}/cell.service.cf.internal.key ${depot_path}/rep_server.key
+mv -f ${depot_path}/cell.service.cf.internal.csr ${depot_path}/rep_server.csr
+mv -f ${depot_path}/cell.service.cf.internal.crt ${depot_path}/rep_server.crt
+
+echo -e "${GREEN}Generating${NC} REP client key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name 'rep client'
+certstrap --depot-path ${depot_path} sign rep_client --CA $local_ca_cert_name
+
+echo -e "${GREEN}Generating${NC} Auctioneer server key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name auctioneer.service.cf.internal --domain 'auctioneer.service.cf.internal'
+certstrap --depot-path ${depot_path} sign auctioneer.service.cf.internal --CA $local_ca_cert_name
+mv -f ${depot_path}/auctioneer.service.cf.internal.key ${depot_path}/autioneer_server.key
+mv -f ${depot_path}/auctioneer.service.cf.internal.csr ${depot_path}/autioneer_server.csr
+mv -f ${depot_path}/auctioneer.service.cf.internal.crt ${depot_path}/autioneer_server.crt
+
+echo -e "${GREEN}Generating${NC} Auctioneer client key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name 'auctioneer client'
+certstrap --depot-path ${depot_path} sign auctioneer_client --CA $local_ca_cert_name
+
+echo -e "${GREEN}Generating${NC} TPS client key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name tps_watcher
+certstrap --depot-path ${depot_path} sign tps_watcher --CA $local_ca_cert_name
+mv -f "${depot_path}/tps_watcher.key" "${depot_path}/tps_client.key"
+mv -f "${depot_path}/tps_watcher.csr" "${depot_path}/tps_client.csr"
+mv -f "${depot_path}/tps_watcher.crt" "${depot_path}/tps_client.crt"
+
+echo -e "${GREEN}Generating${NC} CC Uploader server key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name cc-uploader.service.cf.internal
+certstrap --depot-path ${depot_path} sign cc-uploader.service.cf.internal --CA $local_ca_cert_name
+mv -f "${depot_path}/cc-uploader.service.cf.internal.key" "${depot_path}/cc_uploader_server.key"
+mv -f "${depot_path}/cc-uploader.service.cf.internal.csr" "${depot_path}/cc_uploader_server.csr"
+mv -f "${depot_path}/cc-uploader.service.cf.internal.crt" "${depot_path}/cc_uploader_server.crt"
+
+echo -e "${GREEN}Generating${NC} CC Uploader client key and certificate pairs"
+certstrap --depot-path ${depot_path} request-cert --passphrase '' --common-name cc_uploader
+certstrap --depot-path ${depot_path} sign cc_uploader --CA $local_ca_cert_name
+mv -f "${depot_path}/cc_uploader.key" "${depot_path}/cc_uploader_client.key"
+mv -f "${depot_path}/cc_uploader.csr" "${depot_path}/cc_uploader_client.csr"
+mv -f "${depot_path}/cc_uploader.crt" "${depot_path}/cc_uploader_client.crt"
