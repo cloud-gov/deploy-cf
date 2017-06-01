@@ -327,7 +327,22 @@ properties:
 
     scim:
       userids_enabled: (( merge || true ))
-      users: (( merge ))
+      users:
+      - name: sys-tester
+        groups:
+        - scim.write
+        - openid
+        - scim.read
+        - cloud_controller.admin
+        - doppler.firehose
+      - name: user-tester
+        groups:
+        - openid
+      - name: broker-deployer
+        groups:
+        - openid
+        - cloud_controller.admin
+      - <<: (( merge ))
       groups: ~
       external_groups: ~
 
@@ -592,6 +607,8 @@ properties:
   acceptance_tests:
     <<: (( merge ))
     backend: diego
+    admin_user: sys-tester
+    existing_user: user-tester
     include_apps: true
     include_services: true
     include_internet_dependent: true
