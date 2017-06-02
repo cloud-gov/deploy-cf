@@ -1,9 +1,20 @@
-provider "cloudfoundry" {
-  api_endpoint = "https://api.dev.us-gov-west-1.aws-us-gov.cloud.gov"
-  username = ""
-  password = ""
-  verbose = true
+variable "remote_state_bucket" {}
+variable "iaas_stack_name" {}
+
+terraform {
+  backend "s3" {}
 }
+
+provider "cloudfoundry" {}
+
+data "terraform_remote_state" "iaas" {
+  backend = "s3"
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key = "${var.iaas_stack_name}/terraform.tfstate"
+  }
+}
+
 
 resource "cloudfoundry_sec_group" "public_networks" {
   name = "public_networks"
@@ -61,20 +72,26 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
 
   # RDS
   rules {
-    protocol = "all"
-    destination = "x.x.20.0-x.x.21.255"
+    protocol = "tcp"
+    destination = "${data.terraform_remote_state.iaas.rds_subnet_cidr_az1}"
+    ports = "5432,3306"
+  }
+  rules {
+    protocol = "tcp"
+    destination = "${data.terraform_remote_state.iaas.rds_subnet_cidr_az2}"
+    ports = "5432,3306"
   }
 
-  # services
+  # Kubernetes
   rules {
-    protocol = "all"
-    destination = "x.x.30.0-x.x.31.255"
+    protocol = "tcp"
+    destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az1}"
+    ports = "30000-32767"
   }
-
-  # public; I think we don't need this
   rules {
-    protocol = "all"
-    destination = "x.x.100.0-x.x.101.255"
+    protocol = "tcp"
+    destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az2}"
+    ports = "30000-32767"
   }
 
 }
@@ -94,8 +111,8 @@ resource "cloudfoundry_sec_group" "metrics-network" {
   name = "metrics-network"
   rules {
     protocol = "tcp"
+    destination = "${data.terraform_remote_state.iaas.monitoring_ip_address}"
     ports = "5555"
-    destination = "x.x.x.x/32"
   }
 }
 

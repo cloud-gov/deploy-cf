@@ -52,9 +52,9 @@ jobs:
       run:
         path: cf-manifests-development/generate-development.sh
         args:
-         - "common-development/decrypted-cf-development.main.yml"
-         - "common-development/decrypted-cf-development.external.yml"
-         - "generated-manifest/cf-development.yml"
+        - "common-development/decrypted-cf-development.main.yml"
+        - "common-development/decrypted-cf-development.external.yml"
+        - "generated-manifest/cf-development.yml"
       outputs:
       - name: generated-manifest
   - put: cf-deployment-development
@@ -196,6 +196,50 @@ jobs:
       channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
+- name: terraform-plan-development
+  plan:
+  - aggregate:
+    - get: terraform-templates
+      resource: cf-manifests-development
+      passed: [deploy-cf-development]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-development
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform
+      STACK_NAME: cf-development
+      S3_TFSTATE_BUCKET: {{tf-state-bucket}}
+      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+      AWS_DEFAULT_REGION: {{aws-default-region}}
+      CF_API: {{cf-api-url-development}}
+      CF_CLIENT_ID: {{cf-client-id-development}}
+      CF_CLIENT_SECRET: {{cf-client-secret-development}}
+      TF_VAR_remote_state_bucket: {{tf-state-bucket}}
+      TF_VAR_iaas_stack_name: development
+  - put: slack
+    params:
+      text_file: message/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+- name: terraform-apply-development
+  plan:
+  - aggregate:
+    - get: terraform-templates
+      resource: cf-manifests-development
+      passed: [terraform-plan-development]
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-development
+      TERRAFORM_ACTION: apply
 - name: smoke-tests-development
   serial_groups: [development]
   plan:
@@ -729,6 +773,7 @@ resources:
     paths:
     - cf-*.yml
     - diego-*.yml
+    - terraform/*
 
 - name: cf-manifests-staging
   type: git
@@ -954,6 +999,8 @@ groups:
 - name: all
   jobs:
   - deploy-cf-development
+  - terraform-plan-development
+  - terraform-apply-development
   - deploy-diego-development
   - uaa-smoke-tests-development
   - smoke-tests-development
@@ -967,6 +1014,8 @@ groups:
 - name: development
   jobs:
   - deploy-cf-development
+  - terraform-plan-development
+  - terraform-apply-development
   - deploy-diego-development
   - uaa-smoke-tests-development
   - smoke-tests-development
