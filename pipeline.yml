@@ -120,15 +120,15 @@ jobs:
       passed: [deploy-cf-development]
     - get: diego-release
       trigger: true
-    - get: cflinuxfs2-rootfs-release
+    - get: cflinuxfs2-release
       trigger: true
     - get: garden-runc-release
       trigger: true
   - aggregate:
-    - task: upload-cflinuxfs2-rootfs-release
+    - task: upload-cflinuxfs2-release
       file: pipeline-tasks/upload-release.yml
       input_mapping:
-        release: cflinuxfs2-rootfs-release
+        release: cflinuxfs2-release
         certificate: master-bosh-root-cert
       params:
         BOSH_USERNAME: {{development-bosh-username}}
@@ -879,10 +879,10 @@ resources:
   source:
     repository: cloudfoundry/garden-runc-release
 
-- name: cflinuxfs2-rootfs-release
+- name: cflinuxfs2-release
   type: bosh-io-release
   source:
-    repository: cloudfoundry/cflinuxfs2-rootfs-release
+    repository: cloudfoundry/cflinuxfs2-release
 
 - name: cf-deployment-development
   type: 18f-bosh-deployment
