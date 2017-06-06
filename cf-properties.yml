@@ -328,7 +328,23 @@ properties:
     scim:
       userids_enabled: (( merge || true ))
       users:
+      - name: admin
+        password: (( merge ))
+        groups:
+        - scim.write
+        - openid
+        - scim.read
+        - cloud_controller.admin
+        - doppler.firehose
+      - name: services
+        password: (( merge ))
+        groups:
+        - scim.write
+        - openid
+        - scim.read
+        - cloud_controller.admin
       - name: sys-tester
+        password: (( merge ))
         groups:
         - scim.write
         - openid
@@ -336,13 +352,19 @@ properties:
         - cloud_controller.admin
         - doppler.firehose
       - name: user-tester
+        password: (( merge ))
         groups:
         - openid
       - name: broker-deployer
+        password: (( merge ))
         groups:
         - openid
         - cloud_controller.admin
-      - <<: (( merge ))
+      - name: logsearch-firehose-ingestor
+        password: (( merge ))
+        groups:
+        - cloud_controller.admin
+        - doppler.firehose
       groups: ~
       external_groups: ~
 
