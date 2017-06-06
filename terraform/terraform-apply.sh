@@ -24,14 +24,4 @@ if [ -z "${CF_TOKEN}" ]; then
 fi
 
 # Execute the terraform action, the cloudfoundry provider will use CF_API and CF_TOKEN to authenticate
-export PLAN_FILE=./terraform.tfplan
 TERRAFORM_BIN="terraform9" ./pipeline-tasks/terraform-apply.sh
-
-# If planning then output changes to a file or make an empty file if no changes exist.
-# The slack notification resource will only be triggered if the plan has changes and requires review
-if [ "${TERRAFORM_ACTION}" == "plan" ]; then
-	set +e
-	terraform9 show "${PLAN_FILE}" | grep -v "This plan does nothing." > ./message/message.txt
-fi
-
-exit 0
