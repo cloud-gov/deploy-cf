@@ -125,6 +125,8 @@ jobs:
       trigger: true
     - get: garden-runc-release
       trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-development
   - aggregate:
     - task: upload-cflinuxfs2-release
       file: pipeline-tasks/upload-release.yml
@@ -158,6 +160,7 @@ jobs:
         - name: common-development
         - name: diego-manifests
         - name: diego-release-repo
+        - name: terraform-yaml
         run:
           path: diego-manifests/generate.sh
           args:
@@ -169,6 +172,7 @@ jobs:
           - {{development-bosh-password}}
           - instance-count-overrides-staging.yml
           - isolation-cells-development.yml
+          - terraform-yaml/state.yml
           - generated-manifest/diego-development.yml
         outputs:
         - name: generated-manifest
@@ -908,6 +912,13 @@ resources:
     uri: {{diego-manifests-git-url}}
     branch: {{diego-manifests-git-branch-development}}
 
+- name: terraform-yaml-development
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    versioned_file: {{tf-state-file-development}}
+    region_name: {{aws-region}}
+
 - name: diego-release
   type: bosh-io-release
   source:
@@ -1005,6 +1016,10 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/cg-common-resource
+- name: s3-iam
+  type: docker-image
+  source:
+    repository: 18fgsa/s3-resource
 
 groups:
 - name: all
