@@ -109,6 +109,7 @@ jobs:
       passed: [deploy-cf-development]
     - get: pipeline-tasks
     - get: diego-manifests
+      resource: diego-manifests-development
       trigger: true
     - get: diego-release-repo
       params: {submodules: none}
@@ -167,6 +168,7 @@ jobs:
           - {{development-bosh-username}}
           - {{development-bosh-password}}
           - instance-count-overrides-staging.yml
+          - isolation-cells-development.yml
           - generated-manifest/diego-development.yml
         outputs:
         - name: generated-manifest
@@ -178,6 +180,15 @@ jobs:
       - cf-stemcell/*.tgz
       releases:
       - diego-release/*.tgz
+  - task: update-isolation-segments
+    file: diego-manifests/update-isolation-segments.yml
+    params:
+      CF_API_URL: {{cf-api-url-development}}
+      CF_USERNAME: {{cf-username-development}}
+      CF_PASSWORD: {{cf-password-development}}
+      PLATFORM_ISOLATION_SEGMENT: {{platform-isolation-segment-development}}
+      PLATFORM_ORGANIZATION: {{platform-organization-development}}
+      PLATFORM_SPACE: {{platform-space-development}}
   on_success:
     put: slack
     params:
@@ -891,11 +902,11 @@ resources:
   source:
     repository: cloudfoundry/dotnet-core-buildpack-release
 
-- name: diego-manifests
+- name: diego-manifests-development
   type: git
   source:
     uri: {{diego-manifests-git-url}}
-    branch: {{diego-manifests-git-branch}}
+    branch: {{diego-manifests-git-branch-development}}
 
 - name: diego-release
   type: bosh-io-release
