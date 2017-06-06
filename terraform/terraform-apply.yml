@@ -9,7 +9,7 @@ inputs:
 - name: terraform-templates
 - name: pipeline-tasks
 outputs:
-- name: message
+- name: terraform-state
 
 run:
   path: terraform-templates/terraform/terraform-apply.sh
