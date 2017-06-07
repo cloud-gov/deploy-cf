@@ -15,7 +15,6 @@ data "terraform_remote_state" "iaas" {
   }
 }
 
-
 resource "cloudfoundry_sec_group" "public_networks" {
   name = "public_networks"
   on_staging = true
@@ -73,11 +72,13 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
   # RDS
   rules {
     protocol = "tcp"
+    description = "Allow access to RDS"
     destination = "${data.terraform_remote_state.iaas.rds_subnet_cidr_az1}"
     ports = "5432,3306"
   }
   rules {
     protocol = "tcp"
+    description = "Allow access to RDS"
     destination = "${data.terraform_remote_state.iaas.rds_subnet_cidr_az2}"
     ports = "5432,3306"
   }
@@ -85,15 +86,16 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
   # Kubernetes
   rules {
     protocol = "tcp"
+    description = "Allow access to kubernetes NodePorts for managed services"
     destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az1}"
     ports = "30000-32767"
   }
   rules {
     protocol = "tcp"
+    description = "Allow access to kubernetes NodePorts for managed services"
     destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az2}"
     ports = "30000-32767"
   }
-
 }
 
 resource "cloudfoundry_sec_group" "brokers" {
@@ -102,8 +104,20 @@ resource "cloudfoundry_sec_group" "brokers" {
     protocol = "tcp"
     destination = "169.254.169.254"
     ports = "80"
-    log = false
     description = "AWS Metadata Service"
+  }
+
+  rules {
+    protocol = "tcp"
+    description = "Allow access to kubernetes API"
+    destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az1}"
+    ports = "6443"
+  }
+  rules {
+    protocol = "tcp"
+    description = "Allow access to kubernetes API"
+    destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az2}"
+    ports = "6443"
   }
 }
 
@@ -111,6 +125,7 @@ resource "cloudfoundry_sec_group" "metrics-network" {
   name = "metrics-network"
   rules {
     protocol = "tcp"
+    description = "Allow access to riemann"
     destination = "${data.terraform_remote_state.iaas.monitoring_ip_address}"
     ports = "5555"
   }
@@ -122,13 +137,13 @@ resource "cloudfoundry_organization" "cloud-gov" {
 }
 
 resource "cloudfoundry_space" "services" {
-    name = "services"
-    org_id = "${cloudfoundry_organization.cloud-gov.id}"
-    sec_groups = ["${cloudfoundry_sec_group.brokers.id}"]
+  name = "services"
+  org_id = "${cloudfoundry_organization.cloud-gov.id}"
+  sec_groups = ["${cloudfoundry_sec_group.brokers.id}"]
 }
 
 resource "cloudfoundry_space" "firehose" {
-    name = "firehose"
-    org_id = "${cloudfoundry_organization.cloud-gov.id}"
-    sec_groups = ["${cloudfoundry_sec_group.metrics-network.id}"]
+  name = "firehose"
+  org_id = "${cloudfoundry_organization.cloud-gov.id}"
+  sec_groups = ["${cloudfoundry_sec_group.metrics-network.id}"]
 }
