@@ -583,6 +583,12 @@ properties:
         authorized-grant-types: client_credentials
         authorities: doppler.firehose
         secret: (( merge ))
+      # used to apply CF terraform; see terraform/ subdirectory in this repo
+      terraform:
+        override: true
+        authorized-grant-types: client_credentials
+        authorities: cloud_controller.admin
+        secret: (( merge ))
 
     database: ~
 

@@ -1,0 +1,15 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: 18fgsa/concourse-task
+
+inputs:
+- name: terraform-templates
+- name: pipeline-tasks
+outputs:
+- name: terraform-state
+
+run:
+  path: terraform-templates/terraform/terraform-apply.sh
