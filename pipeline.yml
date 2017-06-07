@@ -482,6 +482,52 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: terraform-plan-staging
+  plan:
+  - aggregate:
+    - get: terraform-templates
+      resource: cf-manifests-staging
+      passed: [deploy-cf-staging]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-staging
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform
+      STACK_NAME: cf-staging
+      S3_TFSTATE_BUCKET: {{tf-state-bucket}}
+      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+      AWS_DEFAULT_REGION: {{aws-default-region}}
+      CF_API: {{cf-api-url-staging}}
+      CF_CLIENT_ID: {{cf-client-id-staging}}
+      CF_CLIENT_SECRET: {{cf-client-secret-staging}}
+      TF_VAR_remote_state_bucket: {{tf-state-bucket}}
+      TF_VAR_iaas_stack_name: staging
+  - put: slack
+    params:
+      text_file: terraform-state/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: terraform-apply-staging
+  plan:
+  - aggregate:
+    - get: terraform-templates
+      resource: cf-manifests-staging
+      passed: [terraform-plan-staging]
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-staging
+      TERRAFORM_ACTION: apply
+
 - name: smoke-tests-staging
   serial_groups: [staging]
   plan:
@@ -618,14 +664,14 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
-- name: deploy-cf-prod
+- name: deploy-cf-production
   serial_groups: [production]
   serial: true
   plan:
   - aggregate:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
-    - get: cf-manifests-prod
+    - get: cf-manifests-production
     - get: common
       resource: common-prod
     - get: cf-stemcell
@@ -665,17 +711,17 @@ jobs:
         source:
           repository: 18fgsa/concourse-task
       inputs:
-      - name: cf-manifests-prod
+      - name: cf-manifests-production
       - name: common
       run:
-        path: cf-manifests-prod/generate.sh
+        path: cf-manifests-production/generate.sh
         args:
         - "common/decrypted-cf.main.yml"
         - "common/decrypted-cf.external.yml"
         - "cf-manifest/manifest.yml"
       outputs:
       - name: cf-manifest
-  - put: cf-deployment-prod
+  - put: cf-deployment-production
     params: *deploy-params
   on_success:
     put: slack
@@ -701,8 +747,8 @@ jobs:
   - aggregate:
     - get: pipeline-tasks
     - get: uaa-customized-release
-      passed: [deploy-cf-prod]
-    - get: cf-deployment-prod
+      passed: [deploy-cf-production]
+    - get: cf-deployment-production
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/uaa-smoke-tests.yml
@@ -718,6 +764,52 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: terraform-plan-production
+  plan:
+  - aggregate:
+    - get: terraform-templates
+      resource: cf-manifests-production
+      passed: [deploy-cf-production]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-production
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform
+      STACK_NAME: cf-production
+      S3_TFSTATE_BUCKET: {{tf-state-bucket}}
+      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+      AWS_DEFAULT_REGION: {{aws-default-region}}
+      CF_API: {{cf-api-url-production}}
+      CF_CLIENT_ID: {{cf-client-id-production}}
+      CF_CLIENT_SECRET: {{cf-client-secret-production}}
+      TF_VAR_remote_state_bucket: {{tf-state-bucket}}
+      TF_VAR_iaas_stack_name: production
+  - put: slack
+    params:
+      text_file: terraform-state/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: terraform-apply-production
+  plan:
+  - aggregate:
+    - get: terraform-templates
+      resource: cf-manifests-production
+      passed: [terraform-plan-production]
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-production
+      TERRAFORM_ACTION: apply
+
 - name: smoke-tests-prod
   serial_groups: [production]
   plan:
@@ -725,8 +817,8 @@ jobs:
     - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
-      passed: [deploy-cf-prod]
-    - get: cf-deployment-prod
+      passed: [deploy-cf-production]
+    - get: cf-deployment-production
       trigger: true
     - get: tests-timer
       trigger: true
@@ -798,8 +890,9 @@ resources:
     paths:
     - cf-*.yml
     - diego-*.yml
+    - terraform/*
 
-- name: cf-manifests-prod
+- name: cf-manifests-production
   type: git
   source:
     uri: {{cf-manifests-git-url}}
@@ -807,6 +900,7 @@ resources:
     paths:
     - cf-*.yml
     - diego-*.yml
+    - terraform/*
 
 - name: common-development
   type: cg-common
@@ -989,7 +1083,7 @@ resources:
     secret_access_key: {{ci-secret-access-key}}
     region_name: {{aws-region}}
 
-- name: cf-deployment-prod
+- name: cf-deployment-production
   type: 18f-bosh-deployment
   source:
     target: {{cf-deployment-prod-bosh-target}}
@@ -1031,10 +1125,14 @@ groups:
   - uaa-smoke-tests-development
   - smoke-tests-development
   - deploy-cf-staging
+  - terraform-plan-staging
+  - terraform-apply-staging
   - uaa-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
-  - deploy-cf-prod
+  - deploy-cf-production
+  - terraform-plan-production
+  - terraform-apply-production
   - smoke-tests-prod
   - uaa-smoke-tests-production
 - name: development
@@ -1048,11 +1146,15 @@ groups:
 - name: staging
   jobs:
   - deploy-cf-staging
+  - terraform-plan-staging
+  - terraform-apply-staging
   - uaa-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
 - name: production
   jobs:
-  - deploy-cf-prod
+  - deploy-cf-production
+  - terraform-plan-production
+  - terraform-apply-production
   - smoke-tests-prod
   - uaa-smoke-tests-production
