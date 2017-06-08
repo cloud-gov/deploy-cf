@@ -136,6 +136,14 @@ resource "cloudfoundry_organization" "cloud-gov" {
   is_system_domain = true
 }
 
+resource "cloudfoundry_quota" "default-tts" {
+  name = "default-tts"
+  org_id = "${cloudfoundry_organization.cloud-gov.id}"
+  total_memory = "20G"
+  routes = 1000
+  service_instances = 200
+}
+
 resource "cloudfoundry_space" "services" {
   name = "services"
   org_id = "${cloudfoundry_organization.cloud-gov.id}"
