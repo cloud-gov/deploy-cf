@@ -28,5 +28,3 @@ spiff merge \
   $SCRIPTPATH/cf-infrastructure-aws-development.yml \
   $SECRETS \
   > $MANIFEST
-
-sed -i -- 's/10\.10\./10\.8\./g' $MANIFEST
