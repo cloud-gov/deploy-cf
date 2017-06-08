@@ -29,4 +29,3 @@ spiff merge \
   $SECRETS \
   > $MANIFEST
 
-sed -i -- 's/10.10/10.9/g' $MANIFEST
