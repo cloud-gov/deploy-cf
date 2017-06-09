@@ -10,6 +10,15 @@ meta:
       total_routes: 1000
   resource_key: (( merge ))
 
+  # don't allow drains to RFC1918 private networks
+  blacklisted_syslog_ranges:
+    - start: 10.0.0.0
+      end: 10.255.255.255
+    - start: 172.16.0.0
+      end: 172.31.255.255
+    - start: 192.168.0.0
+      end: 192.168.255.255
+
 properties:
   <<: (( merge ))
   app_ssh: ~
@@ -39,14 +48,7 @@ properties:
   doppler:
     maxRetainedLogMessages: 100
     debug: (( merge || false ))
-    # don't allow drains to RFC1918 private networks
-    blacklisted_syslog_ranges:
-    - start: 10.0.0.0
-      end: 10.255.255.255
-    - start: 172.16.0.0
-      end: 172.31.255.255
-    - start: 192.168.0.0
-      end: 192.168.255.255
+    blacklisted_syslog_ranges: (( merge || meta.blacklisted_syslog_ranges ))
 
     unmarshaller_count: (( merge || 5 ))
     port: 443
