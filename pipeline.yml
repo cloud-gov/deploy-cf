@@ -103,10 +103,6 @@ jobs:
   - aggregate:
     - get: cf-deployment-development
       trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-cf-development]
     - get: master-bosh-root-cert
       passed: [deploy-cf-development]
     - get: pipeline-tasks
@@ -219,8 +215,6 @@ jobs:
   - aggregate:
     - get: terraform-templates
       resource: cf-manifests-development
-      passed: [deploy-cf-development]
-      trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
     tags:
@@ -266,58 +260,15 @@ jobs:
   serial_groups: [development]
   plan:
   - aggregate:
-    - get: binary-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-deployment-development
-      trigger: true
-      passed: [deploy-diego-development]
-    - get: diego-development-deployment
-      trigger: true
-      passed: [deploy-diego-development]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-diego-development]
-    - get: cf-stemcell
-      trigger: true
-      passed: [deploy-diego-development]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [deploy-cf-development]
+    - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
       passed: [deploy-diego-development]
-    - get: dotnet-core-buildpack-release
       trigger: true
-      passed: [deploy-cf-development]
-    - get: go-buildpack-release
+    - get: diego-development-deployment
       trigger: true
-      passed: [deploy-cf-development]
-    - get: java-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: java-offline-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: nodejs-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: php-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: pipeline-tasks
-    - get: python-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: ruby-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: staticfile-buildpack-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: uaa-customized-release
-      trigger: true
-      passed: [uaa-smoke-tests-development]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -475,10 +426,6 @@ jobs:
   - aggregate:
     - get: cf-deployment-staging
       trigger: true
-      passed: [deploy-cf-staging]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-cf-staging]
     - get: master-bosh-root-cert
       passed: [deploy-cf-staging]
     - get: pipeline-tasks
@@ -613,7 +560,6 @@ jobs:
   - aggregate:
     - get: terraform-templates
       resource: cf-manifests-staging
-      passed: [deploy-cf-staging]
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -665,6 +611,9 @@ jobs:
       resource: master-bosh-root-cert
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
+      passed: [deploy-diego-staging]
+      trigger: true
+    - get: diego-staging-deployment
       trigger: true
     # Get resources from upstream jobs for use in production deploy
     - get: cf-stemcell
@@ -877,10 +826,6 @@ jobs:
   - aggregate:
     - get: cf-deployment-production
       trigger: true
-      passed: [deploy-cf-production]
-    - get: cf-release
-      trigger: true
-      passed: [deploy-cf-production]
     - get: master-bosh-root-cert
       passed: [deploy-cf-production]
     - get: pipeline-tasks
@@ -1015,7 +960,6 @@ jobs:
   - aggregate:
     - get: terraform-templates
       resource: cf-manifests-production
-      passed: [deploy-cf-production]
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -1067,6 +1011,9 @@ jobs:
       resource: master-bosh-root-cert
       passed: [deploy-cf-production]
     - get: cf-deployment-production
+      passed: [deploy-diego-production]
+      trigger: true
+    - get: diego-production-deployment
       trigger: true
     - get: tests-timer
       trigger: true
@@ -1303,7 +1250,6 @@ resources:
     username: {{development-bosh-username}}
     password: {{development-bosh-password}}
     deployment: {{diego-development-bosh-deployment}}
-    ignore_ssl: true
 
 - name: diego-staging-deployment
   type: 18f-bosh-deployment
@@ -1312,7 +1258,6 @@ resources:
     username: {{staging-bosh-username}}
     password: {{staging-bosh-password}}
     deployment: {{diego-staging-bosh-deployment}}
-    ignore_ssl: true
 
 - name: diego-production-deployment
   type: 18f-bosh-deployment
@@ -1321,7 +1266,6 @@ resources:
     username: {{production-bosh-username}}
     password: {{production-bosh-password}}
     deployment: {{diego-production-bosh-deployment}}
-    ignore_ssl: true
 
 - name: garden-runc-release
   type: bosh-io-release
@@ -1340,7 +1284,6 @@ resources:
     username: {{development-bosh-username}}
     password: {{development-bosh-password}}
     deployment: {{cf-development-bosh-deployment}}
-    ignore_ssl: true
 
 - name: cf-deployment-staging
   type: 18f-bosh-deployment
@@ -1349,7 +1292,6 @@ resources:
     username: {{cf-deployment-staging-bosh-username}}
     password: {{cf-deployment-staging-bosh-password}}
     deployment: {{cf-deployment-staging-bosh-deployment}}
-    ignore_ssl: true
 
 - name: uaa-customized-release
   type: s3-iam
@@ -1374,7 +1316,6 @@ resources:
     username: {{cf-deployment-prod-bosh-username}}
     password: {{cf-deployment-prod-bosh-password}}
     deployment: {{cf-deployment-prod-bosh-deployment}}
-    ignore_ssl: true
 
 - name: tests-timer
   type: time
@@ -1386,14 +1327,17 @@ resource_types:
   type: docker-image
   source:
     repository: cfcommunity/slack-notification-resource
+
 - name: 18f-bosh-deployment
   type: docker-image
   source:
     repository: 18fgsa/bosh-deployment-resource
+
 - name: cg-common
   type: docker-image
   source:
     repository: 18fgsa/cg-common-resource
+
 - name: s3-iam
   type: docker-image
   source:
