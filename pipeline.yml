@@ -95,7 +95,9 @@ jobs:
       channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
+
 - name: deploy-diego-development
+  serial_groups: [development]
   serial: true
   plan:
   - aggregate:
@@ -211,6 +213,7 @@ jobs:
       channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
+
 - name: terraform-plan-development
   plan:
   - aggregate:
@@ -243,6 +246,7 @@ jobs:
       channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
+
 - name: terraform-apply-development
   plan:
   - aggregate:
@@ -257,6 +261,7 @@ jobs:
     params:
       <<: *tf-development
       TERRAFORM_ACTION: apply
+
 - name: smoke-tests-development
   serial_groups: [development]
   plan:
@@ -341,6 +346,7 @@ jobs:
       channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
+
 - name: uaa-smoke-tests-development
   plan:
   - aggregate:
@@ -418,9 +424,9 @@ jobs:
       run:
         path: cf-manifests-staging/generate-staging.sh
         args:
-          - "common/decrypted-cf-staging.main.yml"
-          - "common/decrypted-cf-staging.external.yml"
-          - "cf-manifest/manifest.yml"
+        - "common/decrypted-cf-staging.main.yml"
+        - "common/decrypted-cf-staging.external.yml"
+        - "cf-manifest/manifest.yml"
       outputs:
       - name: cf-manifest
   - put: cf-deployment-staging
@@ -457,6 +463,124 @@ jobs:
     params:
       text: |
         :x: FAILED to deploy CF on staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: deploy-diego-staging
+  serial_groups: [staging]
+  serial: true
+  plan:
+  - aggregate:
+    - get: cf-deployment-staging
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cf-release
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: master-bosh-root-cert
+      passed: [deploy-cf-staging]
+    - get: pipeline-tasks
+    - get: diego-manifests
+      resource: diego-manifests-staging
+      trigger: true
+    - get: diego-release-repo
+      params: {submodules: none}
+    - get: common-staging
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: cf-stemcell
+      trigger: true
+      passed: [deploy-cf-staging]
+    - get: diego-release
+      trigger: true
+    - get: cflinuxfs2-release
+      trigger: true
+    - get: garden-runc-release
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-staging
+  - aggregate:
+    - task: upload-cflinuxfs2-release
+      file: pipeline-tasks/upload-release.yml
+      input_mapping:
+        release: cflinuxfs2-release
+        certificate: master-bosh-root-cert
+      params:
+        BOSH_USERNAME: {{staging-bosh-username}}
+        BOSH_PASSWORD: {{staging-bosh-password}}
+        BOSH_TARGET: {{staging-bosh-target}}
+        BOSH_CERT: master-bosh.crt
+    - task: upload-garden-runc-release
+      file: pipeline-tasks/upload-release.yml
+      input_mapping:
+        release: garden-runc-release
+        certificate: master-bosh-root-cert
+      params:
+        BOSH_USERNAME: {{staging-bosh-username}}
+        BOSH_PASSWORD: {{staging-bosh-password}}
+        BOSH_TARGET: {{staging-bosh-target}}
+        BOSH_CERT: master-bosh.crt
+    - task: generate-diego-staging-manifest
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: 18fgsa/concourse-task
+        inputs:
+        - name: master-bosh-root-cert
+        - name: common-staging
+        - name: diego-manifests
+        - name: diego-release-repo
+        - name: terraform-yaml
+        run:
+          path: diego-manifests/generate.sh
+          args:
+          - common-staging/decrypted-diego-staging.yml
+          - {{cf-staging-bosh-deployment}}
+          - master-bosh-root-cert/master-bosh.crt
+          - {{staging-bosh-target}}
+          - {{staging-bosh-username}}
+          - {{staging-bosh-password}}
+          - instance-count-overrides-staging.yml
+          - isolation-cells-staging.yml
+          - terraform-yaml/state.yml
+          - generated-manifest/diego-staging.yml
+        outputs:
+        - name: generated-manifest
+  - put: diego-staging-deployment
+    params:
+      cert: master-bosh-root-cert/master-bosh.crt
+      manifest: generated-manifest/diego-staging.yml
+      stemcells:
+      - cf-stemcell/*.tgz
+      releases:
+      - diego-release/*.tgz
+  - task: update-isolation-segments
+    file: diego-manifests/update-isolation-segments.yml
+    params:
+      CF_API_URL: {{cf-api-url-staging}}
+      CF_USERNAME: {{cf-username-staging}}
+      CF_PASSWORD: {{cf-password-staging}}
+      PLATFORM_ISOLATION_SEGMENT: {{platform-isolation-segment-staging}}
+      PLATFORM_ORGANIZATION: {{platform-organization-staging}}
+      PLATFORM_SPACE: {{platform-space-staging}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed Diego on staging
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy Diego on staging
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: {{slack-channel}}
       username: {{slack-username}}
@@ -677,7 +801,7 @@ jobs:
     - get: pipeline-tasks
     - get: cf-manifests-production
     - get: common
-      resource: common-prod
+      resource: common-production
     - get: cf-stemcell
       passed: [acceptance-tests-staging]
       trigger: true
@@ -741,6 +865,124 @@ jobs:
     params:
       text: |
         :x: FAILED to deploy CF on prod
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: deploy-diego-production
+  serial_groups: [production]
+  serial: true
+  plan:
+  - aggregate:
+    - get: cf-deployment-production
+      trigger: true
+      passed: [deploy-cf-production]
+    - get: cf-release
+      trigger: true
+      passed: [deploy-cf-production]
+    - get: master-bosh-root-cert
+      passed: [deploy-cf-production]
+    - get: pipeline-tasks
+    - get: diego-manifests
+      resource: diego-manifests-production
+      trigger: true
+    - get: diego-release-repo
+      params: {submodules: none}
+    - get: common-production
+      trigger: true
+      passed: [deploy-cf-production]
+    - get: cf-stemcell
+      trigger: true
+      passed: [deploy-cf-production]
+    - get: diego-release
+      trigger: true
+    - get: cflinuxfs2-release
+      trigger: true
+    - get: garden-runc-release
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-production
+  - aggregate:
+    - task: upload-cflinuxfs2-release
+      file: pipeline-tasks/upload-release.yml
+      input_mapping:
+        release: cflinuxfs2-release
+        certificate: master-bosh-root-cert
+      params:
+        BOSH_USERNAME: {{production-bosh-username}}
+        BOSH_PASSWORD: {{production-bosh-password}}
+        BOSH_TARGET: {{production-bosh-target}}
+        BOSH_CERT: master-bosh.crt
+    - task: upload-garden-runc-release
+      file: pipeline-tasks/upload-release.yml
+      input_mapping:
+        release: garden-runc-release
+        certificate: master-bosh-root-cert
+      params:
+        BOSH_USERNAME: {{production-bosh-username}}
+        BOSH_PASSWORD: {{production-bosh-password}}
+        BOSH_TARGET: {{production-bosh-target}}
+        BOSH_CERT: master-bosh.crt
+    - task: generate-diego-production-manifest
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: 18fgsa/concourse-task
+        inputs:
+        - name: master-bosh-root-cert
+        - name: common-production
+        - name: diego-manifests
+        - name: diego-release-repo
+        - name: terraform-yaml
+        run:
+          path: diego-manifests/generate.sh
+          args:
+          - common-production/decrypted-diego-production.yml
+          - {{cf-production-bosh-deployment}}
+          - master-bosh-root-cert/master-bosh.crt
+          - {{production-bosh-target}}
+          - {{production-bosh-username}}
+          - {{production-bosh-password}}
+          - instance-count-overrides-production.yml
+          - isolation-cells-production.yml
+          - terraform-yaml/state.yml
+          - generated-manifest/diego-production.yml
+        outputs:
+        - name: generated-manifest
+  - put: diego-production-deployment
+    params:
+      cert: master-bosh-root-cert/master-bosh.crt
+      manifest: generated-manifest/diego-production.yml
+      stemcells:
+      - cf-stemcell/*.tgz
+      releases:
+      - diego-release/*.tgz
+  - task: update-isolation-segments
+    file: diego-manifests/update-isolation-segments.yml
+    params:
+      CF_API_URL: {{cf-api-url-production}}
+      CF_USERNAME: {{cf-username-production}}
+      CF_PASSWORD: {{cf-password-production}}
+      PLATFORM_ISOLATION_SEGMENT: {{platform-isolation-segment-production}}
+      PLATFORM_ORGANIZATION: {{platform-organization-production}}
+      PLATFORM_SPACE: {{platform-space-production}}
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed Diego on production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy Diego on production
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: {{slack-channel}}
       username: {{slack-username}}
@@ -816,7 +1058,7 @@ jobs:
       <<: *tf-production
       TERRAFORM_ACTION: apply
 
-- name: smoke-tests-prod
+- name: smoke-tests-production
   serial_groups: [production]
   plan:
   - aggregate:
@@ -929,7 +1171,7 @@ resources:
     bosh_cert: bosh.pem
     region: {{aws-region}}
 
-- name: common-prod
+- name: common-production
   type: cg-common
   source:
     bucket_name: {{cf-private-prod-bucket}}
@@ -1008,11 +1250,37 @@ resources:
     uri: {{diego-manifests-git-url}}
     branch: {{diego-manifests-git-branch-development}}
 
+- name: diego-manifests-staging
+  type: git
+  source:
+    uri: {{diego-manifests-git-url}}
+    branch: {{diego-manifests-git-branch-staging}}
+
+- name: diego-manifests-production
+  type: git
+  source:
+    uri: {{diego-manifests-git-url}}
+    branch: {{diego-manifests-git-branch-production}}
+
 - name: terraform-yaml-development
   type: s3-iam
   source:
     bucket: {{tf-state-bucket}}
     versioned_file: {{tf-state-file-development}}
+    region_name: {{aws-region}}
+
+- name: terraform-yaml-staging
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    versioned_file: {{tf-state-file-staging}}
+    region_name: {{aws-region}}
+
+- name: terraform-yaml-production
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    versioned_file: {{tf-state-file-production}}
     region_name: {{aws-region}}
 
 - name: diego-release
@@ -1035,6 +1303,24 @@ resources:
     username: {{development-bosh-username}}
     password: {{development-bosh-password}}
     deployment: {{diego-development-bosh-deployment}}
+    ignore_ssl: true
+
+- name: diego-staging-deployment
+  type: 18f-bosh-deployment
+  source:
+    target: {{staging-bosh-target}}
+    username: {{staging-bosh-username}}
+    password: {{staging-bosh-password}}
+    deployment: {{diego-staging-bosh-deployment}}
+    ignore_ssl: true
+
+- name: diego-production-deployment
+  type: 18f-bosh-deployment
+  source:
+    target: {{production-bosh-target}}
+    username: {{production-bosh-username}}
+    password: {{production-bosh-password}}
+    deployment: {{diego-production-bosh-deployment}}
     ignore_ssl: true
 
 - name: garden-runc-release
@@ -1125,13 +1411,15 @@ groups:
   - deploy-cf-staging
   - terraform-plan-staging
   - terraform-apply-staging
+  - deploy-diego-staging
   - uaa-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
   - deploy-cf-production
   - terraform-plan-production
   - terraform-apply-production
-  - smoke-tests-prod
+  - deploy-diego-production
+  - smoke-tests-production
   - uaa-smoke-tests-production
 - name: development
   jobs:
@@ -1146,6 +1434,7 @@ groups:
   - deploy-cf-staging
   - terraform-plan-staging
   - terraform-apply-staging
+  - deploy-diego-staging
   - uaa-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
@@ -1154,5 +1443,6 @@ groups:
   - deploy-cf-production
   - terraform-plan-production
   - terraform-apply-production
-  - smoke-tests-prod
+  - deploy-diego-production
+  - smoke-tests-production
   - uaa-smoke-tests-production
