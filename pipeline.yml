@@ -220,15 +220,15 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
+    tags:
+    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-development
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-development
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-      AWS_DEFAULT_REGION: {{aws-default-region}}
+      AWS_DEFAULT_REGION: {{aws-region}}
       CF_API: {{cf-api-url-development}}
       CF_CLIENT_ID: {{cf-client-id-development}}
       CF_CLIENT_SECRET: {{cf-client-secret-development}}
@@ -252,6 +252,8 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
+    tags:
+    - iaas
     params:
       <<: *tf-development
       TERRAFORM_ACTION: apply
@@ -491,15 +493,15 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
+    tags:
+    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-staging
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-staging
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-      AWS_DEFAULT_REGION: {{aws-default-region}}
+      AWS_DEFAULT_REGION: {{aws-region}}
       CF_API: {{cf-api-url-staging}}
       CF_CLIENT_ID: {{cf-client-id-staging}}
       CF_CLIENT_SECRET: {{cf-client-secret-staging}}
@@ -527,6 +529,8 @@ jobs:
     params:
       <<: *tf-staging
       TERRAFORM_ACTION: apply
+    tags:
+    - iaas
 
 - name: smoke-tests-staging
   serial_groups: [staging]
@@ -773,15 +777,15 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
+    tags:
+    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-production
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-production
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-      AWS_DEFAULT_REGION: {{aws-default-region}}
+      AWS_DEFAULT_REGION: {{aws-region}}
       CF_API: {{cf-api-url-production}}
       CF_CLIENT_ID: {{cf-client-id-production}}
       CF_CLIENT_SECRET: {{cf-client-secret-production}}
@@ -806,6 +810,8 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
+    tags:
+    - iaas
     params:
       <<: *tf-production
       TERRAFORM_ACTION: apply
@@ -853,12 +859,10 @@ jobs:
 
 resources:
 - name: master-bosh-root-cert
-  type: s3
+  type: s3-iam
   source:
-    access_key_id: {{ci-access-key-id}}
     bucket: {{cf-private-prod-bucket}}
     region_name: {{aws-region}}
-    secret_access_key: {{ci-secret-access-key}}
     versioned_file: master-bosh.crt
 
 - name: pipeline-tasks
@@ -937,13 +941,11 @@ resources:
     region: {{aws-region}}
 
 - name: cf-stemcell
-  type: s3
+  type: s3-iam
   source:
-    access_key_id: {{ci-access-key-id}}
     bucket: {{stemcell-bucket}}
     regexp: light-bosh-stemcell-(.*)-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
     region_name: {{aws-region}}
-    secret_access_key: {{ci-secret-access-key}}
 
 - name: cf-release
   type: bosh-io-release
@@ -1064,23 +1066,19 @@ resources:
     ignore_ssl: true
 
 - name: uaa-customized-release
-  type: s3
+  type: s3-iam
   source:
-    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: uaa-customized-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
     region_name: {{aws-region}}
 
 - name: cg-s3-secureproxy-release
-  type: s3
+  type: s3-iam
   source:
-    access_key_id: {{ci-access-key-id}}
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: secureproxy-(.*).tgz
-    secret_access_key: {{ci-secret-access-key}}
     region_name: {{aws-region}}
 
 - name: cf-deployment-production
