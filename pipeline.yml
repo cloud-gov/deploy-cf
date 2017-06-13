@@ -220,14 +220,14 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
+    tags:
+    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-development
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-development
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
       AWS_DEFAULT_REGION: {{aws-default-region}}
       CF_API: {{cf-api-url-development}}
       CF_CLIENT_ID: {{cf-client-id-development}}
@@ -491,14 +491,14 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
+    tags:
+    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-staging
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-staging
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
       AWS_DEFAULT_REGION: {{aws-default-region}}
       CF_API: {{cf-api-url-staging}}
       CF_CLIENT_ID: {{cf-client-id-staging}}
@@ -773,14 +773,14 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
+    tags:
+    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-production
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-production
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-      AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
       AWS_DEFAULT_REGION: {{aws-default-region}}
       CF_API: {{cf-api-url-production}}
       CF_CLIENT_ID: {{cf-client-id-production}}
