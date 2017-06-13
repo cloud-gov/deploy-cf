@@ -228,7 +228,7 @@ jobs:
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-development
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_DEFAULT_REGION: {{aws-default-region}}
+      AWS_DEFAULT_REGION: {{aws-region}}
       CF_API: {{cf-api-url-development}}
       CF_CLIENT_ID: {{cf-client-id-development}}
       CF_CLIENT_SECRET: {{cf-client-secret-development}}
@@ -252,6 +252,8 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
+    tags:
+    - iaas
     params:
       <<: *tf-development
       TERRAFORM_ACTION: apply
@@ -499,7 +501,7 @@ jobs:
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-staging
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_DEFAULT_REGION: {{aws-default-region}}
+      AWS_DEFAULT_REGION: {{aws-region}}
       CF_API: {{cf-api-url-staging}}
       CF_CLIENT_ID: {{cf-client-id-staging}}
       CF_CLIENT_SECRET: {{cf-client-secret-staging}}
@@ -527,6 +529,8 @@ jobs:
     params:
       <<: *tf-staging
       TERRAFORM_ACTION: apply
+    tags:
+    - iaas
 
 - name: smoke-tests-staging
   serial_groups: [staging]
@@ -781,7 +785,7 @@ jobs:
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-production
       S3_TFSTATE_BUCKET: {{tf-state-bucket}}
-      AWS_DEFAULT_REGION: {{aws-default-region}}
+      AWS_DEFAULT_REGION: {{aws-region}}
       CF_API: {{cf-api-url-production}}
       CF_CLIENT_ID: {{cf-client-id-production}}
       CF_CLIENT_SECRET: {{cf-client-secret-production}}
@@ -806,6 +810,8 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
+    tags:
+    - iaas
     params:
       <<: *tf-production
       TERRAFORM_ACTION: apply
