@@ -160,7 +160,7 @@ jobs:
         - name: diego-release-repo
         - name: terraform-yaml
         run:
-          path: diego-manifests/generate.sh
+          path: diego-manifests/diego/generate.sh
           args:
           - common-development/decrypted-diego-development.yml
           - {{cf-development-bosh-deployment}}
@@ -183,7 +183,7 @@ jobs:
       releases:
       - diego-release/*.tgz
   - task: update-isolation-segments
-    file: diego-manifests/update-isolation-segments.yml
+    file: diego-manifests/diego/update-isolation-segments.yml
     params:
       CF_API_URL: {{cf-api-url-development}}
       CF_USERNAME: {{cf-username-development}}
@@ -215,6 +215,7 @@ jobs:
   - aggregate:
     - get: terraform-templates
       resource: cf-manifests-development
+      trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
     tags:
@@ -483,7 +484,7 @@ jobs:
         - name: diego-release-repo
         - name: terraform-yaml
         run:
-          path: diego-manifests/generate.sh
+          path: diego-manifests/diego/generate.sh
           args:
           - common-staging/decrypted-diego-staging.yml
           - {{cf-staging-bosh-deployment}}
@@ -506,7 +507,7 @@ jobs:
       releases:
       - diego-release/*.tgz
   - task: update-isolation-segments
-    file: diego-manifests/update-isolation-segments.yml
+    file: diego-manifests/diego/update-isolation-segments.yml
     params:
       CF_API_URL: {{cf-api-url-staging}}
       CF_USERNAME: {{cf-username-staging}}
@@ -883,7 +884,7 @@ jobs:
         - name: diego-release-repo
         - name: terraform-yaml
         run:
-          path: diego-manifests/generate.sh
+          path: diego-manifests/diego/generate.sh
           args:
           - common-production/decrypted-diego-production.yml
           - {{cf-production-bosh-deployment}}
@@ -906,7 +907,7 @@ jobs:
       releases:
       - diego-release/*.tgz
   - task: update-isolation-segments
-    file: diego-manifests/update-isolation-segments.yml
+    file: diego-manifests/diego/update-isolation-segments.yml
     params:
       CF_API_URL: {{cf-api-url-production}}
       CF_USERNAME: {{cf-username-production}}
@@ -1072,7 +1073,6 @@ resources:
     branch: {{cf-manifests-git-branch-development}}
     paths:
     - cf-*.yml
-    - diego-*.yml
     - terraform/*
 
 - name: cf-manifests-staging
@@ -1082,17 +1082,15 @@ resources:
     branch: {{cf-manifests-git-branch-staging}}
     paths:
     - cf-*.yml
-    - diego-*.yml
     - terraform/*
 
 - name: cf-manifests-production
   type: git
   source:
     uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-prod}}
+    branch: {{cf-manifests-git-branch-production}}
     paths:
     - cf-*.yml
-    - diego-*.yml
     - terraform/*
 
 - name: common-development
@@ -1194,20 +1192,26 @@ resources:
 - name: diego-manifests-development
   type: git
   source:
-    uri: {{diego-manifests-git-url}}
-    branch: {{diego-manifests-git-branch-development}}
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-development}}
+    paths:
+    - diego/*
 
 - name: diego-manifests-staging
   type: git
   source:
-    uri: {{diego-manifests-git-url}}
-    branch: {{diego-manifests-git-branch-staging}}
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-staging}}
+    paths:
+    - diego/*
 
 - name: diego-manifests-production
   type: git
   source:
-    uri: {{diego-manifests-git-url}}
-    branch: {{diego-manifests-git-branch-production}}
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-production}}
+    paths:
+    - diego/*
 
 - name: terraform-yaml-development
   type: s3-iam

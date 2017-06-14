@@ -1,0 +1,21 @@
+<<: (( merge ))
+
+properties:
+  <<: (( merge ))
+
+jobs:
+- <<: (( merge ))
+- name: cell_z1
+  <<: (( merge ))
+- name: cell_z2
+  <<: (( merge ))
+- name: access_z1
+  <<: (( merge ))
+  update:
+    max_in_flight: 1
+    serial: true
+- name: access_z2
+  <<: (( merge ))
+  update:
+    max_in_flight: 1
+    serial: true
