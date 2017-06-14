@@ -125,55 +125,34 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-development
-  - aggregate:
-    - task: upload-cflinuxfs2-release
-      file: pipeline-tasks/upload-release.yml
-      input_mapping:
-        release: cflinuxfs2-release
-        certificate: master-bosh-root-cert
-      params:
-        BOSH_USERNAME: {{development-bosh-username}}
-        BOSH_PASSWORD: {{development-bosh-password}}
-        BOSH_TARGET: {{development-bosh-target}}
-        BOSH_CERT: master-bosh.crt
-    - task: upload-garden-runc-release
-      file: pipeline-tasks/upload-release.yml
-      input_mapping:
-        release: garden-runc-release
-        certificate: master-bosh-root-cert
-      params:
-        BOSH_USERNAME: {{development-bosh-username}}
-        BOSH_PASSWORD: {{development-bosh-password}}
-        BOSH_TARGET: {{development-bosh-target}}
-        BOSH_CERT: master-bosh.crt
-    - task: generate-diego-development-manifest
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: 18fgsa/concourse-task
-        inputs:
-        - name: master-bosh-root-cert
-        - name: common-development
-        - name: diego-manifests
-        - name: diego-release-repo
-        - name: terraform-yaml
-        run:
-          path: diego-manifests/diego/generate.sh
-          args:
-          - common-development/decrypted-diego-development.yml
-          - {{cf-development-bosh-deployment}}
-          - master-bosh-root-cert/master-bosh.crt
-          - {{development-bosh-target}}
-          - {{development-bosh-username}}
-          - {{development-bosh-password}}
-          - instance-count-overrides-staging.yml
-          - isolation-cells-development.yml
-          - terraform-yaml/state.yml
-          - generated-manifest/diego-development.yml
-        outputs:
-        - name: generated-manifest
+  - task: generate-diego-development-manifest
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+      - name: master-bosh-root-cert
+      - name: common-development
+      - name: diego-manifests
+      - name: diego-release-repo
+      - name: terraform-yaml
+      run:
+        path: diego-manifests/diego/generate.sh
+        args:
+        - common-development/decrypted-diego-development.yml
+        - {{cf-development-bosh-deployment}}
+        - master-bosh-root-cert/master-bosh.crt
+        - {{development-bosh-target}}
+        - {{development-bosh-username}}
+        - {{development-bosh-password}}
+        - instance-count-overrides-staging.yml
+        - isolation-cells-development.yml
+        - terraform-yaml/state.yml
+        - generated-manifest/diego-development.yml
+      outputs:
+      - name: generated-manifest
   - put: diego-development-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -182,6 +161,8 @@ jobs:
       - cf-stemcell/*.tgz
       releases:
       - diego-release/*.tgz
+      - garden-runc-release/*.tgz
+      - cflinuxfs2-release/*.tgz
   - task: update-isolation-segments
     file: diego-manifests/diego/update-isolation-segments.yml
     params:
@@ -449,55 +430,34 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-staging
-  - aggregate:
-    - task: upload-cflinuxfs2-release
-      file: pipeline-tasks/upload-release.yml
-      input_mapping:
-        release: cflinuxfs2-release
-        certificate: master-bosh-root-cert
-      params:
-        BOSH_USERNAME: {{staging-bosh-username}}
-        BOSH_PASSWORD: {{staging-bosh-password}}
-        BOSH_TARGET: {{staging-bosh-target}}
-        BOSH_CERT: master-bosh.crt
-    - task: upload-garden-runc-release
-      file: pipeline-tasks/upload-release.yml
-      input_mapping:
-        release: garden-runc-release
-        certificate: master-bosh-root-cert
-      params:
-        BOSH_USERNAME: {{staging-bosh-username}}
-        BOSH_PASSWORD: {{staging-bosh-password}}
-        BOSH_TARGET: {{staging-bosh-target}}
-        BOSH_CERT: master-bosh.crt
-    - task: generate-diego-staging-manifest
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: 18fgsa/concourse-task
-        inputs:
-        - name: master-bosh-root-cert
-        - name: common-staging
-        - name: diego-manifests
-        - name: diego-release-repo
-        - name: terraform-yaml
-        run:
-          path: diego-manifests/diego/generate.sh
-          args:
-          - common-staging/decrypted-diego-staging.yml
-          - {{cf-staging-bosh-deployment}}
-          - master-bosh-root-cert/master-bosh.crt
-          - {{staging-bosh-target}}
-          - {{staging-bosh-username}}
-          - {{staging-bosh-password}}
-          - instance-count-overrides-staging.yml
-          - isolation-cells-staging.yml
-          - terraform-yaml/state.yml
-          - generated-manifest/diego-staging.yml
-        outputs:
-        - name: generated-manifest
+  - task: generate-diego-staging-manifest
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+      - name: master-bosh-root-cert
+      - name: common-staging
+      - name: diego-manifests
+      - name: diego-release-repo
+      - name: terraform-yaml
+      run:
+        path: diego-manifests/diego/generate.sh
+        args:
+        - common-staging/decrypted-diego-staging.yml
+        - {{cf-staging-bosh-deployment}}
+        - master-bosh-root-cert/master-bosh.crt
+        - {{staging-bosh-target}}
+        - {{staging-bosh-username}}
+        - {{staging-bosh-password}}
+        - instance-count-overrides-staging.yml
+        - isolation-cells-staging.yml
+        - terraform-yaml/state.yml
+        - generated-manifest/diego-staging.yml
+      outputs:
+      - name: generated-manifest
   - put: diego-staging-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -506,6 +466,8 @@ jobs:
       - cf-stemcell/*.tgz
       releases:
       - diego-release/*.tgz
+      - garden-runc-release/*.tgz
+      - cflinuxfs2-release/*.tgz
   - task: update-isolation-segments
     file: diego-manifests/diego/update-isolation-segments.yml
     params:
@@ -849,55 +811,34 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-production
-  - aggregate:
-    - task: upload-cflinuxfs2-release
-      file: pipeline-tasks/upload-release.yml
-      input_mapping:
-        release: cflinuxfs2-release
-        certificate: master-bosh-root-cert
-      params:
-        BOSH_USERNAME: {{production-bosh-username}}
-        BOSH_PASSWORD: {{production-bosh-password}}
-        BOSH_TARGET: {{production-bosh-target}}
-        BOSH_CERT: master-bosh.crt
-    - task: upload-garden-runc-release
-      file: pipeline-tasks/upload-release.yml
-      input_mapping:
-        release: garden-runc-release
-        certificate: master-bosh-root-cert
-      params:
-        BOSH_USERNAME: {{production-bosh-username}}
-        BOSH_PASSWORD: {{production-bosh-password}}
-        BOSH_TARGET: {{production-bosh-target}}
-        BOSH_CERT: master-bosh.crt
-    - task: generate-diego-production-manifest
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: 18fgsa/concourse-task
-        inputs:
-        - name: master-bosh-root-cert
-        - name: common-production
-        - name: diego-manifests
-        - name: diego-release-repo
-        - name: terraform-yaml
-        run:
-          path: diego-manifests/diego/generate.sh
-          args:
-          - common-production/decrypted-diego-production.yml
-          - {{cf-production-bosh-deployment}}
-          - master-bosh-root-cert/master-bosh.crt
-          - {{production-bosh-target}}
-          - {{production-bosh-username}}
-          - {{production-bosh-password}}
-          - instance-count-overrides-production.yml
-          - isolation-cells-production.yml
-          - terraform-yaml/state.yml
-          - generated-manifest/diego-production.yml
-        outputs:
-        - name: generated-manifest
+  - task: generate-diego-production-manifest
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+      - name: master-bosh-root-cert
+      - name: common-production
+      - name: diego-manifests
+      - name: diego-release-repo
+      - name: terraform-yaml
+      run:
+        path: diego-manifests/diego/generate.sh
+        args:
+        - common-production/decrypted-diego-production.yml
+        - {{cf-production-bosh-deployment}}
+        - master-bosh-root-cert/master-bosh.crt
+        - {{production-bosh-target}}
+        - {{production-bosh-username}}
+        - {{production-bosh-password}}
+        - instance-count-overrides-production.yml
+        - isolation-cells-production.yml
+        - terraform-yaml/state.yml
+        - generated-manifest/diego-production.yml
+      outputs:
+      - name: generated-manifest
   - put: diego-production-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -906,6 +847,8 @@ jobs:
       - cf-stemcell/*.tgz
       releases:
       - diego-release/*.tgz
+      - garden-runc-release/*.tgz
+      - cflinuxfs2-release/*.tgz
   - task: update-isolation-segments
     file: diego-manifests/diego/update-isolation-segments.yml
     params:
