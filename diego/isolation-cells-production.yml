@@ -1,0 +1,28 @@
+jobs:
+- name: cell_platform_z1
+  resource_pool: cell_platform_z1
+  instances: 1
+  properties:
+    diego:
+      rep:
+        placement_tags: [platform]
+  inject: (( inject jobs.cell_z1 ))
+- name: cell_platform_z2
+  resource_pool: cell_platform_z2
+  instances: 1
+  properties:
+    diego:
+      rep:
+        placement_tags: [platform]
+  inject: (( inject jobs.cell_z2 ))
+
+resource_pools:
+- name: cell_platform_z1
+  cloud_properties:
+    iam_instance_profile: (( grab terraform_outputs.platform_profile ))
+  inject: (( inject resource_pools.cell_z1 ))
+
+- name: cell_platform_z2
+  cloud_properties:
+    iam_instance_profile: (( grab terraform_outputs.platform_profile ))
+  inject: (( inject resource_pools.cell_z2 ))
