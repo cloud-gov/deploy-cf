@@ -610,10 +610,10 @@ jobs:
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
-      BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
-      BOSH_USERNAME: {{cf-deployment-staging-bosh-username}}
-      BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
+      BOSH_TARGET: {{staging-bosh-target}}
+      BOSH_USERNAME: {{staging-bosh-username}}
+      BOSH_PASSWORD: {{staging-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-staging-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
       BOSH_FLAGS: "--keep-alive"
@@ -679,10 +679,10 @@ jobs:
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
-      BOSH_TARGET: {{cf-deployment-staging-bosh-target}}
-      BOSH_USERNAME: {{cf-deployment-staging-bosh-username}}
-      BOSH_PASSWORD: {{cf-deployment-staging-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-deployment-staging-bosh-deployment}}
+      BOSH_TARGET: {{staging-bosh-target}}
+      BOSH_USERNAME: {{staging-bosh-username}}
+      BOSH_PASSWORD: {{staging-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-staging-bosh-deployment}}
       BOSH_ERRAND: acceptance_tests
       BOSH_CACERT: common/master-bosh.crt
   on_success:
@@ -964,10 +964,10 @@ jobs:
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
-      BOSH_TARGET: {{cf-deployment-prod-bosh-target}}
-      BOSH_USERNAME: {{cf-deployment-prod-bosh-username}}
-      BOSH_PASSWORD: {{cf-deployment-prod-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-deployment-prod-bosh-deployment}}
+      BOSH_TARGET: {{production-bosh-target}}
+      BOSH_USERNAME: {{production-bosh-username}}
+      BOSH_PASSWORD: {{production-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: {{cf-production-bosh-deployment}}
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
       BOSH_FLAGS: "--keep-alive"
@@ -994,7 +994,7 @@ resources:
 - name: master-bosh-root-cert
   type: s3-iam
   source:
-    bucket: {{cf-private-prod-bucket}}
+    bucket: {{cf-private-production-bucket}}
     region_name: {{aws-region}}
     versioned_file: master-bosh.crt
 
@@ -1062,11 +1062,11 @@ resources:
 - name: common-production
   type: cg-common
   source:
-    bucket_name: {{cf-private-prod-bucket}}
+    bucket_name: {{cf-private-production-bucket}}
     secrets_files:
     - cf.main.yml
     - cf.external.yml
-    secrets_passphrase: {{cf-private-prod-passphrase}}
+    secrets_passphrase: {{cf-private-production-passphrase}}
     bosh_cert: bosh.pem
     region: {{aws-region}}
 
@@ -1235,10 +1235,18 @@ resources:
 - name: cf-deployment-staging
   type: 18f-bosh-deployment
   source:
-    target: {{cf-deployment-staging-bosh-target}}
-    username: {{cf-deployment-staging-bosh-username}}
-    password: {{cf-deployment-staging-bosh-password}}
-    deployment: {{cf-deployment-staging-bosh-deployment}}
+    target: {{staging-bosh-target}}
+    username: {{staging-bosh-username}}
+    password: {{staging-bosh-password}}
+    deployment: {{cf-staging-bosh-deployment}}
+
+- name: cf-deployment-production
+  type: 18f-bosh-deployment
+  source:
+    target: {{production-bosh-target}}
+    username: {{production-bosh-username}}
+    password: {{production-bosh-password}}
+    deployment: {{cf-production-bosh-deployment}}
 
 - name: uaa-customized-release
   type: s3-iam
@@ -1255,14 +1263,6 @@ resources:
     private: true
     regexp: secureproxy-(.*).tgz
     region_name: {{aws-region}}
-
-- name: cf-deployment-production
-  type: 18f-bosh-deployment
-  source:
-    target: {{cf-deployment-prod-bosh-target}}
-    username: {{cf-deployment-prod-bosh-username}}
-    password: {{cf-deployment-prod-bosh-password}}
-    deployment: {{cf-deployment-prod-bosh-deployment}}
 
 - name: tests-timer
   type: time
