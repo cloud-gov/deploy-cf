@@ -313,8 +313,7 @@ jobs:
     - get: pipeline-tasks
     - get: cf-manifests-staging
       trigger: true
-    - get: common
-      resource: common-staging
+    - get: common-staging
       trigger: true
     - get: cf-stemcell
       trigger: true
@@ -353,12 +352,12 @@ jobs:
           repository: 18fgsa/concourse-task
       inputs:
       - name: cf-manifests-staging
-      - name: common
+      - name: common-staging
       run:
         path: cf-manifests-staging/generate-staging.sh
         args:
-        - "common/decrypted-cf-staging.main.yml"
-        - "common/decrypted-cf-staging.external.yml"
+        - "common-staging/decrypted-cf-staging.main.yml"
+        - "common-staging/decrypted-cf-staging.external.yml"
         - "cf-manifest/manifest.yml"
       outputs:
       - name: cf-manifest
@@ -827,7 +826,7 @@ jobs:
       run:
         path: diego-manifests/diego/generate.sh
         args:
-        - common-production/decrypted-diego-production.yml
+        - common-production/decrypted-diego.yml
         - {{cf-production-bosh-deployment}}
         - master-bosh-root-cert/master-bosh.crt
         - {{production-bosh-target}}
@@ -1055,6 +1054,7 @@ resources:
     secrets_files:
     - cf-staging.main.yml
     - cf-staging.external.yml
+    - diego-staging.yml
     secrets_passphrase: {{cf-private-staging-passphrase}}
     bosh_cert: bosh.pem
     region: {{aws-region}}
@@ -1066,6 +1066,7 @@ resources:
     secrets_files:
     - cf.main.yml
     - cf.external.yml
+    - diego.yml
     secrets_passphrase: {{cf-private-production-passphrase}}
     bosh_cert: bosh.pem
     region: {{aws-region}}
