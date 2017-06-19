@@ -195,7 +195,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: cf-manifests-development
+      resource: terraform-config-development
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -227,7 +227,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: cf-manifests-development
+      resource: terraform-config-development
       passed: [terraform-plan-development]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -521,7 +521,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: cf-manifests-staging
+      resource: terraform-config-staging
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -553,7 +553,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: cf-manifests-staging
+      resource: terraform-config-staging
       passed: [terraform-plan-staging]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -902,7 +902,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: cf-manifests-production
+      resource: terraform-config-production
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -934,7 +934,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: cf-manifests-production
+      resource: terraform-config-production
       passed: [terraform-plan-production]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -1015,7 +1015,6 @@ resources:
     branch: {{cf-manifests-git-branch-development}}
     paths:
     - cf-*.yml
-    - terraform/*
 
 - name: cf-manifests-staging
   type: git
@@ -1024,7 +1023,6 @@ resources:
     branch: {{cf-manifests-git-branch-staging}}
     paths:
     - cf-*.yml
-    - terraform/*
 
 - name: cf-manifests-production
   type: git
@@ -1033,6 +1031,29 @@ resources:
     branch: {{cf-manifests-git-branch-production}}
     paths:
     - cf-*.yml
+
+- name: terraform-config-development
+  type: git
+  source:
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-development}}
+    paths:
+    - terraform/*
+
+- name: terraform-config-staging
+  type: git
+  source:
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-staging}}
+    paths:
+    - terraform/*
+
+- name: terraform-config-production
+  type: git
+  source:
+    uri: {{cf-manifests-git-url}}
+    branch: {{cf-manifests-git-branch-production}}
+    paths:
     - terraform/*
 
 - name: common-development
