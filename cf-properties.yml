@@ -480,7 +480,7 @@ properties:
       dashboard:
         scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read,scim.invite
         authorized-grant-types: authorization_code,client_credentials,refresh_token
-        authorities: uaa.none,scim.invite,cloud_controller.admin
+        authorities: uaa.none,scim.invite,cloud_controller.admin,scim.read
         override: true
         access-token-validity: 600
         refresh-token-validity: 259200
