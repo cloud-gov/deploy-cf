@@ -24,4 +24,4 @@ if [ -z "${CF_TOKEN}" ]; then
 fi
 
 # Execute the terraform action, the cloudfoundry provider will use CF_API and CF_TOKEN to authenticate
-TERRAFORM_BIN="terraform9" ./pipeline-tasks/terraform-apply.sh
+./pipeline-tasks/terraform-apply.sh
