@@ -144,8 +144,6 @@ meta:
     consumes:
       nats:
         from: nats_z1
-  - name: nats_stream_forwarder
-    release: (( meta.release.name ))
 
   nats_z2_templates:
   - name: nats
@@ -156,8 +154,6 @@ meta:
     consumes:
       nats:
         from: nats_z2
-  - name: nats_stream_forwarder
-    release: (( meta.release.name ))
 
   router_z1_templates:
   - name: secureproxy
