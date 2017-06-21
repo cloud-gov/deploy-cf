@@ -515,7 +515,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: terraform-config-staging
+      resource: terraform-config-staging-production
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -547,7 +547,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: terraform-config-staging
+      resource: terraform-config-staging-production
       passed: [terraform-plan-staging]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -598,6 +598,8 @@ jobs:
       passed: [deploy-cf-staging]
     - get: tests-timer
       trigger: true
+    - get: terraform-config-staging-production
+      passed: [terraform-apply-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     params:
@@ -665,6 +667,8 @@ jobs:
     - get: dotnet-core-buildpack-release
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
+      passed: [smoke-tests-staging]
+    - get: terraform-config-staging-production
       passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
@@ -891,8 +895,9 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: terraform-config-production
+      resource: terraform-config-staging-production
       trigger: true
+      passed: [acceptance-tests-staging]
     - get: pipeline-tasks
   - task: terraform-plan
     tags:
@@ -923,7 +928,7 @@ jobs:
   plan:
   - aggregate:
     - get: terraform-templates
-      resource: terraform-config-production
+      resource: terraform-config-staging-production
       passed: [terraform-plan-production]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -1029,19 +1034,11 @@ resources:
     paths:
     - terraform/*
 
-- name: terraform-config-staging
+- name: terraform-config-staging-production
   type: git
   source:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-staging}}
-    paths:
-    - terraform/*
-
-- name: terraform-config-production
-  type: git
-  source:
-    uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-production}}
     paths:
     - terraform/*
 
