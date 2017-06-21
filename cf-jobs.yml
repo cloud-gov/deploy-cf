@@ -69,7 +69,6 @@ meta:
       nats:
         from: nats_z1
   - {name: java-buildpack, release: java-buildpack}
-  - {name: java-offline-buildpack, release: java-offline-buildpack}
   - {name: go-buildpack, release: go-buildpack}
   - {name: binary-buildpack, release: binary-buildpack}
   - {name: nodejs-buildpack, release: nodejs-buildpack}
@@ -95,7 +94,6 @@ meta:
       nats:
         from: nats_z2
   - {name: java-buildpack, release: java-buildpack}
-  - {name: java-offline-buildpack, release: java-offline-buildpack}
   - {name: go-buildpack, release: go-buildpack}
   - {name: binary-buildpack, release: binary-buildpack}
   - {name: nodejs-buildpack, release: nodejs-buildpack}

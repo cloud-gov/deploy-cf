@@ -19,8 +19,6 @@ jobs:
       trigger: true
     - get: java-buildpack-release
       trigger: true
-    - get: java-offline-buildpack-release
-      trigger: true
     - get: go-buildpack-release
       trigger: true
     - get: binary-buildpack-release
@@ -68,7 +66,6 @@ jobs:
       - dotnet-core-buildpack-release/*.tgz
       - go-buildpack-release/*.tgz
       - java-buildpack-release/*.tgz
-      - java-offline-buildpack-release/*.tgz
       - nodejs-buildpack-release/*.tgz
       - php-buildpack-release/*.tgz
       - python-buildpack-release/*.tgz
@@ -323,8 +320,6 @@ jobs:
       trigger: true
     - get: java-buildpack-release
       trigger: true
-    - get: java-offline-buildpack-release
-      trigger: true
     - get: go-buildpack-release
       trigger: true
     - get: binary-buildpack-release
@@ -369,7 +364,6 @@ jobs:
       - cf-release/*.tgz
       - uaa-customized-release/*.tgz
       - java-buildpack-release/*.tgz
-      - java-offline-buildpack-release/*.tgz
       - go-buildpack-release/*.tgz
       - binary-buildpack-release/*.tgz
       - nodejs-buildpack-release/*.tgz
@@ -586,8 +580,6 @@ jobs:
       passed: [deploy-cf-staging]
     - get: java-buildpack-release
       passed: [deploy-cf-staging]
-    - get: java-offline-buildpack-release
-      passed: [deploy-cf-staging]
     - get: go-buildpack-release
       passed: [deploy-cf-staging]
     - get: binary-buildpack-release
@@ -655,7 +647,6 @@ jobs:
       passed: [smoke-tests-staging, uaa-smoke-tests-staging]
     - get: java-buildpack-release
       passed: [deploy-cf-staging]
-    - get: java-offline-buildpack-release
       passed: [deploy-cf-staging]
     - get: go-buildpack-release
       passed: [deploy-cf-staging]
@@ -721,8 +712,6 @@ jobs:
     - get: uaa-customized-release
       passed: [acceptance-tests-staging]
     - get: java-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: java-offline-buildpack-release
       passed: [acceptance-tests-staging]
     - get: go-buildpack-release
       passed: [acceptance-tests-staging]
@@ -1108,11 +1097,6 @@ resources:
   type: bosh-io-release
   source:
     repository: cloudfoundry/java-buildpack-release
-
-- name: java-offline-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/java-offline-buildpack-release
 
 - name: go-buildpack-release
   type: bosh-io-release
