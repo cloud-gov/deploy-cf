@@ -74,6 +74,29 @@ jobs:
       - uaa-customized-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
+  - task: cf-state-development
+    config: &state-config
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+      - name: bosh-manifest
+      - name: output-template
+      outputs:
+      - name: cloudfoundry-state
+      run:
+        path: output-template/generate-outputs.sh
+    input_mapping:
+      bosh-manifest: generated-manifest
+      output-template: cf-manifests-development
+    params:
+      MANIFEST: bosh-manifest/cf-development.yml
+      TEMPLATE: output-template/outputs-development.yml
+  - put: cloudfoundry-state-development
+    params:
+      file: cloudfoundry-state/state.yml
   on_success:
     put: slack
     params:
@@ -375,6 +398,17 @@ jobs:
       - cg-s3-secureproxy-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
+  - task: cf-state-staging
+    config: *state-config
+    input_mapping:
+      bosh-manifest: cf-manifest
+      output-template: cf-manifests-staging
+    params:
+      MANIFEST: bosh-manifest/manifest.yml
+      TEMPLATE: output-template/outputs-staging.yml
+  - put: cloudfoundry-state-staging
+    params:
+      file: cloudfoundry-state/state.yml
   on_success:
     put: slack
     params:
@@ -755,6 +789,17 @@ jobs:
       - name: cf-manifest
   - put: cf-deployment-production
     params: *deploy-params
+  - task: cf-state-production
+    config: *state-config
+    input_mapping:
+      bosh-manifest: cf-manifest
+      output-template: cf-manifests-production
+    params:
+      MANIFEST: bosh-manifest/manifest.yml
+      TEMPLATE: output-template/outputs-production.yml
+  - put: cloudfoundry-state-production
+    params:
+      file: cloudfoundry-state/state.yml
   on_success:
     put: slack
     params:
@@ -991,6 +1036,27 @@ resources:
     region_name: {{aws-region}}
     versioned_file: master-bosh.crt
 
+- name: cloudfoundry-state-development
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    region_name: {{aws-region}}
+    versioned_file: cloudfoundry/development/state.yml
+
+- name: cloudfoundry-state-staging
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    region_name: {{aws-region}}
+    versioned_file: cloudfoundry/staging/state.yml
+
+- name: cloudfoundry-state-production
+  type: s3-iam
+  source:
+    bucket: {{tf-state-bucket}}
+    region_name: {{aws-region}}
+    versioned_file: cloudfoundry/production/state.yml
+
 - name: pipeline-tasks
   type: git
   source:
@@ -1017,6 +1083,7 @@ resources:
     branch: {{cf-manifests-git-branch-staging}}
     paths:
     - cf-*.yml
+    - generate-*.sh
 
 - name: cf-manifests-production
   type: git
