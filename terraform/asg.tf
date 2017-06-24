@@ -44,6 +44,41 @@ resource "cloudfoundry_sec_group" "public_networks" {
     protocol = "all"
     destination = "192.169.0.0-255.255.255.255"
   }
+
+  rules {
+    log = true
+    protocol = "tcp"
+    destination = "0.0.0.0-9.255.255.255"
+    ports = "0-65535"
+  }
+
+  rules {
+    log = true
+    protocol = "tcp"
+    destination = "11.0.0.0-169.253.255.255"
+    ports = "0-65535"
+  }
+
+  rules {
+    log = true
+    protocol = "tcp"
+    destination = "169.255.0.0-172.15.255.255"
+    ports = "0-65535"
+  }
+
+  rules {
+    log = true
+    protocol = "tcp"
+    destination = "172.32.0.0-192.167.255.255"
+    ports = "0-65535"
+  }
+
+  rules {
+    log = true
+    protocol = "tcp"
+    destination = "192.169.0.0-255.255.255.255"
+    ports = "0-65535"
+  }
 }
 
 resource "cloudfoundry_sec_group" "dns" {
