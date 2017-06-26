@@ -316,13 +316,6 @@ properties:
         - scim.read
         - cloud_controller.admin
         - doppler.firehose
-      - name: services
-        password: (( merge ))
-        groups:
-        - scim.write
-        - openid
-        - scim.read
-        - cloud_controller.admin
       - name: sys-tester
         password: (( merge ))
         groups:
@@ -340,11 +333,6 @@ properties:
         groups:
         - openid
         - cloud_controller.admin
-      - name: logsearch-firehose-ingestor
-        password: (( merge ))
-        groups:
-        - cloud_controller.admin
-        - doppler.firehose
       groups: ~
       external_groups: ~
 
