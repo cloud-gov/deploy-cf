@@ -604,8 +604,6 @@ properties:
     deployment: (( meta.environment ))
     dropsonde_incoming_port: 3457
 
-  nessus-agent: (( merge ))
-
   newrelic: ~
 
   smoke_tests:
