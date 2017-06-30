@@ -1079,11 +1079,9 @@ resources:
     region: {{aws-region}}
 
 - name: cf-stemcell
-  type: s3-iam
+  type: bosh-io-stemcell
   source:
-    bucket: {{stemcell-bucket}}
-    regexp: light-bosh-stemcell-(.*)-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
-    region_name: {{aws-region}}
+    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
 
 - name: cf-release
   type: bosh-io-release
