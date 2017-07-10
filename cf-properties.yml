@@ -387,11 +387,11 @@ properties:
         authorized-grant-types: authorization_code,client_credentials,refresh_token
         redirect-uri: (( properties.login.protocol "://login." meta.service_domain ))
         autoapprove: true
-      notifications:
-        secret: (( merge ))
-        authorities: cloud_controller.admin,scim.read
+      admin-read-only:
         authorized-grant-types: client_credentials
+        authorities: cloud_controller.admin_read_only
         override: true
+        secret: (( merge ))
       influxdb-firehose-nozzle:
         access-token-validity: 600
         authorized-grant-types: client_credentials
@@ -401,7 +401,7 @@ properties:
         authorities: oauth.login,doppler.firehose
       logsearch_firehose_ingestor:
         authorized-grant-types: client_credentials
-        authorities: doppler.firehose,cloud_controller.admin
+        authorities: doppler.firehose,cloud_controller.admin_read_only
         override: true
         secret: (( merge ))
       cf:
