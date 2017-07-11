@@ -58,9 +58,6 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z1
   - name: statsd_injector
     release: (( meta.release.name ))
   - name: route_registrar
@@ -83,9 +80,6 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z2
   - name: statsd_injector
     release: (( meta.release.name ))
   - name: route_registrar
@@ -108,32 +102,20 @@ meta:
     release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z1
 
   api_worker_z2_templates:
   - name: consul_agent
     release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z2
 
   clock_z1_templates:
   - name: cloud_controller_clock
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z1
 
   clock_z2_templates:
   - name: cloud_controller_clock
     release: (( meta.capi_release.name ))
-    consumes:
-      nats:
-        from: nats_z2
 
   nats_z1_templates:
   - name: nats
@@ -551,7 +533,7 @@ jobs:
     instances: 1
     resource_pool: medium_z1
     networks:
-      - name: cf1
+    - name: cf1
     properties:
       metron_agent:
         zone: z1
