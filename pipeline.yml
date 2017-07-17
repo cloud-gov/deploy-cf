@@ -140,16 +140,17 @@ jobs:
         args:
         - common-development/decrypted-diego-development.yml
         - {{cf-development-bosh-deployment}}
-        - master-bosh-root-cert/master-bosh.crt
-        - {{development-bosh-target}}
-        - {{development-bosh-username}}
-        - {{development-bosh-password}}
         - instance-count-overrides-staging.yml
         - isolation-cells-development.yml
         - terraform-yaml/state.yml
         - generated-manifest/diego-development.yml
       outputs:
       - name: generated-manifest
+      params:
+        BOSH_ENVIRONMENT: {{development-bosh-target}}
+        BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+        BOSH_CLIENT: {{development-bosh-client}}
+        BOSH_CLIENT_SECRET: {{development-bosh-client-secret}}
   - put: diego-development-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -441,16 +442,17 @@ jobs:
         args:
         - common-staging/decrypted-diego-staging.yml
         - {{cf-staging-bosh-deployment}}
-        - master-bosh-root-cert/master-bosh.crt
-        - {{staging-bosh-target}}
-        - {{staging-bosh-username}}
-        - {{staging-bosh-password}}
         - instance-count-overrides-staging.yml
         - isolation-cells-staging.yml
         - terraform-yaml/state.yml
         - generated-manifest/diego-staging.yml
       outputs:
       - name: generated-manifest
+      params:
+        BOSH_ENVIRONMENT: {{staging-bosh-target}}
+        BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+        BOSH_CLIENT: {{staging-bosh-client}}
+        BOSH_CLIENT_SECRET: {{staging-bosh-client-secret}}
   - put: diego-staging-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -821,16 +823,17 @@ jobs:
         args:
         - common-production/decrypted-diego.yml
         - {{cf-production-bosh-deployment}}
-        - master-bosh-root-cert/master-bosh.crt
-        - {{production-bosh-target}}
-        - {{production-bosh-username}}
-        - {{production-bosh-password}}
         - instance-count-overrides-production.yml
         - isolation-cells-production.yml
         - terraform-yaml/state.yml
         - generated-manifest/diego-production.yml
       outputs:
       - name: generated-manifest
+      params:
+        BOSH_ENVIRONMENT: {{production-bosh-target}}
+        BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+        BOSH_CLIENT: {{production-bosh-client}}
+        BOSH_CLIENT_SECRET: {{production-bosh-client-secret}}
   - put: diego-production-deployment
     params:
       cert: master-bosh-root-cert/master-bosh.crt
@@ -1195,24 +1198,24 @@ resources:
   type: 18f-bosh-deployment
   source:
     target: {{development-bosh-target}}
-    username: {{development-bosh-username}}
-    password: {{development-bosh-password}}
+    client_id: {{development-bosh-client}}
+    client_secret: {{development-bosh-client-secret}}
     deployment: {{diego-development-bosh-deployment}}
 
 - name: diego-staging-deployment
   type: 18f-bosh-deployment
   source:
     target: {{staging-bosh-target}}
-    username: {{staging-bosh-username}}
-    password: {{staging-bosh-password}}
+    client_id: {{staging-bosh-client}}
+    client_secret: {{staging-bosh-client-secret}}
     deployment: {{diego-staging-bosh-deployment}}
 
 - name: diego-production-deployment
   type: 18f-bosh-deployment
   source:
     target: {{production-bosh-target}}
-    username: {{production-bosh-username}}
-    password: {{production-bosh-password}}
+    client_id: {{production-bosh-client}}
+    client_secret: {{production-bosh-client-secret}}
     deployment: {{diego-production-bosh-deployment}}
 
 - name: garden-runc-release
@@ -1229,24 +1232,24 @@ resources:
   type: 18f-bosh-deployment
   source:
     target: {{development-bosh-target}}
-    username: {{development-bosh-username}}
-    password: {{development-bosh-password}}
+    client_id: {{development-bosh-client}}
+    client_secret: {{development-bosh-client-secret}}
     deployment: {{cf-development-bosh-deployment}}
 
 - name: cf-deployment-staging
   type: 18f-bosh-deployment
   source:
     target: {{staging-bosh-target}}
-    username: {{staging-bosh-username}}
-    password: {{staging-bosh-password}}
+    client_id: {{staging-bosh-client}}
+    client_secret: {{staging-bosh-client-secret}}
     deployment: {{cf-staging-bosh-deployment}}
 
 - name: cf-deployment-production
   type: 18f-bosh-deployment
   source:
     target: {{production-bosh-target}}
-    username: {{production-bosh-username}}
-    password: {{production-bosh-password}}
+    client_id: {{production-bosh-client}}
+    client_secret: {{production-bosh-client-secret}}
     deployment: {{cf-production-bosh-deployment}}
 
 - name: uaa-customized-release
