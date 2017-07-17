@@ -4,25 +4,16 @@ set -e
 
 SECRETS=$1
 CF_DEPLOYMENT=$2
-BOSH_CACERT=$3
-BOSH_TARGET=$4
-BOSH_USERNAME=$5
-BOSH_PASSWORD=$6
-INSTANCE_COUNT_OVERRIDES=$7
-ISOLATION_CELLS=$8
-TERRAFORM_OUTPUT=$9
-DIEGO_MANIFEST=$10
+INSTANCE_COUNT_OVERRIDES=$3
+ISOLATION_CELLS=$4
+TERRAFORM_OUTPUT=$5
+DIEGO_MANIFEST=$6
 
 SCRIPT_PATH=$(dirname $0)
-SECRETS_PATH=$(dirname $SECRETS)
 
 # Download the CF manifest
 echo Downloading CF manifest...
-bosh --ca-cert $BOSH_CACERT target $BOSH_TARGET <<EOF 1>/dev/null 2>&1
-$BOSH_USERNAME
-$BOSH_PASSWORD
-EOF
-bosh download manifest $CF_DEPLOYMENT $SCRIPT_PATH/${CF_DEPLOYMENT}.yml
+bosh-cli -d "${CF_DEPLOYMENT}" manifest > "${SCRIPT_PATH}/${CF_DEPLOYMENT}.yml"
 
 # Call the standard manifest generation script
 echo Generating diego manifest...
