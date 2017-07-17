@@ -1,7 +1,8 @@
 sql_overrides:
   bbs:
     db_driver: postgres
-    max_open_connections: 500
+    max_idle_connections: 50
+    max_open_connections: 100
     require_ssl: true
     # AWS RDS certificate bundle, including GovCloud intermediate certificate
     # http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
