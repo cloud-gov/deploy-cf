@@ -55,6 +55,7 @@ meta:
 
   api_z1_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
@@ -77,6 +78,7 @@ meta:
 
   api_z2_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
@@ -99,12 +101,14 @@ meta:
 
   api_worker_z1_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
 
   api_worker_z2_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
@@ -141,6 +145,7 @@ meta:
   - name: secureproxy
     release: secureproxy
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
@@ -155,6 +160,7 @@ meta:
   - name: secureproxy
     release: secureproxy
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
@@ -187,6 +193,7 @@ meta:
 
   blobstore_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: blobstore
     release: (( meta.capi_release.name ))
@@ -195,6 +202,7 @@ meta:
 
   nfs_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: debian_nfs_server
     release: (( meta.capi_release.name ))
@@ -234,6 +242,7 @@ meta:
   - name: uaa-customized
     release: (( meta.custom_release.name ))
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -252,6 +261,7 @@ meta:
   - name: uaa-customized
     release: (( meta.custom_release.name ))
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
@@ -267,6 +277,7 @@ meta:
 
   loggregator_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: doppler
     release: (( meta.release.name ))
@@ -291,6 +302,7 @@ meta:
 
   loggregator_trafficcontroller_z1_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
@@ -305,6 +317,7 @@ meta:
 
   loggregator_trafficcontroller_z2_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
@@ -319,6 +332,7 @@ meta:
 
   consul_templates:
   - name: consul_agent
+    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
 
   metron_agent_templates:
