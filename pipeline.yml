@@ -985,6 +985,48 @@ jobs:
       channel: {{slack-channel}}
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
+- name: buildpacks-updated
+  plan:
+  - aggregate:
+    - get: java-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: go-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: binary-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: nodejs-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: ruby-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: php-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: python-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: staticfile-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+    - get: dotnet-core-buildpack-release
+      trigger: true
+      passed:
+      - deploy-cf-production
+  - put: buildpacks-updated
+    params:
+      bump: patch
 
 resources:
 - name: master-bosh-root-cert
@@ -1273,6 +1315,14 @@ resources:
   source:
     interval: 10m
 
+- name: buildpacks-updated
+  type: semver-iam
+  source:
+    bucket: cg-semver
+    driver: s3
+    key: buildpacks-updated
+    region_name: us-gov-west-1
+
 resource_types:
 - name: slack-notification
   type: docker-image
@@ -1293,6 +1343,11 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/s3-resource
+
+- name: semver-iam
+  type: docker-image
+  source:
+    repository: governmentpaas/semver-resource
 
 groups:
 - name: all
@@ -1316,6 +1371,7 @@ groups:
   - deploy-diego-production
   - smoke-tests-production
   - uaa-smoke-tests-production
+  - buildpacks-updated
 - name: development
   jobs:
   - deploy-cf-development
@@ -1341,3 +1397,4 @@ groups:
   - deploy-diego-production
   - smoke-tests-production
   - uaa-smoke-tests-production
+  - buildpacks-updated
