@@ -19,7 +19,7 @@ bosh-cli -d "${CF_DEPLOYMENT}" manifest > "${SCRIPT_PATH}/${CF_DEPLOYMENT}.yml"
 echo Generating diego manifest...
 diego-release-repo/scripts/generate-deployment-manifest \
   -c $SCRIPT_PATH/${CF_DEPLOYMENT}.yml \
-  -i $SECRETS \
+  -i $SCRIPT_PATH/infrastructure.yml \
   -p $SECRETS \
   -s $SCRIPT_PATH/diego-sql.yml \
   -v $SCRIPT_PATH/release-versions.yml \

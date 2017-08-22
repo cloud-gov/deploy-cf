@@ -139,7 +139,7 @@ jobs:
         path: diego-manifests/diego/generate.sh
         args:
         - common-development/decrypted-diego-development.yml
-        - {{cf-development-bosh-deployment}}
+        - cf-development
         - instance-count-overrides-staging.yml
         - isolation-cells-development.yml
         - terraform-yaml/state.yml
@@ -255,7 +255,7 @@ jobs:
       BOSH_TARGET: {{development-bosh-target}}
       BOSH_USERNAME: {{development-bosh-username}}
       BOSH_PASSWORD: {{development-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-development-bosh-deployment}}
+      BOSH_DEPLOYMENT_NAME: cf-development
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
       BOSH_FLAGS: "--keep-alive"
@@ -441,7 +441,7 @@ jobs:
         path: diego-manifests/diego/generate.sh
         args:
         - common-staging/decrypted-diego-staging.yml
-        - {{cf-staging-bosh-deployment}}
+        - cf-staging
         - instance-count-overrides-staging.yml
         - isolation-cells-staging.yml
         - terraform-yaml/state.yml
@@ -608,7 +608,7 @@ jobs:
       BOSH_TARGET: {{staging-bosh-target}}
       BOSH_USERNAME: {{staging-bosh-username}}
       BOSH_PASSWORD: {{staging-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-staging-bosh-deployment}}
+      BOSH_DEPLOYMENT_NAME: cf-staging
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
       BOSH_FLAGS: "--keep-alive"
@@ -678,7 +678,7 @@ jobs:
       BOSH_TARGET: {{staging-bosh-target}}
       BOSH_USERNAME: {{staging-bosh-username}}
       BOSH_PASSWORD: {{staging-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-staging-bosh-deployment}}
+      BOSH_DEPLOYMENT_NAME: cf-staging
       BOSH_ERRAND: acceptance_tests
       BOSH_CACERT: common/master-bosh.crt
   on_success:
@@ -822,7 +822,7 @@ jobs:
         path: diego-manifests/diego/generate.sh
         args:
         - common-production/decrypted-diego.yml
-        - {{cf-production-bosh-deployment}}
+        - cf-production
         - instance-count-overrides-production.yml
         - isolation-cells-production.yml
         - terraform-yaml/state.yml
@@ -963,7 +963,7 @@ jobs:
       BOSH_TARGET: {{production-bosh-target}}
       BOSH_USERNAME: {{production-bosh-username}}
       BOSH_PASSWORD: {{production-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: {{cf-production-bosh-deployment}}
+      BOSH_DEPLOYMENT_NAME: cf-production
       BOSH_ERRAND: smoke_tests
       BOSH_CACERT: common/master-bosh.crt
       BOSH_FLAGS: "--keep-alive"
@@ -1242,7 +1242,7 @@ resources:
     target: {{development-bosh-target}}
     client_id: {{development-bosh-client}}
     client_secret: {{development-bosh-client-secret}}
-    deployment: {{diego-development-bosh-deployment}}
+    deployment: cf-development-diego
 
 - name: diego-staging-deployment
   type: 18f-bosh-deployment
@@ -1250,7 +1250,7 @@ resources:
     target: {{staging-bosh-target}}
     client_id: {{staging-bosh-client}}
     client_secret: {{staging-bosh-client-secret}}
-    deployment: {{diego-staging-bosh-deployment}}
+    deployment: cf-staging-diego
 
 - name: diego-production-deployment
   type: 18f-bosh-deployment
@@ -1258,7 +1258,7 @@ resources:
     target: {{production-bosh-target}}
     client_id: {{production-bosh-client}}
     client_secret: {{production-bosh-client-secret}}
-    deployment: {{diego-production-bosh-deployment}}
+    deployment: cf-production-diego
 
 - name: garden-runc-release
   type: bosh-io-release
@@ -1276,7 +1276,7 @@ resources:
     target: {{development-bosh-target}}
     client_id: {{development-bosh-client}}
     client_secret: {{development-bosh-client-secret}}
-    deployment: {{cf-development-bosh-deployment}}
+    deployment: cf-development
 
 - name: cf-deployment-staging
   type: 18f-bosh-deployment
@@ -1284,7 +1284,7 @@ resources:
     target: {{staging-bosh-target}}
     client_id: {{staging-bosh-client}}
     client_secret: {{staging-bosh-client-secret}}
-    deployment: {{cf-staging-bosh-deployment}}
+    deployment: cf-staging
 
 - name: cf-deployment-production
   type: 18f-bosh-deployment
@@ -1292,7 +1292,7 @@ resources:
     target: {{production-bosh-target}}
     client_id: {{production-bosh-client}}
     client_secret: {{production-bosh-client-secret}}
-    deployment: {{cf-production-bosh-deployment}}
+    deployment: cf-production
 
 - name: uaa-customized-release
   type: s3-iam
