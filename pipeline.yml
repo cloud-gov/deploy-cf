@@ -309,7 +309,7 @@ jobs:
   - aggregate:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
-    - get: cf-manifests-staging
+    - get: cf-manifests
       trigger: true
     - get: common-staging
       trigger: true
@@ -347,10 +347,10 @@ jobs:
         source:
           repository: 18fgsa/concourse-task
       inputs:
-      - name: cf-manifests-staging
+      - name: cf-manifests
       - name: common-staging
       run:
-        path: cf-manifests-staging/generate-staging.sh
+        path: cf-manifests/generate-staging.sh
         args:
         - "common-staging/decrypted-cf-staging.main.yml"
         - "common-staging/decrypted-cf-staging.external.yml"
@@ -406,7 +406,6 @@ jobs:
       passed: [deploy-cf-staging]
     - get: pipeline-tasks
     - get: diego-manifests
-      resource: diego-manifests-staging
       trigger: true
     - get: diego-release-repo
       params: {submodules: none}
@@ -574,6 +573,10 @@ jobs:
     - get: diego-staging-deployment
       trigger: true
     # Get resources from upstream jobs for use in production deploy
+    - get: cf-manifests
+      passed: [deploy-cf-staging]
+    - get: diego-manifests
+      passed: [deploy-diego-staging]
     - get: cf-stemcell
       passed: [deploy-cf-staging]
     - get: cf-release
@@ -596,8 +599,16 @@ jobs:
       passed: [deploy-cf-staging]
     - get: staticfile-buildpack-release
       passed: [deploy-cf-staging]
+    - get: dotnet-core-buildpack-release
+      passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
+    - get: diego-release
+      passed: [deploy-diego-staging]
+    - get: cflinuxfs2-release
+      passed: [deploy-diego-staging]
+    - get: garden-runc-release
+      passed: [deploy-diego-staging]
     - get: tests-timer
       trigger: true
     - get: terraform-config-staging-production
@@ -643,6 +654,10 @@ jobs:
       passed: [smoke-tests-staging]
       trigger: true
     # Get resources from upstream jobs for use in production deploy
+    - get: cf-manifests
+      passed: [smoke-tests-staging]
+    - get: diego-manifests
+      passed: [smoke-tests-staging]
     - get: cf-stemcell
       passed: [smoke-tests-staging]
     - get: cf-release
@@ -650,25 +665,30 @@ jobs:
     - get: uaa-customized-release
       passed: [smoke-tests-staging, uaa-smoke-tests-staging]
     - get: java-buildpack-release
-      passed: [deploy-cf-staging]
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: go-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: binary-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: nodejs-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: ruby-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: php-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: python-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: staticfile-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: dotnet-core-buildpack-release
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
+      passed: [smoke-tests-staging]
+    - get: diego-release
+      passed: [smoke-tests-staging]
+    - get: cflinuxfs2-release
+      passed: [smoke-tests-staging]
+    - get: garden-runc-release
       passed: [smoke-tests-staging]
     - get: terraform-config-staging-production
       passed: [smoke-tests-staging]
@@ -707,7 +727,8 @@ jobs:
   - aggregate:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
-    - get: cf-manifests-production
+    - get: cf-manifests
+      passed: [acceptance-tests-staging]
     - get: common
       resource: common-production
     - get: cf-stemcell
@@ -745,10 +766,10 @@ jobs:
         source:
           repository: 18fgsa/concourse-task
       inputs:
-      - name: cf-manifests-production
+      - name: cf-manifests
       - name: common
       run:
-        path: cf-manifests-production/generate.sh
+        path: cf-manifests/generate.sh
         args:
         - "common/decrypted-cf.main.yml"
         - "common/decrypted-cf.external.yml"
@@ -787,7 +808,7 @@ jobs:
       passed: [deploy-cf-production]
     - get: pipeline-tasks
     - get: diego-manifests
-      resource: diego-manifests-production
+      passed: [acceptance-tests-staging]
       trigger: true
     - get: diego-release-repo
       params: {submodules: none}
@@ -798,10 +819,13 @@ jobs:
       trigger: true
       passed: [deploy-cf-production]
     - get: diego-release
+      passed: [acceptance-tests-staging]
       trigger: true
     - get: cflinuxfs2-release
+      passed: [acceptance-tests-staging]
       trigger: true
     - get: garden-runc-release
+      passed: [acceptance-tests-staging]
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-production
@@ -1055,15 +1079,7 @@ resources:
     paths:
     - cf-*.yml
 
-- name: cf-manifests-staging
-  type: git
-  source:
-    uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-staging}}
-    paths:
-    - cf-*.yml
-
-- name: cf-manifests-production
+- name: cf-manifests
   type: git
   source:
     uri: {{cf-manifests-git-url}}
@@ -1186,15 +1202,7 @@ resources:
     paths:
     - diego/*
 
-- name: diego-manifests-staging
-  type: git
-  source:
-    uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-staging}}
-    paths:
-    - diego/*
-
-- name: diego-manifests-production
+- name: diego-manifests
   type: git
   source:
     uri: {{cf-manifests-git-url}}
