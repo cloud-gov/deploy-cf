@@ -119,7 +119,7 @@ properties:
     internal_api_password: (( bulk_api_password ))
 
     logging_level: info
-    db_logging_level: info
+    db_logging_level: warn
 
     staging_upload_user: (( merge ))
     staging_upload_password: (( merge ))
@@ -304,6 +304,8 @@ properties:
     issuer: (( url ))
 
     no_ssl: false
+
+    logging_level: INFO
 
     scim:
       userids_enabled: (( merge || true ))
