@@ -119,7 +119,9 @@ properties:
     internal_api_password: (( bulk_api_password ))
 
     logging_level: info
-    db_logging_level: warn
+
+    # this is the level at which all DB events are logged
+    db_logging_level: debug2
 
     staging_upload_user: (( merge ))
     staging_upload_password: (( merge ))
