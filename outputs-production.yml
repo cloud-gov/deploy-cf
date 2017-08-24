@@ -1,0 +1,5 @@
+cloudfoundry_outputs:
+  admin-ui-client-id: admin-ui
+  admin-ui-client-secret: (( grab properties.uaa.clients.admin-ui.secret ))
+
+  nats: (( grab properties.nats ))
