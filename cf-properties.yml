@@ -112,7 +112,7 @@ properties:
 
     external_host: api
     external_port: 9022
-    srv_api_uri: (( "https://" external_host "." meta.service_domain ))
+    internal_service_hostname: cloud-controller-ng.service.cf.internal
 
     bulk_api_password: (( merge ))
     internal_api_user: "internal_user"
@@ -254,7 +254,6 @@ properties:
       domain: ~
     url: (( "https://login." meta.service_domain ))
     uaa_certificate: ~
-    protocol: https
     brand: oss
     brand_title: cloud.gov
     uaa_base: ~
@@ -302,7 +301,6 @@ properties:
     ssl:
       port: (( merge || 8443 ))
 
-    url: (( "https://uaa." meta.service_domain ))
     issuer: (( url ))
 
     no_ssl: false
