@@ -296,6 +296,8 @@ properties:
       session-cookie:
         max-age: 900 # 15 minutes per FedRAMP requirement
 
+    internal_url: https://uaa.service.cf.internal:8443/
+
     port: (( merge || 8080 ))
 
     ssl:
