@@ -174,6 +174,10 @@ echo -e "${GREEN}Creating${NC} Traffic Controller key and certificate pairs"
 certstrap --depot-path "${depot_path}" request-cert --passphrase '' --common-name trafficcontroller
 certstrap --depot-path "${depot_path}" sign trafficcontroller --CA "${local_ca_cert_name}"
 
+echo -e "${GREEN}Creating${NC} Cloud Controller-Traffic Controller key and certificate pairs"
+certstrap --depot-path "${depot_path}" request-cert --passphrase '' --common-name cc_trafficcontroller
+certstrap --depot-path "${depot_path}" sign cc_trafficcontroller --CA "${local_ca_cert_name}"
+
 echo -e "${GREEN}Creating${NC} Metron key and certificate pairs"
 certstrap --depot-path "${depot_path}" request-cert --passphrase '' --common-name metron
 certstrap --depot-path "${depot_path}" sign metron --CA "${local_ca_cert_name}"
