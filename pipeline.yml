@@ -36,6 +36,7 @@ jobs:
     - get: dotnet-core-buildpack-release
       trigger: true
     - get: cg-s3-secureproxy-release
+      resource: cg-s3-secureproxy-release-development
       trigger: true
   - task: cf-development-manifest
     config:
@@ -1302,13 +1303,17 @@ resources:
     regexp: uaa-customized-(.*).tgz
     region_name: {{aws-region}}
 
-- name: cg-s3-secureproxy-release
+- &secureproxy-release
+  name: cg-s3-secureproxy-release
   type: s3-iam
   source:
     bucket: {{s3-bosh-releases-bucket}}
     private: true
     regexp: secureproxy-(.*).tgz
     region_name: {{aws-region}}
+
+- <<: *secureproxy-release
+  name: cg-s3-secureproxy-release-development
 
 - name: tests-timer
   type: time
