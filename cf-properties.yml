@@ -112,6 +112,7 @@ properties:
 
     external_host: api
     external_port: 9022
+    srv_api_uri: (( "https://" external_host "." meta.service_domain ))
     internal_service_hostname: cloud-controller-ng.service.cf.internal
 
     bulk_api_password: (( merge ))
@@ -303,6 +304,7 @@ properties:
     ssl:
       port: (( merge || 8443 ))
 
+    url: (( "https://uaa." meta.service_domain ))
     issuer: (( url ))
 
     no_ssl: false
@@ -389,7 +391,7 @@ properties:
         authorities: oauth.login,scim.write,clients.read,notifications.write,critical_notifications.write,emails.write,scim.userids,password.write
         secret: (( merge ))
         authorized-grant-types: authorization_code,client_credentials,refresh_token
-        redirect-uri: (( properties.login.protocol "://login." meta.service_domain ))
+        redirect-uri: (( "https://login." meta.service_domain ))
         autoapprove: true
       admin-read-only:
         authorized-grant-types: client_credentials
