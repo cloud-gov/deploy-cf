@@ -302,6 +302,35 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: tic-smoke-tests-development
+  plan:
+  - aggregate:
+    - get: cf-manifests
+      resource: cf-manifests-development
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      passed: [deploy-cf-development]
+      trigger: true
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      GOROUTER_ADDRESS: 0.router-z1.cf1.cf-development.bosh
+      BOSH_ADDRESS: {{development-bosh-target}}
+      RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
+      UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
+      SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
+      SOURCE_ADDRESS_FORBIDDEN: {{tic-test-source-address-forbidden}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
 - name: deploy-cf-staging
   serial_groups: [staging]
   serial: true
@@ -512,6 +541,36 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: tic-smoke-tests-staging
+  plan:
+  - aggregate:
+    - get: cf-manifests
+      passed: [deploy-cf-staging]
+    - get: cf-deployment-staging
+      passed: [deploy-cf-staging]
+      trigger: true
+    - get: cg-s3-secureproxy-release
+      passed: [deploy-cf-staging]
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      GOROUTER_ADDRESS: 0.router-z1.cf1.cf-staging.bosh
+      BOSH_ADDRESS: {{staging-bosh-target}}
+      RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
+      UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
+      SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
+      SOURCE_ADDRESS_FORBIDDEN: {{tic-test-source-address-forbidden}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on staging FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
 - name: terraform-plan-staging
   plan:
   - aggregate:
@@ -683,7 +742,7 @@ jobs:
     - get: dotnet-core-buildpack-release
       passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
-      passed: [smoke-tests-staging]
+      passed: [smoke-tests-staging, tic-smoke-tests-staging]
     - get: diego-release
       passed: [smoke-tests-staging]
     - get: cflinuxfs2-release
@@ -913,6 +972,34 @@ jobs:
     params:
       text: |
         :x: UAA Smoke Tests for CF on production FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: tic-smoke-tests-production
+  plan:
+  - aggregate:
+    - get: cf-manifests
+      passed: [deploy-cf-production]
+    - get: cf-deployment-production
+      passed: [deploy-cf-production]
+      trigger: true
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      GOROUTER_ADDRESS: 0.router-z1.cf1.cf-production.bosh
+      BOSH_ADDRESS: {{production-bosh-target}}
+      RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
+      UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
+      SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
+      SOURCE_ADDRESS_FORBIDDEN: {{tic-test-source-address-forbidden}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on production FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: {{slack-channel}}
       username: {{slack-username}}
@@ -1365,12 +1452,14 @@ groups:
   - terraform-apply-development
   - deploy-diego-development
   - uaa-smoke-tests-development
+  - tic-smoke-tests-development
   - smoke-tests-development
   - deploy-cf-staging
   - terraform-plan-staging
   - terraform-apply-staging
   - deploy-diego-staging
   - uaa-smoke-tests-staging
+  - tic-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
   - deploy-cf-production
@@ -1379,6 +1468,7 @@ groups:
   - deploy-diego-production
   - smoke-tests-production
   - uaa-smoke-tests-production
+  - tic-smoke-tests-production
   - buildpacks-updated
 - name: development
   jobs:
@@ -1387,6 +1477,7 @@ groups:
   - terraform-apply-development
   - deploy-diego-development
   - uaa-smoke-tests-development
+  - tic-smoke-tests-development
   - smoke-tests-development
 - name: staging
   jobs:
@@ -1395,6 +1486,7 @@ groups:
   - terraform-apply-staging
   - deploy-diego-staging
   - uaa-smoke-tests-staging
+  - tic-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
 - name: production
@@ -1405,4 +1497,5 @@ groups:
   - deploy-diego-production
   - smoke-tests-production
   - uaa-smoke-tests-production
+  - tic-smoke-tests-production
   - buildpacks-updated
