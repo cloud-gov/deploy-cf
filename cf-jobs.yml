@@ -853,6 +853,13 @@ properties:
     listen_port: 80
     proxy_port: 85
 
+    tic:
+      <<: (( merge ))
+      host_whitelist:
+      - hostname: (( "api." meta.service_domain ))
+        exclude:
+        - ^/v2/info
+
     # Expose gorouter health check for ELB
     # For this to work, router.load_balancer_healthy_threshold must be set to 0
     custom_server_config: |-
