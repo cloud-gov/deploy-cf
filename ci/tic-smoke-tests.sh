@@ -2,13 +2,15 @@
 
 set -eux
 
-read -r -d '' restricted_payload << EOF
+restricted_payload=$(cat <<EOF
 {"email":"smoke@${RESTRICTED_DOMAIN}"}
 EOF
+)
 
-read -r -d '' unrestricted_payload << EOF
+unrestricted_payload=$(cat <<EOF
 {"email":"smoke@${UNRESTRICTED_DOMAIN}"}
 EOF
+)
 
 gorouter_ip=$(dig A "@${BOSH_ADDRESS}" "${GOROUTER_ADDRESS}" | grep "IN A" | awk '{print $5}')
 
