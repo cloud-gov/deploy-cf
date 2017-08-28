@@ -138,6 +138,7 @@ properties:
     broker_client_max_async_poll_duration_minutes: (( merge || 10080 ))
 
     mutual_tls: ~
+    tls_port: 9023
 
     resource_pool:
       blobstore_type: (( merge || "fog" ))
