@@ -12,7 +12,7 @@ unrestricted_payload=$(cat <<EOF
 EOF
 )
 
-gorouter_ip=$(dig A "@${BOSH_ADDRESS}" "${GOROUTER_ADDRESS}" | grep "IN A" | awk '{print $5}')
+gorouter_ip=$(dig +short "@${BOSH_ADDRESS}" "${GOROUTER_ADDRESS}")
 
 check_resp() {
   body="$1"
