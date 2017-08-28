@@ -554,7 +554,7 @@ jobs:
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
-      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      API_HOSTNAME: api.fr-stage.cloud.gov
       GOROUTER_ADDRESS: 0.router-z1.cf1.cf-staging.bosh
       BOSH_ADDRESS: {{staging-bosh-target}}
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
@@ -988,7 +988,7 @@ jobs:
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
-      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      API_HOSTNAME: api.fr.cloud.gov
       GOROUTER_ADDRESS: 0.router-z1.cf1.cf-production.bosh
       BOSH_ADDRESS: {{production-bosh-target}}
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
@@ -1188,7 +1188,7 @@ resources:
   type: git
   source:
     uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-staging}}
+    branch: {{cf-manifests-git-branch-production}}
     paths:
     - terraform/*
 
