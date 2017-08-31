@@ -1,7 +1,7 @@
 jobs:
 - name: cell_platform_z1
   resource_pool: cell_platform_z1
-  instances: 1
+  instances: 2
   properties:
     diego:
       rep:
