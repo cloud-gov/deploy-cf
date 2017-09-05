@@ -322,6 +322,10 @@ jobs:
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
       SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
       SOURCE_ADDRESS_FORBIDDEN: {{tic-test-source-address-forbidden}}
+      PROXY_ADDRESS_ALLOWED: {{tic-test-proxy-address-allowed}}
+      PROXY_ADDRESS_FORBIDDEN: {{tic-test-proxy-address-forbidden}}
+      TIC_SECRET_ALLOWED: {{tic-secret-development}}
+      TIC_SECRET_FORBIDDEN: {{tic-test-tic-secret-forbidden}}
   on_failure:
     put: slack
     params:
@@ -563,6 +567,10 @@ jobs:
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
       SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
       SOURCE_ADDRESS_FORBIDDEN: {{tic-test-source-address-forbidden}}
+      PROXY_ADDRESS_ALLOWED: {{tic-test-proxy-address-allowed}}
+      PROXY_ADDRESS_FORBIDDEN: {{tic-test-proxy-address-forbidden}}
+      TIC_SECRET_ALLOWED: {{tic-secret-staging}}
+      TIC_SECRET_FORBIDDEN: {{tic-test-tic-secret-forbidden}}
   on_failure:
     put: slack
     params:
@@ -998,6 +1006,10 @@ jobs:
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
       SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
       SOURCE_ADDRESS_FORBIDDEN: {{tic-test-source-address-forbidden}}
+      PROXY_ADDRESS_ALLOWED: {{tic-test-proxy-address-allowed}}
+      PROXY_ADDRESS_FORBIDDEN: {{tic-test-proxy-address-forbidden}}
+      TIC_SECRET_ALLOWED: {{tic-secret-production}}
+      TIC_SECRET_FORBIDDEN: {{tic-test-tic-secret-forbidden}}
   on_failure:
     put: slack
     params:
