@@ -101,7 +101,7 @@ properties:
     allow_app_ssh_access: true
     default_app_memory: 512
     default_app_disk_in_mb: 1024
-    maximum_app_disk_in_mb: 2048
+    maximum_app_disk_in_mb: 5096
     client_max_body_size: 1536M
 
     default_health_check_timeout: 60
