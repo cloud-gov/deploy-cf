@@ -65,6 +65,7 @@ properties:
     newrelic_plugin:
       license_key: (( merge ))
   cc:
+    volume_services_enabled: true
     jobs:
       global:
         timeout_in_seconds: 14400 # 4 hours
