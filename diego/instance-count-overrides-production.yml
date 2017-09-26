@@ -21,9 +21,9 @@ instance_count_overrides:
   instances: 0
 
 - name: cell_z1
-  instances: 4
+  instances: 6
 - name: cell_z2
-  instances: 4
+  instances: 6
 - name: cell_z3
   instances: 0
 
