@@ -410,6 +410,16 @@ jobs:
       - cg-s3-secureproxy-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
+  - task: publish-tic-creds-staging
+    file: billing-src/publish-tic-creds.yml
+    params:
+      CF_API_URL: {{cf-api-url-staging}}
+      CF_USERNAME: {{cf-username-staging}}
+      CF_PASSWORD: {{cf-password-staging}}
+      CF_ORG: {{cf-org-staging}}
+      CF_SPACE: {{cf-space-staging}}
+      CF_UPS_NAME: {{cf-ups-name-staging}}
+      TIC_SECRET: {{tic-secret-staging}}
   on_success:
     put: slack
     params:
@@ -847,6 +857,16 @@ jobs:
       - name: cf-manifest
   - put: cf-deployment-production
     params: *deploy-params
+  - task: publish-tic-creds-production
+    file: billing-src/publish-tic-creds.yml
+    params:
+      CF_API_URL: {{cf-api-url-production}}
+      CF_USERNAME: {{cf-username-production}}
+      CF_PASSWORD: {{cf-password-production}}
+      CF_ORG: {{cf-org-production}}
+      CF_SPACE: {{cf-space-production}}
+      CF_UPS_NAME: {{cf-ups-name-production}}
+      TIC_SECRET: {{tic-secret-production}}
   on_success:
     put: slack
     params:
