@@ -251,6 +251,7 @@ jobs:
       trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
+    attempts: 3
     params:
       BOSH_TARGET: {{development-bosh-target}}
       BOSH_USERNAME: {{development-bosh-username}}
@@ -684,6 +685,7 @@ jobs:
       passed: [terraform-apply-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
+    attempts: 3
     params:
       BOSH_TARGET: {{staging-bosh-target}}
       BOSH_USERNAME: {{staging-bosh-username}}
@@ -763,6 +765,7 @@ jobs:
       passed: [smoke-tests-staging]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
+    attempts: 3
     params:
       BOSH_TARGET: {{staging-bosh-target}}
       BOSH_USERNAME: {{staging-bosh-username}}
@@ -1085,6 +1088,7 @@ jobs:
       trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
+    attempts: 3
     params:
       BOSH_TARGET: {{production-bosh-target}}
       BOSH_USERNAME: {{production-bosh-username}}
