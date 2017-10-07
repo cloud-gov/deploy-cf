@@ -437,6 +437,10 @@ properties:
         secret: (( merge ))
         authorized-grant-types: client_credentials
         override: true
+      cc_service_key_client:
+        authorities: credhub.read,credhub.write
+        authorized-grant-types: client_credentials
+        secret: (( merge ))
       gorouter:
         authorities: routing.routes.read
         authorized-grant-types: client_credentials
