@@ -46,6 +46,18 @@ resource_pools:
     cloud_properties: (( merge ))
     env: (( merge || meta.default_env ))
 
+  - name: xlarge_z1
+    network: cf1
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
+  - name: xlarge_z2
+    network: cf2
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge ))
+    env: (( merge || meta.default_env ))
+
   - name: api_z1
     network: cf1
     stemcell: (( merge || meta.stemcell ))
@@ -103,5 +115,5 @@ resource_pools:
   - name: xlarge_errand
     network: cf1
     stemcell: (( merge || meta.stemcell ))
-    cloud_properties: (( merge || resource_pools.large_z1.cloud_properties ))
+    cloud_properties: (( merge || resource_pools.xlarge_z1.cloud_properties ))
     env: (( merge || meta.default_env ))

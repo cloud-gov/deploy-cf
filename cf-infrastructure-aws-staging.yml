@@ -140,6 +140,26 @@ resource_pools:
       availability_zone: (( meta.zones.z2 ))
       key_name: (( meta.aws.key_name ))
 
+  - name: xlarge_z1
+    cloud_properties:
+      instance_type: m4.xlarge
+      ephemeral_disk:
+        size: 65_536
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z1 ))
+      key_name: (( meta.aws.key_name ))
+
+  - name: xlarge_z2
+    cloud_properties:
+      instance_type: m4.xlarge
+      ephemeral_disk:
+        size: 65_536
+        type: gp2
+        encrypted: true
+      availability_zone: (( meta.zones.z2 ))
+      key_name: (( meta.aws.key_name ))
+
   - name: api_z1
     cloud_properties:
       instance_type: m4.large

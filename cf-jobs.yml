@@ -460,7 +460,7 @@ jobs:
   - name: uaa_z1
     templates: (( merge || meta.uaa_z1_templates meta.metron_agent_templates ))
     instances: 1
-    resource_pool: large_z1
+    resource_pool: xlarge_z1
     networks:
       - name: cf1
     properties:
@@ -480,7 +480,7 @@ jobs:
   - name: uaa_z2
     templates: (( merge || meta.uaa_z2_templates meta.metron_agent_templates ))
     instances: 1
-    resource_pool: large_z2
+    resource_pool: xlarge_z2
     networks:
       - name: cf2
     properties:
