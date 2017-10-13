@@ -49,6 +49,10 @@ meta:
     uris:
     - (( "api." .properties.domain ))
     - (( "api." .meta.service_domain ))
+    health_check:
+      name: api-health-check
+      script_path: "/var/vcap/jobs/cloud_controller_ng/bin/cloud_controller_ng_health_check"
+      timeout: 3s
 
   api_consul_services:
     cloud_controller_ng: {}
@@ -229,9 +233,9 @@ meta:
     - (( "*.login." .meta.service_domain ))
     - (( "uaa." .meta.service_domain ))
     - (( "*.uaa." .meta.service_domain ))
-    # health_check:
-    #   name: uaa-healthcheck
-    #   script_path: /var/vcap/jobs/uaa/bin/health_check
+    health_check:
+      name: uaa-healthcheck
+      script_path: /var/vcap/jobs/uaa/bin/health_check
 
   uaa_z1_templates:
   - name: uaa
