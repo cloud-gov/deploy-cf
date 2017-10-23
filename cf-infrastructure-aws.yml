@@ -247,6 +247,13 @@ resource_pools:
       availability_zone: (( meta.zones.z1 ))
       key_name: (( meta.aws.key_name ))
 
+  - name: xlarge_m4_errand
+    cloud_properties:
+      instance_type: m4.xlarge
+      iam_instance_profile: production-bosh-compilation
+      availability_zone: (( meta.zones.z1 ))
+      key_name: (( meta.aws.key_name ))
+
 # set up static IPs
 jobs:
   - name: logs_z1
