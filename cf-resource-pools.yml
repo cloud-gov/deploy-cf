@@ -105,3 +105,9 @@ resource_pools:
     stemcell: (( merge || meta.stemcell ))
     cloud_properties: (( merge || resource_pools.large_z1.cloud_properties ))
     env: (( merge || meta.default_env ))
+
+  - name: xlarge_m4_errand
+    network: cf1
+    stemcell: (( merge || meta.stemcell ))
+    cloud_properties: (( merge || resource_pools.large_z1.cloud_properties ))
+    env: (( merge || meta.default_env ))
