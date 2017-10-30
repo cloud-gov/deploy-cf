@@ -525,16 +525,6 @@ properties:
         refresh-token-validity: 259200
         secret: (( merge ))
         autoapprove: true
-      cloud-gov-community:
-        scope: openid
-        authorized-grant-types: authorization_code,refresh_token
-        authorities: uaa.none
-        override: true
-        access-token-validity: 600
-        refresh-token-validity: 259200
-        secret: (( merge ))
-        redirect-uri: (( "https://community." meta.service_domain "/auth/oauth2_basic/callback" ))
-        autoapprove: true
       concourse-broker:
         scope: cloud_controller.read
         authorized-grant-types: authorization_code,client_credentials,refresh_token
@@ -575,6 +565,11 @@ properties:
         override: true
         authorized-grant-types: client_credentials
         authorities: cloud_controller.admin
+        secret: (( merge ))
+      uaa-credentials-broker:
+        override: true
+        authorized-grant-types: client_credentials
+        authorities: scim.write,uaa.admin,cloud_controller.admin
         secret: (( merge ))
 
     database: ~
