@@ -17,9 +17,6 @@ properties:
   <<: (( merge ))
   template_only: (( merge ))
 
-  logger_endpoint:
-    port: 443
-
   cc:
     resource_pool:
       blobstore_type: fog
@@ -357,9 +354,3 @@ jobs:
     networks:
       - name: cf2
         static_ips: (( static_ips(9) ))
-
-  - name: acceptance_tests
-    instances: 1
-
-  - name: smoke_tests
-    instances: 1
