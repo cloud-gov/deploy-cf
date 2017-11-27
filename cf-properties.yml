@@ -348,9 +348,6 @@ properties:
     jwt:
       signing_key: (( merge ))
       verification_key: (( merge ))
-      revocable: true
-      refresh:
-        unique: true
 
     cc:
       client_secret: (( merge ))

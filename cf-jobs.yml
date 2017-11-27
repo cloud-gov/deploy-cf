@@ -806,7 +806,8 @@ properties:
   metron_endpoint:
     shared_secret: (( .properties.loggregator_endpoint.shared_secret ))
 
-  logger_endpoint: ~
+  logger_endpoint:
+    port: 443
 
   cc: (( merge ))
   ccdb: (( merge ))

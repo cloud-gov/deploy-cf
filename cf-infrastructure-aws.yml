@@ -20,8 +20,11 @@ properties:
   <<: (( merge ))
   template_only: (( merge ))
 
-  logger_endpoint:
-    port: 443
+  uaa:
+    jwt:
+      revocable: true
+      refresh:
+        unique: true
 
   cc:
     resource_pool:
@@ -357,9 +360,3 @@ jobs:
     networks:
       - name: cf2
         static_ips: (( static_ips(9) ))
-
-  - name: acceptance_tests
-    instances: 1
-
-  - name: smoke_tests
-    instances: 1
