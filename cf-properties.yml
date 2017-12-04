@@ -346,6 +346,7 @@ properties:
       external_groups: ~
 
     jwt:
+      <<: (( merge ))
       signing_key: (( merge ))
       verification_key: (( merge ))
 
