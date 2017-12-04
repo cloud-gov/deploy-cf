@@ -21,6 +21,7 @@ properties:
   template_only: (( merge ))
 
   uaa:
+    port: 8081
     jwt:
       revocable: true
       refresh:
@@ -47,9 +48,6 @@ properties:
       fog_connection: (( meta.fog_config ))
       fog_aws_storage_options:
         encryption: AES256
-
-  uaa:
-    port: 8081
 
 compilation:
   cloud_properties:
