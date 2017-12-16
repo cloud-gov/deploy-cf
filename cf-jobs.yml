@@ -58,9 +58,6 @@ meta:
     cloud_controller_ng: {}
 
   api_z1_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
   - name: statsd_injector
@@ -81,9 +78,6 @@ meta:
   - {name: dotnet-core-buildpack, release: dotnet-core-buildpack}
 
   api_z2_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: cloud_controller_ng
     release: (( meta.capi_release.name ))
   - name: statsd_injector
@@ -104,16 +98,10 @@ meta:
   - {name: dotnet-core-buildpack, release: dotnet-core-buildpack}
 
   api_worker_z1_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
 
   api_worker_z2_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: cloud_controller_worker
     release: (( meta.capi_release.name ))
 
@@ -148,9 +136,6 @@ meta:
   router_z1_templates:
   - name: secureproxy
     release: secureproxy
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
     provides:
@@ -163,9 +148,6 @@ meta:
   router_z2_templates:
   - name: secureproxy
     release: secureproxy
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: gorouter
     release: (( meta.release.name ))
     provides:
@@ -185,38 +167,6 @@ meta:
   stats_templates:
   - name: collector
     release: (( meta.release.name ))
-
-  blobstore_routes:
-  - name: blobstore
-    port: (( .properties.blobstore.port ))
-    registration_interval: 20s
-    tags:
-      component: blobstore
-    uris:
-    - (( "blobstore." .properties.domain ))
-
-  blobstore_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
-  - name: blobstore
-    release: (( meta.capi_release.name ))
-  - name: route_registrar
-    release: (( meta.release.name ))
-
-  nfs_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
-  - name: debian_nfs_server
-    release: (( meta.capi_release.name ))
-  - name: blobstore
-    release: (( meta.capi_release.name ))
-  - name: route_registrar
-    release: (( meta.release.name ))
-    consumes:
-      nats:
-        from: nats_z1
 
   uaa_routes:
   - name: uaa
@@ -245,9 +195,6 @@ meta:
         from: router_z1
   - name: uaa-customized
     release: (( meta.custom_release.name ))
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
     consumes:
@@ -264,9 +211,6 @@ meta:
         from: router_z2
   - name: uaa-customized
     release: (( meta.custom_release.name ))
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
     consumes:
@@ -280,14 +224,9 @@ meta:
     release: (( meta.release.name ))
 
   loggregator_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: doppler
     release: (( meta.release.name ))
   - name: syslog_drain_binder
-    release: (( meta.release.name ))
-  - name: metron_agent
     release: (( meta.release.name ))
 
   loggregator_trafficcontroller_routes:
@@ -305,14 +244,9 @@ meta:
     - (( "loggregator." .meta.service_domain ))
 
   loggregator_trafficcontroller_z1_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
     consumes: {doppler: nil}
-  - name: metron_agent
-    release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
     consumes:
@@ -320,32 +254,25 @@ meta:
         from: nats_z1
 
   loggregator_trafficcontroller_z2_templates:
-  - name: consul_agent
-    consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
-    release: (( meta.consul_release.name ))
   - name: loggregator_trafficcontroller
     release: (( meta.release.name ))
     consumes: {doppler: nil}
-  - name: metron_agent
-    release: (( meta.release.name ))
   - name: route_registrar
     release: (( meta.release.name ))
     consumes:
       nats:
         from: nats_z2
 
-  consul_templates:
+  common_templates:
+  - name: metron_agent
+    release: (( meta.release.name ))
   - name: consul_agent
     consumes: {consul_client: nil, consul_server: nil, consul_common: nil}
     release: (( meta.consul_release.name ))
 
-  metron_agent_templates:
-  - name: metron_agent
-    release: (( meta.release.name ))
-
 jobs:
   - name: consul_z1
-    templates: (( merge || meta.consul_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.common_templates ))
     instances: 2
     persistent_disk_pool: tiny
     resource_pool: large_z1
@@ -364,7 +291,7 @@ jobs:
         zone: z1
 
   - name: consul_z2
-    templates: (( merge || meta.consul_templates  meta.metron_agent_templates ))
+    templates: (( merge || meta.common_templates ))
     instances: 1
     persistent_disk_pool: tiny
     resource_pool: large_z2
@@ -383,90 +310,71 @@ jobs:
         zone: z2
 
   - name: nats_z1
-    templates: (( merge || meta.nats_z1_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.nats_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
-      - name: cf1
-        static_ips: (( merge ))
+    - name: cf1
+      static_ips: (( merge ))
     properties:
       metron_agent:
         zone: z1
     update: (( merge || empty_hash ))
 
   - name: nats_z2
-    templates: (( merge || meta.nats_z2_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.nats_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
-      - name: cf2
-        static_ips: (( merge ))
+    - name: cf2
+      static_ips: (( merge ))
     properties:
       metron_agent:
         zone: z2
     update: (( merge || empty_hash ))
 
   - name: etcd_z1
-    templates: (( merge || meta.etcd_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.etcd_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     persistent_disk_pool: small
     networks:
-      - name: cf1
-        static_ips: (( merge ))
+    - name: cf1
+      static_ips: (( merge ))
     properties:
       consul:
-          agent:
-            services:
-              etcd:
-                name: cf-etcd
+        agent:
+          services:
+            etcd:
+              name: cf-etcd
       metron_agent:
         zone: z1
     update: (( merge || empty_hash ))
 
   - name: etcd_z2
-    templates: (( merge || meta.etcd_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.etcd_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     persistent_disk_pool: small
     networks:
-      - name: cf2
-        static_ips: (( merge ))
-    properties:
-      consul:
-          agent:
-            services:
-              etcd:
-                name: cf-etcd
-      metron_agent:
-        zone: z2
-    update: (( merge || empty_hash ))
-
-  - name: nfs_z1
-    templates: (( merge || meta.nfs_templates meta.metron_agent_templates ))
-    instances: 0
-    resource_pool: large_z1
-    persistent_disk_pool: big
-    networks:
-      - name: cf1
-        static_ips: ~
+    - name: cf2
+      static_ips: (( merge ))
     properties:
       consul:
         agent:
           services:
-            blobstore: {}
+            etcd:
+              name: cf-etcd
       metron_agent:
-        zone: z1
-      route_registrar:
-        routes: (( merge || meta.blobstore_routes ))
+        zone: z2
     update: (( merge || empty_hash ))
 
   - name: uaa_z1
-    templates: (( merge || meta.uaa_z1_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.uaa_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z1
     networks:
-      - name: cf1
+    - name: cf1
     properties:
       consul:
         agent:
@@ -482,11 +390,11 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: uaa_z2
-    templates: (( merge || meta.uaa_z2_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.uaa_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: large_z2
     networks:
-      - name: cf2
+    - name: cf2
     properties:
       consul:
         agent:
@@ -502,7 +410,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: stats_z1
-    templates: (( merge || meta.stats_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.stats_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -513,11 +421,11 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z1
-    templates: (( merge || meta.api_z1_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.api_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: api_z1
     networks:
-      - name: cf1
+    - name: cf1
     properties:
       consul:
         agent:
@@ -530,11 +438,11 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_z2
-    templates: (( merge || meta.api_z2_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.api_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: api_z2
     networks:
-      - name: cf2
+    - name: cf2
     properties:
       consul:
         agent:
@@ -547,7 +455,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: clock_global
-    templates: (( merge || meta.clock_z1_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.clock_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
@@ -558,7 +466,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z1
-    templates: (( merge || meta.api_worker_z1_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.api_worker_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: api_worker_z1
     networks:
@@ -570,7 +478,7 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: api_worker_z2
-    templates: (( merge || meta.api_worker_z2_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.api_worker_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: api_worker_z2
     networks:
@@ -582,11 +490,11 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_z1
-    templates: (( merge || meta.loggregator_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 0
     resource_pool: medium_z1
     networks:
-      - name: cf1
+    - name: cf1
     properties:
       doppler:
         zone: z1
@@ -595,11 +503,11 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_z2
-    templates: (( merge || meta.loggregator_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 0
     resource_pool: medium_z2
     networks:
-      - name: cf2
+    - name: cf2
     properties:
       doppler:
         zone: z2
@@ -608,51 +516,51 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: doppler_z1
-    templates: (( merge || meta.loggregator_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 1
     resource_pool: doppler_z1
     networks:
-      - name: cf1
+    - name: cf1
     properties:
       doppler:
         zone: z1
       metron_agent:
         zone: z1
       consul:
-          agent:
-            services:
-              doppler:
-                name: doppler
-                tags:
-                - z1
+        agent:
+          services:
+            doppler:
+              name: doppler
+              tags:
+              - z1
     update: (( merge || empty_hash ))
 
   - name: doppler_z2
-    templates: (( merge || meta.loggregator_templates ))
+    templates: (( merge || meta.loggregator_templates meta.common_templates ))
     instances: 1
     resource_pool: doppler_z2
     networks:
-      - name: cf2
+    - name: cf2
     properties:
       doppler:
         zone: z2
       metron_agent:
         zone: z2
       consul:
-          agent:
-            services:
-              doppler:
-                name: doppler
-                tags:
-                - z2
+        agent:
+          services:
+            doppler:
+              name: doppler
+              tags:
+              - z2
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z1
-    templates: (( merge || meta.loggregator_trafficcontroller_z1_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_z1_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z1
     networks:
-      - name: cf1
+    - name: cf1
     properties:
       consul:
         agent:
@@ -667,11 +575,11 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: loggregator_trafficcontroller_z2
-    templates: (( merge || meta.loggregator_trafficcontroller_z2_templates ))
+    templates: (( merge || meta.loggregator_trafficcontroller_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: medium_z2
     networks:
-      - name: cf2
+    - name: cf2
     properties:
       consul:
         agent:
@@ -686,12 +594,12 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z1
-    templates: (( merge || meta.router_z1_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.router_z1_templates meta.common_templates ))
     instances: 2
     resource_pool: router_z1
     networks:
-      - name: cf1
-        static_ips: (( merge ))
+    - name: cf1
+      static_ips: (( merge ))
     properties:
       consul:
         agent:
@@ -702,12 +610,12 @@ jobs:
     update: (( merge || empty_hash ))
 
   - name: router_z2
-    templates: (( merge || meta.router_z2_templates meta.metron_agent_templates ))
+    templates: (( merge || meta.router_z2_templates meta.common_templates ))
     instances: 1
     resource_pool: router_z2
     networks:
-      - name: cf2
-        static_ips: (( merge ))
+    - name: cf2
+      static_ips: (( merge ))
     properties:
       consul:
         agent:
@@ -752,7 +660,6 @@ properties:
     encrypt_keys: (( merge ))
     server_cert: (( merge ))
     server_key: (( merge ))
-
 
   dropsonde:
     enabled: true
@@ -806,7 +713,8 @@ properties:
   metron_endpoint:
     shared_secret: (( .properties.loggregator_endpoint.shared_secret ))
 
-  logger_endpoint: ~
+  logger_endpoint:
+    port: 443
 
   cc: (( merge ))
   ccdb: (( merge ))

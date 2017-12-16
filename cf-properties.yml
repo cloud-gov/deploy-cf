@@ -349,6 +349,7 @@ properties:
       external_groups: ~
 
     jwt:
+      <<: (( merge ))
       policy:
         keys: (( merge ))
         active_key_id: (( merge ))

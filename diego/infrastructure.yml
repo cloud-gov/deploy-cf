@@ -1,3 +1,13 @@
 property_overrides:
+  converger:
+    log_level: error
+  executor:
+    log_level: error
   garden:
+    log_level: error
+  nsync:
+    log_level: error
+  rep:
+    log_level: error
+  route_emitter:
     log_level: error
