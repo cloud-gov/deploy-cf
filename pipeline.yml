@@ -1311,27 +1311,30 @@ resources:
     - releases/diego-*.yml
 
 - name: diego-development-deployment
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{development-bosh-target}}
-    client_id: {{development-bosh-client}}
+    client: {{development-bosh-client}}
     client_secret: {{development-bosh-client-secret}}
+    ca_cert: {{bosh-ca-cert}}
     deployment: cf-development-diego
 
 - name: diego-staging-deployment
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{staging-bosh-target}}
-    client_id: {{staging-bosh-client}}
+    client: {{staging-bosh-client}}
     client_secret: {{staging-bosh-client-secret}}
+    ca_cert: {{bosh-ca-cert}}
     deployment: cf-staging-diego
 
 - name: diego-production-deployment
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{production-bosh-target}}
-    client_id: {{production-bosh-client}}
+    client: {{production-bosh-client}}
     client_secret: {{production-bosh-client-secret}}
+    ca_cert: {{bosh-ca-cert}}
     deployment: cf-production-diego
 
 - name: garden-runc-release
@@ -1345,27 +1348,30 @@ resources:
     repository: cloudfoundry/cflinuxfs2-release
 
 - name: cf-deployment-development
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{development-bosh-target}}
-    client_id: {{development-bosh-client}}
+    client: {{development-bosh-client}}
     client_secret: {{development-bosh-client-secret}}
+    ca_cert: {{bosh-ca-cert}}
     deployment: cf-development
 
 - name: cf-deployment-staging
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{staging-bosh-target}}
-    client_id: {{staging-bosh-client}}
+    client: {{staging-bosh-client}}
     client_secret: {{staging-bosh-client-secret}}
+    ca_cert: {{bosh-ca-cert}}
     deployment: cf-staging
 
 - name: cf-deployment-production
-  type: 18f-bosh-deployment
+  type: bosh-deployment
   source:
     target: {{production-bosh-target}}
-    client_id: {{production-bosh-client}}
+    client: {{production-bosh-client}}
     client_secret: {{production-bosh-client-secret}}
+    ca_cert: {{bosh-ca-cert}}
     deployment: cf-production
 
 - name: uaa-customized-release
@@ -1395,10 +1401,10 @@ resource_types:
   source:
     repository: cfcommunity/slack-notification-resource
 
-- name: 18f-bosh-deployment
+- name: bosh-deployment
   type: docker-image
   source:
-    repository: 18fgsa/bosh-deployment-resource
+    repository: cloudfoundry/bosh-deployment-resource
 
 - name: cg-common
   type: docker-image
