@@ -1,0 +1,23 @@
+- type: replace
+  path: /releases/-
+  value:
+    name: secureproxy
+    version: latest
+
+- type: replace
+  path: /instance_groups/name=router/jobs/-
+  value:
+    name: secureproxy
+    release: secureproxy
+    properties:
+      secureproxy:
+        listen_port: 80
+        proxy_port: 85
+        tic:
+          host_whitelist:
+          - hostname: api.((service_domain))
+            exclude:
+            - ^/v2/info
+          secret: ((tic-secret))
+          whitelist: ((tic-whitelist))
+          proxy_whitelist: ((tic-proxy-whitelist))

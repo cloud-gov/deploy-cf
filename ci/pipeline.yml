@@ -66,7 +66,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/password-policy.yml
+      - cf-manifests/bosh/opsfiles/newrelic.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - common/decrypted-cf-development.main.yml

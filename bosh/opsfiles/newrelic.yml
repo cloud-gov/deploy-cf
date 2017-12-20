@@ -1,0 +1,11 @@
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/newrelic
+  value:
+    license_key: ((newrelic-license-key))
+    environment_name: ((newrelic-environment))
+    monitor_mode: true
+    developer_mode: false
+    capture_params: true
+    transaction_tracer:
+      enabled: true
+      record_sql: obfuscated
