@@ -1,0 +1,156 @@
+# Add custom clients
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    admin-read-only:
+      override: true
+      authorized-grant-types: client_credentials
+      authorities: cloud_controller.admin_read_only
+      secret: ((admin-read-only-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    logsearch_firehose_ingestor:
+      override: true
+      authorized-grant-types: client_credentials
+      authorities: doppler.firehose,cloud_controller.admin_read_only
+      secret: ((logsearch-firehose-ingestor-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    uaa_extras_app:
+      override: true
+      scope: scim.invite,password.write
+      authorized-grant-types: authorization_code,client_credentials
+      authorities: scim.read,password.write,uaa.admin
+      access-token-validity: 600
+      refresh-token-validity: 259200
+      redirect-uri: https://account.((service_domain))/oauth/login
+      name: Invite Users
+      autoapprove: true
+      show-on-homepage: true
+      app-launch-url: https://account.((service_domain))/invite
+      app-icon: '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'
+      secret: ((uaa-extras-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    admin-ui:
+      override: true
+      scope: admin_ui.admin,admin_ui.user,openid
+      authorized-grant-types: authorization_code,client_credentials,refresh_token
+      authorities: clients.write,cloud_controller.admin,cloud_controller.read,cloud_controller.write,doppler.firehose,openid,scim.read,scim.write
+      redirect-uri: (( "https://admin." meta.service_domain "/login" ))
+      access-token-validity: 600
+      refresh-token-validity: 259200
+      autoapprove: true
+      secret: ((admin-ui-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    concourse-broker:
+      override: true
+      scope: cloud_controller.read
+      authorized-grant-types: authorization_code,client_credentials,refresh_token
+      authorities: cloud_controller.admin
+      access-token-validity: 600
+      refresh-token-validity: 259200
+      redirect-uri: https://concourse-ci.((service_domain))/auth/uaa/callback
+      autoapprove: true
+      secret: ((concourse-broker-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    uaaproxy:
+      override: true
+      scope: openid
+      authorized-grant-types: authorization_code,refresh_token
+      access-token-validity: 600
+      refresh-token-validity: 259200
+      redirect-uri: "https://**.18f.gov/auth/callback,https://**.app.cloud.gov/auth/callback"
+      autoapprove: true
+      secret: ((uaaproxy-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    sandbox-bot:
+      override: true
+      authorized-grant-types: client_credentials
+      authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
+      secret: ((sandbox-bot-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    firehose_exporter:
+      override: true
+      authorized-grant-types: client_credentials
+      authorities: doppler.firehose
+      secret: ((firehose-exporter-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    terraform:
+      override: true
+      authorized-grant-types: client_credentials
+      authorities: cloud_controller.admin
+      secret: ((terraform-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    uaa-credentials-broker:
+      override: true
+      authorized-grant-types: client_credentials
+      authorities: scim.write,uaa.admin,cloud_controller.admin
+      secret: ((uaa-credentials-broker-client-secret))
+
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    buildpack-notifier:
+      override: true
+      name: Buildpack Notifier
+      authorized-grant-types: client_credentials
+      authorities: cloud_controller.admin_read_only
+      secret: ((buildpack-notifier-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    kibana_oauth2_client:
+      override: true
+      scope: cloud_controller.read,oauth.approvals,openid,scim.userids
+      authorized-grant-types: authorization_code,refresh_token
+      access-token-validity: 600
+      refresh-token-validity: 259200
+      name: Logsearch
+      redirect-uri: https://logs.((service_domain))/login
+      autoapprove: true
+      secret: ((kibana-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/-
+  value:
+    kubernetes-client:
+      override: true
+      scope: cloud_controller.admin
+      authorized-grant-types: client_credentials
+      authorities: cloud_controller.admin
+      secret: ((kubernetes-client-secret))
+
+# Update existing clients
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/name=cf/access-token-validity
+  value: 600
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/name=cf/refresh-token-validity
+  value: 259200

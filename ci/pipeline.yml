@@ -7,7 +7,8 @@ jobs:
   - aggregate:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
-    - get: cf-manifests-development
+    - get: cf-manifests-manifests
+      resource: cf-manifests-development
       trigger: true
     - get: common-development
       trigger: true
@@ -15,7 +16,11 @@ jobs:
       trigger: true
     - get: cf-release
       trigger: true
+    - get: diego-release
+      trigger: true
     - get: uaa-customized-release
+      trigger: true
+    - get: cg-s3-secureproxy-release
       trigger: true
     - get: java-buildpack-release
       trigger: true
@@ -35,34 +40,15 @@ jobs:
       trigger: true
     - get: dotnet-core-buildpack-release
       trigger: true
-    - get: cg-s3-secureproxy-release
-      trigger: true
-  - task: cf-development-manifest
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: 18fgsa/concourse-task
-      inputs:
-      - name: cf-manifests-development
-      - name: common-development
-      run:
-        path: cf-manifests-development/generate-development.sh
-        args:
-        - "common-development/decrypted-cf-development.main.yml"
-        - "common-development/decrypted-cf-development.external.yml"
-        - "generated-manifest/cf-development.yml"
-      outputs:
-      - name: generated-manifest
   - put: cf-deployment-development
     params: &deploy-params
-      cert: master-bosh-root-cert/master-bosh.crt
-      manifest: generated-manifest/cf-development.yml
+      manifest: cf-deployment/cf-deployment.yml
       releases:
-      - binary-buildpack-release/*.tgz
       - cf-release/*.tgz
+      - diego-release/*.tgz
+      - uaa-customized-release/*.tgz
       - cg-s3-secureproxy-release/*.tgz
+      - binary-buildpack-release/*.tgz
       - dotnet-core-buildpack-release/*.tgz
       - go-buildpack-release/*.tgz
       - java-buildpack-release/*.tgz
@@ -71,9 +57,29 @@ jobs:
       - python-buildpack-release/*.tgz
       - ruby-buildpack-release/*.tgz
       - staticfile-buildpack-release/*.tgz
-      - uaa-customized-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
+      ops_files:
+      - cf-deployment/operations/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/disable-router-tls-termination.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/password-policy.yml
+      vars_files:
+      - cf-manifests/bosh/varsfiles/development.yml
+      - common/decrypted-cf-development.main.yml
+      - common/decrypted-cf-development.external.yml
+  - task: update-isolation-segments
+    file: diego-manifests/diego/update-isolation-segments.yml
+    params:
+      CF_API_URL: {{cf-api-url-development}}
+      CF_USERNAME: {{cf-username-development}}
+      CF_PASSWORD: {{cf-password-development}}
+      PLATFORM_ISOLATION_SEGMENT: {{platform-isolation-segment-development}}
+      PLATFORM_ORGANIZATION: {{platform-organization-development}}
+      PLATFORM_SPACE: {{platform-space-development}}
   on_success:
     put: slack
     params:
@@ -88,102 +94,6 @@ jobs:
     params:
       text: |
         :x: FAILED to deploy CF on development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
-
-- name: deploy-diego-development
-  serial_groups: [development]
-  serial: true
-  plan:
-  - aggregate:
-    - get: cf-deployment-development
-      trigger: true
-    - get: master-bosh-root-cert
-      passed: [deploy-cf-development]
-    - get: pipeline-tasks
-    - get: diego-manifests
-      resource: diego-manifests-development
-      trigger: true
-    - get: diego-release-repo
-      params: {submodules: none}
-    - get: common-development
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-stemcell
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: diego-release
-      trigger: true
-    - get: cflinuxfs2-release
-      trigger: true
-    - get: garden-runc-release
-      trigger: true
-    - get: terraform-yaml
-      resource: terraform-yaml-development
-  - task: generate-diego-development-manifest
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: 18fgsa/concourse-task
-      inputs:
-      - name: master-bosh-root-cert
-      - name: common-development
-      - name: diego-manifests
-      - name: diego-release-repo
-      - name: terraform-yaml
-      run:
-        path: diego-manifests/diego/generate.sh
-        args:
-        - common-development/decrypted-diego-development.yml
-        - cf-development
-        - instance-count-overrides-staging.yml
-        - isolation-cells-development.yml
-        - terraform-yaml/state.yml
-        - generated-manifest/diego-development.yml
-      outputs:
-      - name: generated-manifest
-      params:
-        BOSH_ENVIRONMENT: {{development-bosh-target}}
-        BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
-        BOSH_CLIENT: {{development-bosh-client}}
-        BOSH_CLIENT_SECRET: {{development-bosh-client-secret}}
-  - put: diego-development-deployment
-    params:
-      cert: master-bosh-root-cert/master-bosh.crt
-      manifest: generated-manifest/diego-development.yml
-      stemcells:
-      - cf-stemcell/*.tgz
-      releases:
-      - diego-release/*.tgz
-      - garden-runc-release/*.tgz
-      - cflinuxfs2-release/*.tgz
-  - task: update-isolation-segments
-    file: diego-manifests/diego/update-isolation-segments.yml
-    params:
-      CF_API_URL: {{cf-api-url-development}}
-      CF_USERNAME: {{cf-username-development}}
-      CF_PASSWORD: {{cf-password-development}}
-      PLATFORM_ISOLATION_SEGMENT: {{platform-isolation-segment-development}}
-      PLATFORM_ORGANIZATION: {{platform-organization-development}}
-      PLATFORM_SPACE: {{platform-space-development}}
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Successfully deployed Diego on development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: {{slack-channel}}
-      username: {{slack-username}}
-      icon_url: {{slack-icon-url}}
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: FAILED to deploy Diego on development
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: {{slack-channel}}
       username: {{slack-username}}
@@ -1123,6 +1033,18 @@ resources:
     bucket: {{cf-private-production-bucket}}
     region_name: {{aws-region}}
     versioned_file: master-bosh.crt
+
+- name: cf-deployment
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-deployment
+    branch: master
+
+- name: cf-deployment-transition
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-deployment-transition
+    branch: master
 
 - name: pipeline-tasks
   type: git
