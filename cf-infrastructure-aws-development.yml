@@ -279,13 +279,13 @@ jobs:
     instances: 0
 
   - name: api_z1
-    instances: 2
+    instances: 1
 
   - name: api_z2
     instances: 0
 
   - name: api_worker_z1
-    instances: 2
+    instances: 1
 
   - name: api_worker_z2
     instances: 0
@@ -313,12 +313,12 @@ jobs:
       - name: cf2
 
   - name: doppler_z1
-    instances: 2
+    instances: 1
     networks:
       - name: cf1
 
   - name: doppler_z2
-    instances: 2
+    instances: 0
     networks:
       - name: cf2
 
@@ -328,30 +328,30 @@ jobs:
       - name: cf1
 
   - name: loggregator_trafficcontroller_z2
-    instances: 1
+    instances: 0
     networks:
       - name: cf2
 
   - name: consul_z1
-    instances: 2
+    instances: 1
     networks:
       - name: cf1
         static_ips: (( static_ips(27, 28, 29) ))
 
   - name: consul_z2
-    instances: 1
+    instances: 0
     networks:
       - name: cf2
         static_ips: (( static_ips(27, 28, 29) ))
 
   - name: etcd_z1
-    instances: 2
+    instances: 1
     networks:
       - name: cf1
         static_ips: (( static_ips(10, 25) ))
 
   - name: etcd_z2
-    instances: 1
+    instances: 0
     networks:
       - name: cf2
         static_ips: (( static_ips(9) ))
