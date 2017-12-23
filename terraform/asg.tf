@@ -121,16 +121,6 @@ resource "cloudfoundry_sec_group" "brokers" {
   }
 }
 
-resource "cloudfoundry_sec_group" "metrics-network" {
-  name = "metrics-network"
-  rules {
-    protocol = "tcp"
-    description = "Allow access to riemann"
-    destination = "${data.terraform_remote_state.iaas.monitoring_ip_address}"
-    ports = "5555"
-  }
-}
-
 resource "cloudfoundry_quota" "default-tts" {
   name = "default-tts"
   total_memory = "20G"
