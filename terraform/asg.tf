@@ -139,9 +139,3 @@ resource "cloudfoundry_space" "services" {
   org_id = "${cloudfoundry_organization.cloud-gov.id}"
   sec_groups = ["${cloudfoundry_sec_group.brokers.id}"]
 }
-
-resource "cloudfoundry_space" "firehose" {
-  name = "firehose"
-  org_id = "${cloudfoundry_organization.cloud-gov.id}"
-  sec_groups = ["${cloudfoundry_sec_group.metrics-network.id}"]
-}
