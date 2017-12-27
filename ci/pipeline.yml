@@ -65,6 +65,8 @@ jobs:
       - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-deployment-transition/remove-cf-networking-for-transition.yml
+      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
@@ -73,6 +75,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/development.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - common/decrypted-cf-development.main.yml

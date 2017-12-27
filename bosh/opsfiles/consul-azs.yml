@@ -1,0 +1,4 @@
+# GovCloud only has two AZs
+- type: replace
+  path: /instance_groups/name=consul/azs
+  value: [z1, z2]
