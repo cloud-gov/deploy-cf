@@ -9,3 +9,12 @@
     transaction_tracer:
       enabled: true
       record_sql: obfuscated
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/newrelic
+  value:
+    common:
+      app_name: ((environment))-uaa
+      error_collector:
+        ignore_errors: akka.actor.ActorKilledException
+      license_key: ((newrelic-license-key))

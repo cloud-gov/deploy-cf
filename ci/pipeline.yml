@@ -60,7 +60,7 @@ jobs:
       stemcells:
       - cf-stemcell/*.tgz
       ops_files:
-      - cf-deployment/operations/use-s3-blobstore.yml
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
       - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
@@ -70,6 +70,9 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/password-policy.yml
       - cf-manifests/bosh/opsfiles/newrelic.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - common/decrypted-cf-development.main.yml

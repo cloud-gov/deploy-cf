@@ -1,0 +1,7 @@
+- type: replace
+  path: /instance_groups/name=diego-api/jobs/name=bbs/properties/diego/bbs/max_idle_connections
+  value: 50
+
+- type: replace
+  path: /instance_groups/name=diego-api/jobs/name=bbs/properties/diego/bbs/max_open_connections
+  value: 100
