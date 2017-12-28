@@ -1,6 +1,12 @@
+# Add blobstore instance profile to cloud controller
 - type: replace
   path: /instance_groups/name=api/vm_extensions?/-
   value: blobstore-profile
 - type: replace
   path: /instance_groups/name=cc-worker/vm_extensions?/-
   value: blobstore-profile
+
+# Add compilation profile to errands
+- type: replace
+  path: /instance_groups/name=smoke-tests/vm_extensions?/-
+  value: errand-profile
