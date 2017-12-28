@@ -70,6 +70,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/password-policy.yml
       - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml

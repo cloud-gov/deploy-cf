@@ -1,0 +1,6 @@
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/login/saml/activeKeyId?
+  value: ((uaa-saml-active-key-id))
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/login/saml/keys?
+  value: ((uaa-saml-keys))
