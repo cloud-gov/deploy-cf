@@ -76,6 +76,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/blobstore-instance-profile.yml
       - cf-manifests/bosh/opsfiles/development.yml
       - cf-manifests/bosh/opsfiles/development-scaling.yml
       vars_files:
