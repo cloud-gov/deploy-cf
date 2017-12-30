@@ -6,12 +6,19 @@ jobs:
   plan:
   - aggregate:
     - get: master-bosh-root-cert
+    - get: cf-deployment
+      trigger: true
+    - get: cf-deployment-transition
+      trigger: true
     - get: pipeline-tasks
-    - get: cf-manifests-manifests
+    - get: cf-manifests
       resource: cf-manifests-development
       trigger: true
-    - get: common-development
+    - get: common
+      resource: common-development
       trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-development
     - get: cf-stemcell
       trigger: true
     - get: cf-release
@@ -40,11 +47,12 @@ jobs:
       trigger: true
     - get: dotnet-core-buildpack-release
       trigger: true
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-development
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
       releases:
-      - cf-release/*.tgz
       - diego-release/*.tgz
       - uaa-customized-release/*.tgz
       - cg-s3-secureproxy-release/*.tgz
@@ -64,6 +72,7 @@ jobs:
       - cf-deployment/operations/use-external-dbs.yml
       - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
       - cf-deployment-transition/remove-cf-networking-for-transition.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
@@ -82,10 +91,10 @@ jobs:
       - cf-manifests/bosh/opsfiles/development-scaling.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
-      - common/decrypted-cf-development.main.yml
-      - common/decrypted-cf-development.external.yml
+      - terraform-secrets/terraform.yml
+      - common/secrets.yml
   - task: update-isolation-segments
-    file: diego-manifests/diego/update-isolation-segments.yml
+    file: cf-manifests/ci/update-isolation-segments.yml
     params:
       CF_API_URL: {{cf-api-url-development}}
       CF_USERNAME: {{cf-username-development}}
@@ -168,7 +177,7 @@ jobs:
       resource: master-bosh-root-cert
       passed: [deploy-cf-development]
     - get: cf-deployment-development
-      passed: [deploy-diego-development]
+      passed: [deploy-cf-development]
       trigger: true
     - get: diego-development-deployment
       trigger: true
@@ -266,6 +275,10 @@ jobs:
   plan:
   - aggregate:
     - get: master-bosh-root-cert
+    - get: cf-deployment
+      trigger: true
+    - get: cf-deployment-transition
+      trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
@@ -1108,10 +1121,7 @@ resources:
   type: cg-common
   source:
     bucket_name: {{cf-private-development-bucket}}
-    secrets_files:
-    - cf-development.main.yml
-    - cf-development.external.yml
-    - diego-development.yml
+    secrets_file: cf-development.yml
     secrets_passphrase: {{cf-private-development-passphrase}}
     bosh_cert: bosh.pem
     region: {{aws-region}}
@@ -1194,14 +1204,6 @@ resources:
   type: bosh-io-release
   source:
     repository: cloudfoundry/dotnet-core-buildpack-release
-
-- name: diego-manifests-development
-  type: git
-  source:
-    uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-development}}
-    paths:
-    - diego/*
 
 - name: diego-manifests
   type: git
@@ -1357,7 +1359,6 @@ groups:
   - deploy-cf-development
   - terraform-plan-development
   - terraform-apply-development
-  - deploy-diego-development
   - uaa-smoke-tests-development
   - tic-smoke-tests-development
   - smoke-tests-development
@@ -1381,7 +1382,6 @@ groups:
   - deploy-cf-development
   - terraform-plan-development
   - terraform-apply-development
-  - deploy-diego-development
   - uaa-smoke-tests-development
   - tic-smoke-tests-development
   - smoke-tests-development

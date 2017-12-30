@@ -98,5 +98,5 @@
   path: /instance_groups/name=diego-platform-cell/vm_extensions/-
   value: diego-platform-cell-profile
 - type: replace
-  path: /instance_groups/name-diego-platform-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
+  path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
   value: platform
