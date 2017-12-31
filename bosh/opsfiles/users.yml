@@ -1,0 +1,15 @@
+# Existing user for acceptance tests
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/users/-
+  value:
+    name: user-tester
+    password: ((user-tester-password))
+    groups: [openid]
+
+# Broker deploy user
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/users/-
+  value:
+    name: broker-deployer
+    password: ((broker-deployer-password))
+    groups: [openid, cloud_controller.admin]
