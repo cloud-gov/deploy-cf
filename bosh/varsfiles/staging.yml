@@ -1,4 +1,5 @@
 environment: staging
+company-name: cloud.gov staging
 system_domain: fr-stage.cloud.gov
 
 buildpack_directory_key: cf-staging-buildpacks

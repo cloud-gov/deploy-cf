@@ -1,4 +1,5 @@
 environment: production
+company-name: cloud.gov
 system_domain: fr.cloud.gov
 
 buildpack_directory_key: cf-production-buildpacks

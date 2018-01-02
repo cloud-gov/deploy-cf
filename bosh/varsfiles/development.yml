@@ -1,4 +1,5 @@
 environment: development
+company-name: cloud.gov development
 system_domain: dev.us-gov-west-1.aws-us-gov.cloud.gov
 
 buildpack_directory_key: cf-development-buildpacks
