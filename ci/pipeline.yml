@@ -90,8 +90,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/development.yml
-      - cf-manifests/bosh/opsfiles/development-scaling.yml
+      - cf-manifests/bosh/opsfiles/name-development.yml
+      - cf-manifests/bosh/opsfiles/scaling-development.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -344,8 +344,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/staging.yml
-      - cf-manifests/bosh/opsfiles/staging-scaling.yml
+      - cf-manifests/bosh/opsfiles/name-staging.yml
+      - cf-manifests/bosh/opsfiles/scaling-staging.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -696,8 +696,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/production.yml
-      - cf-manifests/bosh/opsfiles/production-scaling.yml
+      - cf-manifests/bosh/opsfiles/name-production.yml
+      - cf-manifests/bosh/opsfiles/scaling-production.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
