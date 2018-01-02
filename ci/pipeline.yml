@@ -88,6 +88,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
       - cf-manifests/bosh/opsfiles/name-development.yml
@@ -342,6 +343,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
       - cf-manifests/bosh/opsfiles/name-staging.yml
@@ -694,6 +696,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
       - cf-manifests/bosh/opsfiles/name-production.yml
