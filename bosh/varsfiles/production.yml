@@ -1,6 +1,7 @@
 environment: production
 company-name: cloud.gov
 system_domain: fr.cloud.gov
+app_domain: app.cloud.gov
 
 buildpack_directory_key: cf-production-buildpacks
 droplet_directory_key: cf-production-droplets
