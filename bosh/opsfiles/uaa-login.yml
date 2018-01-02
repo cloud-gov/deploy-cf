@@ -11,3 +11,15 @@
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa-customized/properties?/uaa?/password?/policy?
   value: *password-policy
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/authentication?/policy?
+  value:
+    lockoutAfterFailures: 3
+    countFailuresWithinSeconds: 3600
+
+# Expire cookies after 15 minutes per FedRAMP requirement
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/servlet?/session-cookie?
+  value:
+    max-age: 900

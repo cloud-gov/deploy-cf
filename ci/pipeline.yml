@@ -79,8 +79,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
-      - cf-manifests/bosh/opsfiles/password-policy.yml
       - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
@@ -332,8 +332,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
-      - cf-manifests/bosh/opsfiles/password-policy.yml
       - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
@@ -683,8 +683,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
-      - cf-manifests/bosh/opsfiles/password-policy.yml
       - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
