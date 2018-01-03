@@ -921,8 +921,8 @@ resources:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-development}}
     paths:
-    - cf-*.yml
     - ci/*
+    - bosh/*
 
 - name: cf-manifests
   type: git
@@ -930,8 +930,8 @@ resources:
     uri: {{cf-manifests-git-url}}
     branch: {{cf-manifests-git-branch-production}}
     paths:
-    - cf-*.yml
     - ci/*
+    - bosh/*
 
 - name: terraform-config-development
   type: git
