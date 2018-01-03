@@ -21,29 +21,9 @@ jobs:
       resource: terraform-yaml-development
     - get: cf-stemcell
       trigger: true
-    - get: diego-release
-      trigger: true
     - get: uaa-customized-release
       trigger: true
     - get: cg-s3-secureproxy-release
-      trigger: true
-    - get: java-buildpack-release
-      trigger: true
-    - get: go-buildpack-release
-      trigger: true
-    - get: binary-buildpack-release
-      trigger: true
-    - get: nodejs-buildpack-release
-      trigger: true
-    - get: ruby-buildpack-release
-      trigger: true
-    - get: php-buildpack-release
-      trigger: true
-    - get: python-buildpack-release
-      trigger: true
-    - get: staticfile-buildpack-release
-      trigger: true
-    - get: dotnet-core-buildpack-release
       trigger: true
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
@@ -51,18 +31,8 @@ jobs:
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
       releases:
-      - diego-release/*.tgz
       - uaa-customized-release/*.tgz
       - cg-s3-secureproxy-release/*.tgz
-      - binary-buildpack-release/*.tgz
-      - dotnet-core-buildpack-release/*.tgz
-      - go-buildpack-release/*.tgz
-      - java-buildpack-release/*.tgz
-      - nodejs-buildpack-release/*.tgz
-      - php-buildpack-release/*.tgz
-      - python-buildpack-release/*.tgz
-      - ruby-buildpack-release/*.tgz
-      - staticfile-buildpack-release/*.tgz
       stemcells:
       - cf-stemcell/*.tgz
       ops_files:
@@ -293,27 +263,7 @@ jobs:
       resource: terraform-yaml-staging
     - get: cf-stemcell
       trigger: true
-    - get: diego-release
-      trigger: true
     - get: uaa-customized-release
-      trigger: true
-    - get: java-buildpack-release
-      trigger: true
-    - get: go-buildpack-release
-      trigger: true
-    - get: binary-buildpack-release
-      trigger: true
-    - get: nodejs-buildpack-release
-      trigger: true
-    - get: ruby-buildpack-release
-      trigger: true
-    - get: php-buildpack-release
-      trigger: true
-    - get: python-buildpack-release
-      trigger: true
-    - get: staticfile-buildpack-release
-      trigger: true
-    - get: dotnet-core-buildpack-release
       trigger: true
     - get: cg-s3-secureproxy-release
       trigger: true
@@ -503,27 +453,7 @@ jobs:
       passed: [deploy-cf-staging]
     - get: cf-stemcell
       passed: [deploy-cf-staging]
-    - get: diego-release
-      passed: [deploy-cf-staging]
     - get: uaa-customized-release
-      passed: [deploy-cf-staging]
-    - get: java-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: go-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: binary-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: nodejs-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: ruby-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: php-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: python-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: staticfile-buildpack-release
-      passed: [deploy-cf-staging]
-    - get: dotnet-core-buildpack-release
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
@@ -579,28 +509,9 @@ jobs:
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
       passed: [smoke-tests-staging, uaa-smoke-tests-staging]
-    - get: java-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: go-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: binary-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: nodejs-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: ruby-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: php-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: python-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: staticfile-buildpack-release
-      passed: [smoke-tests-staging]
-    - get: dotnet-core-buildpack-release
       passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [smoke-tests-staging, tic-smoke-tests-staging]
-    - get: diego-release
-      passed: [smoke-tests-staging]
     - get: terraform-config-staging-production
       passed: [smoke-tests-staging]
   - task: run-errand
@@ -648,27 +559,7 @@ jobs:
     - get: cf-stemcell
       passed: [acceptance-tests-staging]
       trigger: true
-    - get: diego-release
-      passed: [acceptance-tests-staging]
     - get: uaa-customized-release
-      passed: [acceptance-tests-staging]
-    - get: java-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: go-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: binary-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: nodejs-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: ruby-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: php-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: python-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: staticfile-buildpack-release
-      passed: [acceptance-tests-staging]
-    - get: dotnet-core-buildpack-release
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [acceptance-tests-staging]
@@ -898,6 +789,7 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/cf-deployment
     branch: master
+    tag_filter: "v*"
 
 - name: cf-deployment-transition
   type: git
@@ -988,51 +880,6 @@ resources:
   source:
     name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
 
-- name: java-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/java-buildpack-release
-
-- name: go-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/go-buildpack-release
-
-- name: binary-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/binary-buildpack-release
-
-- name: nodejs-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/nodejs-buildpack-release
-
-- name: ruby-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/ruby-buildpack-release
-
-- name: php-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/php-buildpack-release
-
-- name: python-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/python-buildpack-release
-
-- name: staticfile-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/staticfile-buildpack-release
-
-- name: dotnet-core-buildpack-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/dotnet-core-buildpack-release
-
 - name: terraform-yaml-development
   type: s3-iam
   source:
@@ -1053,11 +900,6 @@ resources:
     bucket: {{tf-state-bucket}}
     versioned_file: {{tf-state-file-production}}
     region_name: {{aws-region}}
-
-- name: diego-release
-  type: bosh-io-release
-  source:
-    repository: cloudfoundry/diego-release
 
 - name: cf-deployment-development
   type: bosh-deployment
