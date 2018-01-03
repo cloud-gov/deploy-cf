@@ -253,7 +253,7 @@ jobs:
     params:
       CI: true
       API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
-      GOROUTER_ADDRESS: 0.router-z1.cf1.cf-development.bosh
+      GOROUTER_ADDRESS: 0.router.default.cf-development.bosh
       BOSH_ADDRESS: {{development-bosh-target}}
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
@@ -421,7 +421,7 @@ jobs:
     params:
       CI: true
       API_HOSTNAME: api.fr-stage.cloud.gov
-      GOROUTER_ADDRESS: 0.router-z1.cf1.cf-staging.bosh
+      GOROUTER_ADDRESS: 0.router.default.cf-staging.bosh
       BOSH_ADDRESS: {{staging-bosh-target}}
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
@@ -774,7 +774,7 @@ jobs:
     params:
       CI: true
       API_HOSTNAME: api.fr.cloud.gov
-      GOROUTER_ADDRESS: 0.router-z1.cf1.cf-production.bosh
+      GOROUTER_ADDRESS: 0.router.default.cf-production.bosh
       BOSH_ADDRESS: {{production-bosh-target}}
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
