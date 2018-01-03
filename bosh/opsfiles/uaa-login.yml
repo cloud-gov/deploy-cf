@@ -23,12 +23,3 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/servlet?/session-cookie
   value:
     max-age: 900
-
-# Use unique refresh tokens
-- type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/jwt/revocable?
-  value: true
-
-- type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/jwt/refresh?/unique
-  value: true
