@@ -495,35 +495,33 @@ jobs:
   serial_groups: [staging]
   plan:
   - aggregate:
-    - get: pipeline-tasks
-    - get: common
-      resource: master-bosh-root-cert
-      passed: [smoke-tests-staging]
-    - get: cf-deployment-staging
-      passed: [smoke-tests-staging]
-      trigger: true
+    - get: cats-concourse-task
+    - get: cf-acceptance-tests
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [smoke-tests-staging]
     - get: cf-stemcell
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
-      passed: [smoke-tests-staging, uaa-smoke-tests-staging]
       passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
-      passed: [smoke-tests-staging, tic-smoke-tests-staging]
+      passed: [smoke-tests-staging]
     - get: terraform-config-staging-production
       passed: [smoke-tests-staging]
-  - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
+  - task: test-config
+    file: cf-manifests/ci/acceptance-tests-config.yml
+    params:
+      API_URL: api.fr-stage.cloud.gov
+      APPS_DOMAIN: fr-stage.cloud.gov
+      ADMIN_USER: admin
+      EXISTING_USER: user-tester
+      ADMIN_PASSWORD: {{admin-password-staging}}
+      EXISTING_USER_PASSWORD: {{existing-user-password-staging}}
+  - task: run-cats
+    file: cats-concourse-task/task.yml
     attempts: 3
     params:
-      BOSH_TARGET: {{staging-bosh-target}}
-      BOSH_USERNAME: {{staging-bosh-username}}
-      BOSH_PASSWORD: {{staging-bosh-password}}
-      BOSH_DEPLOYMENT_NAME: cf-staging
-      BOSH_ERRAND: acceptance_tests
-      BOSH_CACERT: common/master-bosh.crt
+      SKIP_REGEXP: routing.API|allows\spreviously-blocked\sip|Adding\sa\swildcard\sroute\sto\sa\sdomain|forwards\sapp\smessages\sto\sregistered\ssyslog\sdrains|uses\sa\sbuildpack\sfrom\sa\sgit\surl|when\sapp\shas\smultiple\sports\smapped
   on_success:
     put: slack
     params:
@@ -691,8 +689,8 @@ jobs:
   - aggregate:
     - get: terraform-templates
       resource: terraform-config-staging-production
-      trigger: true
       passed: [acceptance-tests-staging]
+      trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
     tags:
@@ -796,6 +794,18 @@ resources:
   source:
     uri: https://github.com/cloudfoundry/cf-deployment-transition
     branch: master
+
+- name: cf-acceptance-tests
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+
+- name: cats-concourse-task
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/cats-concourse-task.git
 
 - name: pipeline-tasks
   type: git

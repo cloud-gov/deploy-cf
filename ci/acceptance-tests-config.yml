@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: 18fgsa/concourse-task
+
+inputs:
+- name: cf-manifests
+outputs:
+- name: integration-config
+
+run:
+  path: cf-manifests/ci/acceptance-tests-config.sh
