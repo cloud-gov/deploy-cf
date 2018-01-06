@@ -1,0 +1,9 @@
+environment: development
+company-name: cloud.gov development
+system_domain: dev.us-gov-west-1.aws-us-gov.cloud.gov
+app_domain: dev.us-gov-west-1.aws-us-gov.cloud.gov
+
+buildpack_directory_key: cf-development-buildpacks
+droplet_directory_key: cf-development-droplets
+app_package_directory_key: cf-development-cc-packages
+resource_directory_key: cf-development-cc-resources

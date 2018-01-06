@@ -1,0 +1,44 @@
+- type: replace
+  path: /releases/-
+  value:
+    name: secureproxy
+    version: latest
+
+- type: replace
+  path: /instance_groups/name=router/jobs/-
+  value:
+    name: secureproxy
+    release: secureproxy
+    properties:
+      secureproxy:
+        listen_port: 80
+        proxy_port: 85
+        # Expose gorouter health check for ELB
+        # For this to work, router.load_balancer_healthy_threshold must be set to 0
+        custom_server_config: |-
+          server {
+            listen 81;
+            location / {
+              proxy_pass http://localhost:8080/health;
+            }
+          }
+        tic:
+          host_whitelist:
+          - hostname: api.((system_domain))
+            exclude:
+            - ^/v2/info
+          secret: ((tic-secret))
+          whitelist: ((tic-whitelist))
+          proxy_whitelist: ((tic-proxy-whitelist))
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/port?
+  value: 85
+
+# This must be set to 0 to get the behaivor we want according to the rules outlined here:
+# https://github.com/cloudfoundry-incubator/routing-release#configure-load-balancer-healthchecks-for-gorouter
+# Any other setting and the health check will respond 200 for this period of time, but the router will not actually be up
+# TODO: Revisit this setting once https://github.com/cloudfoundry/gorouter/issues/160 is closed
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/load_balancer_healthy_threshold?
+  value: 0

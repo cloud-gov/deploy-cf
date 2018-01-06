@@ -1,0 +1,9 @@
+environment: staging
+company-name: cloud.gov staging
+system_domain: fr-stage.cloud.gov
+app_domain: fr-stage.cloud.gov
+
+buildpack_directory_key: cf-staging-buildpacks
+droplet_directory_key: cf-staging-droplets
+app_package_directory_key: cf-staging-cc-packages
+resource_directory_key: cf-staging-cc-resources

@@ -1,0 +1,24 @@
+aws_region: ((terraform_outputs.vpc_region))
+
+external_database_type: ((terraform_outputs.cf_rds_engine))
+external_database_port: ((terraform_outputs.cf_rds_port))
+
+external_cc_database_name: ccdb
+external_cc_database_address: ((terraform_outputs.cf_rds_host))
+external_cc_database_username: ((terraform_outputs.cf_rds_username))
+external_cc_database_password: ((terraform_outputs.cf_rds_password))
+
+external_uaa_database_name: uaadb
+external_uaa_database_address: ((terraform_outputs.cf_rds_host))
+external_uaa_database_username: ((terraform_outputs.cf_rds_username))
+external_uaa_database_password: ((terraform_outputs.cf_rds_password))
+
+external_bbs_database_name: cfdb
+external_bbs_database_address: ((terraform_outputs.cf_rds_host))
+external_bbs_database_username: ((terraform_outputs.cf_rds_username))
+external_bbs_database_password: ((terraform_outputs.cf_rds_password))
+
+external_locket_database_name: locketdb
+external_locket_database_address: ((terraform_outputs.cf_rds_host))
+external_locket_database_username: ((terraform_outputs.cf_rds_username))
+external_locket_database_password: ((terraform_outputs.cf_rds_password))

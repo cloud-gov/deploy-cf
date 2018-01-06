@@ -1,0 +1,20 @@
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/newrelic?
+  value:
+    license_key: ((newrelic-license-key))
+    environment_name: cf-((environment))
+    monitor_mode: true
+    developer_mode: false
+    capture_params: true
+    transaction_tracer:
+      enabled: true
+      record_sql: obfuscated
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/newrelic?
+  value:
+    common:
+      app_name: ((environment))-uaa
+      error_collector:
+        ignore_errors: akka.actor.ActorKilledException
+      license_key: ((newrelic-license-key))
