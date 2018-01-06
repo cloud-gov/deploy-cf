@@ -451,6 +451,10 @@ jobs:
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [deploy-cf-staging]
+    - get: cf-deployment
+      passed: [deploy-cf-staging]
+    - get: cf-deployment-transition
+      passed: [deploy-cf-staging]
     - get: cf-stemcell
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
@@ -500,6 +504,10 @@ jobs:
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [smoke-tests-staging]
+    - get: cf-deployment
+      passed: [smoke-tests-staging]
+    - get: cf-deployment-transition
+      passed: [smoke-tests-staging]
     - get: cf-stemcell
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
@@ -548,6 +556,12 @@ jobs:
   - aggregate:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: cf-deployment-transition
+      passed: [acceptance-tests-staging]
+      trigger: true
     - get: cf-manifests
       passed: [acceptance-tests-staging]
     - get: common
