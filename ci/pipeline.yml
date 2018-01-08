@@ -188,13 +188,11 @@ jobs:
 - name: uaa-smoke-tests-development
   plan:
   - aggregate:
-    - get: cf-deployment-development
-      trigger: true
-      passed: [deploy-cf-development]
     - get: pipeline-tasks
-    - get: uaa-customized-release
-      trigger: true
       passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      passed: [deploy-cf-development]
+      trigger: true
   - task: smoke-tests
     file: pipeline-tasks/uaa-smoke-tests.yml
     params:
@@ -338,9 +336,9 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-    - get: uaa-customized-release
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
+      passed: [deploy-cf-staging]
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/uaa-smoke-tests.yml
@@ -447,6 +445,7 @@ jobs:
       resource: master-bosh-root-cert
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
+      passed: [deploy-cf-staging]
       trigger: true
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
@@ -501,6 +500,9 @@ jobs:
   - aggregate:
     - get: cats-concourse-task
     - get: cf-acceptance-tests
+    - get: cf-deployment-staging
+      passed: [deploy-cf-staging]
+      trigger: true
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [smoke-tests-staging]
@@ -646,9 +648,9 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline-tasks
-    - get: uaa-customized-release
       passed: [deploy-cf-production]
     - get: cf-deployment-production
+      passed: [deploy-cf-production]
       trigger: true
   - task: smoke-tests
     file: pipeline-tasks/uaa-smoke-tests.yml
