@@ -1,4 +1,4 @@
-# Existing user for acceptance tests
+# Setup default authorities including dashboard and invite requirements
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/user/authorities?
   value:
