@@ -1,0 +1,19 @@
+# Existing user for acceptance tests
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/user/authorities?
+  value:
+    - openid
+    - scim.me
+    - cloud_controller.read
+    - cloud_controller.write
+    - cloud_controller_service_permissions.read
+    - password.write
+    - scim.userids
+    - uaa.user
+    - approvals.me
+    - oauth.approvals
+    - profile
+    - roles
+    - user_attributes
+    - scim.invite
+
