@@ -1,22 +1,22 @@
 # Setup default authorities including dashboard and invite requirements
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/user/authorities?
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/user?
   value:
-    - openid
-    - scim.me
-    - cloud_controller.read
-    - cloud_controller.write
-    - cloud_controller_service_permissions.read
-    - password.write
-    - uaa.user
-    - approvals.me
-    - oauth.approvals
-    - notification_preferences.read
-    - notification_preferences.write
-    - profile
-    - roles
-    - user_attributes
-    - uaa.offline_token
-    - scim.userids
-    - scim.invite
-
+    authorities:
+      - openid
+      - scim.me
+      - cloud_controller.read
+      - cloud_controller.write
+      - cloud_controller_service_permissions.read
+      - password.write
+      - uaa.user
+      - approvals.me
+      - oauth.approvals
+      - notification_preferences.read
+      - notification_preferences.write
+      - profile
+      - roles
+      - user_attributes
+      - uaa.offline_token
+      - scim.userids
+      - scim.invite
