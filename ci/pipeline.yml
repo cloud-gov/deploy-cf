@@ -505,7 +505,7 @@ jobs:
     - get: cats-concourse-task
     - get: cf-acceptance-tests
     - get: cf-deployment-staging
-      passed: [deploy-cf-staging]
+      passed: [smoke-tests-staging]
       trigger: true
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
