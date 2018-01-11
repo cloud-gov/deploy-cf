@@ -83,6 +83,20 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
     ports = "5432,3306,1433,1521"
   }
 
+  # Elasticache access
+  rules {
+    protocol = "tcp"
+    description = "Allow access to Elasticache"
+    destination = "${data.terraform_remote_state.iaas.elasticache_subnet_cidr_az1}"
+    ports = "6379"
+  }
+  rules {
+    protocol = "tcp"
+    description = "Allow access to Elasticache"
+    destination = "${data.terraform_remote_state.iaas.elasticache_subnet_cidr_az2}"
+    ports = "6379"
+  }
+
   # Kubernetes
   rules {
     protocol = "tcp"
