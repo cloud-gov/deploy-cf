@@ -586,7 +586,7 @@ jobs:
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-production
-    params:
+    params: &prod-deploy-params
       <<: *deploy-params
       dry_run: true
       ops_files:
@@ -645,7 +645,6 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
-
 - name: deploy-cf-production
   serial_groups: [production]
   serial: true
@@ -673,44 +672,8 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-production
     params:
-      <<: *deploy-params
-      ops_files:
-      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
-      - cf-deployment/operations/use-external-dbs.yml
-      - cf-deployment/operations/disable-router-tls-termination.yml
-      - cf-deployment/operations/stop-skipping-tls-validation.yml
-      - cf-deployment/operations/set-bbs-active-key.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
-      - cf-deployment-transition/remove-cf-networking-for-transition.yml
-      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
-      - cf-manifests/bosh/opsfiles/clients.yml
-      - cf-manifests/bosh/opsfiles/users.yml
-      - cf-manifests/bosh/opsfiles/secureproxy.yml
-      - cf-manifests/bosh/opsfiles/apps-domain.yml
-      - cf-manifests/bosh/opsfiles/api-defaults.yml
-      - cf-manifests/bosh/opsfiles/uaa-customized.yml
-      - cf-manifests/bosh/opsfiles/uaa-branding.yml
-      - cf-manifests/bosh/opsfiles/uaa-login.yml
-      - cf-manifests/bosh/opsfiles/uaa-saml.yml
-      - cf-manifests/bosh/opsfiles/uaa-user.yml
-      - cf-manifests/bosh/opsfiles/newrelic.yml
-      - cf-manifests/bosh/opsfiles/encryption.yml
-      - cf-manifests/bosh/opsfiles/sql.yml
-      - cf-manifests/bosh/opsfiles/log-levels.yml
-      - cf-manifests/bosh/opsfiles/instance-profiles.yml
-      - cf-manifests/bosh/opsfiles/platform-cells.yml
-      - cf-manifests/bosh/opsfiles/diego-dns.yml
-      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/syslog-drain.yml
-      - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/name-production.yml
-      - cf-manifests/bosh/opsfiles/scaling-production.yml
-      vars_files:
-      - cf-manifests/bosh/varsfiles/production.yml
-      - terraform-secrets/terraform.yml
-      - common/secrets.yml
+      <<: *prod-deploy-params
+      dry_run: false
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
