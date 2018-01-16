@@ -557,7 +557,7 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
-- name: deploy-cf-production
+- name: plan-cf-production
   serial_groups: [production]
   serial: true
   plan:
@@ -583,6 +583,92 @@ jobs:
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [acceptance-tests-staging]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-production
+    params:
+      <<: *deploy-params
+      dry_run: true
+      ops_files:
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/disable-router-tls-termination.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-deployment-transition/remove-cf-networking-for-transition.yml
+      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/consul-azs.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/users.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/apps-domain.yml
+      - cf-manifests/bosh/opsfiles/api-defaults.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
+      - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/newrelic.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
+      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/syslog-drain.yml
+      - cf-manifests/bosh/opsfiles/volume-services.yml
+      - cf-manifests/bosh/opsfiles/name-production.yml
+      - cf-manifests/bosh/opsfiles/scaling-production.yml
+      vars_files:
+      - cf-manifests/bosh/varsfiles/production.yml
+      - terraform-secrets/terraform.yml
+      - common/secrets.yml
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: CF Production plan ready for review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to plan CF Production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+
+- name: deploy-cf-production
+  serial_groups: [production]
+  serial: true
+  plan:
+  - aggregate:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [plan-cf-production]
+    - get: cf-deployment-transition
+      passed: [plan-cf-production]
+    - get: cf-manifests
+      passed: [plan-cf-production]
+    - get: common
+      resource: common-production
+    - get: terraform-yaml
+      resource: terraform-yaml-production
+    - get: cf-stemcell
+      passed: [plan-cf-production]
+    - get: uaa-customized-release
+      passed: [plan-cf-production]
+    - get: cg-s3-secureproxy-release
+      passed: [plan-cf-production]
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-production
@@ -1015,6 +1101,7 @@ groups:
   - smoke-tests-staging
   - acceptance-tests-staging
   - deploy-cf-production
+  - plan-cf-production
   - terraform-plan-production
   - terraform-apply-production
   - smoke-tests-production
@@ -1039,6 +1126,7 @@ groups:
   - acceptance-tests-staging
 - name: production
   jobs:
+  - plan-cf-production
   - deploy-cf-production
   - terraform-plan-production
   - terraform-apply-production
