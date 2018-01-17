@@ -557,7 +557,7 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
-- name: deploy-cf-production
+- name: plan-cf-production
   serial_groups: [production]
   serial: true
   plan:
@@ -586,8 +586,9 @@ jobs:
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-production
-    params:
+    params: &prod-deploy-params
       <<: *deploy-params
+      dry_run: true
       ops_files:
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
@@ -625,6 +626,54 @@ jobs:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
       - common/secrets.yml
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: CF Production plan ready for review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to plan CF Production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+- name: deploy-cf-production
+  serial_groups: [production]
+  serial: true
+  plan:
+  - aggregate:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [plan-cf-production]
+    - get: cf-deployment-transition
+      passed: [plan-cf-production]
+    - get: cf-manifests
+      passed: [plan-cf-production]
+    - get: common
+      resource: common-production
+    - get: terraform-yaml
+      resource: terraform-yaml-production
+    - get: cf-stemcell
+      passed: [plan-cf-production]
+    - get: uaa-customized-release
+      passed: [plan-cf-production]
+    - get: cg-s3-secureproxy-release
+      passed: [plan-cf-production]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-production
+    params:
+      <<: *prod-deploy-params
+      dry_run: false
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -1015,6 +1064,7 @@ groups:
   - smoke-tests-staging
   - acceptance-tests-staging
   - deploy-cf-production
+  - plan-cf-production
   - terraform-plan-production
   - terraform-apply-production
   - smoke-tests-production
@@ -1039,6 +1089,7 @@ groups:
   - acceptance-tests-staging
 - name: production
   jobs:
+  - plan-cf-production
   - deploy-cf-production
   - terraform-plan-production
   - terraform-apply-production
