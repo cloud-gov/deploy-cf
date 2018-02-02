@@ -9,3 +9,7 @@
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=route_emitter/properties/diego/route_emitter/log_level?
   value: error
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/security_event_logging?/enabled
+  value: true
