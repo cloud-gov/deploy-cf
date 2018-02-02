@@ -1,18 +1,10 @@
 # Add custom clients
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/admin-read-only?
-  value:
-    override: true
-    authorized-grant-types: client_credentials
-    authorities: cloud_controller.admin_read_only
-    secret: ((admin-read-only-client-secret))
-
-- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/logsearch_firehose_ingestor?
   value:
     override: true
     authorized-grant-types: client_credentials
-    authorities: doppler.firehose,cloud_controller.admin_read_only
+    authorities: doppler.firehose,cloud_controller.global_auditor
     secret: ((logsearch-firehose-ingestor-client-secret))
 
 - type: replace
@@ -108,7 +100,7 @@
     override: true
     name: Buildpack Notifier
     authorized-grant-types: client_credentials
-    authorities: cloud_controller.admin_read_only
+    authorities: cloud_controller.global_auditor
     secret: ((buildpack-notifier-client-secret))
 
 - type: replace
@@ -128,9 +120,8 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/kubernetes-client?
   value:
     override: true
-    scope: cloud_controller.admin
     authorized-grant-types: client_credentials
-    authorities: cloud_controller.admin
+    authorities: cloud_controller.global_auditor
     secret: ((kubernetes-client-secret))
 
 # Update existing clients
