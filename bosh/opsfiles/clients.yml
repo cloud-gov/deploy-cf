@@ -8,6 +8,14 @@
     secret: ((logsearch-firehose-ingestor-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-client-audit?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: clients.read,cloud_controller.global_auditor
+    secret: ((uaa-client-audit-client-secret))
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa_extras_app?
   value:
     override: true
@@ -123,6 +131,23 @@
     authorized-grant-types: client_credentials
     authorities: cloud_controller.global_auditor
     secret: ((kubernetes-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/dashboard?
+  value:
+    override: true
+    scope: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read,scim.invite
+    authorized-grant-types: authorization_code,client_credentials,refresh_token
+    authorities: uaa.none,scim.invite,cloud_controller.admin,scim.read
+    access-token-validity: 600
+    refresh-token-validity: 259200
+    name: Dashboard
+    autoapprove: true
+    show-on-homepage: true
+    app-icon: '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'
+    app-launch-url: https://dashboard.((system_domain))
+    redirect-uri: https://dashboard.((system_domain))/oauth2callback
+    secret: ((dashboard-client-secret))
 
 # Update existing clients
 - type: replace
