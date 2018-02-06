@@ -8,6 +8,14 @@
     secret: ((logsearch-firehose-ingestor-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-client-audit?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: clients.read,cloud_controller.global_auditor
+    secret: ((uaa-client-audit-client-secret))
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa_extras_app?
   value:
     override: true
