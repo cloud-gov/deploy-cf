@@ -46,19 +46,6 @@
     secret: ((admin-ui-client-secret))
 
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/concourse-broker?
-  value:
-    override: true
-    scope: cloud_controller.read
-    authorized-grant-types: authorization_code,client_credentials,refresh_token
-    authorities: cloud_controller.admin
-    access-token-validity: 600
-    refresh-token-validity: 259200
-    redirect-uri: https://concourse-ci.((system_domain))/auth/uaa/callback
-    autoapprove: true
-    secret: ((concourse-broker-client-secret))
-
-- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaaproxy?
   value:
     override: true
