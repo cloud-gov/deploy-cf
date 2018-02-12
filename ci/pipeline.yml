@@ -61,6 +61,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/disable-instance-identity.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
@@ -322,6 +323,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/disable-instance-identity.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
@@ -660,6 +662,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/disable-instance-identity.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
