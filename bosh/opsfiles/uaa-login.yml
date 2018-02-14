@@ -19,7 +19,10 @@
     countFailuresWithinSeconds: 3600
 
 # Expire cookies after 15 minutes per FedRAMP requirement
+# also set cookie as secure, and http only
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/servlet?/session-cookie
   value:
+    secure: true
+    http-only: true
     max-age: 900
