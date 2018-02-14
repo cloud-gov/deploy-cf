@@ -6,6 +6,8 @@ uaac target "${UAA_URL}"
 uaac token client get "${UAA_CLIENT_ID}" -s "${UAA_CLIENT_SECRET}"
 access_token=$(uaac context | grep access_token | sed 's/access_token://' | sed 's/ //g')
 
+CF_API_URL=$(echo "${CF_API_URL}" | sed 's/\/$//')
+
 cfcurl() {
   curl -H "Authorization: Bearer ${access_token}" "$@"
 }
@@ -30,7 +32,7 @@ paginate() {
 # Get known clients from broker
 service_label="cloud-gov-identity-provider"
 
-service_guid=$(cfcurl -s "${CF_API_URL}v2/services?q=label:${service_label}" | jq -r '.resources[0].metadata.guid')
+service_guid=$(cfcurl -s "${CF_API_URL}/v2/services?q=label:${service_label}" | jq -r '.resources[0].metadata.guid')
 service_plan_guids=$(paginate "/v2/service_plans?q=service_guid:${service_guid}" ".resources[] | .metadata.guid")
 
 service_plan_list=$(echo "${service_plan_guids}" | paste -sd "," -)
