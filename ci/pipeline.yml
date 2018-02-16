@@ -505,6 +505,7 @@ jobs:
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [deploy-cf-staging]
+      trigger: true
     - get: cf-deployment
       passed: [deploy-cf-staging]
     - get: cf-deployment-transition
@@ -561,6 +562,7 @@ jobs:
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [smoke-tests-staging]
+      trigger: true
     - get: cf-deployment
       passed: [smoke-tests-staging]
     - get: cf-deployment-transition
