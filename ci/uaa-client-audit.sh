@@ -54,8 +54,17 @@ cg_clients=$(cat cf-manifests/bosh/opsfiles/clients.yml \
 # Diff existing clients against expected
 clients=$(uaac clients | grep -v ":" | sed 's/ //g')
 
+whitelist="admin"
+if [ -n "${WHITELIST:-}" ]; then
+  whitelist=$(cat <<EOF
+${whitelist}
+$(echo "${WHITELIST}" | tr " " "\n")
+EOF
+)
+fi
+
 known_clients=$(cat <<EOF
-admin
+${whitelist}
 ${service_instance_guids}
 ${service_binding_guids}
 ${service_key_guids}
