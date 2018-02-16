@@ -623,6 +623,7 @@ jobs:
       trigger: true
     - get: cf-manifests
       passed: [acceptance-tests-staging]
+      trigger: true
     - get: common
       resource: common-production
     - get: terraform-yaml
