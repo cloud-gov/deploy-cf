@@ -69,6 +69,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-ssh.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
+      - cf-manifests/bosh/opsfiles/falco.yml
       - cf-manifests/bosh/opsfiles/name-development.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       vars_files:

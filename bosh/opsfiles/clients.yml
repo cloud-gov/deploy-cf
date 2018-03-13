@@ -144,6 +144,14 @@
     redirect-uri: https://dashboard.((system_domain))/oauth2callback
     secret: ((dashboard-client-secret))
 
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/falco?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.admin
+    secret: ((falco-client-secret))
+
 # Update existing clients
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/access-token-validity

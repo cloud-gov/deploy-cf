@@ -1,0 +1,33 @@
+- type: replace
+  path: /releases/-
+  value:
+    name: falco
+    version: latest
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/-
+  value: &falco
+    name: falco
+    release: falco
+    properties:
+      diego_cell: true
+      loggregator:
+        tls:
+          ca_cert: ((loggregator_ca.certificate))
+          metron:
+            cert: ((loggregator_tls_metron.certificate))
+            key: ((loggregator_tls_metron.private_key))
+      diego:
+        cfdot:
+          bbs:
+            ca_cert: ((diego_bbs_client.ca))
+            client_cert: ((diego_bbs_client.certificate))
+            client_key: ((diego_bbs_client.private_key))
+      cloud_controller:
+        hostname: https://api.((system_domain))
+        client_id: falco
+        client_secret: ((falco-client-secret))
+
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs/-
+  value: *falco
