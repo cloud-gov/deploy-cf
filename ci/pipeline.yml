@@ -271,6 +271,33 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: falco-smoke-tests-development
+  plan:
+  - aggregate:
+    - get: cf-manifests
+      resource: cf-manifests-development
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      passed: [deploy-cf-development]
+      trigger: true
+  - task: acceptance-tests
+    file: cf-manifests/ci/container-scanning.yml
+    params:
+      CF_API_URL: {{cf-api-url-development}}
+      CF_USERNAME: {{cf-username-development}}
+      CF_PASSWORD: {{cf-password-development}}
+      CF_ORGANIZATION: {{platform-organization-development}}
+      CF_SPACE: {{platform-space-development}}
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Falco smoke tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
 - name: deploy-cf-staging
   serial_groups: [staging]
   serial: true
@@ -1136,6 +1163,7 @@ groups:
   - uaa-smoke-tests-development
   - uaa-client-audit-development
   - tic-smoke-tests-development
+  - falco-smoke-tests-development
   - smoke-tests-development
   - deploy-cf-staging
   - terraform-plan-staging
@@ -1161,6 +1189,7 @@ groups:
   - uaa-smoke-tests-development
   - uaa-client-audit-development
   - tic-smoke-tests-development
+  - falco-smoke-tests-development
   - smoke-tests-development
 - name: staging
   jobs:

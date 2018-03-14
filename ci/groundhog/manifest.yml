@@ -1,0 +1,5 @@
+applications:
+- name: groundhog
+  memory: 64M
+  env:
+    GOPACKAGENAME: groundhog
