@@ -24,6 +24,14 @@
     secret: ((cdn-broker-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/s3-broker?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.global_auditor
+    secret: ((s3-broker-client-secret))
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa_extras_app?
   value:
     override: true
