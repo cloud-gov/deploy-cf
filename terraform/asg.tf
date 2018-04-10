@@ -1,4 +1,5 @@
 variable "remote_state_bucket" {}
+variable "tooling_stack_name" {}
 variable "iaas_stack_name" {}
 
 terraform {
@@ -12,6 +13,14 @@ data "terraform_remote_state" "iaas" {
   config {
     bucket = "${var.remote_state_bucket}"
     key = "${var.iaas_stack_name}/terraform.tfstate"
+  }
+}
+
+data "terraform_remote_state" "tooling" {
+  backend = "s3"
+  config {
+    bucket = "${var.remote_state_bucket}"
+    key = "${var.tooling_stack_name}/terraform.tfstate"
   }
 }
 
@@ -135,6 +144,16 @@ resource "cloudfoundry_sec_group" "brokers" {
   }
 }
 
+resource "cloudfoundry_sec_group" "smtp" {
+  name = "smtp"
+  rules {
+    destination = "${data.terraform_remote_state.tooling.production_smtp_private_ip}"
+    description = "SMTP relay"
+    protocol = "tcp"
+    ports = "25"
+  }
+}
+
 resource "cloudfoundry_quota" "default-tts" {
   name = "default-tts"
   total_memory = "20G"
@@ -151,5 +170,8 @@ resource "cloudfoundry_organization" "cloud-gov" {
 resource "cloudfoundry_space" "services" {
   name = "services"
   org_id = "${cloudfoundry_organization.cloud-gov.id}"
-  sec_groups = ["${cloudfoundry_sec_group.brokers.id}"]
+  sec_groups = [
+    "${cloudfoundry_sec_group.brokers.id}",
+    "${cloudfoundry_sec_group.smtp.id}"
+  ]
 }

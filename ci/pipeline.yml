@@ -125,6 +125,7 @@ jobs:
       CF_CLIENT_SECRET: {{cf-client-secret-development}}
       TF_VAR_remote_state_bucket: {{tf-state-bucket}}
       TF_VAR_iaas_stack_name: development
+      TF_VAR_tooling_stack_name: tooling
   - put: slack
     params:
       text_file: terraform-state/message.txt
@@ -468,6 +469,7 @@ jobs:
       CF_CLIENT_SECRET: {{cf-client-secret-staging}}
       TF_VAR_remote_state_bucket: {{tf-state-bucket}}
       TF_VAR_iaas_stack_name: staging
+      TF_VAR_tooling_stack_name: tooling
   - put: slack
     params:
       text_file: terraform-state/message.txt
@@ -859,6 +861,7 @@ jobs:
       CF_CLIENT_SECRET: {{cf-client-secret-production}}
       TF_VAR_remote_state_bucket: {{tf-state-bucket}}
       TF_VAR_iaas_stack_name: production
+      TF_VAR_tooling_stack_name: tooling
   - put: slack
     params:
       text_file: terraform-state/message.txt
