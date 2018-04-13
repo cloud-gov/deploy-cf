@@ -175,3 +175,11 @@ resource "cloudfoundry_space" "services" {
     "${cloudfoundry_sec_group.smtp.id}"
   ]
 }
+
+resource "cloudfoundry_space" "dashboard" {
+  name = "dashboard"
+  org_id = "${cloudfoundry_organization.cloud-gov.id}"
+  sec_groups = [
+    "${cloudfoundry_sec_group.smtp.id}"
+  ]
+}
