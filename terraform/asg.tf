@@ -183,3 +183,11 @@ resource "cloudfoundry_space" "dashboard" {
     "${cloudfoundry_sec_group.smtp.id}"
   ]
 }
+
+resource "cloudfoundry_space" "uaa-extras" {
+  name = "uaa-extras"
+  org_id = "${cloudfoundry_organization.cloud-gov.id}"
+  sec_groups = [
+    "${cloudfoundry_sec_group.smtp.id}"
+  ]
+}
