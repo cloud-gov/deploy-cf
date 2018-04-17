@@ -524,6 +524,7 @@ jobs:
       trigger: true
     - get: terraform-config-staging-production
       passed: [terraform-apply-staging]
+      trigger: true
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     attempts: 3
