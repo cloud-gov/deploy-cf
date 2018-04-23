@@ -8,4 +8,4 @@
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=ssh_proxy/properties/diego/ssh_proxy/allowed_keyexchanges?
-  value: curve25519-sha256@libssh.org
+  value: curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
