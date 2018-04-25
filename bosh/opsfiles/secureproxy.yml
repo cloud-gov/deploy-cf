@@ -22,6 +22,20 @@
               proxy_pass http://localhost:8080/health;
             }
           }
+
+          server {
+            listen 8081;
+            location ~ (^/.well-known/acme-challenge/.*) {
+              resolver 8.8.8.8;
+
+              proxy_set_header Host s3-us-gov-west-1.amazonaws.com;
+              proxy_set_header Authorization $http_authorization;
+              proxy_set_header Connection '';
+
+              set $s3_host 's3-us-gov-west-1.amazonaws.com';
+              proxy_pass https://$s3_host/((challenge_bucket))$1;
+            }
+          }
         tic:
           host_whitelist:
           - hostname: api.((system_domain))
