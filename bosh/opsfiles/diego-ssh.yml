@@ -1,6 +1,6 @@
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=ssh_proxy/properties/diego/ssh_proxy/allowed_ciphers?
-  value: aes128-gcm@openssh.com, aes256-gcm@openssh.com
+  value: aes128-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=ssh_proxy/properties/diego/ssh_proxy/allowed_macs?
