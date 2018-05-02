@@ -158,4 +158,4 @@
   value: 600
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/refresh-token-validity
-  value: 259200
+  value: 900
