@@ -62,18 +62,6 @@
     secret: ((admin-ui-client-secret))
 
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaaproxy?
-  value:
-    override: true
-    scope: openid
-    authorized-grant-types: authorization_code,refresh_token
-    access-token-validity: 600
-    refresh-token-validity: 259200
-    redirect-uri: "https://**.18f.gov/auth/callback,https://**.app.cloud.gov/auth/callback"
-    autoapprove: true
-    secret: ((uaaproxy-client-secret))
-
-- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/sandbox-bot?
   value:
     override: true
