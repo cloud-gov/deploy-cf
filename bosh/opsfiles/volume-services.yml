@@ -1,3 +1,121 @@
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/volume_services_enabled?
   value: true
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/volume_services_enabled?
+  value: true
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/volume_services_enabled?
+  value: true
+
+# Copy original diego-cell without networking components from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
+- type: replace
+  path: /instance_groups/-
+  value:
+    name: diego-sandbox-cell
+    azs:
+    - z1
+    - z2
+    instances: 2
+    vm_type: small-highmem
+    vm_extensions:
+    - 100GB_ephemeral_disk
+    stemcell: default
+    networks:
+    - name: default
+    jobs:
+    - name: consul_agent
+      release: consul
+      consumes:
+        consul_common: {from: consul_common_link}
+        consul_server: nil
+        consul_client: {from: consul_client_link}
+      properties:
+        consul:
+          agent:
+            node_name_includes_id: true
+    - name: cflinuxfs2-rootfs-setup
+      release: cflinuxfs2
+    - name: garden
+      release: garden-runc
+      properties:
+        garden:
+          cleanup_process_dirs_on_wait: true
+          debug_listen_address: 127.0.0.1:17019
+          default_container_grace_time: 0
+          destroy_containers_on_start: true
+          graph_cleanup_threshold_in_mb: 0
+          deny_networks:
+          - 0.0.0.0/0
+          persistent_image_list:
+          - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
+    - name: rep
+      release: diego
+      properties:
+        diego:
+          rep:
+            bbs: &diego_bbs_client_properties
+              ca_cert: "((diego_bbs_client.ca))"
+              client_cert: "((diego_bbs_client.certificate))"
+              client_key: "((diego_bbs_client.private_key))"
+            preloaded_rootfses:
+            - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
+            require_tls: true
+            ca_cert: "((service_cf_internal_ca.certificate))"
+            server_cert: "((diego_rep_agent_v2.certificate))"
+            server_key: "((diego_rep_agent_v2.private_key))"
+            enable_legacy_api_endpoints: false
+            locket:
+              api_location: "locket.service.cf.internal:8891"
+        use_v2_tls: true
+        loggregator: *diego_loggregator_client_properties
+        tls:
+          ca_cert: "((service_cf_internal_ca.certificate))"
+          cert: "((diego_rep_agent_v2.certificate))"
+          key: "((diego_rep_agent_v2.private_key))"
+    - name: cfdot
+      release: diego
+      properties:
+        tls: &cfdot_tls_client_properties
+          ca_certificate: "((diego_rep_client.ca))"
+          certificate: "((diego_rep_client.certificate))"
+          private_key: "((diego_rep_client.private_key))"
+    - name: route_emitter
+      release: diego
+      properties:
+        loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_metron.ca))"
+          cert: "((loggregator_tls_metron.certificate))"
+          key: "((loggregator_tls_metron.private_key))"
+        diego:
+          route_emitter:
+            local_mode: true
+            bbs:
+              ca_cert: "((service_cf_internal_ca.certificate))"
+              client_cert: "((diego_bbs_client.certificate))"
+              client_key: "((diego_bbs_client.private_key))"
+        tcp:
+          enabled: true
+        uaa:
+          ca_cert: "((uaa_ca.certificate))"
+          client_secret: "((uaa_clients_tcp_emitter_secret))"
+
+- type: replace
+  path: /instance_groups/name=diego-sandbox-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
+  value: volume
+
+- type: replace
+  path: /instance_groups/name=diego-sandbox-cell/jobs/-
+  value:
+    name: nfsv3driver
+    release: nfs-volume
+    properties: {}
+
+- type: replace
+  path: /releases/-
+  value:
+    name: nfs-volume
+    sha1: de807ffa3fc84949bb92edac6a4152245826d6da
+    url: https://bosh.io/d/github.com/cloudfoundry/nfs-volume-release?v=1.2.0
+    version: 1.2.0
