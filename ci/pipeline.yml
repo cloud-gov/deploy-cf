@@ -83,9 +83,8 @@ jobs:
       PLATFORM_ISOLATION_SEGMENT: {{platform-isolation-segment-development}}
       PLATFORM_ORGANIZATION: {{platform-organization-development}}
       PLATFORM_SPACE: {{platform-space-development}}
-      SANDBOX_ISOLATION_SEGMENT: {{sandbox-isolation-segment-development}}
-      SANDBOX_ORGANIZATION: {{sandbox-organization-development}}
-      SANDBOX_SPACE: {{sandbox-space-development}}
+      VOLUME_ISOLATION_SEGMENT: {{volume-isolation-segment-development}}
+      VOLUME_TARGETS: {{volume-targets}}
   on_success:
     put: slack
     params:
