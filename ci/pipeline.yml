@@ -55,7 +55,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
-      - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -321,7 +320,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
-      - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -668,7 +666,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
-      - cf-manifests/bosh/opsfiles/newrelic.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
