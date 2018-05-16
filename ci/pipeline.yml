@@ -1,5 +1,27 @@
 ---
 jobs:
+- name: restart-api
+  serial_groups: [workarounds]
+  plan:
+  - get: api-restart-timer
+    trigger: true
+  - task: restart-api
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      run:
+        path: sh
+        args:
+        - -exc
+        - bosh -n -d cf-production restart api
+    params:
+      BOSH_ENVIRONMENT: {{production-bosh-target}}
+      BOSH_CLIENT: {{production-bosh-client}}
+      BOSH_CLIENT_SECRET: {{production-bosh-client-secret}}
+      BOSH_CA_CERT: {{bosh-ca-cert}}
 - name: deploy-cf-development
   serial_groups: [development]
   serial: true
@@ -1109,6 +1131,11 @@ resources:
   source:
     interval: 10m
 
+- name: api-restart-timer
+  type: time
+  source:
+    interval: 4h
+
 resource_types:
 - name: slack-notification
   type: docker-image
@@ -1185,3 +1212,7 @@ groups:
   - uaa-smoke-tests-production
   - uaa-client-audit-production
   - tic-smoke-tests-production
+- name: workarounds
+  jobs:
+  - restart-api
+
