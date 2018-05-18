@@ -84,6 +84,8 @@ jobs:
       PLATFORM_SPACE: {{platform-space-development}}
       VOLUME_ISOLATION_SEGMENT: {{volume-isolation-segment-development}}
       VOLUME_TARGETS: {{volume-targets-development}}
+  - put: cf-development-version
+    params: {bump: patch}
   on_success:
     put: slack
     params:
@@ -349,6 +351,8 @@ jobs:
       PLATFORM_SPACE: {{platform-space-staging}}
       VOLUME_ISOLATION_SEGMENT: {{volume-isolation-segment-staging}}
       VOLUME_TARGETS: {{volume-targets-staging}}
+  - put: cf-staging-version
+    params: {bump: patch}
   on_success:
     put: slack
     params:
@@ -743,6 +747,8 @@ jobs:
       PLATFORM_SPACE: {{platform-space-production}}
       VOLUME_ISOLATION_SEGMENT: {{volume-isolation-segment-production}}
       VOLUME_TARGETS: {{volume-targets-production}}
+  - put: cf-production-version
+    params: {bump: patch}
   on_success:
     put: slack
     params:
@@ -1088,6 +1094,30 @@ resources:
     ca_cert: {{bosh-ca-cert}}
     deployment: cf-production
 
+- name: cf-development-version
+  type: semver-iam
+  source:
+    driver: s3
+    bucket: ((semver-bucket))
+    key: ((cf-development-version-key))
+    region_name: ((aws-region))
+
+- name: cf-staging-version
+  type: semver-iam
+  source:
+    driver: s3
+    bucket: ((semver-bucket))
+    key: ((cf-staging-version-key))
+    region_name: ((aws-region))
+
+- name: cf-production-version
+  type: semver-iam
+  source:
+    driver: s3
+    bucket: ((semver-bucket))
+    key: ((cf-production-version-key))
+    region_name: ((aws-region))
+
 - name: uaa-customized-release
   type: s3-iam
   source:
@@ -1129,6 +1159,11 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/s3-resource
+
+- name: semver-iam
+  type: docker-image
+  source:
+    repository: governmentpaas/semver-resource
 
 groups:
 - name: all
