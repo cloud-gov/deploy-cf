@@ -1111,11 +1111,6 @@ resource_types:
   source:
     repository: cloudfoundry/bosh-deployment-resource
 
-- name: cg-common
-  type: docker-image
-  source:
-    repository: 18fgsa/cg-common-resource
-
 - name: s3-iam
   type: docker-image
   source:
