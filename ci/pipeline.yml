@@ -14,8 +14,7 @@ jobs:
     - get: cf-manifests
       resource: cf-manifests-development
       trigger: true
-    - get: common
-      resource: common-development
+    - get: common-development
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-development
@@ -72,7 +71,7 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
-      - common/secrets.yml
+      - common-development/cf-development-decrypted.yml
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -284,8 +283,7 @@ jobs:
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
-    - get: common
-      resource: common-staging
+    - get: common-staging
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-staging
@@ -337,7 +335,7 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
-      - common/secrets.yml
+      - common-staging/cf-staging-decrypted.yml
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -629,8 +627,7 @@ jobs:
     - get: cf-manifests
       passed: [acceptance-tests-staging]
       trigger: true
-    - get: common
-      resource: common-production
+    - get: common-production
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cf-stemcell
@@ -683,7 +680,7 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
-      - common/secrets.yml
+      - common-production/cf-production-decrypted.yml
   on_success:
     put: slack
     params:
@@ -1009,31 +1006,25 @@ resources:
     - terraform/*
 
 - name: common-development
-  type: cg-common
+  type: s3-iam
   source:
-    bucket_name: {{cf-private-development-bucket}}
-    secrets_file: cf-development.yml
-    secrets_passphrase: {{cf-private-development-passphrase}}
-    bosh_cert: bosh.pem
-    region: {{aws-region}}
+    bucket: {{cf-private-development-bucket}}
+    versioned_file: cf-development-decrypted.yml
+    region_name: {{aws-region}}
 
 - name: common-staging
-  type: cg-common
+  type: s3-iam
   source:
-    bucket_name: {{cf-private-staging-bucket}}
-    secrets_file: cf-staging.yml
-    secrets_passphrase: {{cf-private-staging-passphrase}}
-    bosh_cert: bosh.pem
-    region: {{aws-region}}
+    bucket: {{cf-private-staging-bucket}}
+    versioned_file: cf-staging-decrypted.yml
+    region_name: {{aws-region}}
 
 - name: common-production
-  type: cg-common
+  type: s3-iam
   source:
-    bucket_name: {{cf-private-production-bucket}}
-    secrets_file: cf-production.yml
-    secrets_passphrase: {{cf-private-production-passphrase}}
-    bosh_cert: bosh.pem
-    region: {{aws-region}}
+    bucket: {{cf-private-production-bucket}}
+    versioned_file: cf-production-decrypted.yml
+    region_name: {{aws-region}}
 
 - name: cf-stemcell
   type: bosh-io-stemcell
