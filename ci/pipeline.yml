@@ -71,7 +71,7 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
-      - common-development/cf-development-decrypted.yml
+      - common-development/cf-development.yml
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -335,7 +335,7 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
-      - common-staging/cf-staging-decrypted.yml
+      - common-staging/cf-staging.yml
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -680,7 +680,7 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
-      - common-production/cf-production-decrypted.yml
+      - common-production/cf-production.yml
   on_success:
     put: slack
     params:
@@ -1009,21 +1009,21 @@ resources:
   type: s3-iam
   source:
     bucket: {{cf-private-development-bucket}}
-    versioned_file: cf-development-decrypted.yml
+    versioned_file: cf-development.yml
     region_name: {{aws-region}}
 
 - name: common-staging
   type: s3-iam
   source:
     bucket: {{cf-private-staging-bucket}}
-    versioned_file: cf-staging-decrypted.yml
+    versioned_file: cf-staging.yml
     region_name: {{aws-region}}
 
 - name: common-production
   type: s3-iam
   source:
     bucket: {{cf-private-production-bucket}}
-    versioned_file: cf-production-decrypted.yml
+    versioned_file: cf-production.yml
     region_name: {{aws-region}}
 
 - name: cf-stemcell
