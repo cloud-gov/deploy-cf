@@ -713,8 +713,7 @@ jobs:
       passed: [plan-cf-production]
     - get: cf-manifests
       passed: [plan-cf-production]
-    - get: common
-      resource: common-production
+    - get: common-production
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cf-stemcell
