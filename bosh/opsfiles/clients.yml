@@ -140,6 +140,30 @@
     redirect-uri: https://dashboard.((system_domain))/oauth2callback
     secret: ((dashboard-client-secret))
 
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/servicenow_dev?
+  value:
+    override: true
+    scope: scim.read,openid
+    authorized-grant-types: authorization_code,refresh_token
+    access-token-validity: 600
+    refresh-token-validity: 259200
+    name: ServiceNow DEV
+    redirect-uri: https://gsattsdev.service-now.com/oauth_redirect.do
+    secret: ((servicenowdev-client-secret))
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/servicenow?
+  value:
+    override: true
+    scope: scim.read,openid
+    authorized-grant-types: authorization_code,refresh_token
+    access-token-validity: 600
+    refresh-token-validity: 259200
+    name: ServiceNow
+    redirect-uri: https://gsatts.service-now.com/oauth_redirect.do
+    secret: ((servicenow-client-secret))
+
 # Update existing clients
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/access-token-validity
