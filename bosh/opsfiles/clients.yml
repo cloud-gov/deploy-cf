@@ -52,9 +52,9 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/admin-ui?
   value:
     override: true
-    scope: admin_ui.admin,admin_ui.user,openid
+    scope: admin_ui.user,openid
     authorized-grant-types: authorization_code,client_credentials,refresh_token
-    authorities: clients.write,cloud_controller.admin,cloud_controller.read,cloud_controller.write,doppler.firehose,openid,scim.read,scim.write
+    authorities: cloud_controller.global_auditor,doppler.firehose,scim.read,openid
     redirect-uri: https://admin.((system_domain))/login
     access-token-validity: 600
     refresh-token-validity: 259200
