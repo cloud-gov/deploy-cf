@@ -1,2 +1,0 @@
-- type: remove
-  path: /instance_groups/name=diego-api/jobs/name=locket/consumes
