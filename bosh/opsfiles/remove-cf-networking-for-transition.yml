@@ -1,0 +1,96 @@
+- type: remove
+  path: /releases/name=cf-networking
+
+- type: remove
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/network-policy
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=garden/properties/garden/network_plugin
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=garden/properties/garden/network_plugin_extra_args
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=garden-cni
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=silk-cni
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=netmon
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent
+
+- type: remove
+  path: /instance_groups/name=diego-cell/jobs/name=silk-daemon
+
+- type: remove
+  path: /instance_groups/name=diego-api/jobs/name=silk-controller
+
+- type: remove
+  path: /instance_groups/name=diego-api/jobs/name=consul_agent/properties/consul/agent/services/silk-controller
+
+- type: remove
+  path: /instance_groups/name=api/jobs/name=policy-server
+
+- type: remove
+  path: /instance_groups/name=api/jobs/name=policy-server-internal
+
+- type: remove
+  path: /instance_groups/name=api/jobs/name=route_registrar/properties/route_registrar/routes/name=policy-server
+
+- type: remove
+  path: /instance_groups/name=api/jobs/name=consul_agent/properties/consul/agent/services/policy-server-internal
+
+- type: remove
+  path: /variables/name=network_policy_database_password?
+
+- type: remove
+  path: /variables/name=network_connectivity_database_password?
+
+# Remove use-external-dbs ops file variables
+- type: remove
+  path: /variables/name=policy_server_db_address?
+
+- type: remove
+  path: /variables/name=policy_server_db_name?
+
+- type: remove
+  path: /variables/name=policy_server_db_username?
+
+- type: remove
+  path: /variables/name=policy_server_db_password?
+
+- type: remove
+  path: /variables/name=silk_controller_db_address?
+
+- type: remove
+  path: /variables/name=silk_controller_db_name?
+
+- type: remove
+  path: /variables/name=silk_controller_db_username?
+
+- type: remove
+  path: /variables/name=silk_controller_db_password?
+
+- type: remove
+  path: /variables/name=uaa_clients_network_policy_secret
+
+- type: remove
+  path: /variables/name=silk_ca
+
+- type: remove
+  path: /variables/name=silk_controller
+
+- type: remove
+  path: /variables/name=silk_daemon
+
+- type: remove
+  path: /variables/name=network_policy_ca
+
+- type: remove
+  path: /variables/name=network_policy_server
+
+- type: remove
+  path: /variables/name=network_policy_client
