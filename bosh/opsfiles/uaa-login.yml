@@ -2,11 +2,11 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/password?/policy
   value: &password-policy
     minLength: 20
-    requireDigit: 1
-    requireUpperCaseCharacter: 1
-    requireLowerCaseCharacter: 1
-    requireSpecialCharacter: 1
-    expirePasswordInMonths: 6
+    requireDigit: 0
+    requireUpperCaseCharacter: 0
+    requireLowerCaseCharacter: 0
+    requireSpecialCharacter: 0
+    expirePasswordInMonths: 0
 
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa-customized/properties?/uaa/password/policy
