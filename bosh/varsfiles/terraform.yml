@@ -1,7 +1,7 @@
 aws_region: ((terraform_outputs.vpc_region))
 
 external_database_type: ((terraform_outputs.cf_rds_engine))
-external_database_port: ((terraform_outputs.cf_rds_port))
+external_database_port: 5432
 
 external_cc_database_name: ccdb
 external_cc_database_address: ((terraform_outputs.cf_rds_host))
@@ -22,5 +22,15 @@ external_locket_database_name: locketdb
 external_locket_database_address: ((terraform_outputs.cf_rds_host))
 external_locket_database_username: ((terraform_outputs.cf_rds_username))
 external_locket_database_password: ((terraform_outputs.cf_rds_password))
+
+external_policy_server_database_name: policydb
+external_policy_server_database_address: ((terraform_outputs.cf_rds_host))
+external_policy_server_database_username: ((terraform_outputs.cf_rds_username))
+external_policy_server_database_password: ((terraform_outputs.cf_rds_password))
+
+external_silk_controller_database_name: silkdb
+external_silk_controller_database_address: ((terraform_outputs.cf_rds_host))
+external_silk_controller_database_username: ((terraform_outputs.cf_rds_username))
+external_silk_controller_database_password: ((terraform_outputs.cf_rds_password))
 
 challenge_bucket: ((terraform_outputs.challenge_bucket))
