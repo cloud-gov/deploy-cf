@@ -8,7 +8,7 @@
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/volume_services_enabled?
   value: true
 
-# Copy original diego-cell without networking components from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
+# Copy original diego-cell from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
 - type: replace
   path: /instance_groups/-
   value:
@@ -100,6 +100,31 @@
         uaa:
           ca_cert: "((uaa_ca.certificate))"
           client_secret: "((uaa_clients_tcp_emitter_secret))"
+    - name: garden-cni
+      release: cf-networking
+      properties:
+        cni_plugin_dir: /var/vcap/packages/silk-cni/bin
+        cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
+    - name: netmon
+      release: silk
+    - name: vxlan-policy-agent
+      release: silk
+      provides:
+        vpa: {as: vpa-sandbox}
+      properties:
+        ca_cert: ((network_policy_ca.certificate))
+        client_cert: ((network_policy_client.certificate))
+        client_key: ((network_policy_client.private_key))
+    - name: silk-daemon
+      release: silk
+      consumes:
+        vpa: {from: vpa-sandbox}
+      properties:
+        ca_cert: ((silk_ca.certificate))
+        client_cert: ((silk_daemon.certificate))
+        client_key: ((silk_daemon.private_key))
+    - name: silk-cni
+      release: silk
 
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
