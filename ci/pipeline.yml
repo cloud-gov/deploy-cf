@@ -304,7 +304,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/remove-cf-networking-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -649,7 +648,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/remove-cf-networking-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
