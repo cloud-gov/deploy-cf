@@ -2,14 +2,14 @@
 
 set -eu
 
-uaac target "${UAA_URL}"
-uaac token client get "${UAA_CLIENT_ID}" -s "${UAA_CLIENT_SECRET}"
-access_token=$(uaac context | grep access_token | sed 's/access_token://' | sed 's/ //g')
-
+UAA_URL=$(echo "${UAA_URL}" | sed 's/\/$//')
 CF_API_URL=$(echo "${CF_API_URL}" | sed 's/\/$//')
 
+access_token=$(curl -s -u "${UAA_CLIENT_ID}:${UAA_CLIENT_SECRET}" "${UAA_URL}/oauth/token" -d "grant_type=client_credentials" \
+  | jq -r ".access_token")
+
 cfcurl() {
-  curl -H "Authorization: Bearer ${access_token}" "$@"
+  curl -H "Authorization: Bearer ${access_token}" -H "Accept: application/json" "$@"
 }
 
 paginate() {
@@ -24,6 +24,24 @@ paginate() {
     page=$(cfcurl -s "${CF_API_URL}${next_url}")
     next_url=$(echo -n "${page}" | jq -r '.next_url // ""')
     results="${results}\n$(echo -n "${page}" | jq -r "${selector}")"
+  done
+
+  echo "${results}"
+}
+
+uaapaginate() {
+  query=$1
+  selector=$2
+
+  local page results start_index items_per_page total_results
+  start_index=1
+  page=$(cfcurl -Gs "${UAA_URL}${query}" -d "startIndex=${start_index}")
+  items_per_page=$(echo -n "${page}" | jq -r '.itemsPerPage')
+  total_results=$(echo -n "${page}" | jq -r '.totalResults')
+  results=$(echo -n "${page}" | jq -r "${selector}")
+  while [ "${start_index}" -lt "${total_results}" ]; do
+    page=$(cfcurl -Gs "${UAA_URL}${query}" -d "startIndex=${start_index}")
+    start_index=$((start_index + items_per_page))
   done
 
   echo "${results}"
@@ -52,7 +70,7 @@ cg_clients=$(cat cf-manifests/bosh/opsfiles/clients.yml \
   | sed 's/\?//' | sed 's/\/clients\///')
 
 # Diff existing clients against expected
-clients=$(uaac clients | grep -v ":" | sed 's/ //g')
+clients=$(uaapaginate "/oauth/clients" ".resources[] | .client_id")
 
 whitelist="admin"
 if [ -n "${WHITELIST:-}" ]; then
