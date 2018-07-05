@@ -106,4 +106,3 @@ done
 uaa_url=$(echo "${UAA_URL}" | sed 's/https:\/\///')
 curl -X DELETE "${GATEWAY_HOST}:${GATEWAY_PORT:-9091}/metrics/job/uaa_client_audit/uaa_url/${uaa_url}"
 curl --data-binary @${metrics} "${GATEWAY_HOST}:${GATEWAY_PORT:-9091}/metrics/job/uaa_client_audit/uaa_url/${uaa_url}"
-echo "uaa_client_audit_lastcheck $(date +'%s')" | curl --data-binary @- "${GATEWAY_HOST}:${GATEWAY_PORT:-9091}/metrics/job/uaa_client_audit/instance/lastcheck"
