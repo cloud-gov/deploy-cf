@@ -1,4 +1,6 @@
 environment: development
+network_name: default
+deployment_name: cf-development
 company-name: cloud.gov development
 system_domain: dev.us-gov-west-1.aws-us-gov.cloud.gov
 app_domain: dev.us-gov-west-1.aws-us-gov.cloud.gov
