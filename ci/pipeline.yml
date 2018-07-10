@@ -41,6 +41,7 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/use-bosh-dns-rename-network-and-deployment.yml
+      - cf-deployment/operations/use-bosh-dns-for-containers.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
