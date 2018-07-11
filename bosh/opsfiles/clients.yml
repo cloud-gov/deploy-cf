@@ -164,6 +164,22 @@
     redirect-uri: https://gsatts.service-now.com/oauth_redirect.do
     secret: ((servicenow-client-secret))
 
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/stratos?
+  value:
+    override: true
+    scope: stratos.admin,network.admin,network.write,cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write,cloud_controller.admin_read_only,cloud_controller.global_auditor
+    authorized-grant-types: authorization_code,client_credentials,refresh_token
+    authorities: uaa.none
+    access-token-validity: 600
+    refresh-token-validity: 259200
+    name: Stratos Console
+    autoapprove: true
+    show-on-homepage: true
+    app-launch-url: https://stratos.((system_domain))
+    redirect-uri: https://stratos.((system_domain))/pp/v1/auth/sso_login_callback
+    secret: ((stratos-client-secret))
+
 # Update existing clients
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/access-token-validity
