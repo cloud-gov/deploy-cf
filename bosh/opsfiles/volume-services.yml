@@ -153,3 +153,20 @@
     sha1: de807ffa3fc84949bb92edac6a4152245826d6da
     url: https://bosh.io/d/github.com/cloudfoundry/nfs-volume-release?v=1.2.0
     version: 1.2.0
+
+# Enable service discovery
+- type: replace
+  path: /instance_groups/name=diego-sandbox-cell/jobs/name=bosh-dns-adapter?
+  value:
+    name: bosh-dns-adapter
+    properties:
+      dnshttps:
+        client:
+          tls: ((cf_app_sd_client_tls))
+        server:
+          ca: ((cf_app_sd_ca.certificate))
+    release: cf-networking
+- type: replace
+  path: /instance_groups/name=diego-sandbox-cell/jobs/name=route_emitter/properties/internal_routes?
+  value:
+    enabled: true
