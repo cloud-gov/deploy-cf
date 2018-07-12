@@ -1,4 +1,6 @@
 environment: production
+network_name: default
+deployment_name: cf-production
 company-name: cloud.gov
 system_domain: fr.cloud.gov
 app_domain: app.cloud.gov

@@ -1,4 +1,6 @@
 environment: staging
+network_name: default
+deployment_name: cf-staging
 company-name: cloud.gov staging
 system_domain: fr-stage.cloud.gov
 app_domain: fr-stage.cloud.gov
