@@ -9,6 +9,9 @@ cat > integration-config/integration_config.json <<EOF
   "use_existing_user": true,
   "existing_user": "${EXISTING_USER}",
   "existing_user_password": "${EXISTING_USER_PASSWORD}",
+  "include_container_networking": true,
+  "include_service_discovery": true,
+  "include_docker": true,
   "skip_ssl_validation": false
 }
 EOF
