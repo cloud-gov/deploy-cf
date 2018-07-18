@@ -146,14 +146,6 @@
     release: nfs-volume
     properties: {}
 
-- type: replace
-  path: /releases/-
-  value:
-    name: nfs-volume
-    sha1: de807ffa3fc84949bb92edac6a4152245826d6da
-    url: https://bosh.io/d/github.com/cloudfoundry/nfs-volume-release?v=1.2.0
-    version: 1.2.0
-
 # Enable service discovery
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=bosh-dns-adapter?
@@ -170,3 +162,18 @@
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
     enabled: true
+
+# Required by NFS Volume Services 1.3.1 and higher
+- type: replace
+  path: /instance_groups/name=diego-sandbox-cell/jobs/name=mapfs?
+  value:
+    name: mapfs
+    release: mapfs
+
+- type: replace
+  path: /releases/name=mapfs?
+  value:
+    name: mapfs
+    sha1: 9dcea268d327caff76690229ac09f57a0c83cf65
+    url: https://bosh.io/d/github.com/cloudfoundry/mapfs-release?v=1.0.1
+    version: 1.0.1
