@@ -171,7 +171,8 @@
     release: mapfs
 
 - type: replace
-  path: /releases/nfs-volume?
+  path: /releases/name=nfs-volume?
+  value:
     name: nfs-volume
     version: latest
 
