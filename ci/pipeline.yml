@@ -939,7 +939,7 @@ resources:
 - name: master-bosh-root-cert
   type: s3-iam
   source:
-    bucket: {{cf-private-production-bucket}}
+    bucket: {{cf-private-bucket}}
     region_name: {{aws-region}}
     versioned_file: master-bosh.crt
 
@@ -1016,21 +1016,21 @@ resources:
 - name: common-development
   type: s3-iam
   source:
-    bucket: {{cf-private-development-bucket}}
+    bucket: {{cf-private-bucket}}
     versioned_file: cf-development.yml
     region_name: {{aws-region}}
 
 - name: common-staging
   type: s3-iam
   source:
-    bucket: {{cf-private-staging-bucket}}
+    bucket: {{cf-private-bucket}}
     versioned_file: cf-staging.yml
     region_name: {{aws-region}}
 
 - name: common-production
   type: s3-iam
   source:
-    bucket: {{cf-private-production-bucket}}
+    bucket: {{cf-private-bucket}}
     versioned_file: cf-production.yml
     region_name: {{aws-region}}
 
