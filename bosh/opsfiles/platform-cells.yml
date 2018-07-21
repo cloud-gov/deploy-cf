@@ -157,8 +157,3 @@
   path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
     enabled: true
-
-# Grant all SpaceDevelopers permissions to configure network policies
-- type: replace
-  path: /instance_groups/name=api/jobs/name=policy-server/properties/enable_space_developer_self_service?
-  value: true
