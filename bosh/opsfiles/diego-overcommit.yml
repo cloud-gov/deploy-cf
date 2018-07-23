@@ -9,3 +9,7 @@
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=rep/properties/diego/executor?/memory_capacity_mb
   value: 50000
+
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=rep/properties/diego/executor?/memory_capacity_mb
+  value: 50000

@@ -1,0 +1,156 @@
+# Copy original diego-cell from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
+- type: replace
+  path: /instance_groups/-
+  value:
+    name: diego-development-cell
+    azs:
+    - z1
+    - z2
+    instances: 2
+    vm_type: small-highmem
+    vm_extensions:
+    - 100GB_ephemeral_disk
+    stemcell: default
+    networks:
+    - name: development-default
+    jobs:
+    - name: consul_agent
+      release: consul
+      consumes:
+        consul_common: {from: consul_common_link}
+        consul_server: nil
+        consul_client: {from: consul_client_link}
+      properties:
+        consul:
+          agent:
+            node_name_includes_id: true
+    - name: cflinuxfs2-rootfs-setup
+      release: cflinuxfs2
+    - name: garden
+      release: garden-runc
+      properties:
+        garden:
+          cleanup_process_dirs_on_wait: true
+          debug_listen_address: 127.0.0.1:17019
+          default_container_grace_time: 0
+          destroy_containers_on_start: true
+          graph_cleanup_threshold_in_mb: 0
+          deny_networks:
+          - 0.0.0.0/0
+          persistent_image_list:
+          - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
+          network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
+          network_plugin_extra_args:
+          - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
+    - name: rep
+      release: diego
+      properties:
+        diego:
+          rep:
+            bbs: &diego_bbs_client_properties
+              ca_cert: "((diego_bbs_client.ca))"
+              client_cert: "((diego_bbs_client.certificate))"
+              client_key: "((diego_bbs_client.private_key))"
+            preloaded_rootfses:
+            - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
+            require_tls: true
+            ca_cert: "((service_cf_internal_ca.certificate))"
+            server_cert: "((diego_rep_agent_v2.certificate))"
+            server_key: "((diego_rep_agent_v2.private_key))"
+            enable_legacy_api_endpoints: false
+            locket:
+              api_location: "locket.service.cf.internal:8891"
+        use_v2_tls: true
+        loggregator: *diego_loggregator_client_properties
+        tls:
+          ca_cert: "((service_cf_internal_ca.certificate))"
+          cert: "((diego_rep_agent_v2.certificate))"
+          key: "((diego_rep_agent_v2.private_key))"
+    - name: cfdot
+      release: diego
+      properties:
+        tls: &cfdot_tls_client_properties
+          ca_certificate: "((diego_rep_client.ca))"
+          certificate: "((diego_rep_client.certificate))"
+          private_key: "((diego_rep_client.private_key))"
+    - name: route_emitter
+      release: diego
+      properties:
+        loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_metron.ca))"
+          cert: "((loggregator_tls_metron.certificate))"
+          key: "((loggregator_tls_metron.private_key))"
+        diego:
+          route_emitter:
+            local_mode: true
+            bbs:
+              ca_cert: "((service_cf_internal_ca.certificate))"
+              client_cert: "((diego_bbs_client.certificate))"
+              client_key: "((diego_bbs_client.private_key))"
+        tcp:
+          enabled: true
+        uaa:
+          ca_cert: "((uaa_ca.certificate))"
+          client_secret: "((uaa_clients_tcp_emitter_secret))"
+    - name: garden-cni
+      release: cf-networking
+      properties:
+        cni_plugin_dir: /var/vcap/packages/silk-cni/bin
+        cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
+    - name: netmon
+      release: silk
+    - name: vxlan-policy-agent
+      release: silk
+      provides:
+        vpa: {as: vpa-development}
+      properties:
+        ca_cert: ((network_policy_ca.certificate))
+        client_cert: ((network_policy_client.certificate))
+        client_key: ((network_policy_client.private_key))
+    - name: silk-daemon
+      release: silk
+      consumes:
+        vpa: {from: vpa-development}
+      properties:
+        ca_cert: ((silk_ca.certificate))
+        client_cert: ((silk_daemon.certificate))
+        client_key: ((silk_daemon.private_key))
+    - name: silk-cni
+      release: silk
+
+# Set development cell instance profile and placement tag
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
+  value: development
+
+# Use distinct vxlan policy links for tenant cells
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/provides?/vpa
+  value: {as: vpa-tenant}
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=silk-daemon/consumes?/vpa
+  value: {from: vpa-tenant}
+
+# Add development cells to DNS aliases
+- type: replace
+  path: /addons/name=bosh-dns/jobs/name=bosh-dns/properties/aliases/_.cell.service.cf.internal/-
+  value: _.diego-development-cell.development-default.((deployment_name)).bosh
+
+# Enable service discovery
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=bosh-dns-adapter?
+  value:
+    name: bosh-dns-adapter
+    properties:
+      dnshttps:
+        client:
+          tls: ((cf_app_sd_client_tls))
+        server:
+          ca: ((cf_app_sd_ca.certificate))
+    release: cf-networking
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=route_emitter/properties/internal_routes?
+  value:
+    enabled: true

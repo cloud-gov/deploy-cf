@@ -5,3 +5,7 @@
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=silk-cni/properties?/dns_servers
   value: [169.254.0.2]
+
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=silk-cni/properties?/dns_servers
+  value: [169.254.0.2]

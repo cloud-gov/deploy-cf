@@ -106,6 +106,10 @@
   value: *rds-ca
 
 - type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=rep/properties/containers?/trusted_ca_certificates/-
+  value: *rds-ca
+
+- type: replace
   path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs2-rootfs-setup/properties?/cflinuxfs2-rootfs/trusted_certs
   value: *rds-ca
 
@@ -115,4 +119,8 @@
 
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=cflinuxfs2-rootfs-setup/properties?/cflinuxfs2-rootfs/trusted_certs
+  value: *rds-ca
+
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=cflinuxfs2-rootfs-setup/properties?/cflinuxfs2-rootfs/trusted_certs
   value: *rds-ca
