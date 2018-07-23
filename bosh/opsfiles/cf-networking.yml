@@ -1,0 +1,8 @@
+# CF Networking Release
+# https://github.com/cloudfoundry/cf-networking-release
+
+# Grant all SpaceDevelopers permissions to configure network policies
+- type: replace
+  path: /instance_groups/name=api/jobs/name=policy-server/properties/enable_space_developer_self_service?
+  value: true
+
