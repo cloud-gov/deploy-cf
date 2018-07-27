@@ -138,8 +138,13 @@
 
 # Add platform cells to DNS aliases
 - type: replace
-  path: /addons/name=bosh-dns/jobs/name=bosh-dns/properties/aliases/_.cell.service.cf.internal/-
-  value: _.diego-platform-cell.((network_name)).((deployment_name)).bosh
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
+  value:
+    query: '_'
+    instance_group: diego-platform-cell
+    deployment: ((deployment_name))
+    network: ((network_name))
+    domain: bosh
 
 # Enable service discovery
 - type: replace

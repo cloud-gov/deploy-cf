@@ -136,13 +136,23 @@
 
 # Add sandbox cells to DNS aliases
 - type: replace
-  path: /addons/name=bosh-dns/jobs/name=bosh-dns/properties/aliases/_.cell.service.cf.internal/-
-  value: _.diego-sandbox-cell.((network_name)).((deployment_name)).bosh
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
+  value:
+    query: '_'
+    instance_group: diego-sandbox-cell
+    deployment: ((deployment_name))
+    network: ((network_name))
+    domain: bosh
 
 # Add nfs server to DNS aliases
 - type: replace
-  path: /addons/name=bosh-dns/jobs/name=bosh-dns/properties/aliases/nfstestserver.service.cf.internal?
-  value: ["*.nfs-server.services.nfs-volume.bosh"]
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=nfstestserver.service.cf.internal?/targets/-
+  value:
+    query: '*'
+    instance_group: nfs-server
+    deployment: nfs-volume
+    network: services
+    domain: bosh
 
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/-
