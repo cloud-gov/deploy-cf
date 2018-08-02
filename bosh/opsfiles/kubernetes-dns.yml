@@ -1,7 +1,0 @@
-- type: replace
-  path: /addons/name=bosh-dns/jobs/name=bosh-dns/properties/handlers?/-
-  value:
-    domain: service.kubernetes.
-    source:
-      type: dns
-      recursors: ((kubernetes_recursors))
