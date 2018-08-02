@@ -35,14 +35,12 @@ jobs:
       stemcells:
       - cf-stemcell/*.tgz
       ops_files:
+      - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
-      - cf-deployment/operations/rename-deployment.yml
       - cf-deployment/operations/use-external-dbs.yml
       - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
-      - cf-deployment/operations/use-bosh-dns-rename-network-and-deployment.yml
-      - cf-deployment/operations/use-bosh-dns-for-containers.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
@@ -66,7 +64,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
@@ -303,14 +300,12 @@ jobs:
     params:
       <<: *deploy-params
       ops_files:
+      - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
-      - cf-deployment/operations/rename-deployment.yml
       - cf-deployment/operations/use-external-dbs.yml
       - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
-      - cf-deployment/operations/use-bosh-dns-rename-network-and-deployment.yml
-      - cf-deployment/operations/use-bosh-dns-for-containers.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
@@ -334,7 +329,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
@@ -652,14 +646,12 @@ jobs:
       <<: *deploy-params
       dry_run: true
       ops_files:
+      - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
-      - cf-deployment/operations/rename-deployment.yml
       - cf-deployment/operations/use-external-dbs.yml
       - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
-      - cf-deployment/operations/use-bosh-dns-rename-network-and-deployment.yml
-      - cf-deployment/operations/use-bosh-dns-for-containers.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
@@ -683,7 +675,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/volume-services.yml
-      - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
