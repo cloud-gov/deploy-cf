@@ -246,13 +246,17 @@ jobs:
     - get: cf-deployment-development
       passed: [deploy-cf-development]
       trigger: true
+    - get: master-bosh-root-cert
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
       CI: true
       API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
-      GOROUTER_ADDRESS: 0.router.default.cf-development.bosh
-      BOSH_ADDRESS: {{development-bosh-target}}
+      BOSH_ENVIRONMENT: {{development-bosh-target}}
+      BOSH_CLIENT: {{development-bosh-username}}
+      BOSH_CLIENT_SECRET: {{development-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: cf-development
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
       SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
@@ -422,13 +426,17 @@ jobs:
       trigger: true
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
+    - get: master-bosh-root-cert
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
       CI: true
       API_HOSTNAME: api.fr-stage.cloud.gov
-      GOROUTER_ADDRESS: 0.router.default.cf-staging.bosh
-      BOSH_ADDRESS: {{staging-bosh-target}}
+      BOSH_ENVIRONMENT: {{staging-bosh-target}}
+      BOSH_CLIENT: {{staging-bosh-username}}
+      BOSH_CLIENT_SECRET: {{staging-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: cf-staging
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
       SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}
@@ -813,13 +821,17 @@ jobs:
     - get: cf-deployment-production
       passed: [deploy-cf-production]
       trigger: true
+    - get: master-bosh-root-cert
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
       CI: true
       API_HOSTNAME: api.fr.cloud.gov
-      GOROUTER_ADDRESS: 0.router.default.cf-production.bosh
-      BOSH_ADDRESS: {{production-bosh-target}}
+      BOSH_ENVIRONMENT: {{production-bosh-target}}
+      BOSH_CLIENT: {{production-bosh-username}}
+      BOSH_CLIENT_SECRET: {{production-bosh-password}}
+      BOSH_DEPLOYMENT_NAME: cf-production
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
       RESTRICTED_DOMAIN: {{tic-test-restricted-domain}}
       UNRESTRICTED_DOMAIN: {{tic-test-unrestricted-domain}}
       SOURCE_ADDRESS_ALLOWED: {{tic-test-source-address-allowed}}

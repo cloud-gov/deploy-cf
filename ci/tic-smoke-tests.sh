@@ -10,7 +10,11 @@ unrestricted_payload=$(cat <<EOF
 EOF
 )
 
-gorouter_ip=$(dig +short "@${BOSH_ADDRESS}" "${GOROUTER_ADDRESS}")
+gorouter_ip=$(
+  bosh -d "${BOSH_DEPLOYMENT_NAME}" vms --json \
+    | jq -r '.Tables[0].Rows[] | select(.instance | startswith("diego-cell/")) | .ips' \
+    | head -n 1
+)
 
 @test "restricted user | address allowed" {
   resp=$(curl -s \
