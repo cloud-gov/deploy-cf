@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
 - name: cf-manifests
+- name: master-bosh-root-cert
 
 run:
   path: cf-manifests/ci/tic-smoke-tests.sh
