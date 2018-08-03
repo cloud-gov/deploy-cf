@@ -12,7 +12,7 @@ EOF
 
 gorouter_ip=$(
   bosh -d "${BOSH_DEPLOYMENT_NAME}" vms --json \
-    | jq -r '.Tables[0].Rows[] | select(.instance | startswith("diego-cell/")) | .ips' \
+    | jq -r '.Tables[0].Rows[] | select(.instance | startswith("router/")) | .ips' \
     | head -n 1
 )
 
