@@ -1,0 +1,20 @@
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-handlers?
+  value:
+    name: bosh-dns-handlers
+    release: bosh-dns-aliases
+    properties:
+      handlers:
+      - domain: service.kubernetes.
+        source:
+          type: dns
+          recursors: ((kubernetes_recursors))
+
+# TODO: Delete after cf-deployment releases latest alises release
+- type: replace
+  path: /releases/name=bosh-dns-aliases?
+  value:
+    name: bosh-dns-aliases
+    version: 0.0.3
+    url: https://bosh.io/d/github.com/cloudfoundry/bosh-dns-aliases-release?v=0.0.3
+    sha1: b0d0a0350ed87f1ded58b2ebb469acea0e026ccc
