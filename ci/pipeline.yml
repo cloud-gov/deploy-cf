@@ -70,6 +70,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/nginx-buildpack.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -340,6 +341,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/nginx-buildpack.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -691,6 +693,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/nginx-buildpack.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
