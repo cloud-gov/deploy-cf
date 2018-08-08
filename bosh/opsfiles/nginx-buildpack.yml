@@ -1,0 +1,19 @@
+- type: replace
+  path: /releases/-
+  value:
+    name: nginx-buildpack
+    url: https://github.com/jmcarp/nginx-buildpack-release/releases/download/1.0.0/nginx-buildpack-1.0.0.tgz
+    version: 1
+    sha1sum: cc43c99279d93c0c4e7015c52a33c031adbce969
+
+- type: replace
+  path: /instance_groups/name=api/jobs/-
+  value:
+    name: nginx-buildpack
+    release: nginx-buildpack
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/-
+  value:
+    name: nginx_buildpack
+    package: nginx-buildpack
