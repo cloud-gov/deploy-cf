@@ -112,8 +112,6 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
-    tags:
-    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-development
       TERRAFORM_ACTION: plan
@@ -146,8 +144,6 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
-    tags:
-    - iaas
     params:
       <<: *tf-development
       TERRAFORM_ACTION: apply
@@ -465,8 +461,6 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
-    tags:
-    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-staging
       TERRAFORM_ACTION: plan
@@ -502,8 +496,6 @@ jobs:
     params:
       <<: *tf-staging
       TERRAFORM_ACTION: apply
-    tags:
-    - iaas
 
 - name: smoke-tests-staging
   serial_groups: [staging]
@@ -862,8 +854,6 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
-    tags:
-    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-production
       TERRAFORM_ACTION: plan
@@ -896,8 +886,6 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
-    tags:
-    - iaas
     params:
       <<: *tf-production
       TERRAFORM_ACTION: apply
