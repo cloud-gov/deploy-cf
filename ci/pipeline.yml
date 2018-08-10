@@ -231,7 +231,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-development))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-development))
       CF_API_URL: ((cf-api-url-development))
-      GATEWAY_HOST: ((gateway-host-development))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-development))
 
 - name: tic-smoke-tests-development
@@ -411,7 +411,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-staging))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-staging))
       CF_API_URL: ((cf-api-url-staging))
-      GATEWAY_HOST: ((gateway-host-staging))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-staging))
 
 - name: tic-smoke-tests-staging
@@ -805,7 +805,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-production))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-production))
       CF_API_URL: ((cf-api-url-production))
-      GATEWAY_HOST: ((gateway-host-production))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-production))
 
 - name: tic-smoke-tests-production
