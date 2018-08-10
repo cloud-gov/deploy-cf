@@ -128,6 +128,8 @@
         client_key: ((silk_daemon.private_key))
     - name: silk-cni
       release: silk
+      consumes:
+        vpa: {from: vpa-sandbox}
 
 # Set sandbox cell placement tag
 - type: replace

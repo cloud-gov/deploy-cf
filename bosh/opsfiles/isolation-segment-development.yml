@@ -118,6 +118,8 @@
         client_key: ((silk_daemon.private_key))
     - name: silk-cni
       release: silk
+      consumes:
+        vpa: {from: vpa-development}
 
 # Set development cell instance profile and placement tag
 - type: replace
