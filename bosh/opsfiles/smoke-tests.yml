@@ -1,0 +1,6 @@
+- type: replace
+  path: /instance_groups/name=smoke-tests/vm_type
+  value: m3.large
+- type: replace
+  path: /instance_groups/name=smoke-tests/vm_resources?/emphemeral_disk_size
+  value: 20480
