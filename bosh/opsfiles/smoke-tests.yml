@@ -1,6 +1,12 @@
-- type: replace
+- type: remove
   path: /instance_groups/name=smoke-tests/vm_type
-  value: m4.large
+
 - type: replace
   path: /instance_groups/name=smoke-tests/vm_resources?/emphemeral_disk_size
   value: 20480
+- type: replace
+  path: /instance_groups/name=smoke-tests/vm_resources?/ram
+  value: 8192
+- type: replace
+  path: /instance_groups/name=smoke-tests/vm_resources?/cpu
+  value: 2
