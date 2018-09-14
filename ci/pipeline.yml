@@ -565,7 +565,7 @@ jobs:
   serial_groups: [staging]
   plan:
   - aggregate:
-    - get: cats-concourse-task
+    - get: cf-deployment-concourse-tasks
     - get: cf-acceptance-tests
     - get: cf-deployment-staging
       passed: [smoke-tests-staging]
@@ -596,9 +596,9 @@ jobs:
       ADMIN_PASSWORD: {{admin-password-staging}}
       EXISTING_USER_PASSWORD: {{existing-user-password-staging}}
   - task: run-cats
-    file: cats-concourse-task/task.yml
-    attempts: 3
+    file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
+      FLAKE_ATTEMPTS: 3
       SKIP_REGEXP: routing.API|allows\spreviously-blocked\sip|Adding\sa\swildcard\sroute\sto\sa\sdomain|forwards\sapp\smessages\sto\sregistered\ssyslog\sdrains|uses\sa\sbuildpack\sfrom\sa\sgit\surl|when\sapp\shas\smultiple\sports\smapped
   on_success:
     put: slack
@@ -965,11 +965,11 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
-- name: cats-concourse-task
+- name: cf-deployment-concourse-tasks
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/cats-concourse-task.git
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
 - name: pipeline-tasks
   type: git
