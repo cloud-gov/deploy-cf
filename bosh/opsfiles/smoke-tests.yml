@@ -2,7 +2,7 @@
   path: /instance_groups/name=smoke-tests/vm_type
 
 - type: replace
-  path: /instance_groups/name=smoke-tests/vm_resources?/emphemeral_disk_size
+  path: /instance_groups/name=smoke-tests/vm_resources?/ephemeral_disk_size
   value: 20480
 - type: replace
   path: /instance_groups/name=smoke-tests/vm_resources?/ram
