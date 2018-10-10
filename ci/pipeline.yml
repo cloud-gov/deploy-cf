@@ -42,11 +42,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -310,11 +309,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -520,8 +518,6 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [deploy-cf-staging]
-    - get: cf-deployment-transition
-      passed: [deploy-cf-staging]
     - get: cf-stemcell
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
@@ -578,8 +574,6 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [smoke-tests-staging]
-    - get: cf-deployment-transition
-      passed: [smoke-tests-staging]
     - get: cf-stemcell
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
@@ -631,9 +625,6 @@ jobs:
     - get: cf-deployment
       passed: [acceptance-tests-staging]
       trigger: true
-    - get: cf-deployment-transition
-      passed: [acceptance-tests-staging]
-      trigger: true
     - get: cf-manifests
       passed: [acceptance-tests-staging]
       trigger: true
@@ -661,11 +652,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -724,8 +714,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-deployment
-      passed: [plan-cf-production]
-    - get: cf-deployment-transition
       passed: [plan-cf-production]
     - get: cf-manifests
       passed: [plan-cf-production]
@@ -956,12 +944,6 @@ resources:
     uri: https://github.com/cloudfoundry/cf-deployment
     branch: master
     tag_filter: "v*"
-
-- name: cf-deployment-transition
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cf-deployment-transition
-    branch: master
 
 - name: cf-acceptance-tests
   type: git
