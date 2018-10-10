@@ -43,6 +43,7 @@ jobs:
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
@@ -310,6 +311,7 @@ jobs:
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
@@ -660,6 +662,7 @@ jobs:
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/consul-azs.yml
