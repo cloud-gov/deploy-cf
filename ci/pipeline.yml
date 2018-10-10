@@ -516,8 +516,6 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [deploy-cf-staging]
-    - get: cf-deployment-transition
-      passed: [deploy-cf-staging]
     - get: cf-stemcell
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
@@ -574,8 +572,6 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [smoke-tests-staging]
-    - get: cf-deployment-transition
-      passed: [smoke-tests-staging]
     - get: cf-stemcell
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
@@ -625,9 +621,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-deployment
-      passed: [acceptance-tests-staging]
-      trigger: true
-    - get: cf-deployment-transition
       passed: [acceptance-tests-staging]
       trigger: true
     - get: cf-manifests
@@ -718,8 +711,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-deployment
-      passed: [plan-cf-production]
-    - get: cf-deployment-transition
       passed: [plan-cf-production]
     - get: cf-manifests
       passed: [plan-cf-production]
@@ -950,12 +941,6 @@ resources:
     uri: https://github.com/cloudfoundry/cf-deployment
     branch: master
     tag_filter: "v*"
-
-- name: cf-deployment-transition
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cf-deployment-transition
-    branch: master
 
 - name: cf-acceptance-tests
   type: git
