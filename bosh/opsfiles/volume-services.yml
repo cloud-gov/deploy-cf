@@ -147,7 +147,7 @@
     domain: bosh
 
 - type: replace
-  path: /instance_groups/name=diego-sandbox-cell/jobs/-
+  path: /instance_groups/name=diego-sandbox-cell/jobs/?nfsv3driver
   value:
     name: nfsv3driver
     release: nfs-volume
