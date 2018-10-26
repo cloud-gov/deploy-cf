@@ -61,7 +61,7 @@
             - ((uaa_ca.certificate))
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
-        loggregator: *diego_loggregator_client_properties
+        loggregator: &diego_loggregator_client_properties
         tls:
           ca_cert: "((service_cf_internal_ca.certificate))"
           cert: "((diego_rep_agent_v2.certificate))"
