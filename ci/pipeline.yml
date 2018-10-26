@@ -8,8 +8,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
-    - get: cf-deployment-transition
-      trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
       resource: cf-manifests-development
@@ -281,8 +279,6 @@ jobs:
   - aggregate:
     - get: master-bosh-root-cert
     - get: cf-deployment
-      trigger: true
-    - get: cf-deployment-transition
       trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
@@ -973,7 +969,7 @@ resources:
   type: git
   source:
     uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-development}}
+    branch: vpc-isolation-segments
     paths:
     - ci/*
     - bosh/*
