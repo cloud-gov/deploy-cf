@@ -1,0 +1,12 @@
+# Default upstream uses xenial. Revert to trusty for now
+- path: /stemcells/alias=default/os
+  type: replace
+  value: ubuntu-trusty
+- path: /addons/name=loggregator_agent/include/stemcell/-
+  type: replace
+  value:
+    os: ubuntu-trusty
+- path: /addons/name=bpm/include/stemcell/-
+  type: replace
+  value:
+    os: ubuntu-trusty

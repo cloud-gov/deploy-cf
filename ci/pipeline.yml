@@ -42,10 +42,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -71,7 +71,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/nginx-buildpack.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -114,8 +114,6 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
-    tags:
-    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-development
       TERRAFORM_ACTION: plan
@@ -148,8 +146,6 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
-    tags:
-    - iaas
     params:
       <<: *tf-development
       TERRAFORM_ACTION: apply
@@ -237,7 +233,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-development))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-development))
       CF_API_URL: ((cf-api-url-development))
-      GATEWAY_HOST: ((gateway-host-development))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-development))
 
 - name: tic-smoke-tests-development
@@ -314,10 +310,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -342,6 +338,9 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/doppler.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -417,7 +416,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-staging))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-staging))
       CF_API_URL: ((cf-api-url-staging))
-      GATEWAY_HOST: ((gateway-host-staging))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-staging))
 
 - name: tic-smoke-tests-staging
@@ -467,8 +466,6 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
-    tags:
-    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-staging
       TERRAFORM_ACTION: plan
@@ -504,8 +501,6 @@ jobs:
     params:
       <<: *tf-staging
       TERRAFORM_ACTION: apply
-    tags:
-    - iaas
 
 - name: smoke-tests-staging
   serial_groups: [staging]
@@ -523,8 +518,6 @@ jobs:
       passed: [deploy-cf-staging]
       trigger: true
     - get: cf-deployment
-      passed: [deploy-cf-staging]
-    - get: cf-deployment-transition
       passed: [deploy-cf-staging]
     - get: cf-stemcell
       passed: [deploy-cf-staging]
@@ -571,7 +564,7 @@ jobs:
   serial_groups: [staging]
   plan:
   - aggregate:
-    - get: cats-concourse-task
+    - get: cf-deployment-concourse-tasks
     - get: cf-acceptance-tests
     - get: cf-deployment-staging
       passed: [smoke-tests-staging]
@@ -581,8 +574,6 @@ jobs:
       passed: [smoke-tests-staging]
       trigger: true
     - get: cf-deployment
-      passed: [smoke-tests-staging]
-    - get: cf-deployment-transition
       passed: [smoke-tests-staging]
     - get: cf-stemcell
       passed: [smoke-tests-staging]
@@ -602,9 +593,9 @@ jobs:
       ADMIN_PASSWORD: {{admin-password-staging}}
       EXISTING_USER_PASSWORD: {{existing-user-password-staging}}
   - task: run-cats
-    file: cats-concourse-task/task.yml
-    attempts: 3
+    file: cf-deployment-concourse-tasks/run-cats/task.yml
     params:
+      FLAKE_ATTEMPTS: 3
       SKIP_REGEXP: routing.API|allows\spreviously-blocked\sip|Adding\sa\swildcard\sroute\sto\sa\sdomain|forwards\sapp\smessages\sto\sregistered\ssyslog\sdrains|uses\sa\sbuildpack\sfrom\sa\sgit\surl|when\sapp\shas\smultiple\sports\smapped
   on_success:
     put: slack
@@ -635,9 +626,6 @@ jobs:
     - get: cf-deployment
       passed: [acceptance-tests-staging]
       trigger: true
-    - get: cf-deployment-transition
-      passed: [acceptance-tests-staging]
-      trigger: true
     - get: cf-manifests
       passed: [acceptance-tests-staging]
       trigger: true
@@ -665,10 +653,10 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment-transition/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
-      - cf-manifests/bosh/opsfiles/consul-azs.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -693,6 +681,9 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/doppler.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
@@ -724,8 +715,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-deployment
-      passed: [plan-cf-production]
-    - get: cf-deployment-transition
       passed: [plan-cf-production]
     - get: cf-manifests
       passed: [plan-cf-production]
@@ -815,7 +804,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-production))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-production))
       CF_API_URL: ((cf-api-url-production))
-      GATEWAY_HOST: ((gateway-host-production))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-production))
 
 - name: tic-smoke-tests-production
@@ -864,8 +853,6 @@ jobs:
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
-    tags:
-    - iaas
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-production
       TERRAFORM_ACTION: plan
@@ -898,8 +885,6 @@ jobs:
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
-    tags:
-    - iaas
     params:
       <<: *tf-production
       TERRAFORM_ACTION: apply
@@ -961,23 +946,17 @@ resources:
     branch: master
     tag_filter: "v*"
 
-- name: cf-deployment-transition
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cf-deployment-transition
-    branch: master
-
 - name: cf-acceptance-tests
   type: git
   source:
     branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
-- name: cats-concourse-task
+- name: cf-deployment-concourse-tasks
   type: git
   source:
     branch: master
-    uri: https://github.com/cloudfoundry/cats-concourse-task.git
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
 - name: pipeline-tasks
   type: git

@@ -24,16 +24,6 @@
     networks:
     - name: default
     jobs:
-    - name: consul_agent
-      release: consul
-      consumes:
-        consul_common: {from: consul_common_link}
-        consul_server: nil
-        consul_client: {from: consul_client_link}
-      properties:
-        consul:
-          agent:
-            node_name_includes_id: true
     - name: cflinuxfs2-rootfs-setup
       release: cflinuxfs2
     - name: garden
@@ -157,7 +147,7 @@
     domain: bosh
 
 - type: replace
-  path: /instance_groups/name=diego-sandbox-cell/jobs/-
+  path: /instance_groups/name=diego-sandbox-cell/jobs/name=nfsv3driver?
   value:
     name: nfsv3driver
     release: nfs-volume
@@ -197,6 +187,6 @@
   path: /releases/name=mapfs?
   value:
     name: mapfs
-    sha1: 9dcea268d327caff76690229ac09f57a0c83cf65
-    url: https://bosh.io/d/github.com/cloudfoundry/mapfs-release?v=1.0.1
-    version: 1.0.1
+    sha1: 93f76ac84cb29b141d3f40c610857dedbd19c2ba
+    url: https://bosh.io/d/github.com/cloudfoundry/mapfs-release?v=1.1.1
+    version: 1.1.1
