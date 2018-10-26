@@ -62,6 +62,10 @@
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
         loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_metron.ca))"
+          cert: "((loggregator_tls_metron.certificate))"
+          key: "((loggregator_tls_metron.private_key))"
         tls:
           ca_cert: "((service_cf_internal_ca.certificate))"
           cert: "((diego_rep_agent_v2.certificate))"
@@ -72,7 +76,10 @@
     - name: cfdot
       release: diego
       properties:
-        tls: *cfdot_tls_client_properties
+        tls: &cfdot_tls_client_properties
+          ca_certificate: "((diego_rep_client.ca))"
+          certificate: "((diego_rep_client.certificate))"
+          private_key: "((diego_rep_client.private_key))"
     - name: route_emitter
       release: diego
       properties:
