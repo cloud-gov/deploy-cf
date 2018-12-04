@@ -169,3 +169,9 @@
   path: /instance_groups/name=diego-development-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
     enabled: true
+
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=cflinuxfs3-rootfs-setup/properties/cflinuxfs3-rootfs/trusted_certs
+  value: |
+    ((application_ca.certificate))
+    ((uaa_ca.certificate))
