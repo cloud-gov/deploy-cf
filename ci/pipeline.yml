@@ -275,6 +275,38 @@ jobs:
       username: {{slack-username}}
       icon_url: {{slack-icon-url}}
 
+- name: rotate-certs-development
+  plan:
+  - aggregate:
+    - get: cf-manifests
+      resource: cf-manifests-development
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      passed: [deploy-cf-development]
+      trigger: true
+    - get: master-bosh-root-cert
+  - task: smoke-tests
+    file: cf-manifests/ci/rotate-certs.yml
+    params:
+      CI: true
+      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      BOSH_ENVIRONMENT: {{development-bosh-target}}
+      BOSH_CLIENT: {{development-bosh-username}}
+      BOSH_CLIENT_SECRET: {{development-bosh-password}}
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+      CREDHUB_CA:
+      CREDHUB_API:
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: {{slack-channel}}
+      username: {{slack-username}}
+      icon_url: {{slack-icon-url}}
+
+
 - name: deploy-cf-staging
   serial_groups: [staging]
   serial: true
