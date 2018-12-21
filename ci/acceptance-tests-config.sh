@@ -12,6 +12,7 @@ cat > integration-config/integration_config.json <<EOF
   "include_container_networking": true,
   "include_service_discovery": true,
   "include_docker": true,
-  "skip_ssl_validation": false
+  "skip_ssl_validation": false,
+  "use_log_cache": false
 }
 EOF
