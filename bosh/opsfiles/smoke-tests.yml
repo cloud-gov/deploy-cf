@@ -13,17 +13,17 @@
 
 # Reuse existing org and space instead of creating a new one
 - type: replace
-  path: /instance_groups/name=smoke-tests/jobs/name=smoke-tests/properties/smoke_tests?/org
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/org
   value: cf_smoke_tests_org
 
 - type: replace
-  path: /instance_groups/name=smoke-tests/jobs/name=smoke-tests/properties/smoke_tests?/space
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/space
   value: cf_smoke_tests_space
 
 - type: replace
-  path: /instance_groups/name=smoke-tests/jobs/name=smoke-tests/properties/smoke_tests?/use_existing_org
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/use_existing_org
   value: true
 
 - type: replace
-  path: /instance_groups/name=smoke-tests/jobs/name=smoke-tests/properties/smoke_tests?/use_existing_space
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/use_existing_space
   value: true
