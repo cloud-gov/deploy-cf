@@ -116,3 +116,15 @@
 - type: replace
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=cflinuxfs2-rootfs-setup/properties?/cflinuxfs2-rootfs/trusted_certs
   value: *rds-ca
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs3-rootfs-setup/properties?/cflinuxfs3-rootfs/trusted_certs
+  value: *rds-ca
+
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs/name=cflinuxfs3-rootfs-setup/properties?/cflinuxfs3-rootfs/trusted_certs
+  value: *rds-ca
+
+- type: replace
+  path: /instance_groups/name=diego-sandbox-cell/jobs/name=cflinuxfs3-rootfs-setup/properties?/cflinuxfs3-rootfs/trusted_certs
+  value: *rds-ca
