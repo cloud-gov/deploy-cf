@@ -45,7 +45,6 @@ jobs:
       - cf-deployment/operations/experimental/add-deployment-updater.yml
       - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -314,7 +313,6 @@ jobs:
       - cf-deployment/operations/experimental/add-deployment-updater.yml
       - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -658,7 +656,6 @@ jobs:
       - cf-deployment/operations/experimental/add-deployment-updater.yml
       - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -1030,7 +1027,7 @@ resources:
 - name: cf-stemcell
   type: bosh-io-stemcell
   source:
-    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    name: bosh-aws-xen-hvm-ubuntu-xenial-go_agent
 
 - name: terraform-yaml-development
   type: s3-iam
