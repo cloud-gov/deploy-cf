@@ -3,5 +3,5 @@
 
 # Set global router timeout (request start to last byte sent) to 1800 seconds
 - type: replace
-  path: /instance_groups/name=router/jobs/name=gorouter/router/properties/request_timeout_in_seconds?
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/request_timeout_in_seconds?
   value: 1800
