@@ -10,3 +10,20 @@
 - type: replace
   path: /instance_groups/name=smoke-tests/vm_resources?/cpu
   value: 2
+
+# Reuse existing org and space instead of creating a new one
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/org
+  value: cf_smoke_tests_org
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/space
+  value: cf_smoke_tests_space
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/use_existing_org
+  value: true
+
+- type: replace
+  path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/use_existing_space
+  value: true
