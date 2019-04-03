@@ -30,7 +30,6 @@
         cflinuxfs2-rootfs:
           trusted_certs: |
             ((application_ca.certificate))
-            ((credhub_ca.certificate))
             ((uaa_ca.certificate))
     - name: cflinuxfs3-rootfs-setup
       release: cflinuxfs3
@@ -38,7 +37,6 @@
         cflinuxfs3-rootfs:
           trusted_certs: |
             ((application_ca.certificate))
-            ((credhub_ca.certificate))
             ((uaa_ca.certificate))
     - name: garden
       release: garden-runc
@@ -84,7 +82,6 @@
         containers:
           trusted_ca_certificates:
             - ((application_ca.certificate))
-            - ((credhub_ca.certificate))
             - ((uaa_ca.certificate))
         use_v2_tls: true
         loggregator: *diego_loggregator_client_properties
