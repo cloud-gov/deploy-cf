@@ -18,7 +18,7 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-development
-    - get: cf-stemcell
+    - get: cf-stemcell-xenial
       trigger: true
     - get: uaa-customized-release
       trigger: true
@@ -33,7 +33,7 @@ jobs:
       - uaa-customized-release/*.tgz
       - cg-s3-secureproxy-release/*.tgz
       stemcells:
-      - cf-stemcell/*.tgz
+      - cf-stemcell-xenial/*.tgz
       ops_files:
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
@@ -45,7 +45,6 @@ jobs:
       - cf-deployment/operations/experimental/add-deployment-updater.yml
       - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -292,7 +291,7 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-staging
-    - get: cf-stemcell
+    - get: cf-stemcell-xenial
       trigger: true
     - get: uaa-customized-release
       trigger: true
@@ -314,7 +313,6 @@ jobs:
       - cf-deployment/operations/experimental/add-deployment-updater.yml
       - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -521,7 +519,7 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [deploy-cf-staging]
-    - get: cf-stemcell
+    - get: cf-stemcell-xenial
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
       passed: [deploy-cf-staging]
@@ -577,7 +575,7 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [smoke-tests-staging]
-    - get: cf-stemcell
+    - get: cf-stemcell-xenial
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
       passed: [smoke-tests-staging]
@@ -634,7 +632,7 @@ jobs:
     - get: common-production
     - get: terraform-yaml
       resource: terraform-yaml-production
-    - get: cf-stemcell
+    - get: cf-stemcell-xenial
       passed: [acceptance-tests-staging]
       trigger: true
     - get: uaa-customized-release
@@ -658,7 +656,6 @@ jobs:
       - cf-deployment/operations/experimental/add-deployment-updater.yml
       - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/use-trusty-stemcell.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -724,7 +721,7 @@ jobs:
     - get: common-production
     - get: terraform-yaml
       resource: terraform-yaml-production
-    - get: cf-stemcell
+    - get: cf-stemcell-xenial
       passed: [plan-cf-production]
     - get: uaa-customized-release
       passed: [plan-cf-production]
@@ -1027,10 +1024,10 @@ resources:
     versioned_file: cf-production.yml
     region_name: {{aws-region}}
 
-- name: cf-stemcell
+- name: cf-stemcell-xenial
   type: bosh-io-stemcell
   source:
-    name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+    name: bosh-aws-xen-hvm-ubuntu-xenial-go_agent
 
 - name: terraform-yaml-development
   type: s3-iam
