@@ -70,6 +70,15 @@
     secret: ((sandbox-bot-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf_exporter?
+  value:
+    override: true
+    authorized-grant-types: client_credentials,refresh_token
+    authorities: cloud_controller.admin_read_only
+    scope: openid,cloud_controller.admin_read_only
+    secret: ((cf-exporter-client-secret))
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/firehose_exporter?
   value:
     override: true
