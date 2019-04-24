@@ -14,14 +14,6 @@
     networks:
     - name: default
     jobs:
-    - name: cflinuxfs2-rootfs-setup
-      release: cflinuxfs2
-      properties:
-        cflinuxfs2-rootfs:
-          trusted_certs: |
-            ((application_ca.certificate))
-            ((credhub_ca.certificate))
-            ((uaa_ca.certificate))
     - name: cflinuxfs3-rootfs-setup
       release: cflinuxfs3
       properties:
@@ -43,7 +35,7 @@
           deny_networks:
           - 0.0.0.0/0
           persistent_image_list:
-          - "/var/vcap/packages/cflinuxfs2/rootfs.tar"
+          - "/var/vcap/packages/cflinuxfs3/rootfs.tar"
           network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
           network_plugin_extra_args:
           - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
@@ -62,7 +54,6 @@
               client_cert: "((diego_bbs_client.certificate))"
               client_key: "((diego_bbs_client.private_key))"
             preloaded_rootfses:
-            - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
             - cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar
             require_tls: true
             ca_cert: "((service_cf_internal_ca.certificate))"
