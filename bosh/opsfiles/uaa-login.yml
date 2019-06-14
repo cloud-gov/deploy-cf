@@ -16,7 +16,8 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/authentication?/policy
   value:
     lockoutAfterFailures: 3
-    countFailuresWithinSeconds: 3600
+    countFailuresWithinSeconds: 900
+    locoutPeriodSeconds: 1800
 
 # Expire cookies after 15 minutes per FedRAMP requirement
 # also set cookie as secure, and http only
