@@ -1,0 +1,12 @@
+# to rotate cert use bosh interpolate locally, using this file as an argument, then append this key to the map for uaa saml keys and deploy.
+- path: /variables/-
+  type: replace
+  value:
+    name: uaa_service_provider_ssl_key_2
+    options:
+      alternative_names:
+      - ((system_domain))
+      ca: default_ca
+      common_name: ((system_domain))
+    type: certificate
+
