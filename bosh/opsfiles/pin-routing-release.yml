@@ -1,3 +1,6 @@
+# Remove this file once issues here: 
+# https://cloudfoundry.slack.com/archives/CFX13JK7B/p1564068847018600
+# are resolved
 - type: replace
   path: /releases/name=routing?
   value:
