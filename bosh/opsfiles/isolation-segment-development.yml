@@ -61,9 +61,9 @@
         enable_declarative_healthcheck: true
         loggregator: &diego_loggregator_client_properties
           use_v2_api: true
-          ca_cert: "((loggregator_tls_metron.ca))"
-          cert: "((loggregator_tls_metron.certificate))"
-          key: "((loggregator_tls_metron.private_key))"
+          ca_cert: "((loggregator_tls_agent.ca))"
+          cert: "((loggregator_tls_agent.certificate))"
+          key: "((loggregator_tls_agent.private_key))"
         tls:
           ca_cert: "((service_cf_internal_ca.certificate))"
           cert: "((diego_rep_agent_v2.certificate))"
