@@ -10,7 +10,7 @@
 
 # Copy original diego-cell from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
 - type: remove
-  path: /instance_groups/name=diego-sandbox-cell/
+  path: /instance_groups/name=diego-sandbox-cell
 
 # Add sandbox cells to DNS aliases
 - type: remove
