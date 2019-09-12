@@ -1,15 +1,15 @@
-- type: replace
+- type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/volume_services_enabled?
   value: true
-- type: replace
+- type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/volume_services_enabled?
   value: true
-- type: replace
+- type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/volume_services_enabled?
   value: true
 
 # Copy original diego-cell from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
-- type: replace
+- type: remove
   path: /instance_groups/-
   value:
     name: diego-sandbox-cell
@@ -142,12 +142,12 @@
         vpa: {from: vpa-sandbox}
 
 # Set sandbox cell placement tag
-- type: replace
+- type: remove
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
   value: volume
 
 # Add sandbox cells to DNS aliases
-- type: replace
+- type: remove
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
   value:
     query: '_'
@@ -157,7 +157,7 @@
     domain: bosh
 
 # Add nfs server to DNS aliases
-- type: replace
+- type: remove
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=nfstestserver.service.cf.internal?/targets/-
   value:
     query: '*'
@@ -166,7 +166,7 @@
     network: services
     domain: bosh
 
-- type: replace
+- type: remove
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=nfsv3driver?
   value:
     name: nfsv3driver
@@ -174,7 +174,7 @@
     properties: {}
 
 # Enable service discovery
-- type: replace
+- type: remove
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=bosh-dns-adapter?
   value:
     name: bosh-dns-adapter
@@ -185,25 +185,25 @@
         server:
           ca: ((cf_app_sd_ca.certificate))
     release: cf-networking
-- type: replace
+- type: remove
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
     enabled: true
 
 # Required by NFS Volume Services 1.3.1 and higher
-- type: replace
+- type: remove
   path: /instance_groups/name=diego-sandbox-cell/jobs/name=mapfs?
   value:
     name: mapfs
     release: mapfs
 
-- type: replace
+- type: remove
   path: /releases/name=nfs-volume?
   value:
     name: nfs-volume
     version: latest
 
-- type: replace
+- type: remove
   path: /releases/name=mapfs?
   value:
     name: mapfs
