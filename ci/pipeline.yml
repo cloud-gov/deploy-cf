@@ -8,8 +8,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
-    - get: cf-deployment-transition
-      trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
       resource: cf-manifests-development
@@ -62,6 +60,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/isolation-segment-development.yml
+      - cf-manifests/bosh/opsfiles/disable-instance-identity.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
@@ -281,8 +281,6 @@ jobs:
   - aggregate:
     - get: master-bosh-root-cert
     - get: cf-deployment
-      trigger: true
-    - get: cf-deployment-transition
       trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
@@ -973,7 +971,7 @@ resources:
   type: git
   source:
     uri: {{cf-manifests-git-url}}
-    branch: {{cf-manifests-git-branch-development}}
+    branch: vpc-isolation-segments
     paths:
     - ci/*
     - bosh/*

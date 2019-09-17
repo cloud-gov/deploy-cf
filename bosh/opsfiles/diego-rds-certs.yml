@@ -100,3 +100,7 @@
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/containers?/trusted_ca_certificates/-
   value: *rds-ca
+
+- type: replace
+  path: /instance_groups/name=diego-development-cell/jobs/name=rep/properties/containers?/trusted_ca_certificates/-
+  value: *rds-ca

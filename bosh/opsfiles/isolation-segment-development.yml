@@ -2,7 +2,7 @@
 - type: replace
   path: /instance_groups/-
   value:
-    name: diego-platform-cell
+    name: diego-development-cell
     azs:
     - z1
     - z2
@@ -12,7 +12,7 @@
     - 100GB_ephemeral_disk
     stemcell: default
     networks:
-    - name: default
+    - name: development-default
     jobs:
     - name: cflinuxfs3-rootfs-setup
       release: cflinuxfs3
@@ -25,12 +25,10 @@
       release: garden-runc
       properties:
         garden:
-          containerd_mode: true
           cleanup_process_dirs_on_wait: true
           debug_listen_address: 127.0.0.1:17019
           default_container_grace_time: 0
           destroy_containers_on_start: true
-          graph_cleanup_threshold_in_mb: 0
           deny_networks:
           - 0.0.0.0/0
           persistent_image_list:
@@ -38,6 +36,11 @@
           network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
           network_plugin_extra_args:
           - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
+        grootfs:
+          reserved_space_for_other_jobs_in_mb: 15360
+        logging:
+          format:
+            timestamp: "rfc3339"
     - name: rep
       release: diego
       properties:
@@ -48,29 +51,26 @@
             instance_identity_ca_cert: ((diego_instance_identity_ca.certificate))
             instance_identity_key: ((diego_instance_identity_ca.private_key))
           rep:
-            bbs: &diego_bbs_client_properties
-              ca_cert: "((diego_bbs_client.ca))"
-              client_cert: "((diego_bbs_client.certificate))"
-              client_key: "((diego_bbs_client.private_key))"
             preloaded_rootfses:
             - cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar
-            require_tls: true
-            ca_cert: "((service_cf_internal_ca.certificate))"
-            server_cert: "((diego_rep_agent_v2.certificate))"
-            server_key: "((diego_rep_agent_v2.private_key))"
-            enable_legacy_api_endpoints: false
-            locket:
-              api_location: "locket.service.cf.internal:8891"
         containers:
           trusted_ca_certificates:
             - ((application_ca.certificate))
             - ((uaa_ca.certificate))
-        use_v2_tls: true
-        loggregator: *diego_loggregator_client_properties
+        enable_consul_service_registration: false
+        enable_declarative_healthcheck: true
+        loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_agent.ca))"
+          cert: "((loggregator_tls_agent.certificate))"
+          key: "((loggregator_tls_agent.private_key))"
         tls:
           ca_cert: "((service_cf_internal_ca.certificate))"
           cert: "((diego_rep_agent_v2.certificate))"
           key: "((diego_rep_agent_v2.private_key))"
+        logging:
+          format:
+            timestamp: "rfc3339"
     - name: cfdot
       release: diego
       properties:
@@ -81,11 +81,9 @@
     - name: route_emitter
       release: diego
       properties:
-        loggregator: &diego_loggregator_client_properties
-          use_v2_api: true
-          ca_cert: "((loggregator_tls_agent.ca))"
-          cert: "((loggregator_tls_agent.certificate))"
-          key: "((loggregator_tls_agent.private_key))"
+        bpm:
+          enabled: true
+        loggregator: *diego_loggregator_client_properties
         diego:
           route_emitter:
             local_mode: true
@@ -111,7 +109,7 @@
     - name: vxlan-policy-agent
       release: silk
       provides:
-        vpa: {as: vpa-platform}
+        vpa: {as: vpa-development}
       properties:
         ca_cert: ((network_policy_ca.certificate))
         client_cert: ((network_policy_client.certificate))
@@ -119,7 +117,7 @@
     - name: silk-daemon
       release: silk
       consumes:
-        vpa: {from: vpa-platform}
+        vpa: {from: vpa-development}
       properties:
         ca_cert: ((silk_ca.certificate))
         client_cert: ((silk_daemon.certificate))
@@ -127,40 +125,37 @@
     - name: silk-cni
       release: silk
       consumes:
-        vpa: {from: vpa-platform}
-
-# Set platform cell instance profile and placement tag
+        vpa: {from: vpa-development}
+      properties:
+        dns_servers:
+        - 169.254.0.2
+# Set development cell instance profile and placement tag
 - type: replace
-  path: /instance_groups/name=diego-platform-cell/vm_extensions/-
-  value: diego-platform-cell-profile
-- type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
-  value: platform
+  path: /instance_groups/name=diego-development-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
+  value: development
 
 # Use distinct vxlan policy links for tenant cells
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/provides?/vpa
   value: {as: vpa-tenant}
+
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=silk-daemon/consumes?/vpa
   value: {from: vpa-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=silk-cni/consumes?/vpa
-  value: {from: vpa-tenant}
 
-# Add platform cells to DNS aliases
+# Add development cells to DNS aliases
 - type: replace
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
   value:
     query: '_'
-    instance_group: diego-platform-cell
+    instance_group: diego-development-cell
     deployment: ((deployment_name))
-    network: ((network_name))
+    network: development-default
     domain: bosh
 
 # Enable service discovery
 - type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=bosh-dns-adapter?
+  path: /instance_groups/name=diego-development-cell/jobs/name=bosh-dns-adapter?
   value:
     name: bosh-dns-adapter
     properties:
@@ -171,6 +166,12 @@
           ca: ((cf_app_sd_ca.certificate))
     release: cf-networking
 - type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
+  path: /instance_groups/name=diego-development-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
     enabled: true
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs3-rootfs-setup/properties/cflinuxfs3-rootfs/trusted_certs
+  value: |
+    ((application_ca.certificate))
+    ((uaa_ca.certificate))
