@@ -4,7 +4,7 @@ jobs:
   serial_groups: [development]
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
@@ -108,7 +108,7 @@ jobs:
 
 - name: terraform-plan-development
   plan:
-  - aggregate:
+  - in_parallel:
     - get: terraform-templates
       resource: terraform-config-development
       trigger: true
@@ -139,7 +139,7 @@ jobs:
 
 - name: terraform-apply-development
   plan:
-  - aggregate:
+  - in_parallel:
     - get: terraform-templates
       resource: terraform-config-development
       passed: [terraform-plan-development]
@@ -153,7 +153,7 @@ jobs:
 - name: smoke-tests-development
   serial_groups: [development]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
@@ -193,7 +193,7 @@ jobs:
 
 - name: uaa-smoke-tests-development
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
       passed: [deploy-cf-development]
     - get: cf-deployment-development
@@ -215,7 +215,7 @@ jobs:
 
 - name: uaa-client-audit-development
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment
       passed: [deploy-cf-development]
     - get: cf-manifests
@@ -238,7 +238,7 @@ jobs:
 
 - name: tic-smoke-tests-development
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-manifests
       resource: cf-manifests-development
       passed: [deploy-cf-development]
@@ -278,7 +278,7 @@ jobs:
   serial_groups: [staging]
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
@@ -377,7 +377,7 @@ jobs:
 
 - name: uaa-smoke-tests-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
@@ -399,7 +399,7 @@ jobs:
 
 - name: uaa-client-audit-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment
       passed: [deploy-cf-staging]
     - get: cf-manifests
@@ -421,7 +421,7 @@ jobs:
 
 - name: tic-smoke-tests-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-manifests
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
@@ -460,7 +460,7 @@ jobs:
 
 - name: terraform-plan-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: terraform-templates
       resource: terraform-config-staging-production
       trigger: true
@@ -491,7 +491,7 @@ jobs:
 
 - name: terraform-apply-staging
   plan:
-  - aggregate:
+  - in_parallel:
     - get: terraform-templates
       resource: terraform-config-staging-production
       passed: [terraform-plan-staging]
@@ -505,7 +505,7 @@ jobs:
 - name: smoke-tests-staging
   serial_groups: [staging]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
@@ -563,7 +563,7 @@ jobs:
 - name: acceptance-tests-staging
   serial_groups: [staging]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment-concourse-tasks
     - get: cf-acceptance-tests
     - get: cf-deployment-staging
@@ -620,7 +620,7 @@ jobs:
   serial_groups: [production]
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-deployment
@@ -711,7 +711,7 @@ jobs:
   serial_groups: [production]
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: master-bosh-root-cert
     - get: pipeline-tasks
     - get: cf-deployment
@@ -765,7 +765,7 @@ jobs:
 
 - name: uaa-smoke-tests-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
       passed: [deploy-cf-production]
     - get: cf-deployment-production
@@ -787,7 +787,7 @@ jobs:
 
 - name: uaa-client-audit-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-deployment
       passed: [deploy-cf-production]
     - get: cf-manifests
@@ -809,7 +809,7 @@ jobs:
 
 - name: tic-smoke-tests-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: cf-manifests
       passed: [deploy-cf-production]
     - get: cf-deployment-production
@@ -846,7 +846,7 @@ jobs:
 
 - name: terraform-plan-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: terraform-templates
       resource: terraform-config-staging-production
       passed: [acceptance-tests-staging]
@@ -878,7 +878,7 @@ jobs:
 
 - name: terraform-apply-production
   plan:
-  - aggregate:
+  - in_parallel:
     - get: terraform-templates
       resource: terraform-config-staging-production
       passed: [terraform-plan-production]
@@ -892,7 +892,7 @@ jobs:
 - name: smoke-tests-production
   serial_groups: [production]
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
