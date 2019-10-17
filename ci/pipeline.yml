@@ -8,8 +8,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
-    - get: cf-deployment-transition
-      trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
       resource: cf-manifests-development
@@ -40,8 +38,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment/operations/experimental/add-deployment-updater.yml
-      - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
@@ -60,6 +56,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/isolation-segment-development.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
@@ -279,8 +276,6 @@ jobs:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
-    - get: cf-deployment-transition
-      trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
@@ -305,8 +300,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment/operations/experimental/add-deployment-updater.yml
-      - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
@@ -646,8 +639,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment/operations/experimental/add-deployment-updater.yml
-      - cf-deployment/operations/experimental/add-deployment-updater-external-db.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
@@ -673,6 +664,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/doppler.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
