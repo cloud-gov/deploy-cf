@@ -14,8 +14,6 @@ jobs:
     - get: cf-manifests
       resource: cf-manifests-development
       trigger: true
-    - get: common-development
-      trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-development
     - get: cf-stemcell-xenial
@@ -75,7 +73,6 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
-      - common-development/cf-development.yml
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -287,8 +284,6 @@ jobs:
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
-    - get: common-staging
-      trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-staging
     - get: cf-stemcell-xenial
@@ -344,7 +339,6 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
-      - common-staging/cf-staging.yml
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
     params:
@@ -629,7 +623,6 @@ jobs:
     - get: cf-manifests
       passed: [acceptance-tests-staging]
       trigger: true
-    - get: common-production
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cf-stemcell-xenial
@@ -687,7 +680,6 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
-      - common-production/cf-production.yml
   on_success:
     put: slack
     params:
@@ -718,7 +710,6 @@ jobs:
       passed: [plan-cf-production]
     - get: cf-manifests
       passed: [plan-cf-production]
-    - get: common-production
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cf-stemcell-xenial
@@ -1002,27 +993,6 @@ resources:
     branch: ((cf-manifests-git-branch-production))
     paths:
     - terraform/*
-
-- name: common-development
-  type: s3-iam
-  source:
-    bucket: ((cf-private-bucket))
-    versioned_file: cf-development.yml
-    region_name: ((aws-region))
-
-- name: common-staging
-  type: s3-iam
-  source:
-    bucket: ((cf-private-bucket))
-    versioned_file: cf-staging.yml
-    region_name: ((aws-region))
-
-- name: common-production
-  type: s3-iam
-  source:
-    bucket: ((cf-private-bucket))
-    versioned_file: cf-production.yml
-    region_name: ((aws-region))
 
 - name: cf-stemcell-xenial
   type: bosh-io-stemcell
