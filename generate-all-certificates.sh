@@ -2,7 +2,6 @@
 
 set -e
 
-go get -v github.com/square/certstrap
 RED='\033[0;31m'
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -21,6 +20,8 @@ then
   "
   exit
 fi
+
+go get -v github.com/square/certstrap
 
 local_ca_cert_name='cloud-foundry'
 depot_path="all-cf-certs"
