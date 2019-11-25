@@ -955,7 +955,7 @@ resources:
   type: git
   source:
     uri: ((cf-manifests-git-url))
-    branch: vpc-isolation-segments
+    branch: master
     paths:
     - ci/*
     - bosh/*
