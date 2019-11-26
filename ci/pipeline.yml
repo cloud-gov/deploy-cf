@@ -64,7 +64,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/doppler.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
