@@ -3,7 +3,7 @@
   value: 6
 - type: replace
   path: /instance_groups/name=router/instances
-  value: 3
+  value: 5
 - type: replace
   path: /instance_groups/name=diego-cell/instances
   value: 12
