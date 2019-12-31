@@ -6,11 +6,12 @@ jobs:
   plan:
   - in_parallel:
     - get: master-bosh-root-cert
+      trigger: true
     - get: cf-deployment
       trigger: true
     - get: pipeline-tasks
     - get: cf-manifests
-      resource: cf-manifests-development
+      resource: cf-manifests
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-development
@@ -103,7 +104,7 @@ jobs:
   plan:
   - in_parallel:
     - get: terraform-templates
-      resource: terraform-config-development
+      resource: terraform-config
       trigger: true
     - get: pipeline-tasks
   - task: terraform-plan
@@ -134,8 +135,9 @@ jobs:
   plan:
   - in_parallel:
     - get: terraform-templates
-      resource: terraform-config-development
+      resource: terraform-config
       passed: [terraform-plan-development]
+      trigger: true
     - get: pipeline-tasks
   - task: terraform-apply
     file: terraform-templates/terraform/terraform-apply.yml
@@ -150,10 +152,25 @@ jobs:
     - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
-      passed: [deploy-cf-development]
-    - get: cf-deployment-development
-      passed: [deploy-cf-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
       trigger: true
+    - get: cf-deployment-development
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cf-stemcell-xenial
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cf-manifests
+      trigger: true
+    - get: uaa-customized-release
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
   - task: run-errand
     file: pipeline-tasks/bosh-errand.yml
     attempts: 3
@@ -188,10 +205,28 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline-tasks
-      passed: [deploy-cf-development]
-    - get: cf-deployment-development
+    - get: common
+      resource: master-bosh-root-cert
       passed: [deploy-cf-development]
       trigger: true
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-xenial
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-development]
   - task: smoke-tests
     file: pipeline-tasks/uaa-smoke-tests.yml
     params:
@@ -212,7 +247,6 @@ jobs:
     - get: cf-deployment
       passed: [deploy-cf-development]
     - get: cf-manifests
-      resource: cf-manifests-development
       passed: [deploy-cf-development]
     - get: cf-deployment-development
       passed: [deploy-cf-development]
@@ -232,13 +266,27 @@ jobs:
 - name: tic-smoke-tests-development
   plan:
   - in_parallel:
-    - get: cf-manifests
-      resource: cf-manifests-development
-      passed: [deploy-cf-development]
-    - get: cf-deployment-development
+    - get: master-bosh-root-cert
       passed: [deploy-cf-development]
       trigger: true
-    - get: master-bosh-root-cert
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-xenial
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-development]
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
@@ -275,17 +323,25 @@ jobs:
     - get: master-bosh-root-cert
     - get: cf-deployment
       trigger: true
+      passed: [smoke-tests-development]
+    - get: cf-deployment-development
+      trigger: true
+      passed: [smoke-tests-development]
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
+      passed: [smoke-tests-development]
     - get: terraform-yaml
       resource: terraform-yaml-staging
     - get: cf-stemcell-xenial
       trigger: true
+      passed: [smoke-tests-development]
     - get: uaa-customized-release
       trigger: true
+      passed: [smoke-tests-development]
     - get: cg-s3-secureproxy-release
       trigger: true
+      passed: [smoke-tests-development]
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-staging
@@ -448,8 +504,10 @@ jobs:
   plan:
   - in_parallel:
     - get: terraform-templates
-      resource: terraform-config-staging-production
+      resource: terraform-config
+    
       trigger: true
+      passed: [terraform-apply-development]
     - get: pipeline-tasks
   - task: terraform-plan
     file: terraform-templates/terraform/terraform-apply.yml
@@ -479,7 +537,8 @@ jobs:
   plan:
   - in_parallel:
     - get: terraform-templates
-      resource: terraform-config-staging-production
+      resource: terraform-config
+    
       passed: [terraform-plan-staging]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -513,7 +572,8 @@ jobs:
       passed: [deploy-cf-staging]
     - get: tests-timer
       trigger: true
-    - get: terraform-config-staging-production
+    - get: terraform-config
+  
       passed: [terraform-apply-staging]
       trigger: true
   - task: run-errand
@@ -567,7 +627,8 @@ jobs:
       passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [smoke-tests-staging]
-    - get: terraform-config-staging-production
+    - get: terraform-config
+  
       passed: [smoke-tests-staging]
   - task: test-config
     file: cf-manifests/ci/acceptance-tests-config.yml
@@ -829,7 +890,8 @@ jobs:
   plan:
   - in_parallel:
     - get: terraform-templates
-      resource: terraform-config-staging-production
+      resource: terraform-config
+    
       passed: [acceptance-tests-staging]
       trigger: true
     - get: pipeline-tasks
@@ -861,7 +923,8 @@ jobs:
   plan:
   - in_parallel:
     - get: terraform-templates
-      resource: terraform-config-staging-production
+      resource: terraform-config
+    
       passed: [terraform-plan-production]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -950,15 +1013,6 @@ resources:
   source:
     url: ((slack-webhook-url))
 
-- name: cf-manifests-development
-  type: git
-  source:
-    uri: ((cf-manifests-git-url))
-    branch: master
-    paths:
-    - ci/*
-    - bosh/*
-
 - name: cf-manifests
   type: git
   source:
@@ -968,15 +1022,7 @@ resources:
     - ci/*
     - bosh/*
 
-- name: terraform-config-development
-  type: git
-  source:
-    uri: ((cf-manifests-git-url))
-    branch: ((cf-manifests-git-branch-development))
-    paths:
-    - terraform/*
-
-- name: terraform-config-staging-production
+- name: terraform-config
   type: git
   source:
     uri: ((cf-manifests-git-url))
