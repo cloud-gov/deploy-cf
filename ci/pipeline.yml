@@ -538,7 +538,7 @@ jobs:
   - in_parallel:
     - get: terraform-templates
       resource: terraform-config
-    
+      trigger: true
       passed: [terraform-plan-staging]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -554,26 +554,28 @@ jobs:
     - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
+      trigger: true
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
       passed: [deploy-cf-staging]
       trigger: true
-    # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
       passed: [deploy-cf-staging]
       trigger: true
     - get: cf-deployment
+      trigger: true
       passed: [deploy-cf-staging]
     - get: cf-stemcell-xenial
+      trigger: true
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
+      trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
     - get: tests-timer
       trigger: true
     - get: terraform-config
-  
       passed: [terraform-apply-staging]
       trigger: true
   - task: run-errand
@@ -620,15 +622,19 @@ jobs:
       passed: [smoke-tests-staging]
       trigger: true
     - get: cf-deployment
+      trigger: true
       passed: [smoke-tests-staging]
     - get: cf-stemcell-xenial
+      trigger: true
       passed: [smoke-tests-staging]
     - get: uaa-customized-release
+      trigger: true
       passed: [smoke-tests-staging]
     - get: cg-s3-secureproxy-release
+      trigger: true
       passed: [smoke-tests-staging]
     - get: terraform-config
-  
+      trigger: true
       passed: [smoke-tests-staging]
   - task: test-config
     file: cf-manifests/ci/acceptance-tests-config.yml
