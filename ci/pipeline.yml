@@ -149,7 +149,6 @@ jobs:
   serial_groups: [development]
   plan:
   - in_parallel:
-    - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
       passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
@@ -172,16 +171,28 @@ jobs:
       trigger: true
       passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
   - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
     attempts: 3
     params:
-      BOSH_TARGET: ((development-bosh-target))
-      BOSH_USERNAME: ((development-bosh-username))
-      BOSH_PASSWORD: ((development-bosh-password))
-      BOSH_DEPLOYMENT_NAME: cf-development
-      BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/master-bosh.crt
-      BOSH_FLAGS: "--keep-alive"
+      BOSH_ENVIRONMENT: ((bosh.development.environment))
+      BOSH_CLIENT: ((bosh.development.client))
+      BOSH_CLIENT_SECRET: ((bosh.development.client-secret))
+      BOSH_DEPLOYMENT: ((cf.development.name))
+      BOSH_ERRAND: ((cf.development.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: &smoke-tests-errand
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+        - name: common
+      run:
+        path: /bin/bash
+        args:
+        - -euxc
+        - | 
+          bosh run-errand smoke-tests
   on_success:
     put: slack
     params:
@@ -551,7 +562,6 @@ jobs:
   serial_groups: [staging]
   plan:
   - in_parallel:
-    - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
       trigger: true
@@ -579,16 +589,15 @@ jobs:
       passed: [terraform-apply-staging]
       trigger: true
   - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
     attempts: 3
     params:
-      BOSH_TARGET: ((staging-bosh-target))
-      BOSH_USERNAME: ((staging-bosh-username))
-      BOSH_PASSWORD: ((staging-bosh-password))
-      BOSH_DEPLOYMENT_NAME: cf-staging
-      BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/master-bosh.crt
-      BOSH_FLAGS: "--keep-alive"
+      BOSH_ENVIRONMENT: ((bosh.staging.environment))
+      BOSH_CLIENT: ((bosh.staging.client))
+      BOSH_CLIENT_SECRET: ((bosh.staging.client-secret))
+      BOSH_DEPLOYMENT: ((cf.staging.name))
+      BOSH_ERRAND: ((cf.staging.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: *smoke-tests-errand
   on_success:
     put: slack
     params:
@@ -943,7 +952,6 @@ jobs:
   serial_groups: [production]
   plan:
   - in_parallel:
-    - get: pipeline-tasks
     - get: common
       resource: master-bosh-root-cert
       passed: [deploy-cf-production]
@@ -952,16 +960,15 @@ jobs:
     - get: tests-timer
       trigger: true
   - task: run-errand
-    file: pipeline-tasks/bosh-errand.yml
     attempts: 3
     params:
-      BOSH_TARGET: ((production-bosh-target))
-      BOSH_USERNAME: ((production-bosh-username))
-      BOSH_PASSWORD: ((production-bosh-password))
-      BOSH_DEPLOYMENT_NAME: cf-production
-      BOSH_ERRAND: smoke_tests
-      BOSH_CACERT: common/master-bosh.crt
-      BOSH_FLAGS: "--keep-alive"
+      BOSH_ENVIRONMENT: ((bosh.production.environment))
+      BOSH_CLIENT: ((bosh.production.client))
+      BOSH_CLIENT_SECRET: ((bosh.production.client-secret))
+      BOSH_DEPLOYMENT: ((cf.production.name))
+      BOSH_ERRAND: ((cf.production.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: *smoke-tests-errand
   on_success:
     put: slack
     params:
@@ -1074,11 +1081,11 @@ resources:
 - name: cf-deployment-staging
   type: bosh-deployment
   source:
-    target: ((staging-bosh-target))
-    client: ((staging-bosh-client))
-    client_secret: ((staging-bosh-client-secret))
+    target: ((bosh.staging.environment))
+    client: ((bosh.staging.client))
+    client_secret: ((bosh.staging.client-secret))
     ca_cert: ((bosh-ca-cert))
-    deployment: cf-staging
+    deployment: ((cf.staging.name))
 
 - name: cf-deployment-production
   type: bosh-deployment
