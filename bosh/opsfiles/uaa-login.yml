@@ -30,5 +30,5 @@
 
 # disable self-service user management.
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/login/self_service_links_enabled
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/login?/self_service_links_enabled?
   value: false
