@@ -29,6 +29,7 @@
     max-age: 900
 
 # disable self-service user management.
+# this is currently broken but leaving so it's explicitly set, this is the default.
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/login?/self_service_links_enabled?
-  value: false
+  value: true
