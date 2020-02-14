@@ -9,7 +9,7 @@
   value: 20
 - type: replace
   path: /instance_groups/name=doppler/instances
-  value: 7
+  value: 8
 - type: replace
   path: /instance_groups/name=log-api/instances
-  value: 4
+  value: 5
