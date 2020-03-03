@@ -1,0 +1,9 @@
+#This OPS file removes the *.uaa and *.login URIs from the cf-deployment.yml base as CG does not use those URIs
+- type: remove
+  path: /instance_groups/name=uaa/jobs/name=route_registrar/properties/route_registrar/routes/0/uris
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=route_registrar/properties/route_registrar/routes/0/uris?
+  value:
+    - uaa.((system_domain))
+    - login.((system_domain))
