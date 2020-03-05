@@ -1,15 +1,74 @@
+# nats
+- type: replace
+  path: /instance_groups/name=nats/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=nats/vm_type
+  value: m4.large
+
+# adapter
+- type: replace
+  path: /instance_groups/name=adapter/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=adapter/vm_type
+  value: m4.large
+
+# diego-api
+- type: replace
+  path: /instance_groups/name=diego-api/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=diego-api/vm_type
+  value: m4.large
+
+# uaa
+- type: replace
+  path: /instance_groups/name=uaa/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=uaa/vm_type
+  value: m4.large
+
+# capi
 - type: replace
   path: /instance_groups/name=api/instances
   value: 6
 - type: replace
+  path: /instance_groups/name=api/vm_type
+  value: m4.large
+
+# gorouters
+- type: replace
   path: /instance_groups/name=router/instances
   value: 5
+- type: replace
+  path: /instance_groups/name=router/vm_type
+  value: m4.large
+
+# diego platform (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/instances
   value: 20
 - type: replace
+  path: /instance_groups/name=diego-cell/vm_type
+  value: r4.xlarge
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/vm_type
+  value: r4.xlarge
+
+# doppler
+- type: replace
   path: /instance_groups/name=doppler/instances
   value: 8
 - type: replace
+  path: /instance_groups/name=doppler/vm_type
+  value: m4.large
+
+# log-api
+- type: replace
   path: /instance_groups/name=log-api/instances
   value: 5
+- type: replace
+  path: /instance_groups/name=doppler/vm_type
+  value: m4.large
