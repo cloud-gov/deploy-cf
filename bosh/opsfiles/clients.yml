@@ -183,11 +183,11 @@
     authorities: uaa.none
     access-token-validity: 600
     refresh-token-validity: 259200
-    name: "Dashboard BETA (Stratos)"
+    name: "Dashboard (Stratos)"
     autoapprove: true
     show-on-homepage: false
-    app-launch-url: https://dashboard-beta.((system_domain))
-    redirect-uri: https://dashboard-beta.((system_domain))/pp/v1/auth/sso_login_callback
+    app-launch-url: https://dashboard.((system_domain))
+    redirect-uri: https://dashboard.((system_domain))/pp/v1/auth/sso_login_callback
     secret: ((stratos-client-secret))
 
 # Update existing clients
