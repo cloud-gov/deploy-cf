@@ -1,7 +1,7 @@
 # nats
 - type: replace
   path: /instance_groups/name=nats/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=nats/vm_type
   value: m4.large
