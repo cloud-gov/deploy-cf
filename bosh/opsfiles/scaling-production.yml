@@ -1,7 +1,7 @@
 # nats
 - type: replace
   path: /instance_groups/name=nats/instances
-  value: 2
+  value: 3
 - type: replace
   path: /instance_groups/name=nats/vm_type
   value: m4.large
@@ -17,7 +17,7 @@
 # diego-api
 - type: replace
   path: /instance_groups/name=diego-api/instances
-  value: 2
+  value: 3
 - type: replace
   path: /instance_groups/name=diego-api/vm_type
   value: m4.large
@@ -25,7 +25,7 @@
 # uaa
 - type: replace
   path: /instance_groups/name=uaa/instances
-  value: 2
+  value: 4
 - type: replace
   path: /instance_groups/name=uaa/vm_type
   value: m4.large
@@ -49,7 +49,7 @@
 # diego platform (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/instances
-  value: 20
+  value: 25
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
   value: r4.xlarge
@@ -60,7 +60,7 @@
 # doppler
 - type: replace
   path: /instance_groups/name=doppler/instances
-  value: 8
+  value: 10
 - type: replace
   path: /instance_groups/name=doppler/vm_type
   value: m4.large
@@ -68,7 +68,7 @@
 # log-api
 - type: replace
   path: /instance_groups/name=log-api/instances
-  value: 5
+  value: 7
 - type: replace
   path: /instance_groups/name=doppler/vm_type
   value: m4.large
