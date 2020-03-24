@@ -4,7 +4,7 @@
   value: 2
 - type: replace
   path: /instance_groups/name=nats/vm_type
-  value: m4.large
+  value: t3.medium
 
 # adapter
 - type: replace
@@ -12,39 +12,39 @@
   value: 2
 - type: replace
   path: /instance_groups/name=adapter/vm_type
-  value: m4.large
+  value: t3.medium
 
 # diego-api
 - type: replace
   path: /instance_groups/name=diego-api/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=diego-api/vm_type
-  value: m4.large
+  value: t3.large
 
 # uaa
 - type: replace
   path: /instance_groups/name=uaa/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=uaa/vm_type
-  value: m4.large
+  value: t3.large
 
 # capi
 - type: replace
   path: /instance_groups/name=api/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=api/vm_type
-  value: m4.large
+  value: t3.large
 
 # capi worker
 - type: replace
   path: /instance_groups/name=cc-worker/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=cc-worker/vm_type
-  value: m4.large
+  value: t3.medium
 
 # gourouters
 - type: replace
@@ -52,7 +52,7 @@
   value: 2
 - type: replace
   path: /instance_groups/name=router/vm_type
-  value: m4.large
+  value: t3.medium
 
 # scheduler
 - type: replace
@@ -68,7 +68,7 @@
   value: 2
 - type: replace
   path: /instance_groups/name=doppler/vm_type
-  value: m4.large
+  value: t3.xlarge
 
 # log-api
 - type: replace
@@ -76,12 +76,12 @@
   value: 1
 - type: replace
   path: /instance_groups/name=log-api/vm_type
-  value: m4.large
+  value: t3.xlarge
 
 # diego (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
-  value: m4.large
+  value: c5.2xlarge
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
-  value: m4.large
+  value: c5.2xlarge
