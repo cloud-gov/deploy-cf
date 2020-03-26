@@ -63,7 +63,7 @@
   value: 10
 - type: replace
   path: /instance_groups/name=doppler/vm_type
-  value: m5.large
+  value: r5.large
 
 # log-api
 - type: replace
