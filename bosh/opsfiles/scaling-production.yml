@@ -28,7 +28,7 @@
   value: 4
 - type: replace
   path: /instance_groups/name=uaa/vm_type
-  value: m5.large
+  value: r5.large
 
 # capi
 - type: replace
