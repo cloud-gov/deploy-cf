@@ -1,5 +1,6 @@
-- type: remove
+- type: replace
   path: /instance_groups/name=smoke-tests/vm_type
+  value: t3.medium
 
 # Reuse existing org and space instead of creating a new one
 - type: replace
