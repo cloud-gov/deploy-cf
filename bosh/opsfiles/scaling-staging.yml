@@ -85,3 +85,8 @@
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
   value: c5.2xlarge
+
+# rotate-cc-database-key
+- type: replace
+  path: /instance_groups/name=rotate-cc-database-key/vm_type
+  value: t3.medium
