@@ -4,12 +4,6 @@
 - type: replace
   path: /instance_groups/name=smoke-tests/vm_resources?/ephemeral_disk_size
   value: 20480
-- type: replace
-  path: /instance_groups/name=smoke-tests/vm_resources?/ram
-  value: 8192
-- type: replace
-  path: /instance_groups/name=smoke-tests/vm_resources?/cpu
-  value: 2
 
 # Reuse existing org and space instead of creating a new one
 - type: replace

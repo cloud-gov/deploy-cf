@@ -38,6 +38,14 @@
   path: /instance_groups/name=api/vm_type
   value: t3.large
 
+# capi worker
+- type: replace
+  path: /instance_groups/name=cc-worker/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=cc-worker/vm_type
+  value: t3.medium
+  
 # gorouters
 - type: replace
   path: /instance_groups/name=router/instances
@@ -63,7 +71,7 @@
   value: 10
 - type: replace
   path: /instance_groups/name=doppler/vm_type
-  value: r5.large
+  value: c5.2xlarge
 
 # log-api
 - type: replace
