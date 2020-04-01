@@ -54,6 +54,14 @@
   path: /instance_groups/name=router/vm_type
   value: c5.xlarge
 
+# scheduler
+- type: replace
+  path: /instance_groups/name=scheduler/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=scheduler/vm_type
+  value: t3.xlarge
+
 # diego platform (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/instances
