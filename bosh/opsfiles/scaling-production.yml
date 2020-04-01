@@ -81,3 +81,7 @@
   path: /instance_groups/name=doppler/vm_type
   value: c5.large
 
+# rotate-cc-database-key
+- type: replace
+  path: /instance_groups/name=rotate-cc-database-key/vm_type
+  value: t3.medium
