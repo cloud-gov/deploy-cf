@@ -60,7 +60,7 @@
   value: 1
 - type: replace
   path: /instance_groups/name=scheduler/vm_type
-  value: m4.large
+  value: t3.medium
 
 # doppler
 - type: replace
