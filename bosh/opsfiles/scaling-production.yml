@@ -87,7 +87,7 @@
   value: 7
 - type: replace
   path: /instance_groups/name=log-api/vm_type
-  value: c5.large
+  value: m5.xlarge
 
 # rotate-cc-database-key
 - type: replace
