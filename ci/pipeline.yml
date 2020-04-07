@@ -67,6 +67,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/use-create-swap-delete.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -394,6 +395,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/use-create-swap-delete.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -741,6 +743,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/use-create-swap-delete.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
