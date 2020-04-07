@@ -1,0 +1,4 @@
+---
+- type: replace
+  path: /update/vm_strategy?
+  value: create-swap-delete
