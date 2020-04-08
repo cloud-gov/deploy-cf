@@ -68,10 +68,10 @@
   value: 25
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
-  value: c5.4xlarge
+  value: m5.2xlarge
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
-  value: c5.4xlarge
+  value: m5.2xlarge
 
 # doppler
 - type: replace
