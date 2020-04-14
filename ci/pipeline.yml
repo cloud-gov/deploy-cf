@@ -145,73 +145,6 @@ jobs:
       <<: *tf-development
       TERRAFORM_ACTION: apply
 
-- name: smoke-tests-development
-  serial_groups: [development]
-  plan:
-  - in_parallel:
-    - get: common
-      resource: master-bosh-root-cert
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
-      trigger: true
-    - get: cf-deployment-development
-      trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
-    - get: cf-deployment
-      trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
-    - get: cf-stemcell-xenial
-      trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
-    - get: cf-manifests
-      trigger: true
-    - get: uaa-customized-release
-      trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
-  - task: run-errand
-    attempts: 3
-    params:
-      BOSH_ENVIRONMENT: ((bosh.development.environment))
-      BOSH_CLIENT: ((bosh.development.client))
-      BOSH_CLIENT_SECRET: ((bosh.development.client-secret))
-      BOSH_DEPLOYMENT: ((cf.development.name))
-      BOSH_ERRAND: ((cf.development.smoke-tests))
-      BOSH_CA_CERT: common/master-bosh.crt
-    config: &smoke-tests-errand
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: 18fgsa/concourse-task
-      inputs:
-        - name: common
-      run:
-        path: /bin/bash
-        args:
-        - -euxc
-        - | 
-          bosh run-errand smoke-tests
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Smoke Tests for CF on development PASSED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: Smoke Tests for CF on development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-
 - name: uaa-smoke-tests-development
   plan:
   - in_parallel:
@@ -321,6 +254,102 @@ jobs:
     params:
       text: |
         :x: TIC Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-security-tests-development
+  plan:
+  - in_parallel:
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [deploy-cf-development]
+  - task: uaa-integration-tests
+    file: cf-manifests/ci/uaa-disabled-endpoint-tests.yml
+    params:
+      UAA_URL: ((uaa-url-development))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Integration Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: smoke-tests-development
+  serial_groups: [development]
+  plan:
+  - in_parallel:
+    - get: common
+      resource: master-bosh-root-cert
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      trigger: true
+    - get: cf-deployment-development
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cf-stemcell-xenial
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cf-manifests
+      trigger: true
+    - get: uaa-customized-release
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+  - task: run-errand
+    attempts: 3
+    params:
+      BOSH_ENVIRONMENT: ((bosh.development.environment))
+      BOSH_CLIENT: ((bosh.development.client))
+      BOSH_CLIENT_SECRET: ((bosh.development.client-secret))
+      BOSH_DEPLOYMENT: ((cf.development.name))
+      BOSH_ERRAND: ((cf.development.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: &smoke-tests-errand
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: 18fgsa/concourse-task
+      inputs:
+        - name: common
+      run:
+        path: /bin/bash
+        args:
+        - -euxc
+        - | 
+          bosh run-errand smoke-tests
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on development FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1165,6 +1194,7 @@ groups:
   - uaa-smoke-tests-development
   - uaa-client-audit-development
   - tic-smoke-tests-development
+  - uaa-security-tests-development
   - smoke-tests-development
 - name: staging
   jobs:
