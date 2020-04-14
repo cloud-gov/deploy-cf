@@ -298,10 +298,10 @@ jobs:
       trigger: true
     - get: cf-deployment-development
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development,uaa-security-tests-development]
     - get: cf-deployment
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development,uaa-security-tests-development]
     - get: cf-stemcell-xenial
       trigger: true
       passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
@@ -309,7 +309,7 @@ jobs:
       trigger: true
     - get: uaa-customized-release
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development,uaa-security-tests-development]
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
