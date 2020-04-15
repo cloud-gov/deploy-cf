@@ -1169,6 +1169,7 @@ groups:
   - uaa-smoke-tests-development
   - uaa-client-audit-development
   - tic-smoke-tests-development
+  - uaa-security-tests-development
   - smoke-tests-development
   - deploy-cf-staging
   - terraform-plan-staging
