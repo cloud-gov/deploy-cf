@@ -37,4 +37,4 @@
 # 
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/disableInternalUserManagement?
-  value: true
+  value: ((disable_internal_user_management))
