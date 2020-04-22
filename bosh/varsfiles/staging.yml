@@ -10,4 +10,4 @@ droplet_directory_key: cf-staging-droplets
 app_package_directory_key: cf-staging-cc-packages
 resource_directory_key: cf-staging-cc-resources
 
-disable_internal_user_management: false
+disable_internal_user_management: true
