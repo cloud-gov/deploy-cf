@@ -1,7 +1,7 @@
 # Routing Release
 # https://github.com/cloudfoundry/routing-release
 
-# Set global router timeout (request start to last byte sent) to 1800 seconds
+# Set global router timeout (request start to last byte sent) to 3600 seconds
 - type: replace
   path: /instance_groups/name=router/jobs/name=gorouter/properties/request_timeout_in_seconds?
   value: 3600
