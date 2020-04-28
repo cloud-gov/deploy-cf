@@ -259,35 +259,6 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
-- name: uaa-security-tests-development
-  plan:
-  - in_parallel:
-    - get: cf-deployment-development
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-deployment
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-manifests
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: uaa-customized-release
-      trigger: true
-      passed: [deploy-cf-development]
-  - task: uaa-integration-tests
-    file: cf-manifests/ci/uaa-disabled-endpoint-tests.yml
-    params:
-      UAA_URL: ((uaa-url-development))
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: UAA Security Tests for CF on development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-
 - name: smoke-tests-development
   serial_groups: [development]
   plan:
@@ -298,10 +269,10 @@ jobs:
       trigger: true
     - get: cf-deployment-development
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development,uaa-security-tests-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
     - get: cf-deployment
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development,uaa-security-tests-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
     - get: cf-stemcell-xenial
       trigger: true
       passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
@@ -309,7 +280,7 @@ jobs:
       trigger: true
     - get: uaa-customized-release
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development,uaa-security-tests-development]
+      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
@@ -1169,7 +1140,6 @@ groups:
   - uaa-smoke-tests-development
   - uaa-client-audit-development
   - tic-smoke-tests-development
-  - uaa-security-tests-development
   - smoke-tests-development
   - deploy-cf-staging
   - terraform-plan-staging
@@ -1195,7 +1165,6 @@ groups:
   - uaa-smoke-tests-development
   - uaa-client-audit-development
   - tic-smoke-tests-development
-  - uaa-security-tests-development
   - smoke-tests-development
 - name: staging
   jobs:

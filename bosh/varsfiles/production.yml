@@ -9,5 +9,3 @@ buildpack_directory_key: cf-production-buildpacks
 droplet_directory_key: cf-production-droplets
 app_package_directory_key: cf-production-cc-packages
 resource_directory_key: cf-production-cc-resources
-
-disable_internal_user_management: false
