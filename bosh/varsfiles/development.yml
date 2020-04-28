@@ -10,4 +10,4 @@ droplet_directory_key: cf-development-droplets
 app_package_directory_key: cf-development-cc-packages
 resource_directory_key: cf-development-cc-resources
 
-disable_internal_user_management: true
+disable_internal_user_management: false
