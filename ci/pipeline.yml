@@ -189,11 +189,9 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-deployment
-      passed: [deploy-cf-development]
     - get: cf-manifests
       passed: [deploy-cf-development]
     - get: cf-deployment-development
-      passed: [deploy-cf-development]
       trigger: true
     - get: tests-timer
       trigger: true
@@ -453,11 +451,9 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-deployment
-      passed: [deploy-cf-staging]
     - get: cf-manifests
       passed: [deploy-cf-staging]
     - get: cf-deployment-staging
-      passed: [deploy-cf-staging]
       trigger: true
     - get: tests-timer
       trigger: true
@@ -844,11 +840,9 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-deployment
-      passed: [deploy-cf-production]
     - get: cf-manifests
       passed: [deploy-cf-production]
     - get: cf-deployment-production
-      passed: [deploy-cf-production]
       trigger: true
     - get: tests-timer
       trigger: true
