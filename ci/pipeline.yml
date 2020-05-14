@@ -191,8 +191,6 @@ jobs:
     - get: cf-deployment
     - get: cf-manifests
       passed: [deploy-cf-development]
-    - get: cf-deployment-development
-      trigger: true
     - get: tests-timer
       trigger: true
   - task: uaa-client-audit
@@ -453,8 +451,6 @@ jobs:
     - get: cf-deployment
     - get: cf-manifests
       passed: [deploy-cf-staging]
-    - get: cf-deployment-staging
-      trigger: true
     - get: tests-timer
       trigger: true
   - task: uaa-client-audit
@@ -842,8 +838,6 @@ jobs:
     - get: cf-deployment
     - get: cf-manifests
       passed: [deploy-cf-production]
-    - get: cf-deployment-production
-      trigger: true
     - get: tests-timer
       trigger: true
   - task: uaa-client-audit
