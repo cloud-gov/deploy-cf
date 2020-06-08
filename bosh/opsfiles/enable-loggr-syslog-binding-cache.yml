@@ -1,5 +1,6 @@
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=loggr-syslog-binding-cache?
   value:  
+    name: loggr-syslog-binding-cache
     properties:
       enabled: true
