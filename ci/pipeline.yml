@@ -13,6 +13,7 @@ jobs:
     - get: cf-manifests
       resource: cf-manifests
       trigger: true
+    - get: cf-manifests-v13
     - get: terraform-yaml
       resource: terraform-yaml-development
     - get: cf-stemcell-xenial
@@ -68,6 +69,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-deployment/operations/experimental/add-disabled-syslog-agent-for-upgrade.yml
+      - cf-manifests-v13/bosh/opsfiles/enable-loggr-syslog-binding-cache.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -1021,6 +1023,14 @@ resources:
     paths:
     - ci/*
     - bosh/*
+
+- name: cf-manifests-v13
+  type: git
+  source:
+    uri: ((cf-manifests-git-url))
+    branch: v13-upgrade
+    paths:
+    - bosh/opsfiles/enable-loggr-syslog-binding-cache.yml
 
 - name: terraform-config
   type: git
