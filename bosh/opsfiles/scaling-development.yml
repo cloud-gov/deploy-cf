@@ -9,7 +9,7 @@
 # adapter
 - type: replace
   path: /instance_groups/name=adapter/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=adapter/vm_type
   value: t3.small
@@ -57,7 +57,7 @@
 # scheduler
 - type: replace
   path: /instance_groups/name=scheduler/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=scheduler/vm_type
   value: t3.medium
