@@ -63,7 +63,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests-v13/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -1031,6 +1031,7 @@ resources:
     branch: v13-upgrade
     paths:
     - bosh/opsfiles/enable-loggr-syslog-binding-cache.yml
+    - bosh/opsfiles/scaling-development.yml
 
 - name: terraform-config
   type: git
