@@ -68,6 +68,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-deployment/operations/experimental/add-disabled-syslog-agent-for-upgrade.yml
+      - cf-manifests-v13/bosh/opsfiles/enable-loggr-syslog-binding-cache.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
