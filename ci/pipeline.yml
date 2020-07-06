@@ -331,9 +331,6 @@ jobs:
     - get: cf-deployment
       trigger: true
       passed: [smoke-tests-development]
-    - get: cf-deployment-development
-      trigger: true
-      passed: [smoke-tests-development]
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
