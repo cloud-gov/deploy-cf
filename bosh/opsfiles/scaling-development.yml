@@ -54,14 +54,6 @@
   path: /instance_groups/name=router/vm_type
   value: t3.small
 
-# scheduler
-- type: replace
-  path: /instance_groups/name=scheduler/instances
-  value: 2
-- type: replace
-  path: /instance_groups/name=scheduler/vm_type
-  value: t3.medium
-
 # doppler
 - type: replace
   path: /instance_groups/name=doppler/instances
