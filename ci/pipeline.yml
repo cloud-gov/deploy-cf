@@ -70,6 +70,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-deployment/operations/experimental/add-disabled-syslog-agent-for-upgrade.yml
       - cf-manifests-v13/bosh/opsfiles/enable-loggr-syslog-binding-cache.yml
+      - cf-manifests-v13/bosh/opsfiles/remove-scheduler-job.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
