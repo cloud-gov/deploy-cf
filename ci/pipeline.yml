@@ -59,7 +59,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
@@ -68,9 +67,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
-      - cf-deployment/operations/experimental/add-disabled-syslog-agent-for-upgrade.yml
-      - cf-manifests-v13/bosh/opsfiles/enable-loggr-syslog-binding-cache.yml
-      - cf-manifests-v13/bosh/opsfiles/remove-scheduler-job.yml 
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
