@@ -9,7 +9,7 @@
 # adapter
 - type: replace
   path: /instance_groups/name=adapter/instances
-  value: 2
+  value: 0
 - type: replace
   path: /instance_groups/name=adapter/vm_type
   value: t3.large
