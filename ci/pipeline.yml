@@ -688,6 +688,7 @@ jobs:
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [acceptance-tests-staging]
+    - get: cf-manifests-v13
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-production
@@ -725,7 +726,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/scaling-production.yml
+      - cf-manifests-v13/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -770,6 +771,8 @@ jobs:
     - get: uaa-customized-release
       passed: [plan-cf-production]
     - get: cg-s3-secureproxy-release
+      passed: [plan-cf-production]
+    - get: cf-manifests-v13
       passed: [plan-cf-production]
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml

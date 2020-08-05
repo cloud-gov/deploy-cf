@@ -6,14 +6,6 @@
   path: /instance_groups/name=nats/vm_type
   value: t3.large
 
-# adapter
-- type: replace
-  path: /instance_groups/name=adapter/instances
-  value: 0
-- type: replace
-  path: /instance_groups/name=adapter/vm_type
-  value: t3.large
-
 # diego-api
 - type: replace
   path: /instance_groups/name=diego-api/instances
