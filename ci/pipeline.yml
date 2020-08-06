@@ -13,7 +13,6 @@ jobs:
     - get: cf-manifests
       resource: cf-manifests
       trigger: true
-    - get: cf-manifests-v13
     - get: terraform-yaml
       resource: terraform-yaml-development
     - get: cf-stemcell-xenial
@@ -62,7 +61,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests-v13/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -346,7 +345,6 @@ jobs:
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: [smoke-tests-development]
-    - get: cf-manifests-v13
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-staging
@@ -382,7 +380,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests-v13/bosh/opsfiles/scaling-staging.yml
+      - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -688,7 +686,6 @@ jobs:
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [acceptance-tests-staging]
-    - get: cf-manifests-v13
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-production
@@ -725,7 +722,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests-v13/bosh/opsfiles/scaling-production.yml
+      - cf-manifests/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -770,8 +767,6 @@ jobs:
     - get: uaa-customized-release
       passed: [plan-cf-production]
     - get: cg-s3-secureproxy-release
-      passed: [plan-cf-production]
-    - get: cf-manifests-v13
       passed: [plan-cf-production]
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
@@ -1019,14 +1014,6 @@ resources:
     paths:
     - ci/*
     - bosh/*
-
-- name: cf-manifests-v13
-  type: git
-  source:
-    uri: ((cf-manifests-git-url))
-    branch: v13-upgrade
-    paths:
-    - bosh/opsfiles/*
 
 - name: terraform-config
   type: git
