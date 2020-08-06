@@ -58,7 +58,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
@@ -331,9 +330,6 @@ jobs:
     - get: cf-deployment
       trigger: true
       passed: [smoke-tests-development]
-    - get: cf-deployment-development
-      trigger: true
-      passed: [smoke-tests-development]
     - get: pipeline-tasks
     - get: cf-manifests
       trigger: true
@@ -381,15 +377,14 @@ jobs:
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/routing.yml
-      - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -724,7 +719,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/syslog-drain.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml

@@ -1,6 +1,0 @@
-- type: replace
-  path: /instance_groups/name=scheduler/jobs/name=scheduler/properties/scalablesyslog/scheduler/blacklisted_syslog_ranges?
-  value:
-  - {start: 10.0.0.0, end: 10.255.255.255}
-  - {start: 172.16.0.0, end: 172.31.255.255}
-  - {start: 192.168.0.0, end: 192.168.255.255}
