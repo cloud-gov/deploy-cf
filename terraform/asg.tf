@@ -106,6 +106,20 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
     ports = "6379"
   }
 
+  # Elastisearch access
+  rules {
+    protocol = "tcp"
+    description = "Allow access to AWS Elasticsearch"
+    destination = "${data.terraform_remote_state.iaas.elasticsearch_subnet_cidr_az1}"
+    ports = "443"
+  }
+  rules {
+    protocol = "tcp"
+    description = "Allow access to AWS Elasticsearch"
+    destination = "${data.terraform_remote_state.iaas.elasticsearch_subnet_cidr_az2}"
+    ports = "443"
+  }
+
   # Kubernetes
   rules {
     protocol = "tcp"
