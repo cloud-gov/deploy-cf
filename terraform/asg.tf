@@ -170,7 +170,7 @@ resource "cloudfoundry_sec_group" "smtp" {
 
 resource "cloudfoundry_quota" "default-tts" {
   name = "default-tts"
-  total_memory = "20G"
+  total_memory = "40G"
   routes = 1000
   service_instances = 200
 }
