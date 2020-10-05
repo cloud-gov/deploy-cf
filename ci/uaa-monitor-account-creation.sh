@@ -32,8 +32,9 @@ uaa_get_page_descending() {
   echo $page
 }
 
-count_users_created_past_week() {
-  local days_back=${1:-7}
+count_users_created_recently() {
+  # Counts the number of users created in the past four days
+  local days_back=${1:-4}
   local selector=".resources"
 
   last_week=$(get_past_days_epoch $days_back)
@@ -46,7 +47,7 @@ count_users_created_past_week() {
 }
 
 metrics=$(mktemp)
-value=$(count_users_created_past_week)
+value=$(count_users_created_recently)
 cat >> "${metrics}" <<EOF
 uaa_monitor_account_creation ${value}
 EOF
