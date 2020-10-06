@@ -202,6 +202,22 @@ jobs:
       GATEWAY_HOST: prometheus-staging.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-development))
 
+- name: uaa-monitor-account-creation-development
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-development]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-development))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-development))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-development))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
+
 - name: tic-smoke-tests-development
   plan:
   - in_parallel:
@@ -300,7 +316,7 @@ jobs:
         path: /bin/bash
         args:
         - -euxc
-        - | 
+        - |
           bosh run-errand smoke-tests
   on_success:
     put: slack
@@ -458,6 +474,22 @@ jobs:
       GATEWAY_HOST: prometheus-staging.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-staging))
 
+- name: uaa-monitor-account-creation-staging
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-staging]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-staging))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-staging))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-staging))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
+
 - name: tic-smoke-tests-staging
   plan:
   - in_parallel:
@@ -502,7 +534,7 @@ jobs:
   - in_parallel:
     - get: terraform-templates
       resource: terraform-config
-    
+
       trigger: true
       passed: [terraform-apply-development]
     - get: pipeline-tasks
@@ -844,6 +876,22 @@ jobs:
       GATEWAY_HOST: prometheus-production.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-production))
 
+- name: uaa-monitor-account-creation-production
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-production]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-production))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-production))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-production))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
+
 - name: tic-smoke-tests-production
   plan:
   - in_parallel:
@@ -886,7 +934,7 @@ jobs:
   - in_parallel:
     - get: terraform-templates
       resource: terraform-config
-    
+
       passed: [acceptance-tests-staging]
       trigger: true
     - get: pipeline-tasks
@@ -919,7 +967,7 @@ jobs:
   - in_parallel:
     - get: terraform-templates
       resource: terraform-config
-    
+
       passed: [terraform-plan-production]
     - get: pipeline-tasks
   - task: terraform-apply
@@ -1097,6 +1145,11 @@ resources:
   source:
     interval: 10m
 
+- name: hourly-timer
+  type: time
+  source:
+    interval: 1h
+
 resource_types:
 - name: slack-notification
   type: docker-image
@@ -1121,6 +1174,7 @@ groups:
   - terraform-apply-development
   - uaa-smoke-tests-development
   - uaa-client-audit-development
+  - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
   - deploy-cf-staging
@@ -1128,6 +1182,7 @@ groups:
   - terraform-apply-staging
   - uaa-smoke-tests-staging
   - uaa-client-audit-staging
+  - uaa-monitor-account-creation-staging
   - tic-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
@@ -1138,6 +1193,7 @@ groups:
   - smoke-tests-production
   - uaa-smoke-tests-production
   - uaa-client-audit-production
+  - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
 - name: development
   jobs:
@@ -1146,6 +1202,7 @@ groups:
   - terraform-apply-development
   - uaa-smoke-tests-development
   - uaa-client-audit-development
+  - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
 - name: staging
@@ -1155,6 +1212,7 @@ groups:
   - terraform-apply-staging
   - uaa-smoke-tests-staging
   - uaa-client-audit-staging
+  - uaa-monitor-account-creation-staging
   - tic-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
@@ -1167,4 +1225,5 @@ groups:
   - smoke-tests-production
   - uaa-smoke-tests-production
   - uaa-client-audit-production
+  - uaa-monitor-account-creation-production
   - tic-smoke-tests-production

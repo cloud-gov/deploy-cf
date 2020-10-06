@@ -12,7 +12,7 @@
   value:
     override: true
     authorized-grant-types: client_credentials
-    authorities: clients.read,cloud_controller.global_auditor
+    authorities: clients.read,scim.read,cloud_controller.global_auditor
     secret: ((uaa-client-audit-client-secret))
 
 - type: replace
