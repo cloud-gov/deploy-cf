@@ -80,6 +80,28 @@ jobs:
       PLATFORM_SPACE: ((platform-space-development))
       VOLUME_ISOLATION_SEGMENT: ((volume-isolation-segment-development))
       VOLUME_TARGETS: ((volume-targets-development))
+  - task: enable-cf-features
+    file: cf-manifests/ci/enable-cf-features.yml
+    params:
+      CF_API_URL: ((cf-api-url-development))
+      CF_USERNAME: ((cf-username-development))
+      CF_PASSWORD: ((cf-password-development))
+      ENABLED_FEATURE_FLAGS: |
+        private_domain_creation
+        app_bits_upload
+        app_scaling
+        route_creation
+        service_instance_creation
+        diego_docker
+        set_roles_by_username
+        unset_roles_by_username
+        task_creation
+        env_var_visibility
+        space_scoped_private_broker_creation
+        space_developer_env_var_visibility
+        service_instance_sharing
+        resource_matching  
+
   on_success:
     put: slack
     params:
