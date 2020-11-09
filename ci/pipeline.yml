@@ -142,6 +142,9 @@ jobs:
         space_developer_env_var_visibility
         service_instance_sharing
         resource_matching
+      DISABLED_FEATURE_FLAGS: |
+        user_org_creation
+        hide_marketplace_from_unauthenticated_users 
 
 - name: terraform-plan-development
   plan:

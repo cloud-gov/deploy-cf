@@ -29,6 +29,7 @@ function main() {
   (set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
 
   set_enabled_feature_flags
+  set_disabled_feature_flags
   cf feature-flags
 }
 
