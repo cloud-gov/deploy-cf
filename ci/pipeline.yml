@@ -80,6 +80,47 @@ jobs:
       PLATFORM_SPACE: ((platform-space-development))
       VOLUME_ISOLATION_SEGMENT: ((volume-isolation-segment-development))
       VOLUME_TARGETS: ((volume-targets-development))
+
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: dev-feature-test
+  serial_groups: [development]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+      trigger: true
+    - get: cf-deployment
+      trigger: true
+    - get: pipeline-tasks
+    - get: cf-manifests
+      resource: cf-manifests-dev
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-development
+    - get: cf-stemcell-xenial
+      trigger: true
+    - get: uaa-customized-release
+      trigger: true
+    - get: cg-s3-secureproxy-release
+      trigger: true
   - task: enable-cf-features
     file: cf-manifests/ci/enable-cf-features.yml
     params:
@@ -100,26 +141,7 @@ jobs:
         space_scoped_private_broker_creation
         space_developer_env_var_visibility
         service_instance_sharing
-        resource_matching  
-
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Successfully deployed CF on development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: FAILED to deploy CF on development
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
+        resource_matching
 
 - name: terraform-plan-development
   plan:
@@ -1085,6 +1107,15 @@ resources:
     - ci/*
     - bosh/*
 
+- name: cf-manifests-dev
+  type: git
+  source:
+    uri: ((cf-manifests-git-url))
+    branch: feature-flag
+    paths:
+    - ci/*
+    - bosh/*
+
 - name: terraform-config
   type: git
   source:
@@ -1199,6 +1230,7 @@ groups:
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
+  - dev-feature-test
   - deploy-cf-staging
   - terraform-plan-staging
   - terraform-apply-staging
@@ -1227,6 +1259,7 @@ groups:
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
+  - dev-feature-test
 - name: staging
   jobs:
   - deploy-cf-staging
