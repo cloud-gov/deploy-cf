@@ -25,7 +25,7 @@ function set_feature_flag() {
 }
 
 function main() {
-  setup_bosh_env_vars
+#  setup_bosh_env_vars
 
   if [ -z "${SYSTEM_DOMAIN}" ]; then
     echo "SYSTEM_DOMAIN is a required parameter"
