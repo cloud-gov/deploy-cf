@@ -25,13 +25,6 @@ function set_feature_flag() {
 }
 
 function main() {
-#  setup_bosh_env_vars
-
-  if [ -z "${SYSTEM_DOMAIN}" ]; then
-    echo "SYSTEM_DOMAIN is a required parameter"
-    exit 1
-  fi
-
   cf api "${CF_API_URL}"
   (set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
 
