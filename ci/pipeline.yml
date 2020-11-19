@@ -1108,7 +1108,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cf-deployment
-    branch: master
+    branch: main
     tag_filter: "v*"
 
 - name: cf-acceptance-tests
