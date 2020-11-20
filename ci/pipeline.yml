@@ -1114,7 +1114,7 @@ resources:
 - name: cf-acceptance-tests
   type: git
   source:
-    branch: main
+    branch: master
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
 - name: cf-deployment-concourse-tasks
