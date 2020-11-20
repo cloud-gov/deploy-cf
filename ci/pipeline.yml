@@ -1120,7 +1120,7 @@ resources:
 - name: cf-deployment-concourse-tasks
   type: git
   source:
-    branch: master
+    branch: main
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
 - name: pipeline-tasks
