@@ -3,7 +3,7 @@
 set -eux
 
 CF_TRACE=true cf api "${CF_API_URL}"
-(set +x; CF_TRACE=true cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
+(set +x; CF_TRACE=true CF_DIAL_TIMEOUT=20 cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
 
 # Create isolation segment for platform applications
 CF_TRACE=true cf target -o "${PLATFORM_ORGANIZATION}"
