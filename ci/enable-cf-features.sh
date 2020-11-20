@@ -26,7 +26,7 @@ function set_feature_flag() {
 
 function main() {
   cf api "${CF_API_URL}"
-  (set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
+  (set -x; CF_TRACE=true cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
 
   set_enabled_feature_flags
   set_disabled_feature_flags
