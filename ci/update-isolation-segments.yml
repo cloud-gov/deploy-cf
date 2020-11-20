@@ -2,9 +2,11 @@
 platform: linux
 
 image_resource:
-  type: docker-image
+  type: registry-image
   source:
     repository: 18fgsa/concourse-task
+    registry_mirror:
+      host: docker-registry-mirror.app.cloud.gov:443
 
 inputs:
 - name: cf-manifests
