@@ -212,7 +212,7 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
-- name: uaa-client-audit-development
+- name: uaa-client-auditing-development
   plan:
   - in_parallel:
     - get: cf-deployment
@@ -510,7 +510,7 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
-- name: uaa-client-audit-staging
+- name: uaa-client-auditing-staging
   plan:
   - in_parallel:
     - get: cf-deployment
@@ -938,7 +938,7 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
-- name: uaa-client-audit-production
+- name: uaa-client-auditing-production
   plan:
   - in_parallel:
     - get: cf-deployment
@@ -1253,7 +1253,7 @@ groups:
   - terraform-plan-development
   - terraform-apply-development
   - uaa-smoke-tests-development
-  - uaa-client-audit-development
+  - uaa-client-auditing-development
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
@@ -1261,7 +1261,7 @@ groups:
   - terraform-plan-staging
   - terraform-apply-staging
   - uaa-smoke-tests-staging
-  - uaa-client-audit-staging
+  - uaa-client-auditing-staging
   - uaa-monitor-account-creation-staging
   - tic-smoke-tests-staging
   - smoke-tests-staging
@@ -1272,7 +1272,7 @@ groups:
   - terraform-apply-production
   - smoke-tests-production
   - uaa-smoke-tests-production
-  - uaa-client-audit-production
+  - uaa-client-auditing-production
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
 - name: development
@@ -1281,7 +1281,7 @@ groups:
   - terraform-plan-development
   - terraform-apply-development
   - uaa-smoke-tests-development
-  - uaa-client-audit-development
+  - uaa-client-auditing-development
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
@@ -1291,7 +1291,7 @@ groups:
   - terraform-plan-staging
   - terraform-apply-staging
   - uaa-smoke-tests-staging
-  - uaa-client-audit-staging
+  - uaa-client-auditing-staging
   - uaa-monitor-account-creation-staging
   - tic-smoke-tests-staging
   - smoke-tests-staging
@@ -1304,6 +1304,6 @@ groups:
   - terraform-apply-production
   - smoke-tests-production
   - uaa-smoke-tests-production
-  - uaa-client-audit-production
+  - uaa-client-auditing-production
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
