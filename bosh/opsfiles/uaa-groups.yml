@@ -1,5 +1,4 @@
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/groups?/-
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/groups?
   value:
-    group_name: pages.admin
-    group_desc: "Administrators for the Pages product"
+    pages.admin: "Administrators for the Pages product"
