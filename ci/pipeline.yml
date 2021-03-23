@@ -41,7 +41,6 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
-      - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -406,6 +405,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
+      - cf-manifests/bosh/opsfiles/k8s-client.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -791,6 +791,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/kubernetes-dns.yml
+      - cf-manifests/bosh/opsfiles/k8s-client.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml

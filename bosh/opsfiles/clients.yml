@@ -125,14 +125,6 @@
     secret: ((kibana-client-secret))
 
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/kubernetes-client?
-  value:
-    override: true
-    authorized-grant-types: client_credentials
-    authorities: cloud_controller.global_auditor
-    secret: ((kubernetes-client-secret))
-
-- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/stratos?
   value:
     override: true
