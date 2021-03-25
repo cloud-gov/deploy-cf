@@ -17,7 +17,7 @@
 # uaa
 - type: replace
   path: /instance_groups/name=uaa/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=uaa/vm_type
   value: t3.medium
@@ -25,7 +25,7 @@
 # capi
 - type: replace
   path: /instance_groups/name=api/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=api/vm_type
   value: t3.medium
@@ -41,7 +41,7 @@
 # gorouter
 - type: replace
   path: /instance_groups/name=router/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=router/vm_type
   value: t3.small
