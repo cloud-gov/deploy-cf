@@ -37,7 +37,7 @@
     override: true
     scope: scim.invite,password.write
     authorized-grant-types: authorization_code,client_credentials
-    authorities: scim.read,password.write,uaa.admin
+    authorities: scim.read,password.write,uaa.admin,uaa.resource
     access-token-validity: 600
     refresh-token-validity: 259200
     redirect-uri: https://account.((system_domain))/oauth/login
