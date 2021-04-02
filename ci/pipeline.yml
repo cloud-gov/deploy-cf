@@ -142,7 +142,7 @@ jobs:
       STACK_NAME: cf-development
       S3_TFSTATE_BUCKET: ((tf-state-bucket))
       AWS_DEFAULT_REGION: ((aws-region))
-      CF_API: ((cf-api-url-development))
+      CF_API_URL: ((cf-api-url-development))
       CF_CLIENT_ID: ((cf-client-id-development))
       CF_CLIENT_SECRET: ((cf-client-secret-development))
       TF_VAR_remote_state_bucket: ((tf-state-bucket))
