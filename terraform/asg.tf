@@ -166,7 +166,7 @@ resource "cloudfoundry_org_quota" "default-tts" {
   name = "default-tts"
   allow_paid_service_plans = true
   total_memory = 40960
-  total_routes = 100
+  total_routes = 1000
   total_services = 200
 }
 
@@ -189,6 +189,7 @@ resource "cloudfoundry_space" "services" {
     "${cloudfoundry_asg.trusted_local_networks.id}",
     "${cloudfoundry_asg.public_networks.id}",
     "${cloudfoundry_asg.dns.id}",
+    "${cloudfoundry_asg.brokers.id}",
     "${cloudfoundry_asg.brokers.id}"
   ]
 }
@@ -215,11 +216,13 @@ resource "cloudfoundry_space" "uaa-extras" {
   asgs = [
     "${cloudfoundry_asg.trusted_local_networks.id}",
     "${cloudfoundry_asg.public_networks.id}",
+    "${cloudfoundry_asg.dns.id}",
     "${cloudfoundry_asg.smtp.id}"
   ]
   staging_asgs = [ 
     "${cloudfoundry_asg.trusted_local_networks.id}",
-    "${cloudfoundry_asg.public_networks.id}"
+    "${cloudfoundry_asg.public_networks.id}",
+    "${cloudfoundry_asg.dns.id}"
   ]
 }
 
