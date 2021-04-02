@@ -189,7 +189,6 @@ resource "cloudfoundry_space" "services" {
     "${cloudfoundry_asg.trusted_local_networks.id}",
     "${cloudfoundry_asg.public_networks.id}",
     "${cloudfoundry_asg.dns.id}",
-    "${cloudfoundry_asg.brokers.id}",
     "${cloudfoundry_asg.brokers.id}"
   ]
 }
