@@ -24,68 +24,62 @@ data "terraform_remote_state" "tooling" {
   }
 }
 
-resource "cloudfoundry_sec_group" "public_networks" {
+resource "cloudfoundry_asg" "public_networks" {
   name = "public_networks"
-  on_staging = true
-  on_running = true
 
-  rules {
+  rule {
     protocol = "all"
     destination = "0.0.0.0-9.255.255.255"
   }
 
-  rules {
+  rule {
     protocol = "all"
     destination = "11.0.0.0-169.253.255.255"
   }
 
-  rules {
+  rule {
     protocol = "all"
     destination = "169.255.0.0-172.15.255.255"
   }
 
-  rules {
+  rule {
     protocol = "all"
     destination = "172.32.0.0-192.167.255.255"
   }
 
-  rules {
+  rule {
     protocol = "all"
     destination = "192.169.0.0-255.255.255.255"
   }
 }
 
-resource "cloudfoundry_sec_group" "dns" {
+resource "cloudfoundry_asg" "dns" {
   name = "dns"
-  on_staging = true
-  on_running = true
 
-  rules {
+  rule {
     protocol = "tcp"
     ports = "53"
     destination = "0.0.0.0/0"
   }
 
-  rules {
+  rule {
     protocol = "udp"
     ports = "53"
     destination = "0.0.0.0/0"
   }
 }
 
-resource "cloudfoundry_sec_group" "trusted_local_networks" {
+resource "cloudfoundry_asg" "trusted_local_networks" {
   name = "trusted_local_networks"
-  on_staging = true
-  on_running = true
 
   # RDS access for postgres, mysql, mssql, oracle
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to RDS"
     destination = "${data.terraform_remote_state.iaas.rds_subnet_cidr_az1}"
     ports = "5432,3306,1433,1521"
   }
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to RDS"
     destination = "${data.terraform_remote_state.iaas.rds_subnet_cidr_az2}"
@@ -93,13 +87,13 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
   }
 
   # Elasticache access
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to Elasticache"
     destination = "${data.terraform_remote_state.iaas.elasticache_subnet_cidr_az1}"
     ports = "6379"
   }
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to Elasticache"
     destination = "${data.terraform_remote_state.iaas.elasticache_subnet_cidr_az2}"
@@ -107,13 +101,13 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
   }
 
   # Elastisearch access
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to AWS Elasticsearch"
     destination = "${data.terraform_remote_state.iaas.elasticsearch_subnet_cidr_az1}"
     ports = "443"
   }
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to AWS Elasticsearch"
     destination = "${data.terraform_remote_state.iaas.elasticsearch_subnet_cidr_az2}"
@@ -121,13 +115,13 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
   }
 
   # Kubernetes
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to kubernetes NodePorts for managed services"
     destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az1}"
     ports = "30000-32767"
   }
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to kubernetes NodePorts for managed services"
     destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az2}"
@@ -135,22 +129,22 @@ resource "cloudfoundry_sec_group" "trusted_local_networks" {
   }
 }
 
-resource "cloudfoundry_sec_group" "brokers" {
+resource "cloudfoundry_asg" "brokers" {
   name = "brokers"
-  rules {
+  rule {
     protocol = "tcp"
     destination = "169.254.169.254"
     ports = "80"
     description = "AWS Metadata Service"
   }
 
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to kubernetes API"
     destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az1}"
     ports = "6443"
   }
-  rules {
+  rule {
     protocol = "tcp"
     description = "Allow access to kubernetes API"
     destination = "${data.terraform_remote_state.iaas.services_subnet_cidr_az2}"
@@ -158,9 +152,9 @@ resource "cloudfoundry_sec_group" "brokers" {
   }
 }
 
-resource "cloudfoundry_sec_group" "smtp" {
+resource "cloudfoundry_asg" "smtp" {
   name = "smtp"
-  rules {
+  rule {
     destination = "${data.terraform_remote_state.tooling.production_smtp_private_ip}"
     description = "SMTP relay"
     protocol = "tcp"
@@ -168,40 +162,52 @@ resource "cloudfoundry_sec_group" "smtp" {
   }
 }
 
-resource "cloudfoundry_quota" "default-tts" {
+resource "cloudfoundry_org_quota" "default-tts" {
   name = "default-tts"
-  total_memory = "40G"
-  routes = 1000
-  service_instances = 200
+  allow_paid_service_plans = true
+  total_memory = 40960
+  total_routes = 100
+  total_services = 200
 }
 
-resource "cloudfoundry_organization" "cloud-gov" {
+resource "cloudfoundry_org" "cloud-gov" {
   name = "cloud-gov"
-  is_system_domain = true
-  quota_id = "${cloudfoundry_quota.default-tts.id}"
+  quota = "${cloudfoundry_org_quota.default-tts.id}"
 }
 
 resource "cloudfoundry_space" "services" {
   name = "services"
-  org_id = "${cloudfoundry_organization.cloud-gov.id}"
-  sec_groups = [
-    "${cloudfoundry_sec_group.brokers.id}",
-    "${cloudfoundry_sec_group.smtp.id}"
+  org = "${cloudfoundry_org.cloud-gov.id}"
+  asgs = [ 
+    "${cloudfoundry_asg.brokers.id}",
+    "${cloudfoundry_asg.smtp.id}"
+  ]
+  staging_asgs = [ 
+    "${cloudfoundry_asg.brokers.id}",
+    "${cloudfoundry_asg.smtp.id}"
   ]
 }
 
 resource "cloudfoundry_space" "dashboard" {
   name = "dashboard"
-  org_id = "${cloudfoundry_organization.cloud-gov.id}"
-  sec_groups = [
-    "${cloudfoundry_sec_group.smtp.id}"
+  org = "${cloudfoundry_org.cloud-gov.id}"
+  asgs = [ 
+    "${cloudfoundry_asg.smtp.id}"
+  ]
+  staging_asgs = [ 
+    "${cloudfoundry_asg.smtp.id}"
   ]
 }
 
 resource "cloudfoundry_space" "uaa-extras" {
   name = "uaa-extras"
-  org_id = "${cloudfoundry_organization.cloud-gov.id}"
-  sec_groups = [
-    "${cloudfoundry_sec_group.smtp.id}"
+  org = "${cloudfoundry_org.cloud-gov.id}"
+  asgs = [ 
+    "${cloudfoundry_asg.smtp.id}"
+  ]
+  staging_asgs = [ 
+    "${cloudfoundry_asg.smtp.id}"
   ]
 }
+
+
