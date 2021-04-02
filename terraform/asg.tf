@@ -178,13 +178,18 @@ resource "cloudfoundry_org" "cloud-gov" {
 resource "cloudfoundry_space" "services" {
   name = "services"
   org = "${cloudfoundry_org.cloud-gov.id}"
-  asgs = [ 
+  asgs = [
+    "${cloudfoundry_asg.public_networks.id}",
+    "${cloudfoundry_asg.trusted_local_networks.id}",
+    "${cloudfoundry_asg.dns.id}",
     "${cloudfoundry_asg.brokers.id}",
     "${cloudfoundry_asg.smtp.id}"
   ]
   staging_asgs = [ 
-    "${cloudfoundry_asg.brokers.id}",
-    "${cloudfoundry_asg.smtp.id}"
+    "${cloudfoundry_asg.trusted_local_networks.id}",
+    "${cloudfoundry_asg.public_networks.id}",
+    "${cloudfoundry_asg.dns.id}",
+    "${cloudfoundry_asg.brokers.id}"
   ]
 }
 
@@ -192,21 +197,29 @@ resource "cloudfoundry_space" "dashboard" {
   name = "dashboard"
   org = "${cloudfoundry_org.cloud-gov.id}"
   asgs = [ 
+    "${cloudfoundry_asg.trusted_local_networks.id}",
+    "${cloudfoundry_asg.public_networks.id}",
+    "${cloudfoundry_asg.dns.id}",
     "${cloudfoundry_asg.smtp.id}"
   ]
-  staging_asgs = [ 
-    "${cloudfoundry_asg.smtp.id}"
+  staging_asgs = [
+    "${cloudfoundry_asg.trusted_local_networks.id}",
+    "${cloudfoundry_asg.public_networks.id}",
+    "${cloudfoundry_asg.dns.id}"
   ]
 }
 
 resource "cloudfoundry_space" "uaa-extras" {
   name = "uaa-extras"
   org = "${cloudfoundry_org.cloud-gov.id}"
-  asgs = [ 
+  asgs = [
+    "${cloudfoundry_asg.trusted_local_networks.id}",
+    "${cloudfoundry_asg.public_networks.id}",
     "${cloudfoundry_asg.smtp.id}"
   ]
   staging_asgs = [ 
-    "${cloudfoundry_asg.smtp.id}"
+    "${cloudfoundry_asg.trusted_local_networks.id}",
+    "${cloudfoundry_asg.public_networks.id}"
   ]
 }
 
