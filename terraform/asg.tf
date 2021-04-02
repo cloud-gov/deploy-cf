@@ -175,6 +175,10 @@ resource "cloudfoundry_org" "cloud-gov" {
   quota = "${cloudfoundry_org_quota.default-tts.id}"
 }
 
+resource "cloudfoundry_isolation_segment" "platform" {
+  name = "platform"
+}
+
 resource "cloudfoundry_space" "services" {
   name = "services"
   org = "${cloudfoundry_org.cloud-gov.id}"
@@ -190,7 +194,9 @@ resource "cloudfoundry_space" "services" {
     "${cloudfoundry_asg.public_networks.id}",
     "${cloudfoundry_asg.dns.id}"
   ]
+  isolation_segment = "${cloudfoundry_isolation_segment.platform.id}"
 }
+
 
 resource "cloudfoundry_space" "dashboard" {
   name = "dashboard"
