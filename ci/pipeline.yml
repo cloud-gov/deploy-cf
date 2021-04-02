@@ -599,7 +599,7 @@ jobs:
       STACK_NAME: cf-staging
       S3_TFSTATE_BUCKET: ((tf-state-bucket))
       AWS_DEFAULT_REGION: ((aws-region))
-      CF_API: ((cf-api-url-staging))
+      CF_API_URL: ((cf-api-url-staging))
       CF_CLIENT_ID: ((cf-client-id-staging))
       CF_CLIENT_SECRET: ((cf-client-secret-staging))
       TF_VAR_remote_state_bucket: ((tf-state-bucket))
