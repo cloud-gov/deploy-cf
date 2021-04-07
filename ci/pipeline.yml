@@ -1024,7 +1024,7 @@ jobs:
       STACK_NAME: cf-production
       S3_TFSTATE_BUCKET: ((tf-state-bucket))
       AWS_DEFAULT_REGION: ((aws-region))
-      CF_API: ((cf-api-url-production))
+      CF_API_URL: ((cf-api-url-production))
       CF_CLIENT_ID: ((cf-client-id-production))
       CF_CLIENT_SECRET: ((cf-client-secret-production))
       TF_VAR_remote_state_bucket: ((tf-state-bucket))
