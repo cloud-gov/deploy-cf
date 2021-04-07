@@ -168,6 +168,7 @@ resource "cloudfoundry_org_quota" "default-tts" {
   total_memory = 40960
   total_routes = 1000
   total_services = 200
+  total_route_ports = -1
 }
 
 resource "cloudfoundry_org" "cloud-gov" {
