@@ -137,6 +137,7 @@ jobs:
   - task: terraform-plan
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-development
+      TERRAFORM_BIN: terratest-13.6
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-development
@@ -594,6 +595,7 @@ jobs:
   - task: terraform-plan
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-staging
+      TERRAFORM_BIN: terratest-13.6
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-staging
@@ -1019,6 +1021,7 @@ jobs:
   - task: terraform-plan
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-production
+      TERRAFORM_BIN: terratest-13.6
       TERRAFORM_ACTION: plan
       TEMPLATE_SUBDIR: terraform
       STACK_NAME: cf-production
