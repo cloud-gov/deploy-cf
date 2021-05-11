@@ -121,19 +121,6 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     ports       = "443"
   }
 
-  # Kubernetes
-  rule {
-    protocol    = "tcp"
-    description = "Allow access to kubernetes NodePorts for managed services"
-    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az1
-    ports       = "30000-32767"
-  }
-  rule {
-    protocol    = "tcp"
-    description = "Allow access to kubernetes NodePorts for managed services"
-    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az2
-    ports       = "30000-32767"
-  }
 }
 
 resource "cloudfoundry_asg" "brokers" {
@@ -145,18 +132,6 @@ resource "cloudfoundry_asg" "brokers" {
     description = "AWS Metadata Service"
   }
 
-  rule {
-    protocol    = "tcp"
-    description = "Allow access to kubernetes API"
-    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az1
-    ports       = "6443"
-  }
-  rule {
-    protocol    = "tcp"
-    description = "Allow access to kubernetes API"
-    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az2
-    ports       = "6443"
-  }
 }
 
 resource "cloudfoundry_asg" "smtp" {
