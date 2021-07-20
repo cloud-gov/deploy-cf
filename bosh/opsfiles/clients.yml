@@ -55,7 +55,7 @@
     override: true
     scope: admin_ui.admin,admin_ui.user,openid
     authorized-grant-types: authorization_code,client_credentials,refresh_token
-    authorities: clients.write,cloud_controller.admin,cloud_controller.read,cloud_controller.write,doppler.firehose,openid,scim.read,scim.write
+    authorities: clients.write,cloud_controller.admin,cloud_controller.read,cloud_controller.write,doppler.firehose,openid,scim.read,scim.write,sps.write,uaa.admin,uaa.resource
     redirect-uri: https://admin.((system_domain))/login
     access-token-validity: 600
     refresh-token-validity: 259200
