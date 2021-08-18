@@ -220,7 +220,7 @@ data "cloudfoundry_org" "gsa-18f-federalist" {
 
 resource "cloudfoundry_space" "email" {
   name = "email"
-  org  = cloudfoundry_org.gsa-18f-federalist.id
+  org  = data.cloudfoundry_org.gsa-18f-federalist.id
   asgs = [
     cloudfoundry_asg.public_networks.id,
     cloudfoundry_asg.trusted_local_networks.id,
