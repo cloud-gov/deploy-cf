@@ -214,12 +214,12 @@ resource "cloudfoundry_space" "uaa-extras" {
 
 # Federalist/Pages
 
-resource "cloudfoundry_org" "gsa-18f-federalist" {
+data "cloudfoundry_org" "gsa-18f-federalist" {
   name  = "gsa-18f-federalist"
 }
 
-resource "cloudfoundry_space" "pages-staging" {
-  name = "pages-staging"
+resource "cloudfoundry_space" "email" {
+  name = "email"
   org  = cloudfoundry_org.gsa-18f-federalist.id
   asgs = [
     cloudfoundry_asg.public_networks.id,
@@ -227,22 +227,6 @@ resource "cloudfoundry_space" "pages-staging" {
     cloudfoundry_asg.public_networks.id,
     cloudfoundry_asg.dns.id,
     cloudfoundry_asg.smtp.id,
-  ]
-  staging_asgs = [
-    cloudfoundry_asg.trusted_local_networks.id,
-    cloudfoundry_asg.public_networks.id,
-    cloudfoundry_asg.dns.id,
-  ]
-}
-
-resource "cloudfoundry_space" "staging" {
-  name = "staging"
-  org  = cloudfoundry_org.gsa-18f-federalist.id
-  asgs = [
-    cloudfoundry_asg.public_networks.id,
-    cloudfoundry_asg.trusted_local_networks.id,
-    cloudfoundry_asg.public_networks.id,
-    cloudfoundry_asg.dns.id,
   ]
   staging_asgs = [
     cloudfoundry_asg.trusted_local_networks.id,
