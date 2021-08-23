@@ -37,7 +37,7 @@
 - type: replace
   path: /instance_groups/name=cc-worker/vm_type
   value: t3.medium
-  
+
 # gorouters
 - type: replace
   path: /instance_groups/name=router/instances
@@ -57,7 +57,7 @@
 # diego platform (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/instances
-  value: 25
+  value: 31
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
   value: m5.2xlarge
