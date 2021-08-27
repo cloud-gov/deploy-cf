@@ -1,0 +1,51 @@
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/cors?
+  value:
+    default:
+      allowed:
+        headers:
+        - Accept
+        - Authorization
+        - Accept-Language
+        - Content-Type
+        - Content-Language
+        - If-Match
+        - X-Requested-With
+        - X-Identity-Zone-Id
+        - X-Identity-Zone-Subdomain
+        origin:
+        - ^cloud.gov$
+        - ^.*\.cloud.gov$
+        - ^localhost$
+        - ^.*\.localhost$
+        methods:
+        - GET
+        - PUT
+        - POST
+        - DELETE
+        - OPTIONS
+        credentials: true
+      max_age: 10
+    xhr:
+      allowed:
+        headers:
+        - Accept
+        - Authorization
+        - Accept-Language
+        - Content-Type
+        - Content-Language
+        - If-Match
+        - X-Requested-With
+        - X-Identity-Zone-Id
+        - X-Identity-Zone-Subdomain
+        origin:
+        - ^cloud.gov$
+        - ^.*\.cloud.gov$
+        - ^localhost$
+        - ^.*\.localhost$
+        methods:
+        - GET
+        - POST
+        - OPTIONS
+        credentials: true
+      max_age: 10
