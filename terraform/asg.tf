@@ -60,8 +60,57 @@ resource "cloudfoundry_asg" "public_networks" {
   }
 }
 
+# New public_networks asg to apply to spaces individually, not globally.
+
+resource "cloudfoundry_asg" "public_networks_egress" {
+  name = "public_networks_egress"
+
+  rule {
+    protocol    = "all"
+    destination = "0.0.0.0-9.255.255.255"
+  }
+
+  rule {
+    protocol    = "all"
+    destination = "11.0.0.0-169.253.255.255"
+  }
+
+  rule {
+    protocol    = "all"
+    destination = "169.255.0.0-172.15.255.255"
+  }
+
+  rule {
+    protocol    = "all"
+    destination = "172.32.0.0-192.167.255.255"
+  }
+
+  rule {
+    protocol    = "all"
+    destination = "192.169.0.0-255.255.255.255"
+  }
+}
+
 resource "cloudfoundry_asg" "dns" {
   name = "dns"
+
+  rule {
+    protocol    = "tcp"
+    ports       = "53"
+    destination = "0.0.0.0/0"
+  }
+
+  rule {
+    protocol    = "udp"
+    ports       = "53"
+    destination = "0.0.0.0/0"
+  }
+}
+
+# New dns asg to apply to spaces individually, not globally.
+
+resource "cloudfoundry_asg" "dns_egress" {
+  name = "dns_egress"
 
   rule {
     protocol    = "tcp"
