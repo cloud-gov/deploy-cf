@@ -172,6 +172,55 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
 
 }
 
+# New trusted networks asg to apply to spaces individually, not globally.
+
+resource "cloudfoundry_asg" "trusted_local_networks_egress" {
+  name = "trusted_local_networks_egress"
+
+  # RDS access for postgres, mysql, mssql, oracle
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to RDS"
+    destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az1
+    ports       = "5432,3306,1433,1521"
+  }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to RDS"
+    destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az2
+    ports       = "5432,3306,1433,1521"
+  }
+
+  # Elasticache access
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to Elasticache"
+    destination = data.terraform_remote_state.iaas.outputs.elasticache_subnet_cidr_az1
+    ports       = "6379"
+  }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to Elasticache"
+    destination = data.terraform_remote_state.iaas.outputs.elasticache_subnet_cidr_az2
+    ports       = "6379"
+  }
+
+  # Elastisearch access
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to AWS Elasticsearch"
+    destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az1
+    ports       = "443"
+  }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to AWS Elasticsearch"
+    destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az2
+    ports       = "443"
+  }
+
+}
+
 resource "cloudfoundry_asg" "brokers" {
   name = "brokers"
   rule {
