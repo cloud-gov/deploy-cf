@@ -155,9 +155,9 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/pages-staging?
   value:
     override: true
-    scope: openid,scim.invite,groups.update
+    scope: openid,scim.invite
     authorized-grant-types: authorization_code,client_credentials
-    authorities: scim.write,scim.read,scim.create
+    authorities: groups.update,scim.read
     access-token-validity: 600
     refresh-token-validity: 259200
     name: Pages - Staging
