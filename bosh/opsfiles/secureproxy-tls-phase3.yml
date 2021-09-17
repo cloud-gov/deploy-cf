@@ -1,0 +1,4 @@
+# For phase 3 - turn off HTTP on the gorouter
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/disable_http?
+  value: true
