@@ -1,0 +1,16 @@
+# For phase 2 we enable front-end of secureproxy to accept HTTPS and go back out to gorouter via HTTPS
+- type: replace
+  path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/https_listen_port?
+  value: 443
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/https_proxy_port?
+  value: 8443
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/tls_cert?
+  value: ((router_ssl.certificate))
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/tls_key?
+  value: ((router_ssl.private_key))
