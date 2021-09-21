@@ -1,15 +1,8 @@
 # For phase 1 this enables SSL on the gorouter while leaving HTTP still running
-- type: replace
-  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/enable_ssl?
-  value: true
-- type: replace
-  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/tls_port?
-  value: 8443
-- type: replace
-  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/tls_pem?
-  value:
-    - cert_chain: "((router_ssl.certificate))"
-      private_key: "((router_ssl.private_key))"
+- type: remove
+  path: /variables/name=router_ssl
+- type: remove
+  path: /variables/name=router_ca
 - type: replace
   path: /variables/-
   value:

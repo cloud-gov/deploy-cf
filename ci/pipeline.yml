@@ -35,7 +35,6 @@ jobs:
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
-      - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
@@ -64,6 +63,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
@@ -398,7 +398,6 @@ jobs:
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
-      - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
@@ -426,6 +425,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
@@ -781,7 +781,6 @@ jobs:
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
-      - cf-deployment/operations/disable-router-tls-termination.yml
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
@@ -811,6 +810,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
