@@ -1,4 +1,4 @@
-# For phase 1 this enables SSL on the gorouter while leaving HTTP still running
+# For phase 1 this enables SSL varibles with master-bosh on the gorouter while leaving HTTP still running
 - type: remove
   path: /variables/name=router_ssl
 - type: remove
@@ -14,3 +14,10 @@
       alternative_names:
       - "((system_domain))"
       - "*.((system_domain))"
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/tls_port?
+  value: 8443
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/disable_http?
+  value: false
