@@ -2,11 +2,9 @@
 
 set -e
 
-ENV=$1
-ORG="test-egress-${ENV}"
-APP_URL="https://$ORG.app.cloud.gov"
+ORG=$CF_ORG
+DOMAIN=$CF_APP_DOMAIN
 TEST_MATRIX="./test-matrix"
-NO_RESPONSE="NO_RESPONSE"
 
 ## Read test matrix file and run each test per line
 
@@ -20,7 +18,8 @@ while IFS= read -r line; do
   url_path="${arg_array[1]}"
   expected_status_code="${arg_array[2]}"
   expected_response_body="${arg_array[3]}"
-  endpoint=$APP_URL$url_path
+  baseurl="https://app-test-$space.$DOMAIN"
+  endpoint="$baseurl$url_path"
 
   ## Curl the endpoint for status code and response body
   actual_status_code=$(curl -o /dev/null -s -w "%{http_code}\n" $endpoint)

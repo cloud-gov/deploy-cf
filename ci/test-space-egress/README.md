@@ -14,7 +14,7 @@ Tests will be deployed by [cg-deploy-cf's ci pipeline](../ci/pipeline.yml) and t
 ### Space App Security Groups
 
 Test org and spaces will be defined by [cg-deploy-cf's test-suite terraform](../terraform/) and deployed to each instance of CF with three spaces
-- _Org:_ `<env>-platform-egress-test`
+- _Org:_ `platform-egress-test`
   - _Space:_ `no-egress`
     - _ASG:_ `internal_only`
   - _Space:_ `closed-egress`

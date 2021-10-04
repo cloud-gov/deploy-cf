@@ -8,8 +8,9 @@ deploy-env: ## Deploy org, spaces, and apps to CF
 	./deploy-env.sh
 
 run-tests: ## Run tests against deployed apps
-	./run-tests
+	./run-tests.sh
 
 clean: ## Remove test apps, spaces, and orgs from CF
+	./clean.sh
 
 all: deploy-env run-tests clean ## Run deploy-env, run-tests, and clean
