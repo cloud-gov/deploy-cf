@@ -52,6 +52,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -440,6 +441,7 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -450,6 +452,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -824,6 +827,7 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -834,6 +838,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
