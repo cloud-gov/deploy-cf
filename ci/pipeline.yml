@@ -374,6 +374,7 @@ jobs:
   - in_parallel:
     - get: cf-deployment
     - get: cf-manifests
+      trigger: true
       passed: [deploy-cf-development]
   - task: test-space-egress
     file: cf-manifests/ci/test-space-egress/test-space-egress.yml

@@ -1,9 +1,9 @@
-no-egress,/test,200,Success
+no-egress,/test,200,"Success"
 no-egress,/test-internal-network,500,""
 no-egress,/test-external-network,500,""
-closed-egress,/test,200,Success
-closed-egress,/test-internal-network,200,Success
+closed-egress,/test,200,"Success"
+closed-egress,/test-internal-network,200,"Success"
 closed-egress,/test-external-network,500,""
-open-egress,/test,200,Success
-open-egress,/test-internal-network,200,Success
-open-egress,/test-external-network,200,Success
+open-egress,/test,200,"Success"
+open-egress,/test-internal-network,200,"Success"
+open-egress,/test-external-network,200,"Success"
