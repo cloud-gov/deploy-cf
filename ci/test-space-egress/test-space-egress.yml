@@ -8,8 +8,6 @@ image_resource:
 
 inputs:
 - name: cf-manifests
-outputs:
-- name: test-space-egress
 
 run:
   path: cf-manifests/ci/test-space-egress/run.sh

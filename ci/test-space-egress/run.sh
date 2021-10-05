@@ -4,6 +4,9 @@
 
 set -e
 
+cf api "${CF_API_URL}"
+(set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
+
 # Clean up deployment if an error occurs
 onerr() {
   ./clean.sh
