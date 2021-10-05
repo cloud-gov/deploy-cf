@@ -1,5 +1,4 @@
 # YAML property files
-manifest.yml
 cf-secrets.yml
 secrets.yml
 cf-secrets-staging.yml
@@ -22,9 +21,10 @@ tmp/
 *-certs
 jwt_*
 
-# Python
-__pycache__/
-*.py[cod]
-
-# Python Environments
+# python
 .venv
+__pycache__
+
+# Other
+README
+deploy.sh

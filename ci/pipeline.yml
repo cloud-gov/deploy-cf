@@ -52,6 +52,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -367,6 +368,41 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: test-space-egress-development
+  serial_groups: [development]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-development]
+  - task: test-space-egress
+    file: cf-manifests/ci/test-space-egress/test-space-egress.yml
+    params:
+      CF_API_URL: ((cf-api-url-development))
+      CF_USERNAME: ((cf-username-development))
+      CF_PASSWORD: ((cf-password-development))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 - name: deploy-cf-staging
   serial_groups: [staging]
   serial: true
@@ -405,6 +441,7 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -415,6 +452,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -789,6 +827,7 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -799,6 +838,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
@@ -1259,6 +1299,7 @@ groups:
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
+  - test-space-egress-development
   - deploy-cf-staging
   - terraform-plan-staging
   - terraform-apply-staging
@@ -1287,6 +1328,7 @@ groups:
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
   - smoke-tests-development
+  - test-space-egress-development
 - name: staging
   jobs:
   - deploy-cf-staging
