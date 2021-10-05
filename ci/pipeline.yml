@@ -376,15 +376,23 @@ jobs:
     - get: cf-manifests
       trigger: true
       passed: [deploy-cf-development]
-  - task: test-space-egress
-    file: cf-manifests/ci/test-space-egress/test-space-egress.yml
-    params:
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-development-params
       CF_API_URL: ((cf-api-url-development))
       CF_USERNAME: ((cf-username-development))
       CF_PASSWORD: ((cf-password-development))
       CF_ORG: platform-test-space-egress
       CF_QUOTA: default
       CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-development-params
+  - task: clean-test-env
+    file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+    params:
+      <<: *test-space-egress-development-params
   on_success:
     put: slack
     params:

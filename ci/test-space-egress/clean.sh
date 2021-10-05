@@ -8,6 +8,11 @@ SPACE_NO_EGRESS="no-egress"
 SPACE_CLOSED_EGRESS="closed-egress"
 SPACE_OPEN_EGRESS="open-egress"
 
+
+## CF Auth
+cf api "${CF_API_URL}"
+(set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
+
 ## Delete apps
 
 for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS

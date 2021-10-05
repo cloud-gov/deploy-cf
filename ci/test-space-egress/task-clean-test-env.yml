@@ -10,4 +10,4 @@ inputs:
 - name: cf-manifests
 
 run:
-  path: cf-manifests/ci/test-space-egress/run.sh
+  path: cf-manifests/ci/test-space-egress/clean.sh

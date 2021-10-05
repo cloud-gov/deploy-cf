@@ -6,7 +6,14 @@ ORG=$CF_ORG
 DOMAIN=$CF_APP_DOMAIN
 TEST_MATRIX="./test-matrix"
 
+# Colors
+red='\033[0;31m';
+green='\033[0;32m';
+cyan='\033[0;36m';
+
 ## Read test matrix file and run each test per line
+
+echo "\n\n${cyan}Running Space Egress Test Suite\n\n"
 
 while IFS= read -r line; do
 
@@ -27,19 +34,28 @@ while IFS= read -r line; do
 
   ## Run status code check
   if [ "$actual_status_code" != "$expected_status_code" ]; then
-    echo "Failed: Status code check for ${space} at $endpoint"
-    echo "Expected: $expected_status_code"
-    echo "Actual: ${actual_status_code}"
+    echo ""
+    echo "${red}Failed: Status code check for ${space} at $endpoint"
+    echo "${cyan}Expected: $expected_status_code"
+    echo "${red}Actual: ${actual_status_code}"
+    echo ""
     exit 1
+  else
+    echo "${green}Success: Status code check for ${space} at $endpoint"
   fi
 
   ## Run response body check
   if [ "\"\"" != "$expected_response_body" ]; then
     if [ "$actual_response_body" != "$expected_response_body" ]; then
-      echo "Failed: Response body check for ${space} at $endpoint"
-      echo "Expected: $expected_response_body"
-      echo "Actual: ${actual_response_body}"
+      echo ""
+      echo "${red}Failed: Response body check for ${space} at $endpoint"
+      echo "${cyan}Expected: $expected_response_body"
+      echo "${red}Actual: ${actual_response_body}"
+      echo ""
       exit 1
+
+    else
+      echo "${green}Success: Response body check for ${space} at $endpoint"
     fi
   fi
 done < $TEST_MATRIX

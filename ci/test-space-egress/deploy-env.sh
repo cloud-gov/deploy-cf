@@ -12,6 +12,13 @@ ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS="trusted_local_networks_egress"
 ASG_PUBLIC_NETWORKS_EGRESS="public_networks_egress"
 ASG_DNS_EGRESS="dns_egress"
 
+# CF Auth
+cf api "${CF_API_URL}"
+(set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
+
+# Go into test directory
+pushd cf-manifests/ci/test-space-egress
+
 ## Create org
 
 cf create-org $ORG
