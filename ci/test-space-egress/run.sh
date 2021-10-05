@@ -9,7 +9,7 @@ cf api "${CF_API_URL}"
 
 # Clean up deployment if an error occurs
 onerr() {
-  ./clean.sh
+  $PWD/cf-manifests/ci/test-space-egress/clean.sh
   exit 1
 }
 
