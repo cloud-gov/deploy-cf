@@ -10,10 +10,14 @@ TEST_MATRIX="./test-matrix"
 red='\033[0;31m';
 green='\033[0;32m';
 cyan='\033[0;36m';
+no_color='\033[0m';
+
+# Go into test directory
+pushd cf-manifests/ci/test-space-egress
 
 ## Read test matrix file and run each test per line
 
-echo "\n\n${cyan}Running Space Egress Test Suite\n\n"
+echo -e "\n\n${cyan}Running Space Egress Test Suite${no_color}\n\n"
 
 while IFS= read -r line; do
 
@@ -35,27 +39,27 @@ while IFS= read -r line; do
   ## Run status code check
   if [ "$actual_status_code" != "$expected_status_code" ]; then
     echo ""
-    echo "${red}Failed: Status code check for ${space} at $endpoint"
-    echo "${cyan}Expected: $expected_status_code"
-    echo "${red}Actual: ${actual_status_code}"
+    echo -e "${red}Failed: Status code check for ${space} at $endpoint${no_color}"
+    echo -e "${cyan}Expected: $expected_status_code${no_color}"
+    echo -e "${red}Actual: ${actual_status_code}${no_color}"
     echo ""
     exit 1
   else
-    echo "${green}Success: Status code check for ${space} at $endpoint"
+    echo -e "${green}Success: Status code check for ${space} at $endpoint${no_color}"
   fi
 
   ## Run response body check
   if [ "\"\"" != "$expected_response_body" ]; then
     if [ "$actual_response_body" != "$expected_response_body" ]; then
       echo ""
-      echo "${red}Failed: Response body check for ${space} at $endpoint"
-      echo "${cyan}Expected: $expected_response_body"
-      echo "${red}Actual: ${actual_response_body}"
+      echo -e "${red}Failed: Response body check for ${space} at $endpoint${no_color}"
+      echo -e "${cyan}Expected: $expected_response_body${no_color}"
+      echo -e "${red}Actual: ${actual_response_body}${no_color}"
       echo ""
       exit 1
 
     else
-      echo "${green}Success: Response body check for ${space} at $endpoint"
+      echo -e "${green}Success: Response body check for ${space} at $endpoint${no_color}"
     fi
   fi
 done < $TEST_MATRIX
