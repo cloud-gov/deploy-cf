@@ -10,7 +10,7 @@ TEST_MATRIX="./test-matrix"
 red='\033[0;31m';
 green='\033[0;32m';
 cyan='\033[0;36m';
-no_color='\033[0m'
+no_color='\033[0m';
 
 # Go into test directory
 pushd cf-manifests/ci/test-space-egress
