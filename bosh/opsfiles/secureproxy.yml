@@ -46,6 +46,10 @@
           proxy_whitelist: ((tic-proxy-whitelist))
 
 # Remove the default router ssl certs and replace with our own signed with master bosh to prevent yearly 3 pave deploys
+- type: remove
+  path: /variables/name=router_ssl
+- type: remove
+  path: /variables/name=router_ca
 - type: replace
   path: /variables/-
   value:
