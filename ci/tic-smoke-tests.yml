@@ -7,7 +7,7 @@ image_resource:
     repository: 18fgsa/concourse-task
 
 inputs:
-- name: cf-manifests
+- name: cf-manifests-dev
 - name: master-bosh-root-cert
 
 run:
