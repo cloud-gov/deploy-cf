@@ -11,4 +11,4 @@ inputs:
 - name: master-bosh-root-cert
 
 run:
-  path: cf-manifests/ci/tic-smoke-tests.sh
+  path: cf-manifests-dev/ci/tic-smoke-tests.sh
