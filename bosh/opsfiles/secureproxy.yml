@@ -11,8 +11,8 @@
     release: secureproxy
     properties:
       secureproxy:
-        listen_port: 80
-        proxy_port: 85
+        https_listen_port: 443
+        https_proxy_port: 8443
         # Expose gorouter health check for ELB
         # For this to work, router.load_balancer_healthy_threshold must be set to 0
         custom_server_config: |-
@@ -45,9 +45,26 @@
           whitelist: ((tic-whitelist))
           proxy_whitelist: ((tic-proxy-whitelist))
 
+# Remove the default router ssl certs and replace with our own signed with master bosh to prevent yearly 3 pave deploys
 - type: replace
+  path: /variables/-
+  value:
+    name: router_ssl
+    type: certificate
+    options:
+      ca: /master-bosh-ca
+      common_name: routerSSL
+      alternative_names:
+      - "((system_domain))"
+      - "*.((system_domain))"
+
+# Always remove the http port and keep http disabled regardless of cf-deployment manifest
+- type: remove
   path: /instance_groups/name=router/jobs/name=gorouter/properties/router/port?
-  value: 85
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/disable_http?
+  value: true
 
 # This must be set to 0 to get the behaivor we want according to the rules outlined here:
 # https://github.com/cloudfoundry-incubator/routing-release#configure-load-balancer-healthchecks-for-gorouter
@@ -56,3 +73,15 @@
 - type: replace
   path: /instance_groups/name=router/jobs/name=gorouter/properties/router/load_balancer_healthy_threshold?
   value: 0
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/tls_cert?
+  value: ((router_ssl.certificate))
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/tls_key?
+  value: ((router_ssl.private_key))
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/tls_port?
+  value: 8443
