@@ -65,9 +65,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase2.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase3.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
@@ -482,9 +479,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase2.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase3.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
@@ -873,9 +867,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase2.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase3.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
