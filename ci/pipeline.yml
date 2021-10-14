@@ -65,8 +65,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase2.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
@@ -291,6 +289,8 @@ jobs:
       PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
       TIC_SECRET_ALLOWED: ((tic-secret-development))
       TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
   on_failure:
     put: slack
     params:
@@ -479,8 +479,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase2.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       vars_files:
@@ -627,6 +625,8 @@ jobs:
       PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
       TIC_SECRET_ALLOWED: ((tic-secret-staging))
       TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
   on_failure:
     put: slack
     params:
@@ -867,8 +867,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase1.yml
-      - cf-manifests/bosh/opsfiles/secureproxy-tls-phase2.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
@@ -1055,6 +1053,8 @@ jobs:
       PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
       TIC_SECRET_ALLOWED: ((tic-secret-production))
       TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
   on_failure:
     put: slack
     params:

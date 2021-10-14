@@ -17,8 +17,8 @@ gorouter_ip=$(
 )
 
 @test "restricted user | address allowed" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_ALLOWED}" \
@@ -28,8 +28,8 @@ gorouter_ip=$(
 }
 
 @test "restricted user | address forbidden" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_FORBIDDEN}" \
@@ -39,8 +39,8 @@ gorouter_ip=$(
 }
 
 @test "restricted user | secret allowed | proxy allowed | address allowed (X-Client-IP)" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -52,8 +52,8 @@ gorouter_ip=$(
 }
 
 @test "restricted user | secret allowed | proxy forbidden | address allowed (X-Client-IP)" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_FORBIDDEN}" \
@@ -65,8 +65,8 @@ gorouter_ip=$(
 }
 
 @test "restricted user | secret forbidden | proxy allowed | address allowed (X-Client-IP)" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -78,8 +78,8 @@ gorouter_ip=$(
 }
 
 @test "restricted user | secret allowed | proxy allowed | address forbidden (X-Client-IP)" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -91,8 +91,8 @@ gorouter_ip=$(
 }
 
 @test "restricted user | secret empty | proxy allowed | address allowed (X-Client-IP)" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -104,8 +104,8 @@ gorouter_ip=$(
 }
 
 @test "unrestricted user" {
-  resp=$(curl -s \
-    http://${gorouter_ip}:${GOROUTER_PORT:-80}/v2/apps \
+  resp=$(curl -s -k \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${unrestricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_FORBIDDEN}" \
