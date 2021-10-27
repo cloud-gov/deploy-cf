@@ -16,6 +16,18 @@ ASG_DNS_EGRESS="dns_egress"
 cf api "${CF_API_URL}"
 (set +x; cf auth "${CF_USERNAME}" "${CF_PASSWORD}")
 
+# Function for waiting on a service instance to finish being processed.
+wait_for_service_instance() {
+  local service_name=$1
+  local guid=$(cf service --guid $service_name)
+  local status=$(cf curl /v2/service_instances/${guid} | jq -r '.entity.last_operation.state')
+
+  while [ "$status" == "in progress" ]; do
+    sleep 60
+    status=$(cf curl /v2/service_instances/${guid} | jq -r '.entity.last_operation.state')
+  done
+}
+
 # Go into test directory
 pushd cf-manifests/ci/test-space-egress
 
@@ -44,6 +56,28 @@ cf bind-security-group $ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS $ORG --space 
 cf bind-security-group $ASG_PUBLIC_NETWORKS_EGRESS $ORG --space $SPACE_OPEN_EGRESS
 cf bind-security-group $ASG_DNS_EGRESS $ORG --space $SPACE_OPEN_EGRESS
 
+## Create databases
+
+for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+do
+  # target the correct space
+  cf target -o $ORG -s $space
+
+  # Create the db service instance
+  cf create-service aws-rds micro-psql $space-db
+done
+
+## Wait for databases to create
+
+for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+do
+  # target the correct space
+  cf target -o $ORG -s $space
+
+  # Wait for the database
+  wait_for_service_instance $space-db
+done
+
 ## Push apps
 
 for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
@@ -62,4 +96,10 @@ do
 
   # map the route
   cf map-route $space-app $DOMAIN --hostname app-test-$space
+
+  # bind db
+  cf bind-service $space-app $space-db
+
+  # restage app
+  cf restage $space-app
 done
