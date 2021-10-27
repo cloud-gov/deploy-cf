@@ -3,12 +3,13 @@ import requests
 import psycopg2
 from cfenv import AppEnv
 
+
 def test_db_connection():
-    db = AppEnv().get_service(label='aws-rds')
-    conn_string = db.credentials['uri']
+    db = AppEnv().get_service(label="aws-rds")
+    conn_string = db.credentials["uri"]
     conn = psycopg2.connect(conn_string)
     cur = conn.cursor()
-    cur.execute('select count(1);')
+    cur.execute("select count(1);")
     result = cur.fetchone()
     cur.close()
     conn.close()
@@ -38,6 +39,7 @@ def get_external_networks(response: Response):
     except Exception as e:
         response.status_code = status.HTTP_500_CREATED
         return response
+
 
 @app.get("/test-internal-networks")
 def get_internal_networks(response: Response):
