@@ -242,6 +242,12 @@ resource "cloudfoundry_asg" "smtp" {
   }
 }
 
+# Default global running ASG
+resource "cloudfoundry_default_asg" "running" {
+    name = "running"
+    asgs = [ cloudfoundry_asg.dns.id ]
+}
+
 resource "cloudfoundry_org_quota" "default-tts" {
   name                     = "default-tts"
   allow_paid_service_plans = true
