@@ -5,9 +5,9 @@ set -e
 ORG=$CF_ORG
 QUOTA=$CF_QUOTA
 DOMAIN=$CF_APP_DOMAIN
-SPACE_NO_EGRESS="no-egress"
 SPACE_CLOSED_EGRESS="closed-egress"
-SPACE_OPEN_EGRESS="open-egress"
+SPACE_RESTRICTED_EGRESS="restricted-egress"
+SPACE_PUBLIC_EGRESS="public-egress"
 ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS="trusted_local_networks_egress"
 ASG_PUBLIC_NETWORKS_EGRESS="public_networks_egress"
 ASG_DNS_EGRESS="dns_egress"
@@ -41,7 +41,7 @@ cf set-org-quota $ORG $QUOTA
 
 ## Create spaces
 
-for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+for space in $SPACE_CLOSED_EGRESS $SPACE_RESTRICTED_EGRESS $SPACE_PUBLIC_EGRESS
 do
   cf create-space $space -o $ORG
 done
@@ -49,16 +49,16 @@ done
 ## Apply security groups
 
 ### Bind to closed egress space
-cf bind-security-group $ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS $ORG --space $SPACE_CLOSED_EGRESS
+cf bind-security-group $ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS $ORG --space $SPACE_RESTRICTED_EGRESS
 
 ### Bind to open egress space
-cf bind-security-group $ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS $ORG --space $SPACE_OPEN_EGRESS
-cf bind-security-group $ASG_PUBLIC_NETWORKS_EGRESS $ORG --space $SPACE_OPEN_EGRESS
-cf bind-security-group $ASG_DNS_EGRESS $ORG --space $SPACE_OPEN_EGRESS
+cf bind-security-group $ASG_TRUSTED_LOCAL_NETWORKS_INTERNAL_EGRESS $ORG --space $SPACE_PUBLIC_EGRESS
+cf bind-security-group $ASG_PUBLIC_NETWORKS_EGRESS $ORG --space $SPACE_PUBLIC_EGRESS
+cf bind-security-group $ASG_DNS_EGRESS $ORG --space $SPACE_PUBLIC_EGRESS
 
 ## Create databases
 
-for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+for space in $SPACE_CLOSED_EGRESS $SPACE_RESTRICTED_EGRESS $SPACE_PUBLIC_EGRESS
 do
   # target the correct space
   cf target -o $ORG -s $space
@@ -69,7 +69,7 @@ done
 
 ## Wait for databases to create
 
-for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+for space in $SPACE_CLOSED_EGRESS $SPACE_RESTRICTED_EGRESS $SPACE_PUBLIC_EGRESS
 do
   # target the correct space
   cf target -o $ORG -s $space
@@ -80,7 +80,7 @@ done
 
 ## Push apps
 
-for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+for space in $SPACE_CLOSED_EGRESS $SPACE_RESTRICTED_EGRESS $SPACE_PUBLIC_EGRESS
 do
   # target the correct space
   cf target -o $ORG -s $space

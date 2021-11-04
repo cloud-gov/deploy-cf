@@ -4,9 +4,9 @@ set -e
 
 ORG=$CF_ORG
 DOMAIN=$CF_APP_DOMAIN
-SPACE_NO_EGRESS="no-egress"
 SPACE_CLOSED_EGRESS="closed-egress"
-SPACE_OPEN_EGRESS="open-egress"
+SPACE_RESTRICTED_EGRESS="restricted-egress"
+SPACE_PUBLIC_EGRESS="public-egress"
 
 
 ## CF Auth
@@ -15,7 +15,7 @@ cf api "${CF_API_URL}"
 
 ## Delete apps
 
-for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+for space in $SPACE_CLOSED_EGRESS $SPACE_RESTRICTED_EGRESS $SPACE_PUBLIC_EGRESS
 do
   # Change to target space
   cf target -o $ORG -s $space
@@ -32,7 +32,7 @@ done
 
 ## Delete spaces
 
-for space in $SPACE_NO_EGRESS $SPACE_CLOSED_EGRESS $SPACE_OPEN_EGRESS
+for space in $SPACE_CLOSED_EGRESS $SPACE_RESTRICTED_EGRESS $SPACE_PUBLIC_EGRESS
 do
   cf delete-space $space -o $ORG -f
 done
