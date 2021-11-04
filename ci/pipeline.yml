@@ -804,6 +804,55 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: test-space-egress-staging
+  serial_groups: [staging]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-staging]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-staging-params
+      CF_API_URL: ((cf-api-url-staging))
+      CF_USERNAME: ((cf-username-staging))
+      CF_PASSWORD: ((cf-password-staging))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: fr-stage.cloud.gov
+    on_failure: &test-space-egress-staging-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+      params:
+        <<: *test-space-egress-staging-params
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-staging-params
+    on_failure:
+      <<: *test-space-egress-staging-clean-tasks
+    on_success:
+      <<: *test-space-egress-staging-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on staging PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on staging FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 - name: plan-cf-production
   serial_groups: [production]
   serial: true
@@ -1323,6 +1372,7 @@ groups:
   - tic-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
+  - test-space-egress-staging
   - deploy-cf-production
   - plan-cf-production
   - terraform-plan-production
@@ -1354,6 +1404,7 @@ groups:
   - tic-smoke-tests-staging
   - smoke-tests-staging
   - acceptance-tests-staging
+  - test-space-egress-staging
 - name: production
   jobs:
   - plan-cf-production
