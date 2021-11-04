@@ -15,14 +15,14 @@ Tests will be deployed by [cg-deploy-cf's ci pipeline](../ci/pipeline.yml) and t
 
 Test org and spaces will be defined by [cg-deploy-cf's test-suite terraform](../terraform/) and deployed to each instance of CF with three spaces
 - _Org:_ `platform-egress-test`
-  - _Space:_ `no-egress`
-    - _ASG:_ `internal_only`
   - _Space:_ `closed-egress`
-    - _ASG:_ `internal_only`
-    - _ASG:_ `services_network`
-  - _Space:_ `open-egress`
-    - _ASG:_ `internal_only`
-    - _ASG:_ `services_network`
+    - _ASG:_ `dns`
+  - _Space:_ `restricted-egress`
+    - _ASG:_ `dns`
+    - _ASG:_ `trusted_local_networks`
+  - _Space:_ `public-egress`
+    - _ASG:_ `dns`
+    - _ASG:_ `trusted_local_networks`
     - _ASG:_ `public_networks`
 
 Tests will be defined in a test matrix file by the space, endpoint, HTTP status code, and an optional HTTP response.
@@ -31,15 +31,15 @@ Tests will be defined in a test matrix file by the space, endpoint, HTTP status 
 
 |Space|Endpoint|HTTP STATUS CODE|RESPONSE BODY|
 |-----|--------|----------------|-------------|
-|`no-egress`| `/`|`200`|`"Success"`|
-|`no-egress`| `/test-internal-network`|`500`||
-|`no-egress`| `/test-external-network`|`500`||
 |`closed-egress`| `/`|`200`|`"Success"`|
-|`closed-egress`| `/test-internal-network`|`200`|`"Success"`|
+|`closed-egress`| `/test-internal-network`|`500`||
 |`closed-egress`| `/test-external-network`|`500`||
-|`open-egress`| `/`|`200`|`"Success"`|
-|`open-egress`| `/test-internal-network`|`200`|`"Success"`|
-|`open-egress`| `/test-external-network`|`200`|`"Success"`|
+|`restricted-egress`| `/`|`200`|`"Success"`|
+|`restricted-egress`| `/test-internal-network`|`200`|`"Success"`|
+|`restricted-egress`| `/test-external-network`|`500`||
+|`public-egress`| `/`|`200`|`"Success"`|
+|`public-egress`| `/test-internal-network`|`200`|`"Success"`|
+|`public-egress`| `/test-external-network`|`200`|`"Success"`|
 
 
 ### Deployment
