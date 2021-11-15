@@ -92,9 +92,9 @@
       release: diego
       properties:
         tls: &cfdot_tls_client_properties
-          #ca_certificate: "((diego_rep_client.ca))"
-          #certificate: "((diego_rep_client.certificate))"
-          #private_key: "((diego_rep_client.private_key))"
+          ca_certificate: "((diego_rep_client.ca))"
+          certificate: "((diego_rep_client.certificate))"
+          private_key: "((diego_rep_client.private_key))"
     - name: route_emitter
       release: diego
       properties:
