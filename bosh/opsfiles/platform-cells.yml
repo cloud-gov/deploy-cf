@@ -30,11 +30,8 @@
           debug_listen_address: 127.0.0.1:17019
           default_container_grace_time: 0
           destroy_containers_on_start: true
-          #graph_cleanup_threshold_in_mb: 0
           deny_networks:
           - 0.0.0.0/0
-          #persistent_image_list:
-          #- "/var/vcap/packages/cflinuxfs3/rootfs.tar"
           network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
           network_plugin_extra_args:
           - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
@@ -51,19 +48,8 @@
             instance_identity_ca_cert: ((diego_instance_identity_ca.certificate))
             instance_identity_key: ((diego_instance_identity_ca.private_key))
           rep:
-            #bbs: &diego_bbs_client_properties
-            #  ca_cert: "((diego_bbs_client.ca))"
-            #  client_cert: "((diego_bbs_client.certificate))"
-            #  client_key: "((diego_bbs_client.private_key))"
             preloaded_rootfses:
             - cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar
-            #require_tls: true
-            #ca_cert: "((service_cf_internal_ca.certificate))"
-            #server_cert: "((diego_rep_agent_v2.certificate))"
-            #server_key: "((diego_rep_agent_v2.private_key))"
-            #enable_legacy_api_endpoints: false
-            #locket:
-            #  api_location: "locket.service.cf.internal:8891"
         containers:
           proxy:
             enabled: true
@@ -77,7 +63,6 @@
           trusted_ca_certificates:
             - ((application_ca.certificate))
             - ((uaa_ca.certificate))
-        #use_v2_tls: true
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
         loggregator: *diego_loggregator_client_properties
