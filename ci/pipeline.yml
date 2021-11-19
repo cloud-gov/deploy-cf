@@ -441,6 +441,7 @@ jobs:
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: [smoke-tests-development]
+  - put: timestamp
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-staging
@@ -520,6 +521,13 @@ jobs:
       DISABLED_FEATURE_FLAGS: |
         user_org_creation
         hide_marketplace_from_unauthenticated_users
+  - task: validate-zdt
+    file: cf-manifests/ci/check-deployment-was-zdt.yml
+    params:
+      HEALTH_CHECK_ID: ((staging-route53-healthcheck-id))
+      AWS_REGION: ((staging-route53-healthcheck-region))
+      AWS_ACCESS_KEY_ID: ((staging-route53-aws-access-key))
+      AWS_SECRET_ACCESS_KEY: ((staging-route53-secret-access-key))
 
   on_success:
     put: slack
@@ -1334,6 +1342,9 @@ resources:
   type: time
   source:
     interval: 1h
+
+- name: timestamp
+  type: time
 
 resource_types:
 - name: slack-notification
