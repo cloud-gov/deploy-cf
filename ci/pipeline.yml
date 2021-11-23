@@ -1201,6 +1201,55 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: test-space-egress-production
+  serial_groups: [production]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-production]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-production-params
+      CF_API_URL: ((cf-api-url-production))
+      CF_USERNAME: ((cf-username-production))
+      CF_PASSWORD: ((cf-password-production))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: app.cloud.gov
+    on_failure: &test-space-egress-production-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+      params:
+        <<: *test-space-egress-production-params
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-production-params
+    on_failure:
+      <<: *test-space-egress-production-clean-tasks
+    on_success:
+      <<: *test-space-egress-production-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on production PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on production FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 resources:
 - name: master-bosh-root-cert
   type: s3-iam
@@ -1382,6 +1431,7 @@ groups:
   - uaa-client-auditing-production
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
+  - test-space-egress-production
 - name: development
   jobs:
   - deploy-cf-development
@@ -1416,3 +1466,4 @@ groups:
   - uaa-client-auditing-production
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
+  - test-space-egress-production
