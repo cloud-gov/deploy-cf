@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 # timestamp/timestamp will look like 2021-12-31 23:59:59 -0000 UTC
 # date wants                         2021-12-31 23:59:59-0000
@@ -23,8 +23,8 @@ stats=$(aws cloudwatch get-metric-data --start-time $START_TIME --end-time `date
   }
 }' | jq '.MetricDataResults[0].Values[]')
 
-for stat in stats; do
-  if [[ stat -lt 1 ]]; then
+for stat in $stats; do
+  if [[ $stat -lt 1 ]]; then
     exit 1
   fi
 done
