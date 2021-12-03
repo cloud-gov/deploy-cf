@@ -1,5 +1,8 @@
+#!/bin/bash
 
-START_TIME=$(date -d "`cat timestamp | sed -r 's/-[[:digit:]]{4} [A-Z][SD]T//'`" +%s)
+# timestamp/timestamp will look like 2021-12-31 23:59:59 -0000 UTC
+# date wants                         2021-12-31 23:59:59-0000
+START_TIME=$(date -d "`cat timestamp/timestamp | sed -r 's/ ([+-][[:digit:]]{4}) ([A-Z][SD]T|UTC)/\1/'`" +%s)
 
 stats=$(aws cloudwatch get-metric-data --start-time $START_TIME --end-time `date +%s` --metric-data-queries '
 {
@@ -15,7 +18,7 @@ stats=$(aws cloudwatch get-metric-data --start-time $START_TIME --end-time `date
         }
       ]
     },
-    "Period": 300,
+    "Period": 1,
     "Stat": "Average"
   }
 }' | jq '.MetricDataResults[0].Values[]')
