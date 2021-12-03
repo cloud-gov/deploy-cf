@@ -525,7 +525,7 @@ jobs:
     file: cf-manifests/ci/check-deployment-was-zdt.yml
     params:
       HEALTH_CHECK_ID: ((staging-route53-healthcheck-id))
-      AWS_REGION: ((staging-route53-healthcheck-region))
+      AWS_DEFAULT_REGION: ((staging-route53-healthcheck-region))
       AWS_ACCESS_KEY_ID: ((staging-route53-aws-access-key))
       AWS_SECRET_ACCESS_KEY: ((staging-route53-secret-access-key))
 
