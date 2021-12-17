@@ -1,17 +1,17 @@
-# Added 12/14/21 to bump php and java buildpacks to cover log4j until cf-deployment catches up
+# Added 12/17/21 to bump php and java buildpacks to cover log4j until cf-deployment catches up
 
 - type: replace
   path: /releases/name=java-buildpack
   value:
-    name: java-buildpack
-    version: "4.44"
-    url: "https://bosh.io/d/github.com/cloudfoundry/java-buildpack-release?v=4.44"
-    sha1: "926bf1ff5029e077d35158d40d5baef0f58a2e0e"
+    name: "java-buildpack"
+    version: "4.45"
+    url: "https://bosh.io/d/github.com/cloudfoundry/java-buildpack-release?v=4.45"
+    sha1: "b11614fa65da34b171701287f1f1aa6da4ebba63"
 
 - type: replace
   path: /releases/name=php-buildpack
   value:
-    name: php-buildpack
-    version: "4.4.52"
-    url: "https://bosh.io/d/github.com/cloudfoundry/php-buildpack-release?v=4.4.52"
-    sha1: "cb7ec30aea8e8242fce4e7a1914151e2f377853f"
+    name: "php-buildpack"
+    version: "4.4.53"
+    url: "https://bosh.io/d/github.com/cloudfoundry/php-buildpack-release?v=4.4.53"
+    sha1: "a91a3a479012dbc37f1185d28cc2b0cb110bcc92"
