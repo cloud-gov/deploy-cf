@@ -1,4 +1,4 @@
-# Added 12/17/21 to bump php and java buildpacks to cover log4j until cf-deployment catches up
+# Added 12/17/21  to bump php and java buildpacks to cover log4j until cf-deployment catches up
 
 - type: replace
   path: /releases/name=java-buildpack
