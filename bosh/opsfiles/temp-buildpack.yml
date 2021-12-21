@@ -4,9 +4,9 @@
   path: /releases/name=java-buildpack
   value:
     name: "java-buildpack"
-    version: "4.45"
-    url: "https://bosh.io/d/github.com/cloudfoundry/java-buildpack-release?v=4.45"
-    sha1: "b11614fa65da34b171701287f1f1aa6da4ebba63"
+    version: "4.46"
+    url: "https://bosh.io/d/github.com/cloudfoundry/java-buildpack-release?v=4.46"
+    sha1: "c9b53ffa7a40dccee360752e01af3865cbf91bf7"
 
 - type: replace
   path: /releases/name=php-buildpack
