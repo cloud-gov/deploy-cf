@@ -1264,6 +1264,404 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: plan-cf-westb
+  serial_groups: [westb]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: cf-manifests
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-westb
+    - get: cf-stemcell-bionic
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: uaa-customized-release
+      passed: [acceptance-tests-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [acceptance-tests-staging]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-westb
+    params: &westb-deploy-params
+      <<: *deploy-params
+      dry_run: true
+      ops_files:
+      - cf-deployment/operations/rename-network-and-deployment.yml
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment/operations/enable-service-discovery.yml
+      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/users.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/apps-domain.yml
+      - cf-manifests/bosh/opsfiles/api-defaults.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
+      - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
+      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/scaling-westb.yml
+      - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+#remove once cf-deployment catches up - 12/13/21
+      - cf-manifests/bosh/opsfiles/temp-buildpack.yml
+      vars_files:
+      - cf-manifests/bosh/varsfiles/westb.yml
+      - terraform-secrets/terraform.yml
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: CF Production plan ready for review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to plan CF Production
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: deploy-cf-westb
+  serial_groups: [westb]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [plan-cf-westb]
+    - get: cf-manifests
+      passed: [plan-cf-westb]
+    - get: terraform-yaml
+      resource: terraform-yaml-westb
+    - get: cf-stemcell-bionic
+      passed: [plan-cf-westb]
+    - get: uaa-customized-release
+      passed: [plan-cf-westb]
+    - get: cg-s3-secureproxy-release
+      passed: [plan-cf-westb]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-westb
+    params:
+      <<: *prod-deploy-params
+      dry_run: false
+  - task: update-isolation-segments
+    file: cf-manifests/ci/update-isolation-segments.yml
+    params:
+      CF_API_URL: ((cf-api-url-westb))
+      CF_USERNAME: ((cf-username-westb))
+      CF_PASSWORD: ((cf-password-westb))
+      PLATFORM_ISOLATION_SEGMENT: ((platform-isolation-segment-westb))
+      PLATFORM_ORGANIZATION: ((platform-organization-westb))
+      PLATFORM_SPACE: ((platform-space-westb))
+      VOLUME_ISOLATION_SEGMENT: ((volume-isolation-segment-westb))
+      VOLUME_TARGETS: ((volume-targets-westb))
+
+  - task: enable-cf-features
+    file: cf-manifests/ci/enable-cf-features.yml
+    params:
+      CF_API_URL: ((cf-api-url-westb))
+      CF_USERNAME: ((cf-username-westb))
+      CF_PASSWORD: ((cf-password-westb))
+      ENABLED_FEATURE_FLAGS: |
+        private_domain_creation
+        app_bits_upload
+        app_scaling
+        route_creation
+        service_instance_creation
+        diego_docker
+        set_roles_by_username
+        unset_roles_by_username
+        task_creation
+        env_var_visibility
+        space_scoped_private_broker_creation
+        space_developer_env_var_visibility
+        service_instance_sharing
+        resource_matching
+      DISABLED_FEATURE_FLAGS: |
+        user_org_creation
+        hide_marketplace_from_unauthenticated_users
+
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on prod
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on prod
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-smoke-tests-westb
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+      passed: [deploy-cf-westb]
+    - get: cf-deployment-westb
+      passed: [deploy-cf-westb]
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: ((uaa-url-westb))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on westb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-client-auditing-westb
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-westb]
+    - get: tests-timer
+      trigger: true
+  - task: uaa-client-audit
+    file: cf-manifests/ci/uaa-client-audit.yml
+    params:
+      UAA_URL: ((uaa-url-westb))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-westb))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-westb))
+      CF_API_URL: ((cf-api-url-westb))
+      GATEWAY_HOST: prometheus-westb.service.cf.internal
+      WHITELIST: ((uaa-audit-whitelist-westb))
+
+- name: uaa-monitor-account-creation-westb
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-westb]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-westb))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-westb))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-westb))
+      GATEWAY_HOST: prometheus-westb.service.cf.internal
+
+- name: tic-smoke-tests-westb
+  plan:
+  - in_parallel:
+    - get: cf-manifests
+      passed: [deploy-cf-westb]
+    - get: cf-deployment-westb
+      passed: [deploy-cf-westb]
+      trigger: true
+    - get: master-bosh-root-cert
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      CI: true
+      API_HOSTNAME: api.fr.cloud.gov
+      BOSH_ENVIRONMENT: ((westb-bosh-target))
+      BOSH_CLIENT: ((westb-bosh-username))
+      BOSH_CLIENT_SECRET: ((westb-bosh-password))
+      BOSH_DEPLOYMENT_NAME: cf-westb
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+      RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
+      UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
+      SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
+      SOURCE_ADDRESS_FORBIDDEN: ((tic-test-source-address-forbidden))
+      PROXY_ADDRESS_ALLOWED: ((tic-test-proxy-address-allowed))
+      PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
+      TIC_SECRET_ALLOWED: ((tic-secret-westb))
+      TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on westb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: terraform-plan-westb
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-westb
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform
+      STACK_NAME: cf-westb
+      S3_TFSTATE_BUCKET: ((tf-state-bucket))
+      AWS_DEFAULT_REGION: ((aws-region))
+      CF_API_URL: ((cf-api-url-westb))
+      CF_CLIENT_ID: ((cf-client-id-westb))
+      CF_CLIENT_SECRET: ((cf-client-secret-westb))
+      TF_VAR_remote_state_bucket: ((tf-state-bucket))
+      TF_VAR_iaas_stack_name: westb
+      TF_VAR_tooling_stack_name: tooling
+  - put: slack
+    params:
+      text_file: terraform-state/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: terraform-apply-westb
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+
+      passed: [terraform-plan-westb]
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-westb
+      TERRAFORM_ACTION: apply
+
+- name: smoke-tests-westb
+  serial_groups: [westb]
+  plan:
+  - in_parallel:
+    - get: common
+      resource: master-bosh-root-cert
+      passed: [deploy-cf-westb]
+    - get: cf-deployment-westb
+      trigger: true
+    - get: tests-timer
+      trigger: true
+  - task: run-errand
+    attempts: 3
+    params:
+      BOSH_ENVIRONMENT: ((bosh.westb.environment))
+      BOSH_CLIENT: ((bosh.westb.client))
+      BOSH_CLIENT_SECRET: ((bosh.westb.client-secret))
+      BOSH_DEPLOYMENT: ((cf.westb.name))
+      BOSH_ERRAND: ((cf.westb.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: *smoke-tests-errand
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on prod PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-news-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on prod FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: test-space-egress-westb
+  serial_groups: [westb]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-westb]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-westb-params
+      CF_API_URL: ((cf-api-url-westb))
+      CF_USERNAME: ((cf-username-westb))
+      CF_PASSWORD: ((cf-password-westb))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: app.cloud.gov
+    on_failure: &test-space-egress-westb-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+      params:
+        <<: *test-space-egress-westb-params
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-westb-params
+    on_failure:
+      <<: *test-space-egress-westb-clean-tasks
+    on_success:
+      <<: *test-space-egress-westb-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on westb PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on westb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 resources:
 - name: master-bosh-root-cert
   type: s3-iam
@@ -1345,6 +1743,13 @@ resources:
     versioned_file: ((tf-state-file-production))
     region_name: ((aws-region))
 
+- name: terraform-yaml-westb
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-westb))
+    region_name: ((aws-region))
+
 - name: cf-deployment-development
   type: bosh-deployment
   source:
@@ -1371,6 +1776,15 @@ resources:
     client_secret: ((production-bosh-client-secret))
     ca_cert: ((bosh-ca-cert))
     deployment: cf-production
+
+- name: cf-deployment-westb
+  type: bosh-deployment
+  source:
+    target: ((westb-bosh-target))
+    client: ((westb-bosh-client))
+    client_secret: ((westb-bosh-client-secret))
+    ca_cert: ((bosh-ca-cert))
+    deployment: cf-westb
 
 - name: uaa-customized-release
   type: s3-iam
