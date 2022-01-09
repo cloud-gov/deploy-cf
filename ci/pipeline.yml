@@ -1275,7 +1275,7 @@ jobs:
       passed: [acceptance-tests-staging]
       trigger: true
     - get: cf-manifests
-      passed: [acceptance-tests-staging]
+      passed: [smoke-tests-development]
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-westb
@@ -1299,6 +1299,7 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
