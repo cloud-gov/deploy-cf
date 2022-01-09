@@ -1336,7 +1336,7 @@ jobs:
     put: slack
     params:
       text: |
-        :white_check_mark: CF Production plan ready for review
+        :white_check_mark: CF West plan ready for review
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1345,7 +1345,7 @@ jobs:
     put: slack
     params:
       text: |
-        :x: FAILED to plan CF Production
+        :x: FAILED to plan CF West
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1864,6 +1864,16 @@ groups:
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
   - test-space-egress-production
+  - plan-cf-westb
+  - deploy-cf-westb
+  - terraform-plan-westb
+  - terraform-apply-westb
+  - smoke-tests-westb
+  - uaa-smoke-tests-westb
+  - uaa-client-auditing-westb
+  - uaa-monitor-account-creation-westb
+  - tic-smoke-tests-westb
+  - test-space-egress-westb
 - name: development
   jobs:
   - deploy-cf-development
@@ -1899,3 +1909,15 @@ groups:
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
   - test-space-egress-production
+- name: westb
+  jobs:
+  - plan-cf-westb
+  - deploy-cf-westb
+  - terraform-plan-westb
+  - terraform-apply-westb
+  - smoke-tests-westb
+  - uaa-smoke-tests-westb
+  - uaa-client-auditing-westb
+  - uaa-monitor-account-creation-westb
+  - tic-smoke-tests-westb
+  - test-space-egress-westb

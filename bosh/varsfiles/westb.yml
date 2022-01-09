@@ -1,6 +1,6 @@
 environment: production
 network_name: default
-deployment_name: cf-production
+deployment_name: cf-westb
 company-name: cloud.gov
 system_domain: fr.wb.cloud.gov
 app_domain: app.wb.cloud.gov
