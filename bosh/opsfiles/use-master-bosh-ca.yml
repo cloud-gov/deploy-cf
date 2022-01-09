@@ -214,3 +214,85 @@
 - type: replace
   path: /variables/name=nats_server_cert/options/ca
   value: /master-bosh-ca
+
+
+- type: replace
+  path: /variables/-
+  value: 
+    name: broker-deployer-password
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: user-tester-password
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: uaa-extras-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: uaa-credentials-broker-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: uaa-client-audit-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: terraform-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: stratos-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: sandbox-bot-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: s3-broker-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: logsearch-firehose-ingestor-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: kibana-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: firehose-exporter-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: cf-exporter-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: cdn-broker-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: buildpack-notifier-client-secret
+    type: password
+- type: replace
+  path: /variables/-
+  value: 
+    name: admin-ui-client-secret
+    type: password
