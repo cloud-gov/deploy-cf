@@ -1,0 +1,11 @@
+environment: production
+network_name: default
+deployment_name: cf-production
+company-name: cloud.gov
+system_domain: fr.wb.cloud.gov
+app_domain: app.wb.cloud.gov
+
+buildpack_directory_key: cf-westb-buildpacks
+droplet_directory_key: cf-westb-droplets
+app_package_directory_key: cf-westb-cc-packages
+resource_directory_key: cf-westb-cc-resources
