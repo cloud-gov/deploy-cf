@@ -1326,6 +1326,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/use-master-bosh-ca.yml
 #remove once cf-deployment catches up - 12/13/21
       - cf-manifests/bosh/opsfiles/temp-buildpack.yml
       vars_files:
