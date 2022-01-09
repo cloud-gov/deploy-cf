@@ -19,8 +19,8 @@
       properties:
         cflinuxfs3-rootfs:
           trusted_certs:
-          - ((application_ca.certificate))
-          - ((uaa_ca.certificate))
+          - ((diego_instance_identity_ca.ca))
+          - ((uaa_ssl.ca))
     - name: garden
       release: garden-runc
       properties:
@@ -61,13 +61,13 @@
             - gorouter.service.cf.internal
             - ssh-proxy.service.cf.internal
           trusted_ca_certificates:
-            - ((application_ca.certificate))
-            - ((uaa_ca.certificate))
+            - ((diego_instance_identity_ca.ca)))
+            - ((uaa_ssl.ca))
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
         loggregator: *diego_loggregator_client_properties
         tls:
-          ca_cert: "((service_cf_internal_ca.certificate))"
+          ca_cert: "((diego_rep_agent_v2.ca))"
           cert: "((diego_rep_agent_v2.certificate))"
           key: "((diego_rep_agent_v2.private_key))"
         logging:
@@ -94,7 +94,7 @@
           route_emitter:
             local_mode: true
             bbs:
-              ca_cert: "((service_cf_internal_ca.certificate))"
+              ca_cert: "((diego_bbs_client.ca))"
               client_cert: "((diego_bbs_client.certificate))"
               client_key: "((diego_bbs_client.private_key))"
             nats:
@@ -105,7 +105,7 @@
         tcp:
           enabled: true
         uaa:
-          ca_cert: "((uaa_ca.certificate))"
+          ca_cert: "((uaa_ssl.ca))"
           client_secret: "((uaa_clients_tcp_emitter_secret))"
         logging:
           format:
@@ -124,7 +124,7 @@
       provides:
         vpa: {as: vpa-platform}
       properties:
-        ca_cert: ((network_policy_ca.certificate))
+        ca_cert: ((network_policy_client.ca))
         client_cert: ((network_policy_client.certificate))
         client_key: ((network_policy_client.private_key))
     - name: silk-daemon
@@ -132,7 +132,7 @@
       consumes:
         vpa: {from: vpa-platform}
       properties:
-        ca_cert: ((silk_ca.certificate))
+        ca_cert: ((silk_daemon.ca))
         client_cert: ((silk_daemon.certificate))
         client_key: ((silk_daemon.private_key))
     - name: silk-cni
@@ -183,7 +183,7 @@
         client:
           tls: ((cf_app_sd_client_tls))
         server:
-          ca: ((cf_app_sd_ca.certificate))
+          ca: ((cf_app_sd_server_tls.ca))
     release: cf-networking
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
