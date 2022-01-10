@@ -1310,6 +1310,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
       - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
       - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
