@@ -1,82 +1,85 @@
 # nats
 - type: replace
   path: /instance_groups/name=nats/instances
-  value: 1
+  value: 3
 - type: replace
   path: /instance_groups/name=nats/vm_type
-  value: t3.small
+  value: t3.large
 
-# diego api
+# diego-api
 - type: replace
   path: /instance_groups/name=diego-api/instances
-  value: 1
+  value: 3
 - type: replace
   path: /instance_groups/name=diego-api/vm_type
-  value: t3.small
+  value: t3.large
 
 # uaa
 - type: replace
   path: /instance_groups/name=uaa/instances
-  value: 2
+  value: 4
 - type: replace
   path: /instance_groups/name=uaa/vm_type
-  value: t3.medium
+  value: r5.large
 
 # capi
 - type: replace
   path: /instance_groups/name=api/instances
-  value: 2
+  value: 6
 - type: replace
   path: /instance_groups/name=api/vm_type
-  value: t3.medium
+  value: t3.large
 
 # capi worker
 - type: replace
   path: /instance_groups/name=cc-worker/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=cc-worker/vm_type
   value: t3.medium
 
-# gorouter
+# gorouters
 - type: replace
   path: /instance_groups/name=router/instances
-  value: 2
+  value: 5
 - type: replace
   path: /instance_groups/name=router/vm_type
-  value: t3.small
+  value: m5n.2xlarge
 
 # scheduler
 - type: replace
   path: /instance_groups/name=scheduler/instances
-  value: 1
+  value: 2
 - type: replace
   path: /instance_groups/name=scheduler/vm_type
-  value: t3.medium
+  value: t3.xlarge
+
+# diego platform (platform and customer)
+- type: replace
+  path: /instance_groups/name=diego-cell/instances
+  value: 31
+- type: replace
+  path: /instance_groups/name=diego-cell/vm_type
+  value: m5n.2xlarge
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/vm_type
+  value: m5.2xlarge
 
 # doppler
 - type: replace
   path: /instance_groups/name=doppler/instances
-  value: 1
+  value: 10
 - type: replace
   path: /instance_groups/name=doppler/vm_type
-  value: t3.large
+  value: m5n.2xlarge
 
 # log-api
 - type: replace
   path: /instance_groups/name=log-api/instances
-  value: 1
+  value: 7
 - type: replace
   path: /instance_groups/name=log-api/vm_type
-  value: t3.medium
-
-# diego (platform and customer)
-- type: replace
-  path: /instance_groups/name=diego-cell/vm_type
-  value: t3.xlarge
-- type: replace
-  path: /instance_groups/name=diego-platform-cell/vm_type
-  value: t3.xlarge
+  value: m5n.xlarge
 
 # rotate-cc-database-key
 - type: replace
