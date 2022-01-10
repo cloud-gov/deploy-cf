@@ -1310,7 +1310,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
       - cf-manifests/bosh/opsfiles/uaa-login.yml
-      - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
       - cf-manifests/bosh/opsfiles/uaa-cors.yml
       - cf-manifests/bosh/opsfiles/encryption.yml
@@ -1375,7 +1374,7 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - put: cf-deployment-westb
     params:
-      <<: *prod-deploy-params
+      <<: *westb-deploy-params
       dry_run: false
   - task: update-isolation-segments
     file: cf-manifests/ci/update-isolation-segments.yml
@@ -1470,7 +1469,7 @@ jobs:
       UAA_CLIENT_ID: ((uaa-audit-client-id-westb))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-westb))
       CF_API_URL: ((cf-api-url-westb))
-      GATEWAY_HOST: prometheus-westb.service.cf.internal
+      GATEWAY_HOST: prometheus-production.service.cf.internal
       WHITELIST: ((uaa-audit-whitelist-westb))
 
 - name: uaa-monitor-account-creation-westb
@@ -1487,7 +1486,7 @@ jobs:
       UAA_URL: ((uaa-url-westb))
       UAA_CLIENT_ID: ((uaa-audit-client-id-westb))
       UAA_CLIENT_SECRET: ((uaa-audit-client-secret-westb))
-      GATEWAY_HOST: prometheus-westb.service.cf.internal
+      GATEWAY_HOST: prometheus-production.service.cf.internal
 
 - name: tic-smoke-tests-westb
   plan:
