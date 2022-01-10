@@ -125,11 +125,6 @@
   path: /variables/name=diego_locket_server/options/ca
   value: /master-bosh-ca
 
-- type: remove
-  path: /variables/name=application_ca
-- type: replace
-  path: /variables/name=diego_instance_identity_ca/options/ca
-  value: /master-bosh-ca
 - type: replace
   path: /variables/name=gorouter_backend_tls/options/ca
   value: /master-bosh-ca
