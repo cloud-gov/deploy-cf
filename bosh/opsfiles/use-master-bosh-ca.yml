@@ -125,8 +125,6 @@
   path: /variables/name=diego_locket_server/options/ca
   value: /master-bosh-ca
 
-- type: remove
-  path: /variables/name=application_ca
 - type: replace
   path: /variables/name=gorouter_backend_tls/options/ca
   value: /master-bosh-ca
@@ -211,11 +209,3 @@
 - type: replace
   path: /variables/name=nats_server_cert/options/ca
   value: /master-bosh-ca
-
-- type: replace
-  path: /variables/name=diego_instance_identity_ca?/
-  value:
-    type: certificate
-    options: 
-      is_ca: true
-      common_name: instanceIdentity
