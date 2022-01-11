@@ -1550,7 +1550,7 @@ jobs:
       CF_CLIENT_SECRET: ((cf-client-secret-westb))
       TF_VAR_remote_state_bucket: ((tf-state-bucket))
       TF_VAR_iaas_stack_name: westb
-      TF_VAR_tooling_stack_name: tooling
+      TF_VAR_tooling_stack_name: master-west
   - put: slack
     params:
       text_file: terraform-state/message.txt
