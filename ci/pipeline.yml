@@ -1418,7 +1418,7 @@ jobs:
     put: slack
     params:
       text: |
-        :white_check_mark: Successfully deployed CF on prod
+        :white_check_mark: Successfully deployed CF on westb
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1427,7 +1427,7 @@ jobs:
     put: slack
     params:
       text: |
-        :x: FAILED to deploy CF on prod
+        :x: FAILED to deploy CF on westb
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1600,7 +1600,7 @@ jobs:
     put: slack
     params:
       text: |
-        :white_check_mark: Smoke Tests for CF on prod PASSED
+        :white_check_mark: Smoke Tests for CF on westb PASSED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-news-channel))
       username: ((slack-username))
@@ -1609,7 +1609,7 @@ jobs:
     put: slack
     params:
       text: |
-        :x: Smoke Tests for CF on prod FAILED
+        :x: Smoke Tests for CF on westb FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
