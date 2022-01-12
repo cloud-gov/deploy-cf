@@ -1,0 +1,84 @@
+# nats
+- type: replace
+  path: /instance_groups/name=nats/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=nats/vm_type
+  value: t3.small
+
+# diego api
+- type: replace
+  path: /instance_groups/name=diego-api/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=diego-api/vm_type
+  value: t3.small
+
+# uaa
+- type: replace
+  path: /instance_groups/name=uaa/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=uaa/vm_type
+  value: t3.medium
+
+# capi
+- type: replace
+  path: /instance_groups/name=api/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=api/vm_type
+  value: t3.medium
+
+# capi worker
+- type: replace
+  path: /instance_groups/name=cc-worker/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=cc-worker/vm_type
+  value: t3.medium
+
+# gorouter
+- type: replace
+  path: /instance_groups/name=router/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=router/vm_type
+  value: t3.small
+
+# scheduler
+- type: replace
+  path: /instance_groups/name=scheduler/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=scheduler/vm_type
+  value: t3.medium
+
+# doppler
+- type: replace
+  path: /instance_groups/name=doppler/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=doppler/vm_type
+  value: t3.large
+
+# log-api
+- type: replace
+  path: /instance_groups/name=log-api/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=log-api/vm_type
+  value: t3.medium
+
+# diego (platform and customer)
+- type: replace
+  path: /instance_groups/name=diego-cell/vm_type
+  value: t3.xlarge
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/vm_type
+  value: t3.xlarge
+
+# rotate-cc-database-key
+- type: replace
+  path: /instance_groups/name=rotate-cc-database-key/vm_type
+  value: t3.medium
