@@ -1322,7 +1322,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/scaling-easta.yml
+      - cf-manifests/bosh/opsfiles/scaling-westb.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -2281,6 +2281,16 @@ groups:
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
   - test-space-egress-production
+  - plan-cf-easta
+  - deploy-cf-easta
+  - terraform-plan-easta
+  - terraform-apply-easta
+  - smoke-tests-easta
+  - uaa-smoke-tests-easta
+  - uaa-client-auditing-easta
+  - uaa-monitor-account-creation-easta
+  - tic-smoke-tests-easta
+  - test-space-egress-easta
   - plan-cf-westb
   - deploy-cf-westb
   - terraform-plan-westb
