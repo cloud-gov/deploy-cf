@@ -1550,7 +1550,7 @@ jobs:
       CF_CLIENT_SECRET: ((cf-client-secret-easta))
       TF_VAR_remote_state_bucket: ((tf-state-bucket))
       TF_VAR_iaas_stack_name: easta
-      TF_VAR_tooling_stack_name: master-west
+      TF_VAR_tooling_stack_name: master-east
   - put: slack
     params:
       text_file: terraform-state/message.txt
@@ -2291,6 +2291,16 @@ groups:
   - uaa-monitor-account-creation-westb
   - tic-smoke-tests-westb
   - test-space-egress-westb
+  - plan-cf-easta
+  - deploy-cf-easta
+  - terraform-plan-easta
+  - terraform-apply-easta
+  - smoke-tests-easta
+  - uaa-smoke-tests-easta
+  - uaa-client-auditing-easta
+  - uaa-monitor-account-creation-easta
+  - tic-smoke-tests-easta
+  - test-space-egress-easta
 - name: development
   jobs:
   - deploy-cf-development
