@@ -2152,6 +2152,13 @@ resources:
     versioned_file: ((tf-state-file-westb))
     region_name: ((aws-region))
 
+- name: terraform-yaml-easta
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-easta))
+    region_name: ((aws-region))
+
 - name: cf-deployment-development
   type: bosh-deployment
   source:
