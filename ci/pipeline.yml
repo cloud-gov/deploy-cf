@@ -1337,7 +1337,7 @@ jobs:
     put: slack
     params:
       text: |
-        :white_check_mark: CF West plan ready for review
+        :white_check_mark: CF easta plan ready for review
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1346,7 +1346,7 @@ jobs:
     put: slack
     params:
       text: |
-        :x: FAILED to plan CF West
+        :x: FAILED to plan CF easta
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
