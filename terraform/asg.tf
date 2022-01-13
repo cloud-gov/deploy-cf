@@ -242,6 +242,36 @@ resource "cloudfoundry_asg" "smtp" {
   }
 }
 
+# New Relic
+
+resource "cloudfoundry_asg" "new_relic_egress" {
+  name = "new_relic_egress"
+
+  rule {
+    protocol    = "all"
+    destination = "162.247.240.0/22"
+  }
+}
+
+# SmartyStreets
+
+resource "cloudfoundry_asg" "smarty_streets_egress" {
+  name = "smarty_streets_egress"
+
+  rule {
+    protocol    = "all"
+    destination = "35.221.61.4/32"
+  }
+  rule {
+    protocol    = "all"
+    destination = "35.193.116.62/32"
+  }
+  rule {
+    protocol    = "all"
+    destination = "52.183.65.131/32"
+  }
+}
+
 # Google reCAPTCHA IPranges.
 
 resource "cloudfoundry_asg" "recaptcha_egress" {
