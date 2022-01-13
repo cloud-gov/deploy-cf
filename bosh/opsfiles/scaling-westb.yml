@@ -60,7 +60,7 @@
   value: 31
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
-  value: m5n.2xlarge
+  value: m5.2xlarge
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
   value: m5.2xlarge
