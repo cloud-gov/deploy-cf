@@ -1664,6 +1664,406 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: plan-cf-eastb
+  serial_groups: [eastb]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: cf-manifests
+      passed: [smoke-tests-development]
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-eastb
+    - get: cf-stemcell-bionic
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: uaa-customized-release
+      passed: [acceptance-tests-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [acceptance-tests-staging]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-eastb
+    params: &eastb-deploy-params
+      <<: *deploy-params
+      dry_run: true
+      ops_files:
+      - cf-deployment/operations/rename-network-and-deployment.yml
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment/operations/enable-service-discovery.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/users.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/apps-domain.yml
+      - cf-manifests/bosh/opsfiles/api-defaults.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
+      - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
+      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/use-master-bosh-ca.yml
+#remove once cf-deployment catches up - 12/13/21
+      - cf-manifests/bosh/opsfiles/temp-buildpack.yml
+      vars_files:
+      - cf-manifests/bosh/varsfiles/eastb.yml
+      - terraform-secrets/terraform.yml
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: CF eastb plan ready for review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to plan CF eastb
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: deploy-cf-eastb
+  serial_groups: [eastb]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [plan-cf-eastb]
+    - get: cf-manifests
+      passed: [plan-cf-eastb]
+    - get: terraform-yaml
+      resource: terraform-yaml-eastb
+    - get: cf-stemcell-bionic
+      passed: [plan-cf-eastb]
+    - get: uaa-customized-release
+      passed: [plan-cf-eastb]
+    - get: cg-s3-secureproxy-release
+      passed: [plan-cf-eastb]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-eastb
+    params:
+      <<: *eastb-deploy-params
+      dry_run: false
+  - task: update-isolation-segments
+    file: cf-manifests/ci/update-isolation-segments.yml
+    params:
+      CF_API_URL: ((cf-api-url-eastb))
+      CF_USERNAME: ((cf-username-eastb))
+      CF_PASSWORD: ((cf-password-eastb))
+      PLATFORM_ISOLATION_SEGMENT: ((platform-isolation-segment-eastb))
+      PLATFORM_ORGANIZATION: ((platform-organization-eastb))
+      PLATFORM_SPACE: ((platform-space-eastb))
+      VOLUME_ISOLATION_SEGMENT: ((volume-isolation-segment-eastb))
+      VOLUME_TARGETS: ((volume-targets-eastb))
+
+  - task: enable-cf-features
+    file: cf-manifests/ci/enable-cf-features.yml
+    params:
+      CF_API_URL: ((cf-api-url-eastb))
+      CF_USERNAME: ((cf-username-eastb))
+      CF_PASSWORD: ((cf-password-eastb))
+      ENABLED_FEATURE_FLAGS: |
+        private_domain_creation
+        app_bits_upload
+        app_scaling
+        route_creation
+        service_instance_creation
+        diego_docker
+        set_roles_by_username
+        unset_roles_by_username
+        task_creation
+        env_var_visibility
+        space_scoped_private_broker_creation
+        space_developer_env_var_visibility
+        service_instance_sharing
+        resource_matching
+      DISABLED_FEATURE_FLAGS: |
+        user_org_creation
+        hide_marketplace_from_unauthenticated_users
+
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on eastb
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on eastb
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-smoke-tests-eastb
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+      passed: [deploy-cf-eastb]
+    - get: cf-deployment-eastb
+      passed: [deploy-cf-eastb]
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: ((uaa-url-eastb))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on eastb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-client-auditing-eastb
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-eastb]
+    - get: tests-timer
+      trigger: true
+  - task: uaa-client-audit
+    file: cf-manifests/ci/uaa-client-audit.yml
+    params:
+      UAA_URL: ((uaa-url-eastb))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-eastb))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-eastb))
+      CF_API_URL: ((cf-api-url-eastb))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
+      WHITELIST: ((uaa-audit-whitelist-eastb))
+
+- name: uaa-monitor-account-creation-eastb
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-eastb]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-eastb))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-eastb))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-eastb))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
+
+- name: tic-smoke-tests-eastb
+  plan:
+  - in_parallel:
+    - get: cf-manifests
+      passed: [deploy-cf-eastb]
+    - get: cf-deployment-eastb
+      passed: [deploy-cf-eastb]
+      trigger: true
+    - get: master-bosh-root-cert
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      CI: true
+      API_HOSTNAME: api.fr.cloud.gov
+      BOSH_ENVIRONMENT: ((eastb-bosh-target))
+      BOSH_CLIENT: ((eastb-bosh-username))
+      BOSH_CLIENT_SECRET: ((eastb-bosh-password))
+      BOSH_DEPLOYMENT_NAME: cf-eastb
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+      RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
+      UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
+      SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
+      SOURCE_ADDRESS_FORBIDDEN: ((tic-test-source-address-forbidden))
+      PROXY_ADDRESS_ALLOWED: ((tic-test-proxy-address-allowed))
+      PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
+      TIC_SECRET_ALLOWED: ((tic-secret-eastb))
+      TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on eastb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: terraform-plan-eastb
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-eastb
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform
+      STACK_NAME: cf-eastb
+      S3_TFSTATE_BUCKET: ((tf-state-bucket))
+      AWS_DEFAULT_REGION: ((aws-region))
+      CF_API_URL: ((cf-api-url-eastb))
+      CF_CLIENT_ID: ((cf-client-id-eastb))
+      CF_CLIENT_SECRET: ((cf-client-secret-eastb))
+      TF_VAR_remote_state_bucket: ((tf-state-bucket))
+      TF_VAR_iaas_stack_name: eastb
+      TF_VAR_tooling_stack_name: master-east
+  - put: slack
+    params:
+      text_file: terraform-state/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: terraform-apply-eastb
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+
+      passed: [terraform-plan-eastb]
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-eastb
+      TERRAFORM_ACTION: apply
+
+- name: smoke-tests-eastb
+  serial_groups: [eastb]
+  plan:
+  - in_parallel:
+    - get: common
+      resource: master-bosh-root-cert
+      passed: [deploy-cf-eastb]
+    - get: cf-deployment-eastb
+      trigger: true
+    - get: tests-timer
+      trigger: true
+  - task: run-errand
+    attempts: 3
+    params:
+      BOSH_ENVIRONMENT: ((bosh.eastb.environment))
+      BOSH_CLIENT: ((bosh.eastb.client))
+      BOSH_CLIENT_SECRET: ((bosh.eastb.client-secret))
+      BOSH_DEPLOYMENT: ((cf.eastb.name))
+      BOSH_ERRAND: ((cf.eastb.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: *smoke-tests-errand
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on eastb PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-news-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on eastb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: test-space-egress-eastb
+  serial_groups: [eastb]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-eastb]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-eastb-params
+      CF_API_URL: ((cf-api-url-eastb))
+      CF_USERNAME: ((cf-username-eastb))
+      CF_PASSWORD: ((cf-password-eastb))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: app.cloud.gov
+    on_failure: &test-space-egress-eastb-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+      params:
+        <<: *test-space-egress-eastb-params
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-eastb-params
+    on_failure:
+      <<: *test-space-egress-eastb-clean-tasks
+    on_success:
+      <<: *test-space-egress-eastb-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on eastb PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on eastb FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 - name: plan-cf-westb
   serial_groups: [westb]
   serial: true
@@ -1737,7 +2137,7 @@ jobs:
     put: slack
     params:
       text: |
-        :white_check_mark: CF West plan ready for review
+        :white_check_mark: CF westb plan ready for review
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -1746,7 +2146,7 @@ jobs:
     put: slack
     params:
       text: |
-        :x: FAILED to plan CF West
+        :x: FAILED to plan CF westb
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -2064,6 +2464,406 @@ jobs:
       username: ((slack-username))
       icon_url: ((slack-icon-url))
 
+- name: plan-cf-westc
+  serial_groups: [westc]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: cf-manifests
+      passed: [smoke-tests-development]
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml-westc
+    - get: cf-stemcell-bionic
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: uaa-customized-release
+      passed: [acceptance-tests-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [acceptance-tests-staging]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-westc
+    params: &westc-deploy-params
+      <<: *deploy-params
+      dry_run: true
+      ops_files:
+      - cf-deployment/operations/rename-network-and-deployment.yml
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment/operations/enable-service-discovery.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
+      - cf-manifests/bosh/opsfiles/use-bionic.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/users.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/apps-domain.yml
+      - cf-manifests/bosh/opsfiles/api-defaults.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
+      - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
+      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/use-master-bosh-ca.yml
+#remove once cf-deployment catches up - 12/13/21
+      - cf-manifests/bosh/opsfiles/temp-buildpack.yml
+      vars_files:
+      - cf-manifests/bosh/varsfiles/westc.yml
+      - terraform-secrets/terraform.yml
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: CF West plan ready for review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to plan CF West
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: deploy-cf-westc
+  serial_groups: [westc]
+  serial: true
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+    - get: pipeline-tasks
+    - get: cf-deployment
+      passed: [plan-cf-westc]
+    - get: cf-manifests
+      passed: [plan-cf-westc]
+    - get: terraform-yaml
+      resource: terraform-yaml-westc
+    - get: cf-stemcell-bionic
+      passed: [plan-cf-westc]
+    - get: uaa-customized-release
+      passed: [plan-cf-westc]
+    - get: cg-s3-secureproxy-release
+      passed: [plan-cf-westc]
+  - task: terraform-secrets
+    file: cf-manifests/ci/terraform-secrets.yml
+  - put: cf-deployment-westc
+    params:
+      <<: *westc-deploy-params
+      dry_run: false
+  - task: update-isolation-segments
+    file: cf-manifests/ci/update-isolation-segments.yml
+    params:
+      CF_API_URL: ((cf-api-url-westc))
+      CF_USERNAME: ((cf-username-westc))
+      CF_PASSWORD: ((cf-password-westc))
+      PLATFORM_ISOLATION_SEGMENT: ((platform-isolation-segment-westc))
+      PLATFORM_ORGANIZATION: ((platform-organization-westc))
+      PLATFORM_SPACE: ((platform-space-westc))
+      VOLUME_ISOLATION_SEGMENT: ((volume-isolation-segment-westc))
+      VOLUME_TARGETS: ((volume-targets-westc))
+
+  - task: enable-cf-features
+    file: cf-manifests/ci/enable-cf-features.yml
+    params:
+      CF_API_URL: ((cf-api-url-westc))
+      CF_USERNAME: ((cf-username-westc))
+      CF_PASSWORD: ((cf-password-westc))
+      ENABLED_FEATURE_FLAGS: |
+        private_domain_creation
+        app_bits_upload
+        app_scaling
+        route_creation
+        service_instance_creation
+        diego_docker
+        set_roles_by_username
+        unset_roles_by_username
+        task_creation
+        env_var_visibility
+        space_scoped_private_broker_creation
+        space_developer_env_var_visibility
+        service_instance_sharing
+        resource_matching
+      DISABLED_FEATURE_FLAGS: |
+        user_org_creation
+        hide_marketplace_from_unauthenticated_users
+
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on westc
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on westc
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-smoke-tests-westc
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+      passed: [deploy-cf-westc]
+    - get: cf-deployment-westc
+      passed: [deploy-cf-westc]
+      trigger: true
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: ((uaa-url-westc))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on westc FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: uaa-client-auditing-westc
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-westc]
+    - get: tests-timer
+      trigger: true
+  - task: uaa-client-audit
+    file: cf-manifests/ci/uaa-client-audit.yml
+    params:
+      UAA_URL: ((uaa-url-westc))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-westc))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-westc))
+      CF_API_URL: ((cf-api-url-westc))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
+      WHITELIST: ((uaa-audit-whitelist-westc))
+
+- name: uaa-monitor-account-creation-westc
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-westc]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-westc))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-westc))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-westc))
+      GATEWAY_HOST: prometheus-production.service.cf.internal
+
+- name: tic-smoke-tests-westc
+  plan:
+  - in_parallel:
+    - get: cf-manifests
+      passed: [deploy-cf-westc]
+    - get: cf-deployment-westc
+      passed: [deploy-cf-westc]
+      trigger: true
+    - get: master-bosh-root-cert
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      CI: true
+      API_HOSTNAME: api.fr.cloud.gov
+      BOSH_ENVIRONMENT: ((westc-bosh-target))
+      BOSH_CLIENT: ((westc-bosh-username))
+      BOSH_CLIENT_SECRET: ((westc-bosh-password))
+      BOSH_DEPLOYMENT_NAME: cf-westc
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+      RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
+      UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
+      SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
+      SOURCE_ADDRESS_FORBIDDEN: ((tic-test-source-address-forbidden))
+      PROXY_ADDRESS_ALLOWED: ((tic-test-proxy-address-allowed))
+      PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
+      TIC_SECRET_ALLOWED: ((tic-secret-westc))
+      TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on westc FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: terraform-plan-westc
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+
+      passed: [acceptance-tests-staging]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-westc
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform
+      STACK_NAME: cf-westc
+      S3_TFSTATE_BUCKET: ((tf-state-bucket))
+      AWS_DEFAULT_REGION: ((aws-region))
+      CF_API_URL: ((cf-api-url-westc))
+      CF_CLIENT_ID: ((cf-client-id-westc))
+      CF_CLIENT_SECRET: ((cf-client-secret-westc))
+      TF_VAR_remote_state_bucket: ((tf-state-bucket))
+      TF_VAR_iaas_stack_name: westc
+      TF_VAR_tooling_stack_name: master-west
+  - put: slack
+    params:
+      text_file: terraform-state/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: terraform-apply-westc
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+
+      passed: [terraform-plan-westc]
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-westc
+      TERRAFORM_ACTION: apply
+
+- name: smoke-tests-westc
+  serial_groups: [westc]
+  plan:
+  - in_parallel:
+    - get: common
+      resource: master-bosh-root-cert
+      passed: [deploy-cf-westc]
+    - get: cf-deployment-westc
+      trigger: true
+    - get: tests-timer
+      trigger: true
+  - task: run-errand
+    attempts: 3
+    params:
+      BOSH_ENVIRONMENT: ((bosh.westc.environment))
+      BOSH_CLIENT: ((bosh.westc.client))
+      BOSH_CLIENT_SECRET: ((bosh.westc.client-secret))
+      BOSH_DEPLOYMENT: ((cf.westc.name))
+      BOSH_ERRAND: ((cf.westc.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: *smoke-tests-errand
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on westc PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-news-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on westc FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+- name: test-space-egress-westc
+  serial_groups: [westc]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-westc]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-westc-params
+      CF_API_URL: ((cf-api-url-westc))
+      CF_USERNAME: ((cf-username-westc))
+      CF_PASSWORD: ((cf-password-westc))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: app.cloud.gov
+    on_failure: &test-space-egress-westc-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+      params:
+        <<: *test-space-egress-westc-params
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-westc-params
+    on_failure:
+      <<: *test-space-egress-westc-clean-tasks
+    on_success:
+      <<: *test-space-egress-westc-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on westc PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on westc FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
 resources:
 - name: master-bosh-root-cert
   type: s3-iam
@@ -2145,6 +2945,20 @@ resources:
     versioned_file: ((tf-state-file-production))
     region_name: ((aws-region))
 
+- name: terraform-yaml-easta
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-easta))
+    region_name: ((aws-region))
+
+- name: terraform-yaml-eastb
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-eastb))
+    region_name: ((aws-region))
+
 - name: terraform-yaml-westb
   type: s3-iam
   source:
@@ -2152,11 +2966,11 @@ resources:
     versioned_file: ((tf-state-file-westb))
     region_name: ((aws-region))
 
-- name: terraform-yaml-easta
+- name: terraform-yaml-westc
   type: s3-iam
   source:
     bucket: ((tf-state-bucket))
-    versioned_file: ((tf-state-file-easta))
+    versioned_file: ((tf-state-file-westc))
     region_name: ((aws-region))
 
 - name: cf-deployment-development
@@ -2186,6 +3000,24 @@ resources:
     ca_cert: ((bosh-ca-cert))
     deployment: cf-production
 
+- name: cf-deployment-easta
+  type: bosh-deployment
+  source:
+    target: ((easta-bosh-target))
+    client: ((easta-bosh-client))
+    client_secret: ((easta-bosh-client-secret))
+    ca_cert: ((bosh-ca-cert))
+    deployment: cf-easta
+
+- name: cf-deployment-eastb
+  type: bosh-deployment
+  source:
+    target: ((eastb-bosh-target))
+    client: ((eastb-bosh-client))
+    client_secret: ((eastb-bosh-client-secret))
+    ca_cert: ((bosh-ca-cert))
+    deployment: cf-eastb
+
 - name: cf-deployment-westb
   type: bosh-deployment
   source:
@@ -2195,14 +3027,14 @@ resources:
     ca_cert: ((bosh-ca-cert))
     deployment: cf-westb
 
-- name: cf-deployment-easta
+- name: cf-deployment-westc
   type: bosh-deployment
   source:
-    target: ((easta-bosh-target))
-    client: ((easta-bosh-client))
-    client_secret: ((easta-bosh-client-secret))
+    target: ((westc-bosh-target))
+    client: ((westc-bosh-client))
+    client_secret: ((westc-bosh-client-secret))
     ca_cert: ((bosh-ca-cert))
-    deployment: cf-easta
+    deployment: cf-westc
 
 - name: uaa-customized-release
   type: s3-iam
@@ -2291,6 +3123,16 @@ groups:
   - uaa-monitor-account-creation-easta
   - tic-smoke-tests-easta
   - test-space-egress-easta
+  - plan-cf-eastb
+  - deploy-cf-eastb
+  - terraform-plan-eastb
+  - terraform-apply-eastb
+  - smoke-tests-eastb
+  - uaa-smoke-tests-eastb
+  - uaa-client-auditing-eastb
+  - uaa-monitor-account-creation-eastb
+  - tic-smoke-tests-eastb
+  - test-space-egress-eastb
   - plan-cf-westb
   - deploy-cf-westb
   - terraform-plan-westb
@@ -2301,16 +3143,16 @@ groups:
   - uaa-monitor-account-creation-westb
   - tic-smoke-tests-westb
   - test-space-egress-westb
-  - plan-cf-easta
-  - deploy-cf-easta
-  - terraform-plan-easta
-  - terraform-apply-easta
-  - smoke-tests-easta
-  - uaa-smoke-tests-easta
-  - uaa-client-auditing-easta
-  - uaa-monitor-account-creation-easta
-  - tic-smoke-tests-easta
-  - test-space-egress-easta
+  - plan-cf-westc
+  - deploy-cf-westc
+  - terraform-plan-westc
+  - terraform-apply-westc
+  - smoke-tests-westc
+  - uaa-smoke-tests-westc
+  - uaa-client-auditing-westc
+  - uaa-monitor-account-creation-westc
+  - tic-smoke-tests-westc
+  - test-space-egress-westc
 - name: development
   jobs:
   - deploy-cf-development
@@ -2346,18 +3188,6 @@ groups:
   - uaa-monitor-account-creation-production
   - tic-smoke-tests-production
   - test-space-egress-production
-- name: westb
-  jobs:
-  - plan-cf-westb
-  - deploy-cf-westb
-  - terraform-plan-westb
-  - terraform-apply-westb
-  - smoke-tests-westb
-  - uaa-smoke-tests-westb
-  - uaa-client-auditing-westb
-  - uaa-monitor-account-creation-westb
-  - tic-smoke-tests-westb
-  - test-space-egress-westb
 - name: easta
   jobs:
   - plan-cf-easta
@@ -2370,3 +3200,39 @@ groups:
   - uaa-monitor-account-creation-easta
   - tic-smoke-tests-easta
   - test-space-egress-easta
+- name: eastb
+  jobs:
+  - plan-cf-eastb
+  - deploy-cf-eastb
+  - terraform-plan-eastb
+  - terraform-apply-eastb
+  - smoke-tests-eastb
+  - uaa-smoke-tests-eastb
+  - uaa-client-auditing-eastb
+  - uaa-monitor-account-creation-eastb
+  - tic-smoke-tests-eastb
+  - test-space-egress-westb
+- name: westb
+  jobs:
+  - plan-cf-westb
+  - deploy-cf-westb
+  - terraform-plan-westb
+  - terraform-apply-westb
+  - smoke-tests-westb
+  - uaa-smoke-tests-westb
+  - uaa-client-auditing-westb
+  - uaa-monitor-account-creation-westb
+  - tic-smoke-tests-westb
+  - test-space-egress-westb
+- name: westc
+  jobs:
+  - plan-cf-westc
+  - deploy-cf-westc
+  - terraform-plan-westc
+  - terraform-apply-westc
+  - smoke-tests-westc
+  - uaa-smoke-tests-westc
+  - uaa-client-auditing-westc
+  - uaa-monitor-account-creation-westc
+  - tic-smoke-tests-westc
+  - test-space-egress-westb
