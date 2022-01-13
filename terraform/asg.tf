@@ -521,46 +521,6 @@ resource "cloudfoundry_asg" "recaptcha_egress" {
     protocol    = "all"
     destination = "216.239.32.0/19"
   }
-  rule {
-    protocol    = "all"
-    destination = "2001:4860::/32"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2404:6800::/32"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2404:f340::/32"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2600:1900::/28"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2606:73c0::/32"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2607:f8b0::/32"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2620:11a:a000::/40"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2620:120:e000::/40"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2a00:1450::/32"
-  }
-  rule {
-    protocol    = "all"
-    destination = "2c0f:fb50::/32"
-  }
 }
 
 # Default global running ASG
