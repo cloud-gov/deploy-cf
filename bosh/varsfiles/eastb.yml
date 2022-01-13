@@ -1,0 +1,11 @@
+environment: production
+network_name: default
+deployment_name: cf-eastb
+company-name: cloud.gov
+system_domain: fr.eb.cloud.gov
+app_domain: app.eb.cloud.gov
+
+buildpack_directory_key: cf-eastb-buildpacks
+droplet_directory_key: cf-eastb-droplets
+app_package_directory_key: cf-eastb-cc-packages
+resource_directory_key: cf-eastb-cc-resources
