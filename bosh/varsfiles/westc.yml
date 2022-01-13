@@ -1,0 +1,11 @@
+environment: production
+network_name: default
+deployment_name: cf-westc
+company-name: cloud.gov
+system_domain: fr.wc.cloud.gov
+app_domain: app.wc.cloud.gov
+
+buildpack_directory_key: cf-westc-buildpacks
+droplet_directory_key: cf-westc-droplets
+app_package_directory_key: cf-westc-cc-packages
+resource_directory_key: cf-westc-cc-resources

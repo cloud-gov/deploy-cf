@@ -539,6 +539,16 @@ resource "cloudfoundry_default_asg" "running" {
     asgs = [ cloudfoundry_asg.dns.id ]
 }
 
+# Default global staging ASG
+resource "cloudfoundry_default_asg" "staging" {
+    name = "staging"
+    asgs = [
+      cloudfoundry_asg.dns.id,
+      cloudfoundry_asg.public_networks.id,
+      cloudfoundry_asg.trusted_local_networks.id,
+    ]
+}
+
 resource "cloudfoundry_org_quota" "default-tts" {
   name                     = "default-tts"
   allow_paid_service_plans = true
