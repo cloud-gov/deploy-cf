@@ -248,7 +248,7 @@ resource "cloudfoundry_asg" "new_relic_egress" {
   name = "new_relic_egress"
 
   rule {
-    protocol    = "all"
+    protocol    = "tcp"
     port        = "443"
     destination = "162.247.240.0/22"
   }
