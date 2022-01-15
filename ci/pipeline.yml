@@ -1722,7 +1722,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/scaling-westb.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -2522,7 +2522,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/scaling-westb.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
@@ -2537,7 +2537,7 @@ jobs:
     put: slack
     params:
       text: |
-        :white_check_mark: CF West plan ready for review
+        :white_check_mark: CF westc plan ready for review
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
@@ -2546,7 +2546,7 @@ jobs:
     put: slack
     params:
       text: |
-        :x: FAILED to plan CF West
+        :x: FAILED to plan CF westc
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
       channel: ((slack-channel))
       username: ((slack-username))
