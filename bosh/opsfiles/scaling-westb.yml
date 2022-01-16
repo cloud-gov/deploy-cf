@@ -41,7 +41,7 @@
 # gorouters
 - type: replace
   path: /instance_groups/name=router/instances
-  value: 10
+  value: 15
 - type: replace
   path: /instance_groups/name=router/vm_type
   value: m5n.2xlarge
