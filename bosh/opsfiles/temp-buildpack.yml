@@ -4,9 +4,9 @@
   path: /releases/name=java-buildpack
   value:
     name: "java-buildpack"
-    version: "4.47"
-    url: "https://bosh.io/d/github.com/cloudfoundry/java-buildpack-release?v=4.47"
-    sha1: "3ce058a5745e91e9635d76e47a49bb03870bc46b"
+    version: "4.48"
+    url: "https://bosh.io/d/github.com/cloudfoundry/java-buildpack-release?v=4.48"
+    sha1: "ed240a6a338a9ac3e2f890bcce87d160abc9c4e8"
 
 - type: replace
   path: /releases/name=php-buildpack
@@ -15,3 +15,11 @@
     version: "4.4.55"
     url: "https://bosh.io/d/github.com/cloudfoundry/php-buildpack-release?v=4.4.55"
     sha1: "5dcb1988bdfaa67a334aa7c5aa0dcf95873bc362"
+
+- type: replace
+  path: /releases/name=ruby-buildpack
+  value:
+    name: "ruby-buildpack"
+    version: "1.8.50"
+    url: "https://bosh.io/d/github.com/cloudfoundry/ruby-buildpack-release?v=1.8.50"
+    sha1: "114297e62e958f61b09c10382bf5f71687af271d"
