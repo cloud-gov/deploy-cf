@@ -1,7 +1,7 @@
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs3-rootfs-setup/properties/cflinuxfs3-rootfs?/trusted_certs/-
   value: &rds-ca |-
-    # rds-ca-2015-root.pem
+    # rds-ca-2015-root.pem - expired 3/2020 but still in use some instances
     -----BEGIN CERTIFICATE-----
     MIID9DCCAtygAwIBAgIBQjANBgkqhkiG9w0BAQUFADCBijELMAkGA1UEBhMCVVMx
     EzARBgNVBAgMCldhc2hpbmd0b24xEDAOBgNVBAcMB1NlYXR0bGUxIjAgBgNVBAoM
@@ -26,7 +26,7 @@
     A9dY7IHSubtCK/i8wxMVqfd5GtbA8mmpeJFwnDvm9rBEsHybl08qlax9syEwsUYr
     /40NawZfTUU=
     -----END CERTIFICATE-----
-    # rds-ca-2012-us-gov-west-1.pem
+    # rds-ca-2012-us-gov-west-1.pem - expired 8/17 but still in use some instances
     -----BEGIN CERTIFICATE-----
     MIIDQzCCAqygAwIBAgIJAMGs6m/j+u8sMA0GCSqGSIb3DQEBBQUAMHUxCzAJBgNV
     BAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMRMw
@@ -47,7 +47,7 @@
     7YNTZWbF2VkHUDqekXimvL3q1JEvHDKPkLJrxEic1zTU1uazb9uJeb1aVWTq6N8R
     bx56xd/e3o7RYcPfLD45y7RRXKz3AmE=
     -----END CERTIFICATE-----
-    # rds-ca-bundle-us-gov-west-1.pem
+    # rds-ca-bundle-us-gov-west-1.pem - expires 5/22
     -----BEGIN CERTIFICATE-----
     MIIECjCCAvKgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgZMxCzAJBgNVBAYTAlVT
     MRAwDgYDVQQHDAdTZWF0dGxlMRMwEQYDVQQIDApXYXNoaW5ndG9uMSIwIAYDVQQK
@@ -72,6 +72,7 @@
     RuUCvyQecy2ZFNAa3jmd5ycNdL63RWe8oayRBpQBxPPCbHfILxGZEdJbCH9aJ2D/
     l8oHIDnvOLdv7/cBjyYuvmprgPtu3QEkbre5Hln/
     -----END CERTIFICATE-----
+    # Amazon RDS GovCloud Root CA - expires 5/22
     -----BEGIN CERTIFICATE-----
     MIIEDjCCAvagAwIBAgIJAMM61RQn3/kdMA0GCSqGSIb3DQEBCwUAMIGTMQswCQYD
     VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
@@ -96,7 +97,7 @@
     S0IGvcd2FZjNSNPttNAK7YuBVsZ0m2nIH1SLp//00v7yAHIgytQwwB17PBcp4NXD
     pCfTa27ng9mMMC2YLqWQpW4TkqjDin2ZC+5X/mbrjzTvVg==
     -----END CERTIFICATE-----
-    # rds-ca-bundle-us-gov-east-1.pem
+    # rds-ca-bundle-us-gov-east-1.pem - expires 7/23
     -----BEGIN CERTIFICATE-----
     MIIEAjCCAuqgAwIBAgIJANmdqLPF/hNbMA0GCSqGSIb3DQEBCwUAMIGNMQswCQYD
     VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
@@ -121,6 +122,7 @@
     rirVdtCyK+dEDq2xKoyR79VesgiPKTMcJPou6gXdeezJE1nL8te47yZlJFoAUL6v
     EP9EpISn/Jp+QPoFSUFL/FssWEfdLw==
     -----END CERTIFICATE-----
+    # Amazon RDS us-gov-east-1 CA - expires 6/22
     -----BEGIN CERTIFICATE-----
     MIIEBDCCAuygAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgY0xCzAJBgNVBAYTAlVT
     MRAwDgYDVQQHDAdTZWF0dGxlMRMwEQYDVQQIDApXYXNoaW5ndG9uMSIwIAYDVQQK
@@ -145,6 +147,7 @@
     e7tNxfZRKhtuGPR5/G0Z3j5z8yQMRZxnCDbq6JvE3vUggWSjBNXoSlhvzj6BiEBy
     B4rKazWN1OzrKIX0yoiXx6SgtooVPx0k
     -----END CERTIFICATE-----
+    # Amazon RDS us-gov-east-1 Root CA ECC384 G1 - expires 5/2121
     -----BEGIN CERTIFICATE-----
     MIICtjCCAjugAwIBAgIQCojG1Zix0YArC/bBkU7eOjAKBggqhkjOPQQDAzCBmjEL
     MAkGA1UEBhMCVVMxIjAgBgNVBAoMGUFtYXpvbiBXZWIgU2VydmljZXMsIEluYy4x
@@ -162,6 +165,7 @@
     hqyctq0ftvXXmEe0bA+JnpIm5p/UKUUCMQCYYYQFfkeZtD4SOxSIE+WzfghJFaAq
     /s17Q6LU2tCl4/csuzsTAl/vCc0JVynH340=
     -----END CERTIFICATE-----
+    # Amazon RDS us-gov-east-1 Root CA RSA4096 G1 - expires 5/2121
     -----BEGIN CERTIFICATE-----
     MIIGBjCCA+6gAwIBAgIQaoLp1Iv1/fO7VY8+oWlsgjANBgkqhkiG9w0BAQwFADCB
     mzELMAkGA1UEBhMCVVMxIjAgBgNVBAoMGUFtYXpvbiBXZWIgU2VydmljZXMsIElu
@@ -197,6 +201,62 @@
     k+8N+RsNwC/hHzKs2Vj4YKNP8MelxWcgtu0/QJAtq1/4YFMRY7qv1pCfcQGfg8Sx
     JFiKTJMbfPV2uQ==
     -----END CERTIFICATE-----
+    #New certs 2/22 
+    #Amazon RDS us-gov-west-1 Root CA RSA4096 G1 - expires 5/2121
+    -----BEGIN CERTIFICATE-----
+    MIIGBzCCA++gAwIBAgIRAOzQCoOR21YG2noWOfFcuNIwDQYJKoZIhvcNAQEMBQAw
+    gZsxCzAJBgNVBAYTAlVTMSIwIAYDVQQKDBlBbWF6b24gV2ViIFNlcnZpY2VzLCBJ
+    bmMuMRMwEQYDVQQLDApBbWF6b24gUkRTMQswCQYDVQQIDAJXQTE0MDIGA1UEAwwr
+    QW1hem9uIFJEUyB1cy1nb3Ytd2VzdC0xIFJvb3QgQ0EgUlNBNDA5NiBHMTEQMA4G
+    A1UEBwwHU2VhdHRsZTAgFw0yMTA1MjYyMTQ0MzlaGA8yMTIxMDUyNjIyNDQzOVow
+    gZsxCzAJBgNVBAYTAlVTMSIwIAYDVQQKDBlBbWF6b24gV2ViIFNlcnZpY2VzLCBJ
+    bmMuMRMwEQYDVQQLDApBbWF6b24gUkRTMQswCQYDVQQIDAJXQTE0MDIGA1UEAwwr
+    QW1hem9uIFJEUyB1cy1nb3Ytd2VzdC0xIFJvb3QgQ0EgUlNBNDA5NiBHMTEQMA4G
+    A1UEBwwHU2VhdHRsZTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANwY
+    M2iZdnnlMutI9nfn2fWBICAQHWmMmpPmtSka/ziBFyaCxkHDF8RLmooW+GLe+FEF
+    9CQKSVqRa7X5AFiqRFF1KvgxWvazawyScuw88JW6Eqhaw0Rlm2p1Iow3TE8FSCDo
+    Is1vEV3Brbf26CMiXbqI+aCuTOy0fjRzjl5igViTgZxt2ZXOwyKkF+2T8LQp4b4F
+    Mh85Ctw1An1DhAemsc3SmcYnPKyFUP90DxGuTjFtfNR01GbBtVYwVvOBgIJe59Zs
+    OWcEFOO2mU53Ik6oKcLYu4+PmE5aDvQewb6bkQZchClb7Eg0BPYekWwTPsKUTS3H
+    bgdwVxgzjdAdU9fvaaoQmS9xdHWlonKq8CubJdLUduV3WVmDAg7MQgiT3p8JF9W2
+    KbQpUbYxqd7j9OIe3IS3rVPwYA8PVh1hUJ+OBLw61sbGRAuN3H+B1DlJh1smg6bR
+    g9W+oLRzfjZa32EzFmaQIxtgRfiyjxB/vqAHdl5zPou30X1CyRYquS870O02bvTN
+    zzWSOfRY4KPmS1YFVsN+m+R4+hSUOAE//bJ25ACP9oDO5w9NWkAux4e0UUAuWCra
+    jRROYN2J0KCogdru5G7lOQerD12zi3C2iibty6ou4tQX+MIKMMUVq8cfUH7oKv/R
+    8mL5PV/NUsgO248llo0lr9QBwQKdiw17wCxFR+8vAgMBAAGjQjBAMA8GA1UdEwEB
+    /wQFMAMBAf8wHQYDVR0OBBYEFPDYnx2xYIPDDAEjb6UcF29I6DgKMA4GA1UdDwEB
+    /wQEAwIBhjANBgkqhkiG9w0BAQwFAAOCAgEANTrAGs/GpXCADAwMGlrjXTdohp+p
+    CIp3gbnryVYZBXvO+f8hjJ8bHk0D/DiBrkjE8o0IpNaAadOZa+WvTNMsanPmGf1A
+    kD0vA9nm4gwEhBbzj9HRYX+dIhZhVWny9Kugm80s0h0hvbwTakUPOdMqkz6wn+xx
+    Owh7AIwaC5TTCsQyKlv5rjVblvU1XFgBf3Pf3wvMAfjDoAEPTXER/9mLVbXe+EmW
+    osP1JmgyDd+0WQFVK/LEDW81L5hsV5JvthAAFhGVtRw9ko5Ep28+EQUJE1wmLTdL
+    PyjB/KfJrTMDq94WolzFv4JpUStHbclkKlXtigjKeiYZ5Yvo+vLMSkXemccSfYn7
+    vdaUFD5vqWXvM4xhiYRq/tigw2E1bjmyd9L3XD7XalufZtMGWn7zT8HMPP+/Lch1
+    JjZ9LL2Y99VIqhoHcuSa95FtLpYDRQ28K03uwqxqFnOQLyPVmYwsaHKnmmwaZDjF
+    K1XxLVRLGRWvKEuSoWrsGcs3ehoxX4Knz/BaJzr/ioU1VnItj53tmOSJO0eMA6k+
+    egaVEb0FTa2F5xeLCKjgfDDWMz3v0TdL+kt+9z0THMlPWfOzd1C35ZzSIcTcRj22
+    SAzsL0t5ZTI4XvoPFF8dga78/KsBRolqdPjs0UzdlKhwh1ADOkTRgLOaaidMEgsT
+    JS/rbzD4FPbvc/g=
+    -----END CERTIFICATE-----
+    #Amazon RDS us-gov-west-1 Root CA ECC384 G1 - expires 5/2121
+    -----BEGIN CERTIFICATE-----
+    MIICtDCCAjugAwIBAgIQPyg+edjKVnM2PB4KZVu66jAKBggqhkjOPQQDAzCBmjEL
+    MAkGA1UEBhMCVVMxIjAgBgNVBAoMGUFtYXpvbiBXZWIgU2VydmljZXMsIEluYy4x
+    EzARBgNVBAsMCkFtYXpvbiBSRFMxCzAJBgNVBAgMAldBMTMwMQYDVQQDDCpBbWF6
+    b24gUkRTIHVzLWdvdi13ZXN0LTEgUm9vdCBDQSBFQ0MzODQgRzExEDAOBgNVBAcM
+    B1NlYXR0bGUwIBcNMjEwNTI2MjE1MzI3WhgPMjEyMTA1MjYyMjUzMjdaMIGaMQsw
+    CQYDVQQGEwJVUzEiMCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjET
+    MBEGA1UECwwKQW1hem9uIFJEUzELMAkGA1UECAwCV0ExMzAxBgNVBAMMKkFtYXpv
+    biBSRFMgdXMtZ292LXdlc3QtMSBSb290IENBIEVDQzM4NCBHMTEQMA4GA1UEBwwH
+    U2VhdHRsZTB2MBAGByqGSM49AgEGBSuBBAAiA2IABFaqyIYrbpPfhiKzLEkmzp1j
+    3OYO/e1VE3vCf5c62bN5xYKFKH/MnKgsUFNsFpJ1t0p9cexi+607aiYOo1sOWvOj
+    q3PUu+ltklQdvunU/Se5++qqsh7lylL5OF/F19uqfqNCMEAwDwYDVR0TAQH/BAUw
+    AwEB/zAdBgNVHQ4EFgQUJHPtPhijPquZxTz2UGh4YV1npYMwDgYDVR0PAQH/BAQD
+    AgGGMAoGCCqGSM49BAMDA2cAMGQCMHWDFuIZ9LZgysbL4vx/Ox9z8fbegb3352bM
+    BFr6JV1x8VLbePblHd0V1MwDdRWeAwIwarWfOVdB1ijrwzjROzCwE0uBkHYUPr0Z
+    vgwdtlsnwDw9TnjsBrTJkQ0aS8c0Ahl1
+    -----END CERTIFICATE-----
+
 
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs/name=cflinuxfs3-rootfs-setup/properties/cflinuxfs3-rootfs?/trusted_certs/-
