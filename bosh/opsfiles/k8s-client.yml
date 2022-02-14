@@ -1,9 +1,0 @@
----
-# Split the k8s-related clients out from the shared clients file so we can remove them one environment at a time by removing this opsfile.
-- type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/kubernetes-client?
-  value:
-    override: true
-    authorized-grant-types: client_credentials
-    authorities: cloud_controller.global_auditor
-    secret: ((kubernetes-client-secret))
