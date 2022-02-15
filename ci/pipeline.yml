@@ -72,15 +72,6 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
-  - task: update-isolation-segments
-    file: cf-manifests/ci/update-isolation-segments.yml
-    params:
-      CF_API_URL: ((cf-api-url-development))
-      CF_USERNAME: ((cf-username-development))
-      CF_PASSWORD: ((cf-password-development))
-      PLATFORM_ISOLATION_SEGMENT: ((platform-isolation-segment-development))
-      PLATFORM_ORGANIZATION: ((platform-organization-development))
-      PLATFORM_SPACE: ((platform-space-development))
 
   - task: enable-cf-features
     file: cf-manifests/ci/enable-cf-features.yml
@@ -488,15 +479,6 @@ jobs:
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
-  - task: update-isolation-segments
-    file: cf-manifests/ci/update-isolation-segments.yml
-    params:
-      CF_API_URL: ((cf-api-url-staging))
-      CF_USERNAME: ((cf-username-staging))
-      CF_PASSWORD: ((cf-password-staging))
-      PLATFORM_ISOLATION_SEGMENT: ((platform-isolation-segment-staging))
-      PLATFORM_ORGANIZATION: ((platform-organization-staging))
-      PLATFORM_SPACE: ((platform-space-staging))
 
   - task: enable-cf-features
     file: cf-manifests/ci/enable-cf-features.yml
@@ -975,15 +957,6 @@ jobs:
     params:
       <<: *prod-deploy-params
       dry_run: false
-  - task: update-isolation-segments
-    file: cf-manifests/ci/update-isolation-segments.yml
-    params:
-      CF_API_URL: ((cf-api-url-production))
-      CF_USERNAME: ((cf-username-production))
-      CF_PASSWORD: ((cf-password-production))
-      PLATFORM_ISOLATION_SEGMENT: ((platform-isolation-segment-production))
-      PLATFORM_ORGANIZATION: ((platform-organization-production))
-      PLATFORM_SPACE: ((platform-space-production))
 
   - task: enable-cf-features
     file: cf-manifests/ci/enable-cf-features.yml
