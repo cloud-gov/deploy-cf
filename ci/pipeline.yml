@@ -449,7 +449,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
-      - cf-manifests/bosh/pages-clients-staging.yml
+      - cf-manifests/bosh/opsfiles/pages-clients-staging.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/apps-domain.yml
@@ -883,7 +883,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
-      - cf-manifests/bosh/pages-clients-production.yml
+      - cf-manifests/bosh/opsfiles/pages-clients-production.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
       - cf-manifests/bosh/opsfiles/apps-domain.yml
