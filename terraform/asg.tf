@@ -276,6 +276,13 @@ resource "cloudfoundry_isolation_segment" "platform" {
   name = "platform"
 }
 
+resource "cloudfoundry_isolation_segment_entitlement" "platform" {
+  segment = data.cloudfoundry_isolation_segment.platform.id
+  orgs = [
+    data.cloudfloundry_org.cloud-gov.id
+  ]
+}
+
 resource "cloudfoundry_space" "services" {
   name = "services"
   org  = cloudfoundry_org.cloud-gov.id
