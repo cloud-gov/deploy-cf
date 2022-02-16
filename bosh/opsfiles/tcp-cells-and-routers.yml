@@ -186,7 +186,7 @@
           ca: ((cf_app_sd_server_tls.ca))
     release: cf-networking
 - type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
+  path: /instance_groups/name=diego-tcp-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
     enabled: true
 
