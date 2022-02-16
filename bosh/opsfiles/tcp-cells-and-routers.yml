@@ -1,0 +1,206 @@
+# Copy original diego-cell from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
+- type: replace
+  path: /instance_groups/-
+  value:
+    name: diego-tcp-cell
+    azs:
+    - z1
+    - z2
+    instances: 2
+    vm_type: small-highmem
+    vm_extensions:
+    - 100GB_ephemeral_disk
+    stemcell: default
+    networks:
+    - name: default
+    jobs:
+    - name: cflinuxfs3-rootfs-setup
+      release: cflinuxfs3
+      properties:
+        cflinuxfs3-rootfs:
+          trusted_certs:
+          - ((diego_instance_identity_ca.ca))
+          - ((uaa_ssl.ca))
+    - name: garden
+      release: garden-runc
+      properties:
+        garden:
+          containerd_mode: true
+          cleanup_process_dirs_on_wait: true
+          debug_listen_address: 127.0.0.1:17019
+          default_container_grace_time: 0
+          destroy_containers_on_start: true
+          deny_networks:
+          - 0.0.0.0/0
+          network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
+          network_plugin_extra_args:
+          - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
+          logging:
+            format:
+              timestamp: "rfc3339"
+    - name: rep
+      release: diego
+      properties:
+        bpm:
+          enabled: true
+        diego:
+          executor:
+            instance_identity_ca_cert: ((diego_instance_identity_ca.certificate))
+            instance_identity_key: ((diego_instance_identity_ca.private_key))
+          rep:
+            preloaded_rootfses:
+            - cflinuxfs3:/var/vcap/packages/cflinuxfs3/rootfs.tar
+        containers:
+          proxy:
+            enabled: true
+            require_and_verify_client_certificates: true
+            trusted_ca_certificates:
+            - ((gorouter_backend_tls.ca))
+            - ((ssh_proxy_backends_tls.ca))
+            verify_subject_alt_name:
+            - gorouter.service.cf.internal
+            - ssh-proxy.service.cf.internal
+          trusted_ca_certificates:
+            - ((diego_instance_identity_ca.ca)))
+            - ((uaa_ssl.ca))
+        enable_consul_service_registration: false
+        enable_declarative_healthcheck: true
+        loggregator: *diego_loggregator_client_properties
+        tls:
+          ca_cert: "((diego_rep_agent_v2.ca))"
+          cert: "((diego_rep_agent_v2.certificate))"
+          key: "((diego_rep_agent_v2.private_key))"
+        logging:
+          format:
+            timestamp: "rfc3339"
+    - name: cfdot
+      release: diego
+      properties:
+        tls: &cfdot_tls_client_properties
+          ca_certificate: "((diego_rep_client.ca))"
+          certificate: "((diego_rep_client.certificate))"
+          private_key: "((diego_rep_client.private_key))"
+    - name: route_emitter
+      release: diego
+      properties:
+        bpm:
+          enabled: true
+        loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_agent.ca))"
+          cert: "((loggregator_tls_agent.certificate))"
+          key: "((loggregator_tls_agent.private_key))"
+        diego:
+          route_emitter:
+            local_mode: true
+            bbs:
+              ca_cert: "((diego_bbs_client.ca))"
+              client_cert: "((diego_bbs_client.certificate))"
+              client_key: "((diego_bbs_client.private_key))"
+            nats:
+              tls:
+                enabled: true
+                client_cert: "((nats_client_cert.certificate))"
+                client_key: "((nats_client_cert.private_key))"
+        tcp:
+          enabled: true
+        uaa:
+          ca_cert: "((uaa_ssl.ca))"
+          client_secret: "((uaa_clients_tcp_emitter_secret))"
+        logging:
+          format:
+            timestamp: "rfc3339"
+        internal_routes:
+          enabled: true
+    - name: garden-cni
+      release: cf-networking
+      properties:
+        cni_plugin_dir: /var/vcap/packages/silk-cni/bin
+        cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
+    - name: netmon
+      release: silk
+    - name: vxlan-policy-agent
+      release: silk
+      provides:
+        vpa: {as: vpa-tcp}
+      properties:
+        ca_cert: ((network_policy_client.ca))
+        client_cert: ((network_policy_client.certificate))
+        client_key: ((network_policy_client.private_key))
+    - name: silk-daemon
+      release: silk
+      consumes:
+        vpa: {from: vpa-tcp}
+      properties:
+        ca_cert: ((silk_daemon.ca))
+        client_cert: ((silk_daemon.certificate))
+        client_key: ((silk_daemon.private_key))
+    - name: silk-cni
+      release: silk
+      properties:
+        dns_servers:
+        - 169.254.0.2
+      consumes:
+        vpa: {from: vpa-tcp}
+
+# Set platform cell instance profile and placement tag
+- type: replace
+  path: /instance_groups/name=diego-tcp-cell/vm_extensions/-
+  value: diego-tcp-cell-profile
+- type: replace
+  path: /instance_groups/name=diego-tcp-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
+  value: tcp
+
+# Use distinct vxlan policy links for tenant cells
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/provides?/vpa
+  value: {as: vpa-tenant}
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=silk-daemon/consumes?/vpa
+  value: {from: vpa-tenant}
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=silk-cni/consumes?/vpa
+  value: {from: vpa-tenant}
+
+# Add platform cells to DNS aliases
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
+  value:
+    query: '_'
+    instance_group: diego-tcp-cell
+    deployment: ((deployment_name))
+    network: ((network_name))
+    domain: bosh
+
+# Enable service discovery
+- type: replace
+  path: /instance_groups/name=diego-tcp-cell/jobs/name=bosh-dns-adapter?
+  value:
+    name: bosh-dns-adapter
+    properties:
+      internal_domains: ["apps.internal."]
+      dnshttps:
+        client:
+          tls: ((cf_app_sd_client_tls))
+        server:
+          ca: ((cf_app_sd_server_tls.ca))
+    release: cf-networking
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
+  value:
+    enabled: true
+
+- type: replace
+  path: /instance_groups/name=tcp-router/jobs/name=tcp_router/properties/tcp_router/isolation_segments?
+  value: [tcp]
+
+- type: replace
+  path: /instance_groups/name=tcp-router/jobs/name=tcp_router/properties/tcp_router/routing_table_sharding_mode?
+  value: segments
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=routing-api/properties/routing_api/router_groups/name=default-tcp?
+  value:
+    name: default-tcp
+    reservalble_ports: ((terraform_outputs.tcp_lb_listener_ports))
+    type: tcp
