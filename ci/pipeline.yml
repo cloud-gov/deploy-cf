@@ -38,7 +38,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/latest-stemcell.yml
       - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -67,6 +66,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/tcp-cells-and-routers.yml
 #remove once cf-deployment catches up - 12/13/21
       - cf-manifests/bosh/opsfiles/temp-buildpack.yml
       vars_files:

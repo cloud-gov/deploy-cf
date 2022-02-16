@@ -46,6 +46,13 @@
   path: /instance_groups/name=router/vm_type
   value: t3.small
 
+- type: replace
+  path: /instance_groups/name=tcp-router/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=tcp-router/vm_type
+  value: t3.small
+
 # scheduler
 - type: replace
   path: /instance_groups/name=scheduler/instances
