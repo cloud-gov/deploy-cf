@@ -145,9 +145,6 @@
 
 # Set platform cell instance profile and placement tag
 - type: replace
-  path: /instance_groups/name=diego-tcp-cell/vm_extensions/-
-  value: diego-tcp-cell-profile
-- type: replace
   path: /instance_groups/name=diego-tcp-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
   value: tcp
 
