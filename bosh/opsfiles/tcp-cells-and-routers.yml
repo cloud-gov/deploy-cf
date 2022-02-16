@@ -199,5 +199,5 @@
   path: /instance_groups/name=api/jobs/name=routing-api/properties/routing_api/router_groups/name=default-tcp?
   value:
     name: default-tcp
-    reservalble_ports: ((terraform_outputs.tcp_lb_listener_ports))
+    reservalble_ports: ((tcp_lb_listener_ports))
     type: tcp
