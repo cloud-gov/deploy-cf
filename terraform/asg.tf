@@ -7,6 +7,9 @@ variable "tooling_stack_name" {
 variable "iaas_stack_name" {
 }
 
+variable "domain_name" {
+}
+
 terraform {
   backend "s3" {
   }
@@ -354,4 +357,23 @@ resource "cloudfoundry_space" "email" {
     cloudfoundry_asg.public_networks.id,
     cloudfoundry_asg.dns.id,
   ]
+}
+
+
+resource "cloudfoundry_isolation_segment" "tcp" {
+  name = "tcp"
+}
+
+resource "cloudfoundry_isolation_segment_entitlement" "tcp" {
+  segment = cloudfoundry_isolation_segment.tcp.id
+  orgs = [
+    cloudfoundry_org.cloud-gov.id
+  ]
+}
+
+resource "cloudfoundry_domain" "tcp" {
+  for_each = toset(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names)
+  sub_domain = "tcp-${index(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names, each.key)}"
+  domain = var.domain_name
+  internal = false
 }
