@@ -379,5 +379,5 @@ resource "cloudfoundry_domain" "tcp" {
   sub_domain = "tcp-${index(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names, each.key)}"
   domain = var.domain_name
   internal = false
-  router_group = data.tcp_router_group.id
+  router_group = data.cloudfoundry_router_group.tcp_router_group.id
 }
