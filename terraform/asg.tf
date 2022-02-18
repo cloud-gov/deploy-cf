@@ -361,10 +361,16 @@ resource "cloudfoundry_space" "email" {
 
 data "cloudfoundry_router_group" "tcp_router_group" {
   name = "default-tcp" 
+  depends_on = [
+    data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names
+  ]
 }
 
 resource "cloudfoundry_isolation_segment" "tcp" {
   name = "tcp"
+  depends_on = [
+    data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names
+  ]
 }
 
 resource "cloudfoundry_isolation_segment_entitlement" "tcp" {
