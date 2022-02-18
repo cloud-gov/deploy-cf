@@ -365,22 +365,17 @@ data "cloudfoundry_router_group" "tcp_router_group" {
     # this dependency is kind of soft - really, we care about whether tcp routing is enabled
     # and we're using this as a hint. We should remove this dependency reference once tcp
     # routes are promoted to production
-    data.terraform_remote_state.iaas.module.cf.aws_lb.cf_apps_tcp[0]
+    cloudfoundry_isolation_segment.tcp
   ]
 }
 
 resource "cloudfoundry_isolation_segment" "tcp" {
+  count = length(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names) > 0 ? 1 : 0
   name = "tcp"
-  depends_on = [
-    # this dependency is kind of soft - really, we care about whether tcp routing is enabled
-    # and we're using this as a hint. We should remove this dependency reference once tcp
-    # routes are promoted to production
-    data.terraform_remote_state.iaas.module.cf.aws_lb.cf_apps_tcp[0]
-  ]
 }
 
 resource "cloudfoundry_isolation_segment_entitlement" "tcp" {
-  segment = cloudfoundry_isolation_segment.tcp.id
+  segment = cloudfoundry_isolation_segment.tcp[0].id
   orgs = [
     cloudfoundry_org.cloud-gov.id
   ]
