@@ -93,7 +93,7 @@
   value:
     override: true
     authorized-grant-types: client_credentials
-    authorities: cloud_controller.admin
+    authorities: cloud_controller.admin,network.admin,routing.router_groups.read
     secret: ((terraform-client-secret))
 
 - type: replace
