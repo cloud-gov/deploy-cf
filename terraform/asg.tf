@@ -375,6 +375,7 @@ resource "cloudfoundry_isolation_segment" "tcp" {
 }
 
 resource "cloudfoundry_isolation_segment_entitlement" "tcp" {
+  count = length(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names) > 0 ? 1 : 0
   segment = cloudfoundry_isolation_segment.tcp[0].id
   orgs = [
     cloudfoundry_org.cloud-gov.id
