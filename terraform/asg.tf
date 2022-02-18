@@ -362,14 +362,20 @@ resource "cloudfoundry_space" "email" {
 data "cloudfoundry_router_group" "tcp_router_group" {
   name = "default-tcp" 
   depends_on = [
-    data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names
+    # this dependency is kind of soft - really, we care about whether tcp routing is enabled
+    # and we're using this as a hint. We should remove this dependency reference once tcp
+    # routes are promoted to production
+    data.terraform_remote_state.iaas.module.cf.aws_lb.cf_apps_tcp[0]
   ]
 }
 
 resource "cloudfoundry_isolation_segment" "tcp" {
   name = "tcp"
   depends_on = [
-    data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names
+    # this dependency is kind of soft - really, we care about whether tcp routing is enabled
+    # and we're using this as a hint. We should remove this dependency reference once tcp
+    # routes are promoted to production
+    data.terraform_remote_state.iaas.module.cf.aws_lb.cf_apps_tcp[0]
   ]
 }
 
