@@ -359,33 +359,10 @@ resource "cloudfoundry_space" "email" {
   ]
 }
 
-data "cloudfoundry_router_group" "tcp_router_group" {
-  name = "default-tcp" 
-  depends_on = [
-    # this dependency is kind of soft - really, we care about whether tcp routing is enabled
-    # and we're using this as a hint. We should remove this dependency reference once tcp
-    # routes are promoted to production
-    cloudfoundry_isolation_segment.tcp
-  ]
-}
-
-resource "cloudfoundry_isolation_segment" "tcp" {
+module "tcp-routing" {
   count = length(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names) > 0 ? 1 : 0
-  name = "tcp"
-}
-
-resource "cloudfoundry_isolation_segment_entitlement" "tcp" {
-  count = length(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names) > 0 ? 1 : 0
-  segment = cloudfoundry_isolation_segment.tcp[0].id
-  orgs = [
-    cloudfoundry_org.cloud-gov.id
-  ]
-}
-
-resource "cloudfoundry_domain" "tcp" {
-  for_each = toset(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names)
-  sub_domain = "tcp-${index(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names, each.key)}"
-  domain = var.domain_name
-  internal = false
-  router_group = data.cloudfoundry_router_group.tcp_router_group.id
+  source = "../modules/tcp-routing"
+  cloud_gov_org_id = cloudfoundry_org.cloud-gov.id
+  tcp_lb_dns_names = data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names
+  domain_name = var.domain_name
 }
