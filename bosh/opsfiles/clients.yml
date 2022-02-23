@@ -36,7 +36,7 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa_extras_app?
   value:
     override: true
-    scope: scim.invite,password.write
+    scope: scim.invite,password.write,cloud_controller.read
     authorized-grant-types: authorization_code,client_credentials
     authorities: scim.read,password.write,uaa.admin,uaa.resource
     access-token-validity: 600
