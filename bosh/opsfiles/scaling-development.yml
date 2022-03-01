@@ -62,6 +62,14 @@
   path: /instance_groups/name=doppler/vm_type
   value: t3.large
 
+# log-cache
+- type: replace
+  path: /instance_groups/name=log-cache/instances
+  value: 1
+- type: replace
+  path: /instance_groups/name=log-cache/vm_type
+  value: t3.large
+
 # log-api
 - type: replace
   path: /instance_groups/name=log-api/instances
