@@ -1,4 +1,5 @@
 # Added 12/17/21  to bump php and java buildpacks to cover log4j until cf-deployment catches up
+# Removed 03/02/22 from pipeline ci file since cf-deployment has caught up
 
 - type: replace
   path: /releases/name=java-buildpack
