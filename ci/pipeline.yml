@@ -67,8 +67,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
-#remove once cf-deployment catches up - 12/13/21
-      - cf-manifests/bosh/opsfiles/temp-buildpack.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -475,8 +473,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
-#remove once cf-deployment catches up - 12/13/21
-      - cf-manifests/bosh/opsfiles/temp-buildpack.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -910,8 +906,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-#remove once cf-deployment catches up - 12/13/21
-      - cf-manifests/bosh/opsfiles/temp-buildpack.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
