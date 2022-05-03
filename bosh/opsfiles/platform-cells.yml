@@ -23,6 +23,8 @@
           - ((uaa_ssl.ca))
     - name: garden
       release: garden-runc
+      provides:
+        iptables: {as: iptables-platform}
       properties:
         garden:
           containerd_mode: true
@@ -119,10 +121,15 @@
         cni_config_dir: /var/vcap/jobs/silk-cni/config/cni
     - name: netmon
       release: silk
+      consumes:
+        iptables: {from: iptables-platform}
     - name: vxlan-policy-agent
       release: silk
       provides:
         vpa: {as: vpa-platform}
+      consumes:
+        iptables: {from: iptables-platform}
+        cni_config: {from: cni_config_platform}
       properties:
         ca_cert: ((network_policy_client.ca))
         client_cert: ((network_policy_client.certificate))
@@ -131,6 +138,7 @@
       release: silk
       consumes:
         vpa: {from: vpa-platform}
+        iptables: {from: iptables-platform}
       properties:
         ca_cert: ((silk_daemon.ca))
         client_cert: ((silk_daemon.certificate))
@@ -142,6 +150,8 @@
         - 169.254.0.2
       consumes:
         vpa: {from: vpa-platform}
+      provides:
+        cni_config: {as: cni_config_platform}
 
 # Set platform cell instance profile and placement tag
 - type: replace
