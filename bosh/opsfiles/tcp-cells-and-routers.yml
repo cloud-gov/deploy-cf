@@ -29,7 +29,6 @@
         cflinuxfs3-rootfs:
           trusted_certs:
           - ((diego_instance_identity_ca.ca))
-          - ((credhub_tls.ca))
           - ((uaa_ssl.ca))
     - name: garden
       release: garden-runc
@@ -74,7 +73,6 @@
             - ssh-proxy.service.cf.internal
           trusted_ca_certificates:
             - ((diego_instance_identity_ca.ca)))
-            - ((credhub_tls.ca))
             - ((uaa_ssl.ca))
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
