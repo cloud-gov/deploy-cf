@@ -14,12 +14,22 @@
     networks:
     - name: default
     jobs:
+    - name: bosh-dns-adapter
+      properties:
+        internal_domains: ["apps.internal."]
+        dnshttps:
+          client:
+            tls: ((cf_app_sd_client_tls))
+          server:
+            ca: ((cf_app_sd_client_tls.ca))
+      release: cf-networking
     - name: cflinuxfs3-rootfs-setup
       release: cflinuxfs3
       properties:
         cflinuxfs3-rootfs:
           trusted_certs:
           - ((diego_instance_identity_ca.ca))
+          - ((credhub_tls.ca))
           - ((uaa_ssl.ca))
     - name: garden
       release: garden-runc
@@ -64,6 +74,7 @@
             - ssh-proxy.service.cf.internal
           trusted_ca_certificates:
             - ((diego_instance_identity_ca.ca)))
+            - ((credhub_tls.ca))
             - ((uaa_ssl.ca))
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
@@ -152,6 +163,19 @@
         vpa: {from: vpa-platform}
       provides:
         cni_config: {as: cni_config_platform}
+    - name: loggr-udp-forwarder
+      release: loggregator-agent
+      properties:
+        loggregator:
+          tls:
+            ca: "((loggregator_tls_agent.ca))"
+            cert: "((loggregator_tls_agent.certificate))"
+            key: "((loggregator_tls_agent.private_key))"
+        metrics:
+          ca_cert: "((loggr_udp_forwarder_tls.ca))"
+          cert: "((loggr_udp_forwarder_tls.certificate))"
+          key: "((loggr_udp_forwarder_tls.private_key))"
+          server_name: loggr_udp_forwarder_metrics
 
 # Set platform cell instance profile and placement tag
 - type: replace
