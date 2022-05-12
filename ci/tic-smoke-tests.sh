@@ -131,6 +131,7 @@ gorouter_ip=$(
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the error message in the body to make sure it looks like we really reached Stratos
   [ "$(echo "${resp}" | head -n -1 | jq -r '.error')" = 'User session could not be found' ]
+
 }
 
 @test "restricted user cannot access the dashboard from an unallowed address" {
