@@ -267,60 +267,7 @@ jobs:
     params:
       CI: true
       API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
-      BOSH_ENVIRONMENT: ((development-bosh-target))
-      BOSH_CLIENT: ((development-bosh-username))
-      BOSH_CLIENT_SECRET: ((development-bosh-password))
-      BOSH_DEPLOYMENT_NAME: cf-development
-      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
-      RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
-      UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
-      SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
-      SOURCE_ADDRESS_FORBIDDEN: ((tic-test-source-address-forbidden))
-      PROXY_ADDRESS_ALLOWED: ((tic-test-proxy-address-allowed))
-      PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
-      TIC_SECRET_ALLOWED: ((tic-secret-development))
-      TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
-      TIC_PROTOCAL: https
-      GOROUTER_PORT: 443
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: TIC Smoke Tests for CF on development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-
-- name: tic-smoke-tests-development-dashboard
-  plan:
-  - in_parallel:
-    - get: master-bosh-root-cert
-      passed: [deploy-cf-development]
-      trigger: true
-    - get: cf-deployment-development
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-deployment
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-stemcell-bionic
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-manifests
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: uaa-customized-release
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cg-s3-secureproxy-release
-      trigger: true
-      passed: [deploy-cf-development]
-  - task: smoke-tests
-    file: cf-manifests/ci/tic-smoke-tests.yml
-    params:
-      CI: true
-      API_HOSTNAME: dashboard.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      DASHBOARD_HOSTNAME: dashboard.dev.us-gov-west-1.aws-us-gov.cloud.gov
       BOSH_ENVIRONMENT: ((development-bosh-target))
       BOSH_CLIENT: ((development-bosh-username))
       BOSH_CLIENT_SECRET: ((development-bosh-password))
@@ -656,6 +603,7 @@ jobs:
     params:
       CI: true
       API_HOSTNAME: api.fr-stage.cloud.gov
+      DASHBOARD_HOSTNAME: dashboard.fr-stage.cloud.gov
       BOSH_ENVIRONMENT: ((staging-bosh-target))
       BOSH_CLIENT: ((staging-bosh-username))
       BOSH_CLIENT_SECRET: ((staging-bosh-password))
@@ -1125,6 +1073,7 @@ jobs:
     params:
       CI: true
       API_HOSTNAME: api.fr.cloud.gov
+      DASHBOARD_HOSTNAME: dashboard.fr.cloud.gov
       BOSH_ENVIRONMENT: ((production-bosh-target))
       BOSH_CLIENT: ((production-bosh-username))
       BOSH_CLIENT_SECRET: ((production-bosh-password))
@@ -1450,7 +1399,6 @@ groups:
   - uaa-client-auditing-development
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
-  - tic-smoke-tests-development-dashboard
   - smoke-tests-development
   - test-space-egress-development
   - deploy-cf-staging
@@ -1482,7 +1430,6 @@ groups:
   - uaa-client-auditing-development
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
-  - tic-smoke-tests-development-dashboard
   - smoke-tests-development
   - test-space-egress-development
 - name: staging
