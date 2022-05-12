@@ -1450,6 +1450,7 @@ groups:
   - uaa-client-auditing-development
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
+  - tic-smoke-tests-development-dashboard
   - smoke-tests-development
   - test-space-egress-development
   - deploy-cf-staging
@@ -1481,6 +1482,7 @@ groups:
   - uaa-client-auditing-development
   - uaa-monitor-account-creation-development
   - tic-smoke-tests-development
+  - tic-smoke-tests-development-dashboard
   - smoke-tests-development
   - test-space-egress-development
 - name: staging
