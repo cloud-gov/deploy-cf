@@ -130,7 +130,7 @@ gorouter_ip=$(
   # 401 because our Authorization header is bogus
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the error message in the body to make sure it looks like we really reached Stratos
-  [ $(echo "${resp}" | head -n -1 | jq -r '.code') = "User session could not be found" ]
+  [ "$(echo "${resp}" | head -n -1 | jq -r '.error')" = 'User session could not be found' ]
 }
 
 @test "restricted user cannot access the dashboard from an unallowed address" {
@@ -156,7 +156,7 @@ gorouter_ip=$(
   # 401 because our Authorization header is bogus
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the code in the body to make sure it looks like we really reached Stratos
-  [ $(echo "${resp}" | head -n -1 | jq -r '.error') = "User session could not be found" ]
+  [ "$(echo "${resp}" | head -n -1 | jq -r '.error')" = 'User session could not be found' ]
 }
 
 @test "x-client-ip is not trusted when x-forwarded-for is untrusted, disallowing restricted user from accessing dashboard with allowed address in x-client-ip" {
@@ -221,5 +221,5 @@ gorouter_ip=$(
   # 401 because our Authorization header is bogus
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the error message in the body to make sure it looks like we really reached Stratos
-  [ $(echo "${resp}" | head -n -1 | jq -r '.code') = "User session could not be found" ]
+  [ "$(echo "${resp}" | head -n -1 | jq -r '.error')" = 'User session could not be found' ]
 }
