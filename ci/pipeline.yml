@@ -563,21 +563,19 @@ jobs:
       passed: [deploy-cf-staging]
       trigger: true
     - get: cf-deployment
-      trigger: true
       passed: [deploy-cf-staging]
     - get: cf-stemcell-bionic
-      trigger: true
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
-      trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
     - get: terraform-config
+      trigger: true
       passed: [terraform-apply-staging]
-    - get: master-bosh-root-cert
     - get: pipeline-tasks
       passed: [deploy-cf-staging]
+      trigger: true
   - task: smoke-tests
     file: pipeline-tasks/uaa-smoke-tests.yml
     params:
@@ -636,13 +634,10 @@ jobs:
       passed: [deploy-cf-staging]
       trigger: true
     - get: cf-deployment
-      trigger: true
       passed: [deploy-cf-staging]
     - get: cf-stemcell-bionic
-      trigger: true
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
-      trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
@@ -881,10 +876,6 @@ jobs:
   serial_groups: [staging]
   plan:
   - in_parallel:
-    - get: common
-      resource: master-bosh-root-cert
-      trigger: true
-      passed: [deploy-cf-staging]
     - get: cf-deployment-staging
       passed: [deploy-cf-staging]
       trigger: true
@@ -892,13 +883,10 @@ jobs:
       passed: [deploy-cf-staging]
       trigger: true
     - get: cf-deployment
-      trigger: true
       passed: [deploy-cf-staging]
     - get: cf-stemcell-bionic
-      trigger: true
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
-      trigger: true
       passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
