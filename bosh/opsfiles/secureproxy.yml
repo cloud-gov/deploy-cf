@@ -41,6 +41,8 @@
           - hostname: api.((system_domain))
             exclude:
             - ^/v2/info
+          - hostname: dashboard.((system_domain))
+            exclude: []
           secret: ((tic-secret))
           whitelist: ((tic-whitelist))
           proxy_whitelist: ((tic-proxy-whitelist))
