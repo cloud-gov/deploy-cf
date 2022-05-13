@@ -302,7 +302,6 @@ jobs:
       passed: 
       - tic-smoke-tests-development
       - uaa-smoke-tests-development 
-      - test-space-egress-development
       trigger: true
     - get: cf-deployment-development
       trigger: true
@@ -333,13 +332,11 @@ jobs:
       passed: 
       - tic-smoke-tests-development
       - uaa-smoke-tests-development 
-      - test-space-egress-development
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: 
       - tic-smoke-tests-development
       - uaa-smoke-tests-development 
-      - test-space-egress-development
   - task: run-errand
     attempts: 3
     params:
@@ -389,6 +386,11 @@ jobs:
     - get: cf-deployment
     - get: cf-manifests
       trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-bionic
       passed: [deploy-cf-development]
   - task: deploy-test-env
     file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
