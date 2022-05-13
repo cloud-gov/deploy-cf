@@ -64,7 +64,7 @@ do
   cf target -o $ORG -s $space
 
   # Create the db service instance
-  cf create-service -b aws-rds aws-rds micro-psql $space-db
+  cf create-service -b aws-broker aws-rds micro-psql $space-db
 done
 
 ## Wait for databases to create
