@@ -299,25 +299,47 @@ jobs:
   - in_parallel:
     - get: common
       resource: master-bosh-root-cert
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
       trigger: true
     - get: cf-deployment-development
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
     - get: cf-deployment
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
     - get: cf-stemcell-bionic
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
     - get: cf-manifests
       trigger: true
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
     - get: uaa-customized-release
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
     - get: cg-s3-secureproxy-release
       trigger: true
-      passed: [tic-smoke-tests-development,uaa-smoke-tests-development]
+      passed: 
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development 
+      - test-space-egress-development
   - task: run-errand
     attempts: 3
     params:
@@ -534,9 +556,24 @@ jobs:
 - name: uaa-smoke-tests-staging
   plan:
   - in_parallel:
-    - get: pipeline-tasks
-      passed: [deploy-cf-staging]
     - get: cf-deployment-staging
+      passed: [deploy-cf-staging]
+      trigger: true
+    - get: cf-manifests
+      passed: [deploy-cf-staging]
+      trigger: true
+    - get: cf-deployment
+      passed: [deploy-cf-staging]
+    - get: cf-stemcell-bionic
+      passed: [deploy-cf-staging]
+    - get: uaa-customized-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [deploy-cf-staging]
+    - get: terraform-config
+      trigger: true
+      passed: [terraform-apply-staging]
+    - get: pipeline-tasks
       passed: [deploy-cf-staging]
       trigger: true
   - task: smoke-tests
@@ -590,13 +627,23 @@ jobs:
 - name: tic-smoke-tests-staging
   plan:
   - in_parallel:
-    - get: cf-manifests
-      passed: [deploy-cf-staging]
     - get: cf-deployment-staging
       passed: [deploy-cf-staging]
       trigger: true
+    - get: cf-manifests
+      passed: [deploy-cf-staging]
+      trigger: true
+    - get: cf-deployment
+      passed: [deploy-cf-staging]
+    - get: cf-stemcell-bionic
+      passed: [deploy-cf-staging]
+    - get: uaa-customized-release
+      passed: [deploy-cf-staging]
     - get: cg-s3-secureproxy-release
       passed: [deploy-cf-staging]
+    - get: terraform-config
+      passed: [terraform-apply-staging]
+      trigger: true
     - get: master-bosh-root-cert
   - task: smoke-tests
     file: cf-manifests/ci/tic-smoke-tests.yml
@@ -743,27 +790,55 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-acceptance-tests
     - get: cf-deployment-staging
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
       trigger: true
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
       trigger: true
     - get: cf-deployment
       trigger: true
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
     - get: cf-stemcell-bionic
       trigger: true
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
     - get: uaa-customized-release
       trigger: true
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
     - get: cg-s3-secureproxy-release
       trigger: true
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
     - get: terraform-config
       trigger: true
-      passed: [smoke-tests-staging]
+      passed: 
+      - tic-smoke-tests-staging
+      - uaa-smoke-tests-staging 
+      - test-space-egress-staging
+      - smoke-tests-staging
   - task: test-config
     file: cf-manifests/ci/acceptance-tests-config.yml
     params:
@@ -801,10 +876,23 @@ jobs:
   serial_groups: [staging]
   plan:
   - in_parallel:
-    - get: cf-deployment
-    - get: cf-manifests
-      trigger: true
+    - get: cf-deployment-staging
       passed: [deploy-cf-staging]
+      trigger: true
+    - get: cf-manifests
+      passed: [deploy-cf-staging]
+      trigger: true
+    - get: cf-deployment
+      passed: [deploy-cf-staging]
+    - get: cf-stemcell-bionic
+      passed: [deploy-cf-staging]
+    - get: uaa-customized-release
+      passed: [deploy-cf-staging]
+    - get: cg-s3-secureproxy-release
+      passed: [deploy-cf-staging]
+    - get: terraform-config
+      passed: [terraform-apply-staging]
+      trigger: true
   - task: deploy-test-env
     file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
     params: &test-space-egress-staging-params
