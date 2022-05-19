@@ -9,3 +9,13 @@ buildpack_directory_key: cf-development-buildpacks
 droplet_directory_key: cf-development-droplets
 app_package_directory_key: cf-development-cc-packages
 resource_directory_key: cf-development-cc-resources
+
+csp-enabled: true
+csp-report-only: true
+csp-report-uri: cspr-collector.fr.cloud.gov
+csp-host-patterns:
+- logs.dev.us-gov-west-1.aws-us-gov.cloud.gov
+- dashboard.dev.us-gov-west-1.aws-us-gov.cloud.gov
+- logs-platform.dev.us-gov-west-1.aws-us-gov.cloud.gov
+- admin.dev.us-gov-west-1.aws-us-gov.cloud.gov
+- uaa.dev.us-gov-west-1.aws-us-gov.cloud.gov
