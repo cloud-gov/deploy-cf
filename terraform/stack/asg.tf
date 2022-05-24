@@ -336,6 +336,22 @@ resource "cloudfoundry_space" "uaa-extras" {
   ]
 }
 
+resource "cloudfoundry_space" "cspr-collector" {
+  name = "cspr-collector"
+  org  = cloudfoundry_org.cloud-gov.id
+  asgs = [
+    cloudfoundry_asg.trusted_local_networks.id,
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.smtp.id,
+  ]
+  staging_asgs = [
+    cloudfoundry_asg.trusted_local_networks.id,
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+  ]
+}
+
 # Federalist/Pages
 
 data "cloudfoundry_org" "gsa-18f-federalist" {
