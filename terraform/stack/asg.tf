@@ -371,6 +371,7 @@ resource "cloudfoundry_space_quota" "tiny" {
 resource "cloudfoundry_space" "email" {
   name = "email"
   org  = data.cloudfoundry_org.gsa-18f-federalist.id
+  quota = cloudfoundry_space_quota.tiny.id
   asgs = [
     cloudfoundry_asg.public_networks.id,
     cloudfoundry_asg.trusted_local_networks.id,
