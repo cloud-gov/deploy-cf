@@ -358,6 +358,16 @@ data "cloudfoundry_org" "gsa-18f-federalist" {
   name  = "gsa-18f-federalist"
 }
 
+resource "cloudfoundry_space_quota" "tiny" {
+    name = "tiny"
+    allow_paid_service_plans = true
+    total_memory = 1024
+    total_routes             = -1
+    total_services           = -1
+    total_route_ports        = -1
+    org = cloudfoundry_org.gsa-18f-federalist.id
+}
+
 resource "cloudfoundry_space" "email" {
   name = "email"
   org  = data.cloudfoundry_org.gsa-18f-federalist.id
