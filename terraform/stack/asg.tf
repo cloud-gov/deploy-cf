@@ -365,7 +365,7 @@ resource "cloudfoundry_space_quota" "tiny" {
     total_routes             = -1
     total_services           = -1
     total_route_ports        = -1
-    org = cloudfoundry_org.gsa-18f-federalist.id
+    org = data.cloudfoundry_org.gsa-18f-federalist.id
 }
 
 resource "cloudfoundry_space" "email" {
