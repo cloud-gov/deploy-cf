@@ -359,7 +359,7 @@ data "cloudfoundry_org" "gsa-18f-federalist" {
 }
 
 resource "cloudfoundry_space_quota" "tiny" {
-    name = "tiny"
+    name = "tiny-tf-managed"
     allow_paid_service_plans = true
     total_memory = 1024
     total_routes             = -1
