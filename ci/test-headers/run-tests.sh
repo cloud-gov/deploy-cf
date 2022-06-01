@@ -28,7 +28,7 @@ while IFS= read -r line; do
   url_path="${arg_array[0]}"
   expected_status_code="${arg_array[1]}"
   expected_response_body="${arg_array[2]}"
-  baseurl="https://header-test.$DOMAIN"
+  baseurl="https://test-headers.$DOMAIN"
   endpoint="$baseurl$url_path"
 
   ## Curl the endpoint for status code and response body
