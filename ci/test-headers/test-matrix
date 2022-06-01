@@ -1,0 +1,3 @@
+/test,200,"Success"
+/test-custom-headers-semaphores,200,"Success"
+/test-frame-options-allowall,200,"Success"
