@@ -1,0 +1,32 @@
+# YAML property files
+cf-secrets.yml
+secrets.yml
+cf-secrets-staging.yml
+manifest-staging.yml
+manifest-staging.yml--
+credentials.yml
+credentials.dev.yml
+
+# Mac files
+.DS_Store
+
+# Eclipse files
+.project
+
+# Temporary directory
+tmp/
+
+# Certs
+
+*-certs
+jwt_*
+
+# python
+.venv
+__pycache__
+
+# Other
+README
+*.sh
+test-*
+README.md
