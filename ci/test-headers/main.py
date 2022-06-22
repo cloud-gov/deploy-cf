@@ -56,7 +56,7 @@ def get_custom_headers_semaphores(response: Response):
     return "Success"
 
 
-@app.get("/test-headers-semaphores")
+@app.get("/test-custom-headers-semaphores")
 def get_test_custom_hsts(response: Response):
     api_endpoint = f"https://{HOSTNAME}/custom-headers-semaphores"
     r = requests.get(api_endpoint)
