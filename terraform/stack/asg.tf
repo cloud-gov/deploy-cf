@@ -173,6 +173,21 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     ports       = "443"
   }
 
+  # S3 Gateway access
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to AWS S3 Gateway"
+    destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_1
+    ports       = "443"
+  }
+  
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to AWS S3 Gateway"
+    destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_2
+    ports       = "443"
+  }
+  
 }
 
 # New trusted networks asg to apply to spaces individually, not globally.
@@ -219,6 +234,21 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     protocol    = "tcp"
     description = "Allow access to AWS Elasticsearch"
     destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az2
+    ports       = "443"
+  }
+
+  # S3 Gateway access
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to AWS S3 Gateway"
+    destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_1
+    ports       = "443"
+  }
+
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to AWS S3 Gateway"
+    destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_2
     ports       = "443"
   }
 
