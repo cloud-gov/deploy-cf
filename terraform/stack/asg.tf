@@ -96,14 +96,14 @@ resource "cloudfoundry_asg" "public_networks_egress" {
   rule {
     description = "Rule for private endpoint to s3 in region"
     protocol    = "tcp"
-    destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_az1_ip
+    destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_if1_ip
     ports="443"
   }
 
   rule{
     description = "Rule for private endpoint to s3 in region"
     protocol    = "tcp"
-    destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_az1_ip
+    destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_if2_ip
     ports="443"
   }
 
