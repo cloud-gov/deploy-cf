@@ -300,44 +300,44 @@ jobs:
   - in_parallel:
     - get: common
       resource: master-bosh-root-cert
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
       trigger: true
     - get: cf-deployment-development
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
       - test-space-egress-development
     - get: cf-deployment
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
       - test-space-egress-development
     - get: cf-stemcell-bionic
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
       - test-space-egress-development
     - get: cf-manifests
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
       - test-space-egress-development
     - get: uaa-customized-release
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
     - get: cg-s3-secureproxy-release
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-development
-      - uaa-smoke-tests-development 
+      - uaa-smoke-tests-development
   - task: run-errand
     attempts: 3
     params:
@@ -555,6 +555,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/tcp-cells-and-routers.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -847,53 +848,53 @@ jobs:
     - get: cf-deployment-concourse-tasks
     - get: cf-acceptance-tests
     - get: cf-deployment-staging
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
       trigger: true
     # Get resources from upstream jobs for use in production deploy
     - get: cf-manifests
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
       trigger: true
     - get: cf-deployment
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
     - get: cf-stemcell-bionic
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
     - get: uaa-customized-release
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
     - get: cg-s3-secureproxy-release
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
     - get: terraform-config
       trigger: true
-      passed: 
+      passed:
       - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging 
+      - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
   - task: test-config
