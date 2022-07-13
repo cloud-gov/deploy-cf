@@ -38,13 +38,20 @@
   path: /instance_groups/name=cc-worker/vm_type
   value: t3.medium
 
-# gourouters
+# gorouters
 - type: replace
   path: /instance_groups/name=router/instances
   value: 2
 - type: replace
   path: /instance_groups/name=router/vm_type
   value: t3.medium
+
+- type: replace
+  path: /instance_groups/name=tcp-router/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=tcp-router/vm_type
+  value: t3.small
 
 # scheduler
 - type: replace
@@ -86,6 +93,9 @@
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
   value: c5.2xlarge
+- type: replace
+  path: /instance_groups/name=diego-tcp-cell/vm_type
+  value: t3.xlarge
 
 # rotate-cc-database-key
 - type: replace
