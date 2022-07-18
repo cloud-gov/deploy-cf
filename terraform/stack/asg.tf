@@ -188,7 +188,7 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az2
     ports       = "443"
   }
-
+/* ready for roll out, when federalist ECR can work
   # S3 Gateway access
   rule {
     protocol    = "tcp"
@@ -203,7 +203,7 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_2
     ports       = "443"
   }
-  
+  */
 }
 
 # New trusted networks asg to apply to spaces individually, not globally.
@@ -252,7 +252,7 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az2
     ports       = "443"
   }
-
+/*
   # S3 Gateway access
   rule {
     protocol    = "tcp"
@@ -267,7 +267,7 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_2
     ports       = "443"
   }
-
+*/
 }
 
 resource "cloudfoundry_asg" "brokers" {
