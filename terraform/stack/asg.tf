@@ -430,11 +430,3 @@ resource "cloudfoundry_space" "email" {
     cloudfoundry_asg.dns.id,
   ]
 }
-
-module "tcp-routing" {
-  count = length(data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names) > 0 ? 1 : 0
-  source = "../modules/tcp-routing"
-  cloud_gov_org_id = cloudfoundry_org.cloud-gov.id
-  tcp_lb_dns_names = data.terraform_remote_state.iaas.outputs.tcp_lb_dns_names
-  domain_name = var.domain_name
-}
