@@ -534,6 +534,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/api-defaults.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-groups.yml
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
@@ -1035,6 +1036,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/api-defaults.yml
       - cf-manifests/bosh/opsfiles/uaa-customized.yml
       - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-groups.yml
       - cf-manifests/bosh/opsfiles/uaa-login.yml
       - cf-manifests/bosh/opsfiles/uaa-saml.yml
       - cf-manifests/bosh/opsfiles/uaa-user.yml
