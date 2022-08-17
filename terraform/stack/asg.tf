@@ -92,7 +92,7 @@ resource "cloudfoundry_asg" "public_networks_egress" {
     protocol    = "all"
     destination = "192.169.0.0-255.255.255.255"
   }
-/*
+
   rule {
     description = "Rule for private endpoint to s3 in region"
     protocol    = "tcp"
@@ -106,7 +106,7 @@ resource "cloudfoundry_asg" "public_networks_egress" {
     destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_if2_ip
     ports="443"
   }
-*/
+
 }
 
 resource "cloudfoundry_asg" "dns" {
@@ -187,7 +187,6 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az2
     ports       = "443"
   }
-/*
   # S3 Gateway access
   rule {
     protocol    = "tcp"
@@ -202,7 +201,7 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_2
     ports       = "443"
   }
- */ 
+ 
 }
 
 # New trusted networks asg to apply to spaces individually, not globally.
@@ -251,7 +250,6 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     destination = data.terraform_remote_state.iaas.outputs.elasticsearch_subnet_cidr_az2
     ports       = "443"
   }
-/*
   # S3 Gateway access
   rule {
     protocol    = "tcp"
@@ -266,7 +264,6 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     destination = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidr_2
     ports       = "443"
   }
-*/
 }
 
 resource "cloudfoundry_asg" "brokers" {
