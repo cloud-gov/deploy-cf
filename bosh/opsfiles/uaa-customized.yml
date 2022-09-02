@@ -9,11 +9,3 @@
   value:
     name: uaa-customized
     release: uaa-customized
-
-# Added 12/13/2021 to patch log4j in uaa release
-
-- type: replace
-  path: /releases/name=uaa
-  value:
-    name: uaa
-    version: latest
