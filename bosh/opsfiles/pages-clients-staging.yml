@@ -11,7 +11,7 @@
     override: true
     scope: openid,scim.invite
     authorized-grant-types: authorization_code,client_credentials
-    authorities: groups.update,scim.read,scim.invite
+    authorities: groups.update,scim.read,scim.invite,scim.write
     access-token-validity: 600
     refresh-token-validity: 259200
     name: Pages - Staging
