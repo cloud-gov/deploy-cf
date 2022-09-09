@@ -1,10 +1,11 @@
 # The whole purpose of this file is to be used to temp merge in certain aspects to the deployment - mainly to rollback or forward certain options until cf-deployment catches up
 
-# Rolling back CAPI from v1.134.0 to v.1.133.0 due to cpu/memory leak - see https://github.com/cloudfoundry/capi-release/issues/262
-- type: replace
-  path: /releases/name=capi
-  value:
-    name: "capi"
-    version: "1.133.0"
-    url: "https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.133.0"
-    sha1: "6d54b25f19a85e4052d539e940b0545fccc9e802"
+# No longer needed with cf-deployment 21.9.0 moving CAPI to 1.136.0
+## Rolling back CAPI from v1.134.0 to v.1.133.0 due to cpu/memory leak - see https://github.com/cloudfoundry/capi-release/issues/262
+#- type: replace
+#  path: /releases/name=capi
+#  value:
+#    name: "capi"
+#    version: "1.133.0"
+#    url: "https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.133.0"
+#    sha1: "6d54b25f19a85e4052d539e940b0545fccc9e802"
