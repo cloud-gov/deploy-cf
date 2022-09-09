@@ -46,9 +46,9 @@
           network_plugin: /var/vcap/packages/runc-cni/bin/garden-external-networker
           network_plugin_extra_args:
           - --configFile=/var/vcap/jobs/garden-cni/config/adapter.json
-          logging:
-            format:
-              timestamp: "rfc3339"
+        logging:
+          format:
+            timestamp: "rfc3339"
     - name: rep
       release: diego
       properties:
@@ -76,7 +76,11 @@
             - ((uaa_ssl.ca))
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
-        loggregator: *diego_loggregator_client_properties
+        loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_agent.ca))"
+          cert: "((loggregator_tls_agent.certificate))"
+          key: "((loggregator_tls_agent.private_key))"
         tls:
           ca_cert: "((diego_rep_agent_v2.ca))"
           cert: "((diego_rep_agent_v2.certificate))"
@@ -96,11 +100,7 @@
       properties:
         bpm:
           enabled: true
-        loggregator: &diego_loggregator_client_properties
-          use_v2_api: true
-          ca_cert: "((loggregator_tls_agent.ca))"
-          cert: "((loggregator_tls_agent.certificate))"
-          key: "((loggregator_tls_agent.private_key))"
+        loggregator: *diego_loggregator_client_properties
         diego:
           route_emitter:
             local_mode: true
@@ -143,6 +143,7 @@
         ca_cert: ((network_policy_client.ca))
         client_cert: ((network_policy_client.certificate))
         client_key: ((network_policy_client.private_key))
+        loggregator: *diego_loggregator_client_properties
     - name: silk-daemon
       release: silk
       consumes:
