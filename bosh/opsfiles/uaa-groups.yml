@@ -2,4 +2,5 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/groups?
   value:
     pages.admin: "Administrators for the Pages product"
+    pages.support: "Support users for the Pages product"
     pages.user: "Users for the Pages product"
