@@ -41,10 +41,10 @@
 # gorouters
 - type: replace
   path: /instance_groups/name=router/instances
-  value: 7
+  value: 10
 - type: replace
   path: /instance_groups/name=router/vm_type
-  value: c5.xlarge
+  value: c5.2xlarge
 
 # scheduler
 - type: replace
