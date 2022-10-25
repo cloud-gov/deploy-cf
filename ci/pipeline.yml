@@ -38,9 +38,8 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
+      - cf-deployment/operations/use-bionic-stemcell.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
-      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
@@ -525,9 +524,8 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
+      - cf-deployment/operations/use-bionic-stemcell.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
-      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/pages-clients-staging.yml
       - cf-manifests/bosh/opsfiles/users.yml
@@ -1027,9 +1025,8 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
+      - cf-deployment/operations/use-bionic-stemcell.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/latest-stemcell.yml
-      - cf-manifests/bosh/opsfiles/use-bionic.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/pages-clients-production.yml
       - cf-manifests/bosh/opsfiles/users.yml
