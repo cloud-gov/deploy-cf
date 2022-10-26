@@ -17,3 +17,7 @@
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/client_max_body_size?
   value: "1536M"
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cc_deployment_updater/properties/cc/maximum_app_disk_in_mb?
+  value: 6144
