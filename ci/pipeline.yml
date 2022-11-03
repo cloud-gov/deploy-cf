@@ -93,6 +93,7 @@ jobs:
         space_developer_env_var_visibility
         service_instance_sharing
         resource_matching
+        route_sharing
       DISABLED_FEATURE_FLAGS: |
         user_org_creation
         hide_marketplace_from_unauthenticated_users
@@ -579,6 +580,7 @@ jobs:
         space_developer_env_var_visibility
         service_instance_sharing
         resource_matching
+        route_sharing
       DISABLED_FEATURE_FLAGS: |
         user_org_creation
         hide_marketplace_from_unauthenticated_users
@@ -1124,6 +1126,7 @@ jobs:
         space_developer_env_var_visibility
         service_instance_sharing
         resource_matching
+        route_sharing
       DISABLED_FEATURE_FLAGS: |
         user_org_creation
         hide_marketplace_from_unauthenticated_users
