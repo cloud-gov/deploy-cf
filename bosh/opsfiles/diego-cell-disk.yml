@@ -1,3 +1,3 @@
 - type: replace
   path: /instance_groups/name=diego-cell/vm_extensions/0
-  value: 250GB_ephemeral_disk
+  value: 300GB_ephemeral_disk
