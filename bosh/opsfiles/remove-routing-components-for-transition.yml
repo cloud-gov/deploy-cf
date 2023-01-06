@@ -30,12 +30,3 @@
 
 - type: remove
   path: /variables/name=diego_locket_client
-
-- type: remove
-  path: /variables/name=routing_api_ca
-
-- type: remove
-  path: /variables/name=routing_api_tls
-
-- type: remove
-  path: /variables/name=routing_api_tls_client
