@@ -68,6 +68,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/content-security-policy.yml
+      - cf-manifests/bosh/opsfiles/loggregator.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -555,6 +556,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/loggregator.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -1057,6 +1059,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/loggregator.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
