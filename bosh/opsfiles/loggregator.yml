@@ -1,5 +1,5 @@
 - type: replace
-  path: /releases/-
+  path: /releases/name=loggregator?
   value:
     name: loggregator
     sha1: af9a37be9fe1cc814165ac4c01086a8f290cc3e5
