@@ -159,6 +159,18 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az2
     ports       = "5432,3306,1433,1521"
   }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to RDS"
+    destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az3
+    ports       = "5432,3306,1433,1521"
+  }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to RDS"
+    destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az4
+    ports       = "5432,3306,1433,1521"
+  }
 
   # Elasticache access
   rule {
@@ -220,6 +232,18 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     protocol    = "tcp"
     description = "Allow access to RDS"
     destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az2
+    ports       = "5432,3306,1433,1521"
+  }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to RDS"
+    destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az3
+    ports       = "5432,3306,1433,1521"
+  }
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to RDS"
+    destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az4
     ports       = "5432,3306,1433,1521"
   }
 
