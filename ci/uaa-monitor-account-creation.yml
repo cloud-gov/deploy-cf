@@ -1,13 +1,18 @@
 ---
-  platform: linux
-  image_resource:
-    type: docker-image
-    source:
-      repository: 18fgsa/concourse-task
+platform: linux
 
-  inputs:
-  - name: cf-manifests
-  - name: cf-deployment
+image_resource:
+  type: registry-image
+  source:
+    aws_access_key_id: ((aws-key))
+    aws_secret_access_key: ((aws-secret))
+    repository: harden-concourse-task
+    aws_region: us-gov-west-1
+    semver_constraint: ">= 1.0.0"
 
-  run:
-    path: cf-manifests/ci/uaa-monitor-account-creation.sh
+inputs:
+- name: cf-manifests
+- name: cf-deployment
+
+run:
+  path: cf-manifests/ci/uaa-monitor-account-creation.sh
