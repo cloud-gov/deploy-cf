@@ -39,6 +39,7 @@ jobs:
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment/operations/use-bionic-stemcell.yml
+      - cf-deployment/operations/experimental/add-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/users.yml
