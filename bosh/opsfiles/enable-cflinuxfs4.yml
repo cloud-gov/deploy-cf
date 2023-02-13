@@ -1,0 +1,20 @@
+# This file is the midpoint to get cflinuxfs4 enabled 
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs/trusted_certs
+  value:
+    - ((diego_instance_identity_ca.ca))
+    - ((uaa_ssl.ca))
+
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs/-
+  value:
+    name: cflinuxfs4-rootfs-setup
+    properties:
+      cflinuxfs4-rootfs:
+        trusted_certs:
+        - ((diego_instance_identity_ca.ca))
+        - ((uaa_ssl.ca))
+    release: cflinuxfs4
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/diego/rep/preloaded_rootfses/-
+  value: cflinuxfs4:/var/vcap/packages/cflinuxfs4/rootfs.tar
