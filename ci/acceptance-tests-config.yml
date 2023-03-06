@@ -6,9 +6,9 @@ image_resource:
   source:
     aws_access_key_id: ((aws-key))
     aws_secret_access_key: ((aws-secret))
-    repository: ((image))
+    repository: harden-concourse-task
     aws_region: us-gov-west-1
-    semver_constraint: ">= 1.0.0"
+    tag: ((harden-concourse-task-tag))
 
 inputs:
 - name: cf-manifests

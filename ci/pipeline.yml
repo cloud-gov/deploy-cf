@@ -357,7 +357,7 @@ jobs:
           aws_secret_access_key: ((aws-secret))
           repository: harden-concourse-task
           aws_region: us-gov-west-1
-          semver_constraint: ">= 1.0.0"
+          tag: ((harden-concourse-task-tag))
       inputs:
         - name: common
       run:
