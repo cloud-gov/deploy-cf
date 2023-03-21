@@ -71,6 +71,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/content-security-policy.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -565,6 +566,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -1038,6 +1040,7 @@ jobs:
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-deployment/operations/use-bionic-stemcell.yml
+      - cf-deployment/operations/experimental/add-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/pages-clients-production.yml
@@ -1068,6 +1071,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
+      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
