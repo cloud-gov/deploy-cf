@@ -45,6 +45,11 @@
 - type: replace
   path: /instance_groups/name=router/vm_type
   value: t3.medium
+- type: replace
+  path: /instance_groups/name=router/update?
+  value:
+    max_in_flight: 20%
+    canaries: 20%  
 
 # scheduler
 - type: replace
@@ -61,6 +66,11 @@
 - type: replace
   path: /instance_groups/name=doppler/vm_type
   value: t3.xlarge
+- type: replace
+  path: /instance_groups/name=doppler/update?
+  value:
+    max_in_flight: 20%
+    canaries: 20%
 
 # log-cache
 - type: replace
@@ -69,7 +79,11 @@
 - type: replace
   path: /instance_groups/name=log-cache/vm_type
   value: t3.xlarge
-
+- type: replace
+  path: /instance_groups/name=log-cache/update?
+  value:
+    max_in_flight: 40%
+    canaries: 40%
 
 # log-api
 - type: replace
@@ -78,11 +92,21 @@
 - type: replace
   path: /instance_groups/name=log-api/vm_type
   value: t3.xlarge
+- type: replace
+  path: /instance_groups/name=log-api/update?
+  value:
+    max_in_flight: 30%
+    canaries: 30%
 
 # diego (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
   value: c5.2xlarge
+- type: replace
+  path: /instance_groups/name=diego-cell/update?
+  value:
+    max_in_flight: 11%
+    canaries: 11%
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
   value: c5.2xlarge
