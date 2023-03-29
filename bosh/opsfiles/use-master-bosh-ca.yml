@@ -286,7 +286,3 @@
     name: buildpack-notifier-client-secret
     type: password
 - type: replace
-  path: /variables/-
-  value: 
-    name: admin-ui-client-secret
-    type: password
