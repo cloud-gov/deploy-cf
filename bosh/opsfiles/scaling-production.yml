@@ -69,8 +69,8 @@
 - type: replace
   path: /instance_groups/name=diego-cell/update?
   value:
-    max_in_flight: 11%
-    canaries: 11%
+    max_in_flight: 3
+    canaries: 3
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
   value: m5.2xlarge
