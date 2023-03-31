@@ -9,11 +9,3 @@
   value:
     name: uaa-customized
     release: uaa-customized
-
-- type: replace
-  path: /releases/name=uaa
-  value:
-    name: uaa
-    url: https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=75.23.0
-    version: 75.23.0
-    sha1: 328493d41fdfb2728ee17f8e3fcad1b7296a702f
