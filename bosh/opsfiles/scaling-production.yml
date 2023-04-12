@@ -48,6 +48,7 @@
 - type: replace
   path: /instance_groups/name=router/update?
   value:
+    serial: true
     max_in_flight: 20%
     canaries: 20%
 
