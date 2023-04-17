@@ -1108,8 +1108,7 @@ jobs:
     - get: terraform-yaml
       resource: terraform-yaml-production
     - get: cf-stemcell-jammy
-      passed:
-      - acceptance-tests-staging
+      passed: [plan-cf-production]
       trigger: true
     - get: uaa-customized-release
       passed: [plan-cf-production]
