@@ -36,7 +36,7 @@
   value: 2
 - type: replace
   path: /instance_groups/name=cc-worker/vm_type
-  value: t3.medium
+  value: t3.large
 
 # gorouters
 - type: replace
