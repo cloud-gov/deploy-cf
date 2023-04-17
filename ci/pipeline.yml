@@ -15,8 +15,6 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-development
-    - get: cf-stemcell-bionic
-      trigger: true
     - get: cf-stemcell-jammy
       trigger: true
     - get: uaa-customized-release
@@ -185,9 +183,6 @@ jobs:
     - get: cf-deployment
       trigger: true
       passed: [deploy-cf-development]
-    - get: cf-stemcell-bionic
-      trigger: true
-      passed: [deploy-cf-development]
     - get: cf-stemcell-jammy
       trigger: true
       passed: [deploy-cf-development]
@@ -260,9 +255,6 @@ jobs:
     - get: cf-deployment
       trigger: true
       passed: [deploy-cf-development]
-    - get: cf-stemcell-bionic
-      trigger: true
-      passed: [deploy-cf-development]
     - get: cf-stemcell-jammy
       trigger: true
       passed: [deploy-cf-development]
@@ -323,12 +315,6 @@ jobs:
       - uaa-smoke-tests-development
       - test-space-egress-development
     - get: cf-deployment
-      trigger: true
-      passed:
-      - tic-smoke-tests-development
-      - uaa-smoke-tests-development
-      - test-space-egress-development
-    - get: cf-stemcell-bionic
       trigger: true
       passed:
       - tic-smoke-tests-development
@@ -413,8 +399,6 @@ jobs:
     - get: cf-deployment-development
       trigger: true
       passed: [deploy-cf-development]
-    - get: cf-stemcell-bionic
-      passed: [deploy-cf-development]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-development]
   - task: deploy-test-env
@@ -468,8 +452,6 @@ jobs:
       passed: [deploy-cf-development]
     - get: cf-deployment-development
       trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-stemcell-bionic
       passed: [deploy-cf-development]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-development]
@@ -529,9 +511,6 @@ jobs:
       passed: [smoke-tests-development]
     - get: terraform-yaml
       resource: terraform-yaml-staging
-    - get: cf-stemcell-bionic
-      trigger: true
-      passed: [smoke-tests-development]
     - get: cf-stemcell-jammy
       trigger: true
       passed: [smoke-tests-development]
@@ -655,8 +634,6 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [deploy-cf-staging]
-    - get: cf-stemcell-bionic
-      passed: [deploy-cf-staging]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
@@ -727,8 +704,6 @@ jobs:
       passed: [deploy-cf-staging]
       trigger: true
     - get: cf-deployment
-      passed: [deploy-cf-staging]
-    - get: cf-stemcell-bionic
       passed: [deploy-cf-staging]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-staging]
@@ -836,9 +811,6 @@ jobs:
     - get: cf-deployment
       trigger: true
       passed: [deploy-cf-staging]
-    - get: cf-stemcell-bionic
-      trigger: true
-      passed: [deploy-cf-staging]
     - get: cf-stemcell-jammy
       trigger: true
       passed: [deploy-cf-staging]
@@ -903,13 +875,6 @@ jobs:
       - smoke-tests-staging
       trigger: true
     - get: cf-deployment
-      trigger: true
-      passed:
-      - tic-smoke-tests-staging
-      - uaa-smoke-tests-staging
-      - test-space-egress-staging
-      - smoke-tests-staging
-    - get: cf-stemcell-bionic
       trigger: true
       passed:
       - tic-smoke-tests-staging
@@ -989,8 +954,6 @@ jobs:
       trigger: true
     - get: cf-deployment
       passed: [deploy-cf-staging]
-    - get: cf-stemcell-bionic
-      passed: [deploy-cf-staging]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-staging]
     - get: uaa-customized-release
@@ -1056,7 +1019,7 @@ jobs:
       trigger: true
     - get: terraform-yaml
       resource: terraform-yaml-production
-    - get: cf-stemcell-bionic
+    - get: cf-stemcell-jammy
       passed: [acceptance-tests-staging]
       trigger: true
     - get: uaa-customized-release
@@ -1076,7 +1039,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-deployment/operations/use-bionic-stemcell.yml
       - cf-deployment/operations/experimental/add-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/clients.yml
@@ -1145,8 +1107,10 @@ jobs:
       passed: [plan-cf-production]
     - get: terraform-yaml
       resource: terraform-yaml-production
-    - get: cf-stemcell-bionic
-      passed: [plan-cf-production]
+    - get: cf-stemcell-jammy
+      passed:
+      - acceptance-tests-staging
+      trigger: true
     - get: uaa-customized-release
       passed: [plan-cf-production]
     - get: cg-s3-secureproxy-release
@@ -1493,11 +1457,6 @@ resources:
     branch: main
     paths:
     - terraform/*
-
-- name: cf-stemcell-bionic
-  type: bosh-io-stemcell
-  source:
-    name: bosh-aws-xen-hvm-ubuntu-bionic-go_agent
 
 - name: cf-stemcell-jammy
   type: bosh-io-stemcell
