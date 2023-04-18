@@ -23,22 +23,19 @@
   value: 7168
 
 - type: replace
-  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/-
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/thresholds?
   value:
-    thresholds:
-      worker:
-        restart_if_above_mb: 1024
+    worker:
+      restart_if_above_mb: 1024
 
 - type: replace
-  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/-
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/thresholds?
   value:
-    thresholds:
-      worker:
-        restart_if_consistently_above_mb: 768
+    worker:
+      restart_if_consistently_above_mb: 768
 
 - type: replace
-  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/-
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/thresholds?
   value:
-    thresholds:
-      worker: 
-        alert_if_above_mb: 768
+    worker: 
+      alert_if_above_mb: 768
