@@ -1109,7 +1109,6 @@ jobs:
       resource: terraform-yaml-production
     - get: cf-stemcell-jammy
       passed: [plan-cf-production]
-      trigger: true
     - get: uaa-customized-release
       passed: [plan-cf-production]
     - get: cg-s3-secureproxy-release
@@ -1417,7 +1416,8 @@ resources:
 - name: cf-acceptance-tests
   type: git
   source:
-    branch: main
+    #branch: main # Temp change 4/26/23 to release-candidate for cflinuxfs4 support in tests until new release on main is cut to catch up to cf-deployment v28
+    branch: release-candidate
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
 - name: cf-deployment-concourse-tasks
