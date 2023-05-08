@@ -76,12 +76,10 @@
 # https://github.com/cloudfoundry-incubator/routing-release#configure-load-balancer-healthchecks-for-gorouter
 # Any other setting and the health check will respond 200 for this period of time, but the router will not actually be up
 # TODO: Revisit this setting once https://github.com/cloudfoundry/gorouter/issues/160 is closed
-# 05/03/2023 - commenting this out as this block was from an issue since closed in 2017 - in theory since we use BOSH VM-Extensions, BOSH waits for pre-start, start, and post-start
-# scripts on the VM to be green before registering the target to the target group via vm-extension. BOSH CPI then waits for the healthcheck for this target to be green in
-# target group before moving onto the next router.
-#- type: replace
-#  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/load_balancer_healthy_threshold?
-#  value: 0
+
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/load_balancer_healthy_threshold?
+  value: 0
 
 - type: replace
   path: /instance_groups/name=router/jobs/name=secureproxy/properties/secureproxy/tls_cert?
