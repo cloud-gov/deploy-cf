@@ -162,6 +162,8 @@
         vpa: {from: vpa-platform}
       provides:
         cni_config: {as: cni_config_platform}
+    - name: silk-datastore-syncer
+      release: silk
     - name: loggr-udp-forwarder
       release: loggregator-agent
       properties:
