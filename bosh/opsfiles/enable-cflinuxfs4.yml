@@ -18,3 +18,26 @@
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/diego/rep/preloaded_rootfses/-
   value: cflinuxfs4:/var/vcap/packages/cflinuxfs4/rootfs.tar
+
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=java-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=staticfile-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=ruby-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=dotnet-core-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=nodejs-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=go-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=python-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=php-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=nginx-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=r-buildpack-cflinuxfs3?
+- type: remove
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/install_buildpacks/package=binary-buildpack-cflinuxfs3?
