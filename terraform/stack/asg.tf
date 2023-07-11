@@ -311,6 +311,24 @@ resource "cloudfoundry_asg" "smtp" {
   }
 }
 
+resource "cloudfoundry_asg" "platform_services_egress" {
+  name = "platform_services_egress"
+
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to platform services"
+    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az1
+    ports       = "443"
+  }
+
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to platform services"
+    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az2
+    ports       = "443"
+  }
+}
+
 # Default global running ASG
 resource "cloudfoundry_default_asg" "running" {
     name = "running"
