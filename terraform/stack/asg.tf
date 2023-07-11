@@ -311,19 +311,19 @@ resource "cloudfoundry_asg" "smtp" {
   }
 }
 
-resource "cloudfoundry_asg" "platform_services_egress" {
-  name = "platform_services_egress"
+resource "cloudfoundry_asg" "internal_services_egress" {
+  name = "internal_services_egress"
 
   rule {
     protocol    = "tcp"
-    description = "Allow access to platform services"
+    description = "Allow access to internal services on port 443 - AZ 1"
     destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az1
     ports       = "443"
   }
 
   rule {
     protocol    = "tcp"
-    description = "Allow access to platform services"
+    description = "Allow access to internal services on port 443 - AZ 2"
     destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az2
     ports       = "443"
   }
