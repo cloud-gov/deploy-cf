@@ -436,6 +436,22 @@ resource "cloudfoundry_space" "cspr-collector" {
   ]
 }
 
+resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
+  name = "opensearch-dashboards-proxy"
+  org  = cloudfoundry_org.cloud-gov.id
+  asgs = [
+    cloudfoundry_asg.trusted_local_networks.id,
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.internal_services_egress.id,
+  ]
+  staging_asgs = [
+    cloudfoundry_asg.trusted_local_networks.id,
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+  ]
+}
+
 # Federalist/Pages
 
 data "cloudfoundry_org" "gsa-18f-federalist" {
