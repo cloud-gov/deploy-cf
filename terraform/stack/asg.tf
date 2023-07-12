@@ -335,6 +335,24 @@ resource "cloudfoundry_asg" "smtp" {
   }
 }
 
+resource "cloudfoundry_asg" "internal_services_egress" {
+  name = "internal_services_egress"
+
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to internal services on port 443 - AZ 1"
+    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az1
+    ports       = "443"
+  }
+
+  rule {
+    protocol    = "tcp"
+    description = "Allow access to internal services on port 443 - AZ 2"
+    destination = data.terraform_remote_state.iaas.outputs.services_subnet_cidr_az2
+    ports       = "443"
+  }
+}
+
 # Default global running ASG
 resource "cloudfoundry_default_asg" "running" {
     name = "running"
@@ -438,6 +456,19 @@ resource "cloudfoundry_space" "cspr-collector" {
   staging_asgs = [
     cloudfoundry_asg.trusted_local_networks.id,
     cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+  ]
+}
+
+resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
+  name = "opensearch-dashboards-proxy"
+  org  = cloudfoundry_org.cloud-gov.id
+  asgs = [
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.internal_services_egress.id,
+  ]
+  staging_asgs = [
     cloudfoundry_asg.dns.id,
   ]
 }
