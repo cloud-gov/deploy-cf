@@ -464,7 +464,7 @@ resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
   name = "opensearch-dashboards-proxy"
   org  = cloudfoundry_org.cloud-gov.id
   asgs = [
-    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.public_networks_egress.id,
     cloudfoundry_asg.dns.id,
     cloudfoundry_asg.internal_services_egress.id,
   ]
