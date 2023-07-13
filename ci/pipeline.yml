@@ -62,8 +62,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
@@ -557,8 +557,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
@@ -1063,8 +1063,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
-      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
@@ -1413,8 +1413,7 @@ resources:
 - name: cf-acceptance-tests
   type: git
   source:
-    #branch: main # Temp change 4/26/23 to release-candidate for cflinuxfs4 support in tests until new release on main is cut to catch up to cf-deployment v28
-    branch: release-candidate
+    branch: main
     uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
 - name: cf-deployment-concourse-tasks
