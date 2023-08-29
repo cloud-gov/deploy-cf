@@ -11,6 +11,7 @@ image_resource:
 
 inputs:
 - name: cf-deployment
+- name: cf-manifests
 outputs:
 - name: router-main
 
