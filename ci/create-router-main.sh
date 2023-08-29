@@ -22,6 +22,3 @@ cat router_indented.yml >> router_main.yml
 cp router_main.yml router-main/router_main.yml
 
 ## return: router-main/router_main.yml
-
-## TEST ONLY: Will it float?
-#bosh int cf-deployment/cf-deployment.yml -o router_main.yml > router_blah.yml
