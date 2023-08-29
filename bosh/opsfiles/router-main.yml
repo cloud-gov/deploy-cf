@@ -112,3 +112,12 @@
   path: /instance_groups/name=router-main/vm_extensions?
   value:
   - cf-router-main-network-properties
+
+
+
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter?
+  value:
+    provides:
+      conn: nil
+
