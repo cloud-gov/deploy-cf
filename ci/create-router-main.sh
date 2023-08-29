@@ -18,9 +18,9 @@ sed 's/^/    /' router_name.yml > router_indented.yml
 
 
 ## Append the router yaml to the ops file header
-cat router_indented.yml >> router_main.yml
+cat router_indented.yml >> router-main/router_main.yml
 
-## return: router_main.yml
+## return: router-main/router_main.yml
 
 ## TEST ONLY: Will it float?
 #bosh int cf-deployment/cf-deployment.yml -o router_main.yml > router_blah.yml
