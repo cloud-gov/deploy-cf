@@ -95,18 +95,20 @@
 
 # Needed for BOSH DNS, concatenate the new router group to the existing one (not overwrite)
 - type: replace
-  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=gorouter.service.cf.internal/targets?
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=gorouter.service.cf.internal/targets/instance_group=router:after
   value:
-    - deployment: ((deployment_name))
-      domain: bosh
-      instance_group: router-main
-      network: ((network_name))
-      query: '*'
+    deployment: ((deployment_name))
+    domain: bosh
+    instance_group: router-main
+    network: ((network_name))
+    query: '*'
+
+
 
 # Set vm_extension, need to wipe the existing default array value of cf-router-network-properties with cf-router-main-network-properties
 - type: remove
-  path: /instance_groups/name=router-main/vm_extensions
+  path: /instance_groups/name=router-main/vm_extensions?
 - type: replace
-  path: /instance_groups/name=router-main/vm_extensions
+  path: /instance_groups/name=router-main/vm_extensions?
   value:
   - cf-router-main-network-properties

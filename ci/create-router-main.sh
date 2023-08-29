@@ -8,12 +8,12 @@ bosh int cf-deployment/cf-deployment.yml --path /instance_groups/name=router > r
 ## Create ops file header
 cat > router_main.yml <<EOF
 - type: replace
-  path: /instance_groups/name=router_main?
+  path: /instance_groups/name=router-main?
   value:
 EOF
 
 ## Replace name of instance group and indent 4 spaces
-sed 's/name: router/name: router_main/' router_raw.yml > router_name.yml
+sed 's/name: router/name: router-main/' router_raw.yml > router_name.yml
 sed 's/^/    /' router_name.yml > router_indented.yml
 
 
