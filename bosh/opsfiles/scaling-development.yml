@@ -50,7 +50,20 @@
   value:
     max_in_flight: 20%
     canaries: 20%  
-    
+
+# router-main
+- type: replace
+  path: /instance_groups/name=router-main/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=router-main/vm_type
+  value: t3.small
+- type: replace
+  path: /instance_groups/name=router-main/update?
+  value:
+    max_in_flight: 20%
+    canaries: 20%  
+
 # scheduler
 - type: replace
   path: /instance_groups/name=scheduler/instances
