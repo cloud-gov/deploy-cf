@@ -114,9 +114,9 @@
   - cf-router-main-network-properties
 
 
-
+# Used to avoid bosh link error: "Failed to resolve link 'router' with type 'http-router'..."
 - type: replace
   path: /instance_groups/name=router-main/jobs/name=gorouter/provides?
   value:
-    http-router: nil
+    gorouter: nil
 
