@@ -526,10 +526,13 @@ jobs:
   - put: timestamp
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
+  - task: router-main
+    file: cf-manifests/ci/create-router-main.yml
   - put: cf-deployment-staging
     params:
       <<: *deploy-params
       ops_files:
+      - router-main/router_main.yml
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
@@ -569,6 +572,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/router-main.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -1030,11 +1034,14 @@ jobs:
       passed: [acceptance-tests-staging]
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
+  - task: router-main
+    file: cf-manifests/ci/create-router-main.yml
   - put: cf-deployment-production
     params: &prod-deploy-params
       <<: *deploy-params
       dry_run: true
       ops_files:
+      - router-main/router_main.yml
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
@@ -1073,6 +1080,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/router-main.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
@@ -1116,6 +1124,8 @@ jobs:
       passed: [plan-cf-production]
   - task: terraform-secrets
     file: cf-manifests/ci/terraform-secrets.yml
+  - task: router-main
+    file: cf-manifests/ci/create-router-main.yml
   - put: cf-deployment-production
     params:
       <<: *prod-deploy-params
@@ -1443,7 +1453,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: ((cf-manifests-git-url))
-    branch: main
+    branch: uaa_split #main
     paths:
     - ci/*
     - bosh/*
