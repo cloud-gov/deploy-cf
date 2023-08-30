@@ -1,0 +1,122 @@
+# This combines all the places in cf-deployment and cg-deploy-cf where we override settings 
+# for the router instance group for the new instance group called router-main
+
+# From cf-deployment/operations/rename-network-and-deployment.yml 
+- type: replace
+  path: /instance_groups/name=router-main/networks/name=default/name
+  value: ((network_name))
+
+# From cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+- type: remove
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/routing_api
+
+
+# From cf-manifests/bosh/opsfiles/secureproxy.yml
+- type: replace
+  path: /instance_groups/name=router-main/jobs/-
+  value:
+    name: secureproxy
+    release: secureproxy
+    properties:
+      secureproxy:
+        https_listen_port: 443
+        https_proxy_port: 8443
+        # Expose gorouter health check for ELB
+        # For this to work, router.load_balancer_healthy_threshold must be set to 0
+        custom_server_config: |-
+          server {
+            listen 81;
+            location / {
+              proxy_pass http://localhost:8080/health;
+            }
+          }
+
+          server {
+            listen 8081;
+            location ~ (^/.well-known/acme-challenge/.*) {
+              resolver 8.8.8.8;
+
+              proxy_set_header Host s3-us-gov-west-1.amazonaws.com;
+              proxy_set_header Authorization $http_authorization;
+              proxy_set_header Connection '';
+
+              set $s3_host 's3-us-gov-west-1.amazonaws.com';
+              proxy_pass https://$s3_host/((challenge_bucket))$1;
+            }
+          }
+        tic:
+          host_whitelist:
+          - hostname: api.((system_domain))
+            exclude:
+            - ^/v2/info
+          - hostname: dashboard.((system_domain))
+            exclude: []
+          secret: ((tic-secret))
+          whitelist: ((tic-whitelist))
+          proxy_whitelist: ((tic-proxy-whitelist))
+
+- type: remove
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/port?
+
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/disable_http?
+  value: true          
+
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/load_balancer_healthy_threshold?
+  value: 0
+
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=secureproxy/properties/secureproxy/tls_cert?
+  value: ((router_ssl.certificate))
+
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=secureproxy/properties/secureproxy/tls_key?
+  value: ((router_ssl.private_key))
+
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/tls_port?
+  value: 8443
+
+# From cf-manifests/bosh/opsfiles/routing.yml 
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/request_timeout_in_seconds?
+  value: 3600
+
+# From cf-manifests/bosh/opsfiles/content-security-policy.yml
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=secureproxy/properties/secureproxy/csp?
+  value:
+    enable: ((csp-enabled))
+    report_only: ((csp-report-only))
+    report_uri: ((csp-report-uri))
+    host_patterns: ((csp-host-patterns))
+
+
+# Needed for BOSH DNS, concatenate the new router group to the existing one (not overwrite)
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=gorouter.service.cf.internal/targets/instance_group=router:after
+  value:
+    deployment: ((deployment_name))
+    domain: bosh
+    instance_group: router-main
+    network: ((network_name))
+    query: '*'
+
+
+
+# Set vm_extension, need to wipe the existing default array value of cf-router-network-properties with cf-router-main-network-properties
+- type: remove
+  path: /instance_groups/name=router-main/vm_extensions?
+- type: replace
+  path: /instance_groups/name=router-main/vm_extensions?
+  value:
+  - cf-router-main-network-properties
+
+
+# Used to avoid bosh link error: "Failed to resolve link 'router' with type 'http-router'..."
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter/provides?
+  value:
+    gorouter: nil
+
