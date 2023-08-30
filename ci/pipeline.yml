@@ -1453,7 +1453,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: ((cf-manifests-git-url))
-    branch: uaa_split #main
+    branch: main
     paths:
     - ci/*
     - bosh/*
