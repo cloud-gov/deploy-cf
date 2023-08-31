@@ -83,15 +83,6 @@
   path: /instance_groups/name=router-main/jobs/name=gorouter/properties/request_timeout_in_seconds?
   value: 3600
 
-# From cf-manifests/bosh/opsfiles/content-security-policy.yml
-- type: replace
-  path: /instance_groups/name=router-main/jobs/name=secureproxy/properties/secureproxy/csp?
-  value:
-    enable: ((csp-enabled))
-    report_only: ((csp-report-only))
-    report_uri: ((csp-report-uri))
-    host_patterns: ((csp-host-patterns))
-
 
 # Needed for BOSH DNS, concatenate the new router group to the existing one (not overwrite)
 - type: replace
