@@ -6,11 +6,3 @@
     report_uri: ((csp-report-uri))
     host_patterns: ((csp-host-patterns))
 
-# This ops file is only currently used in dev so putting the router-main instance group override here
-- type: replace
-  path: /instance_groups/name=router-main/jobs/name=secureproxy/properties/secureproxy/csp?
-  value:
-    enable: ((csp-enabled))
-    report_only: ((csp-report-only))
-    report_uri: ((csp-report-uri))
-    host_patterns: ((csp-host-patterns))
