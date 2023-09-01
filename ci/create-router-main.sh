@@ -8,7 +8,7 @@ bosh int cf-deployment/cf-deployment.yml --path /instance_groups/name=router > r
 ## Create ops file header
 cat > router_main.yml <<EOF
 - type: replace
-  path: /instance_groups/name=router-main?
+  path: /instance_groups/name=router:after
   value:
 EOF
 
