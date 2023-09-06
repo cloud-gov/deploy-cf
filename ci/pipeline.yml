@@ -59,6 +59,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/tcp-cells-and-routers.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
