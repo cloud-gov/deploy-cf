@@ -49,7 +49,7 @@
   path: /instance_groups/name=router/update?
   value:
     max_in_flight: 20%
-    canaries: 20%  
+    canaries: 20%
 
 # router-main
 - type: replace
@@ -62,7 +62,7 @@
   path: /instance_groups/name=router-main/update?
   value:
     max_in_flight: 20%
-    canaries: 20%  
+    canaries: 20%
 
 # scheduler
 - type: replace
@@ -96,7 +96,7 @@
   path: /instance_groups/name=log-cache/update?
   value:
     max_in_flight: 40%
-    canaries: 40%   
+    canaries: 40%
     
 # log-api
 - type: replace
@@ -128,3 +128,14 @@
 - type: replace
   path: /instance_groups/name=rotate-cc-database-key/vm_type
   value: t3.medium
+
+
+- type: replace
+  path: /instance_groups/name=tcp-router/instances
+  value: 2
+- type: replace
+  path: /instance_groups/name=tcp-router/vm_type
+  value: t3.small
+- type: replace
+  path: /instance_groups/name=diego-tcp-cell/vm_type
+  value: t3.xlarge

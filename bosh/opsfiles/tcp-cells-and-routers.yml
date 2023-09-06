@@ -1,3 +1,15 @@
+- type: replace
+  path: /instance_groups/name=tcp-router/instances
+  value: 2
+
+- type: replace
+  path: /instance_groups/name=tcp-router/vm_type
+  value: t3.small
+
+- type: replace
+  path: /instance_groups/name=diego-tcp-cell/vm_type
+  value: t3.xlarge
+
 # Copy original diego-cell from https://github.com/cloudfoundry/cf-deployment/blob/master/cf-deployment.yml
 - type: replace
   path: /instance_groups/-
@@ -234,3 +246,4 @@
     name: default-tcp
     reservable_ports: ((tcp_lb_listener_ports))
     type: tcp
+
