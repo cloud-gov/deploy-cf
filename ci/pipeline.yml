@@ -41,7 +41,6 @@ jobs:
       - cf-deployment/operations/stop-skipping-tls-validation.yml
       - cf-deployment/operations/set-bbs-active-key.yml
       - cf-deployment/operations/enable-service-discovery.yml
-      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/clients.yml
       - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
       - cf-manifests/bosh/opsfiles/users.yml
@@ -1455,7 +1454,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: ((cf-manifests-git-url))
-    branch: main
+    branch: re-enable-tcp
     paths:
     - ci/*
     - bosh/*
