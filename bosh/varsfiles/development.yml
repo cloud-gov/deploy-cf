@@ -10,7 +10,7 @@ droplet_directory_key: cf-development-droplets
 app_package_directory_key: cf-development-cc-packages
 resource_directory_key: cf-development-cc-resources
 
-csp-enabled: true
+csp-enabled: false
 csp-report-only: true
 csp-report-uri: cspr-collector.fr.cloud.gov
 csp-host-patterns:
