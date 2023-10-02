@@ -25,6 +25,8 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
     file: cf-manifests/ci/create-router-main.yml
+  - task: router-logstash
+    file: cf-manifests/ci/create-router-logstash.yml
   - put: cf-deployment-development
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
@@ -35,6 +37,7 @@ jobs:
       - cf-stemcell-jammy/*.tgz
       ops_files:
       - router-main/router_main.yml
+      - router-logstash/router_logstash.yml
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
@@ -76,6 +79,8 @@ jobs:
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-main-dev.yml
+      - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-client.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
@@ -530,11 +535,14 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
     file: cf-manifests/ci/create-router-main.yml
+  - task: router-logstash
+    file: cf-manifests/ci/create-router-logstash.yml
   - put: cf-deployment-staging
     params:
       <<: *deploy-params
       ops_files:
       - router-main/router_main.yml
+      - router-logstash/logstash.yml
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
@@ -575,6 +583,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
+      - cf-manifests/bosh/opsfiles/router-logstash.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-client.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
@@ -1039,12 +1048,15 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
     file: cf-manifests/ci/create-router-main.yml
+  - task: router-logstash
+    file: cf-manifests/ci/create-router-logstash.yml
   - put: cf-deployment-production
     params: &prod-deploy-params
       <<: *deploy-params
       dry_run: true
       ops_files:
       - router-main/router_main.yml
+      - router-logstash/router_logstash.yml
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
@@ -1084,6 +1096,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
+      - cf-manifests/bosh/opsfiles/router-logstash.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-client.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
@@ -1130,6 +1143,8 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
     file: cf-manifests/ci/create-router-main.yml
+  - task: router-logsearch
+    file: cf-manifests/ci/create-router-logsearch.yml
   - put: cf-deployment-production
     params:
       <<: *prod-deploy-params
