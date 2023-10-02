@@ -1500,11 +1500,11 @@ resources:
 - name: cf-deployment-development
   type: bosh-deployment
   source:
-    target: ((development-bosh-target))
-    client: ((development-bosh-client))
-    client_secret: ((development-bosh-client-secret))
+    target: ((bosh.development.environment))
+    client: ((bosh.development.client))
+    client_secret: ((bosh.development.client-secret))
     ca_cert: ((bosh-ca-cert))
-    deployment: cf-development
+    deployment: ((cf.development.name))
 
 - name: cf-deployment-staging
   type: bosh-deployment
