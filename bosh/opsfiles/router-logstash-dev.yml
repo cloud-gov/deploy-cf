@@ -1,0 +1,8 @@
+# This ops file is only currently used in dev so putting the router-logstash instance group override here
+- type: replace
+  path: /instance_groups/name=router-logstash/jobs/name=secureproxy/properties/secureproxy/csp?
+  value:
+    enable: ((csp-enabled))
+    report_only: ((csp-report-only))
+    report_uri: ((csp-report-uri))
+    host_patterns: ((csp-host-patterns))
