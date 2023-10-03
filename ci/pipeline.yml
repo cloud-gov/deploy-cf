@@ -542,7 +542,7 @@ jobs:
       <<: *deploy-params
       ops_files:
       - router-main/router_main.yml
-      - router-logstash/logstash.yml
+      - router-logstash/router_logstash.yml
       - cf-deployment/operations/rename-network-and-deployment.yml
       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
       - cf-deployment/operations/use-external-dbs.yml
