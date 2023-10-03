@@ -1143,8 +1143,8 @@ jobs:
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
     file: cf-manifests/ci/create-router-main.yml
-  - task: router-logsearch
-    file: cf-manifests/ci/create-router-logsearch.yml
+  - task: router-logstash
+    file: cf-manifests/ci/create-router-logstash.yml
   - put: cf-deployment-production
     params:
       <<: *prod-deploy-params
