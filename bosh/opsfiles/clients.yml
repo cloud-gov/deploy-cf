@@ -9,6 +9,15 @@
     secret: ((logsearch-firehose-ingestor-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch_firehose_ingestor?
+  value:
+    override: true
+    access-token-validity: 172800
+    authorized-grant-types: client_credentials
+    authorities: doppler.firehose,cloud_controller.global_auditor
+    secret: ((opensearch-firehose-ingestor-client-secret))
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-client-audit?
   value:
     override: true
