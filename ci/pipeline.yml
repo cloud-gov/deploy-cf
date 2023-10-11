@@ -1473,7 +1473,7 @@ resources:
   source:
     commit_verification_keys: ((cloud-gov-pgp-keys))
     uri: ((cf-manifests-git-url))
-    branch: opensearch-secret
+    branch: main
     paths:
     - ci/*
     - bosh/*
