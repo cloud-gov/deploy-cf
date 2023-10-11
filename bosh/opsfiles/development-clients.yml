@@ -1,0 +1,29 @@
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/logsearchv2_firehose_ingestor?
+  value:
+    override: true
+    access-token-validity: 172800
+    authorized-grant-types: client_credentials
+    authorities: doppler.firehose,cloud_controller.global_auditor
+    secret: ((logsearchv2-firehose-ingestor-client-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: logsearchv2-firehose-ingestor-client-secret
+    type: password
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch_firehose_ingestor?
+  value:
+    override: true
+    access-token-validity: 172800
+    authorized-grant-types: client_credentials
+    authorities: doppler.firehose,cloud_controller.global_auditor
+    secret: ((opensearch-firehose-ingestor-client-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-firehose-ingestor-client-secret
+    type: password

@@ -46,6 +46,7 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/development-clients.yml
       - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
       - cf-manifests/bosh/opsfiles/users.yml
       - cf-manifests/bosh/opsfiles/secureproxy.yml
