@@ -23,6 +23,6 @@ six==1.16.0
 starlette==0.14.2
 tomli==1.2.1
 typing-extensions==3.10.0.2
-urllib3==1.26.6
+urllib3==1.26.18
 userpath==1.7.0
 uvicorn==0.15.0
