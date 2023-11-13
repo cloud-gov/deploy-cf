@@ -1,7 +1,13 @@
 variable "iaas_stack_name" {
 }
 
-variable "space_id" {
+variable "organization_id" {
   type = string
-  description = "Space GUID to deploy test CDN app"
+  description = "Organization GUID to use for test CDN app"
+}
+
+variable "space_name" {
+  type = string
+  description = "Space name to use for test CDN app"
+  default = "hello-worlds"
 }
