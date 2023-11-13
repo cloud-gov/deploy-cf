@@ -11,8 +11,8 @@ data "cloudfoundry_service" "external_domain" {
 }
 
 data "cloudfoundry_space" "hello_worlds" {
-  name = "hello-worlds"
-  org  = cloudfoundry_org.cloud-gov.id
+  name = var.space_name
+  org  = var.organization_id
 }
 
 resource "zipper_file" "test_cdn_src" {
