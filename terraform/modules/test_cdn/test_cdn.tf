@@ -21,6 +21,9 @@ resource "cloudfoundry_route" "test_cdn_route" {
   hostname = "test-cdn"
 }
 
+# DNS records:
+# https://github.com/cloud-gov/cg-provision/blob/417000c786a101988c3edd965f7c78f66ad334fe/terraform/stacks/dns/staging.tf#L25-L30
+# https://github.com/cloud-gov/cg-provision/blob/417000c786a101988c3edd965f7c78f66ad334fe/terraform/stacks/dns/production.tf#L12-L17
 resource "cloudfoundry_service_instance" "test_cdn_instance" {
   name         = "test-cdn-service"
   space        = var.space_id
