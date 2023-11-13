@@ -10,6 +10,11 @@ data "cloudfoundry_service" "external_domain" {
   name = "external-domain"
 }
 
+data "cloudfoundry_space" "hello_worlds" {
+  name = "hello-worlds"
+  org  = cloudfoundry_org.cloud-gov.id
+}
+
 resource "zipper_file" "test_cdn_src" {
   source      = "https://github.com/cloud-gov/cf-hello-worlds/tree/main/static"
   output_path = "test-static-app.zip"
@@ -17,7 +22,7 @@ resource "zipper_file" "test_cdn_src" {
 
 resource "cloudfoundry_route" "test_cdn_route" {
   domain   = data.cloudfoundry_domain.fr_domain.id
-  space    = var.space_id
+  space    = data.cloudfoundry_space.hello_worlds.id
   hostname = "test-cdn"
 }
 
@@ -26,7 +31,7 @@ resource "cloudfoundry_route" "test_cdn_route" {
 # https://github.com/cloud-gov/cg-provision/blob/417000c786a101988c3edd965f7c78f66ad334fe/terraform/stacks/dns/production.tf#L12-L17
 resource "cloudfoundry_service_instance" "test_cdn_instance" {
   name         = "test-cdn-service"
-  space        = var.space_id
+  space        = data.cloudfoundry_space.hello_worlds.id
   service_plan = data.cloudfoundry_service.external_domain.service_plans["domain-with-cdn"]
   json_params  = "{\"domains\": \"test-cdn.${local.domain_name}\"}"
 }
@@ -34,7 +39,7 @@ resource "cloudfoundry_service_instance" "test_cdn_instance" {
 resource "cloudfoundry_app" "test-cdn" {
   name             = "test-cdn"
   buildpack        = "staticfile_buildpack"
-  space            = var.space_id
+  space            = data.cloudfoundry_space.hello_worlds.id
   path             = zipper_file.test_cdn_src.output_path
   source_code_hash = zipper_file.test_cdn_src.output_sha
 

@@ -13,8 +13,3 @@ data "terraform_remote_state" "tooling" {
     key    = "${var.tooling_stack_name}/terraform.tfstate"
   }
 }
-
-data "cloudfoundry_space" "hello_worlds" {
-  name = "hello-worlds"
-  org  = cloudfoundry_org.cloud-gov.id
-}
