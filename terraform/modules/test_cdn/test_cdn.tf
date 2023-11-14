@@ -46,8 +46,4 @@ resource "cloudfoundry_app" "test-cdn" {
   routes {
     route = cloudfoundry_route.test_cdn_route.id
   }
-
-  service_binding {
-    service_instance = cloudfoundry_service_instance.test_cdn_instance.id
-  }
 }
