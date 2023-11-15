@@ -23,7 +23,7 @@ resource "null_resource" "git_clone" {
   }
 
   provisioner "local-exec" {
-    command = "git clone ${var.source_code_repo} ${local.clone_dir}"
+    command = "if [ ! -d \"${local.clone_dir}\" ]; then git clone ${var.source_code_repo} ${local.clone_dir}; fi"
   }
 }
 
