@@ -1,7 +1,7 @@
 locals {
   domain_name = var.iaas_stack_name == "staging" ? "fr-stage.cloud.gov" : "fr.cloud.gov"
-  clone_dir = "${path.module}/cf-hello-worlds"
-  zip_output_filepath = "${path.module}/hello-world-static.zip"
+  clone_dir = "${path.module}/${var.git_clone_dir}"
+  zip_output_filepath = "${path.module}/${var.zip_output_filename}"
 }
 
 data "cloudfoundry_domain" "fr_domain" {
@@ -23,7 +23,7 @@ resource "null_resource" "git_clone" {
   }
 
   provisioner "local-exec" {
-    command = "git clone https://github.com/cloud-gov/cf-hello-worlds.git ${local.clone_dir}"
+    command = "git clone ${var.source_code_repo} ${local.clone_dir}"
   }
 }
 
@@ -31,7 +31,7 @@ data "archive_file" "test_cdn_app_src" {
   depends_on  = [null_resource.git_clone]
 
   output_path = local.zip_output_filepath
-  source_dir  = "${local.clone_dir}/static"
+  source_dir  = "${local.clone_dir}/${var.source_code_path}"
   type        = "zip"
 }
 
