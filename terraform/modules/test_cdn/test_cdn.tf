@@ -1,5 +1,7 @@
 locals {
   domain_name = var.iaas_stack_name == "staging" ? "fr-stage.cloud.gov" : "fr.cloud.gov"
+  clone_dir = "${path.module}/${var.git_clone_dir}"
+  zip_output_filepath = "${path.module}/${var.zip_output_filename}"
 }
 
 data "cloudfoundry_domain" "fr_domain" {
@@ -15,9 +17,22 @@ data "cloudfoundry_space" "hello_worlds" {
   org  = var.organization_id
 }
 
-resource "zipper_file" "test_cdn_src" {
-  source      = "https://github.com/cloud-gov/cf-hello-worlds/tree/main/static"
-  output_path = "test-static-app.zip"
+resource "null_resource" "git_clone" {
+  triggers = {
+    on_every_apply = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "git clone ${var.source_code_repo} ${local.clone_dir}"
+  }
+}
+
+data "archive_file" "test_cdn_app_src" {
+  depends_on  = [null_resource.git_clone]
+
+  output_path = local.zip_output_filepath
+  source_dir  = "${local.clone_dir}/${var.source_code_path}"
+  type        = "zip"
 }
 
 resource "cloudfoundry_route" "test_cdn_route" {
@@ -40,8 +55,8 @@ resource "cloudfoundry_app" "test-cdn" {
   name             = "test-cdn"
   buildpack        = "staticfile_buildpack"
   space            = data.cloudfoundry_space.hello_worlds.id
-  path             = zipper_file.test_cdn_src.output_path
-  source_code_hash = zipper_file.test_cdn_src.output_sha
+  path             = local.zip_output_filepath
+  source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
 
   routes {
     route = cloudfoundry_route.test_cdn_route.id

@@ -6,6 +6,5 @@ module "test_cdn" {
 
   providers = {
     cloudfoundry = cloudfoundry
-    zipper = zipper
   }
 }
