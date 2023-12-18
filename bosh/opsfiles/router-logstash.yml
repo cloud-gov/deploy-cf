@@ -113,6 +113,5 @@
 
 # Avoid conflict with https://github.com/cloudfoundry/cf-deployment/pull/1141/files and use an alternate port
 - type: replace
-  path: /instance_groups/name=router-logstash/jobs/name=gorouter/properties/router/status?/tls?
-  value:
-    port: 9443
+  path: /instance_groups/name=router-logstash/jobs/name=gorouter/properties/router/status?/tls?/port?
+  value: 9443
