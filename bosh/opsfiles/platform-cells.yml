@@ -2,7 +2,7 @@
 - type: replace
   path: /instance_groups/-
   value:
-  name: diego-platform-cell
+    name: diego-platform-cell
     azs:
     - z1
     - z2
