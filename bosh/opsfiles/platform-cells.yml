@@ -78,7 +78,11 @@
           - ((uaa_ssl.ca))
         enable_consul_service_registration: false
         enable_declarative_healthcheck: true
-        loggregator: *diego_loggregator_client_properties
+        loggregator: &diego_loggregator_client_properties
+          use_v2_api: true
+          ca_cert: "((loggregator_tls_agent.ca))"
+          cert: "((loggregator_tls_agent.certificate))"
+          key: "((loggregator_tls_agent.private_key))"
         tls:
           ca_cert: "((diego_rep_agent_v2.ca))"
           cert: "((diego_rep_agent_v2.certificate))"
@@ -89,7 +93,10 @@
     - name: cfdot
       release: diego
       properties:
-        tls: *cfdot_tls_client_properties
+        tls: cfdot_tls_client_properties
+          ca_certificate: "((diego_rep_client.ca))"
+          certificate: "((diego_rep_client.certificate))"
+          private_key: "((diego_rep_client.private_key))"
     - name: route_emitter
       release: diego
       properties:
@@ -161,7 +168,17 @@
       release: silk
     - name: loggr-udp-forwarder
       release: loggregator-agent
-      properties: *loggr-udp-forwarder-properties
+      properties:
+        loggregator:
+          tls:
+            ca: "((loggregator_tls_agent.ca))"
+            cert: "((loggregator_tls_agent.certificate))"
+            key: "((loggregator_tls_agent.private_key))"
+        metrics:
+          ca_cert: "((loggr_udp_forwarder_tls.ca))"
+          cert: "((loggr_udp_forwarder_tls.certificate))"
+          key: "((loggr_udp_forwarder_tls.private_key))"
+          server_name: loggr_udp_forwarder_metrics
 
 # Set platform cell instance profile and placement tag
 - type: replace
