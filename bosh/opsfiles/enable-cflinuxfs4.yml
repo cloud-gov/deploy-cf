@@ -3,8 +3,8 @@
 # Used to pull out credhub_tls certificate
 
 
-- type: remove
-  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs/trusted_certs
+#- type: remove
+#  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs/trusted_certs
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs/trusted_certs
