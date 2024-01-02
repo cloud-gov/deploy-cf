@@ -1,6 +1,7 @@
 # This file is the midpoint to get cflinuxfs4 enabled 
 
 # Used to pull out credhub_tls certificate
+
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs/trusted_certs
   value:
