@@ -93,7 +93,7 @@
     - name: cfdot
       release: diego
       properties:
-        tls: cfdot_tls_client_properties
+        tls: 
           ca_certificate: "((diego_rep_client.ca))"
           certificate: "((diego_rep_client.certificate))"
           private_key: "((diego_rep_client.private_key))"
