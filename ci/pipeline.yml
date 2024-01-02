@@ -69,7 +69,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
