@@ -4,7 +4,7 @@ This repo contains the source for the Bosh deployment manifest and deployment pi
 
 ### How to generate the final manifest:
 
-1. Install `spiff`
+1. Install `spiff` 
 1. Copy the secrets examples to secrets files:
 ```
 cp cf-secrets-example.main.yml cf-secrets.main.yml
