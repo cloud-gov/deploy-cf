@@ -115,7 +115,7 @@ resource "cloudfoundry_asg" "dns_egress" {
 resource "cloudfoundry_asg" "trusted_local_networks" {
   name = "trusted_local_networks"
 
-  # RDS access for postgres, mysql, mssql, oracle
+  # RDS access for postgres, mysql, mssql, oracle 
   rule {
     protocol    = "tcp"
     description = "Allow access to RDS"
