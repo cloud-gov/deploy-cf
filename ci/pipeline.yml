@@ -82,6 +82,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/router-main-dev.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
       - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
+      - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
