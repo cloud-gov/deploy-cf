@@ -5,3 +5,7 @@
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/diego/executor?/memory_capacity_mb
   value: 50000
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/dea_next?/staging_memory_limit_mb
+  value: 2048
