@@ -3,7 +3,7 @@ terraform {
   required_providers {
     cloudfoundry = {
       source  = "cloudfoundry-community/cloudfoundry"
-      version = "< 1.0.0"
+      version = "0.53.0"
     }
   }
 }
