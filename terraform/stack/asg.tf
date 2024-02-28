@@ -115,7 +115,7 @@ resource "cloudfoundry_asg" "dns_egress" {
 resource "cloudfoundry_asg" "trusted_local_networks" {
   name = "trusted_local_networks"
 
-  # RDS access for postgres, mysql, mssql, oracle 
+  # RDS access for postgres, mysql, mssql, oracle
   rule {
     protocol    = "tcp"
     description = "Allow access to RDS"
@@ -435,7 +435,6 @@ resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
   asgs = [
     cloudfoundry_asg.public_networks_egress.id,
     cloudfoundry_asg.dns.id,
-    cloudfoundry_asg.internal_services_egress.id,
   ]
   staging_asgs = [
     cloudfoundry_asg.dns.id,
