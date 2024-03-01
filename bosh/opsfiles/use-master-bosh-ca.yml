@@ -212,82 +212,77 @@
 
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: broker-deployer-password
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: user-tester-password
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: uaa-extras-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: uaa-credentials-broker-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: uaa-client-audit-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: terraform-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: stratos-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
-    name: cg-ui-client-secret
-    type: password
-- type: replace
-  path: /variables/-
-  value: 
+  value:
     name: sandbox-bot-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: s3-broker-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: logsearch-firehose-ingestor-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: kibana-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: firehose-exporter-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: cf-exporter-client-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: cdn-broker-secret
     type: password
 - type: replace
   path: /variables/-
-  value: 
+  value:
     name: buildpack-notifier-client-secret
     type: password
 - type: replace
