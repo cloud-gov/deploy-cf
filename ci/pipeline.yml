@@ -83,6 +83,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/router-logstash.yml
       - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
       - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -586,6 +587,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -1099,6 +1101,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
