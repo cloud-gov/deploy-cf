@@ -12,9 +12,6 @@
   path: /instance_groups/name=diego-api/jobs/name=bbs/properties/loggregator/app_metric_exclusion_filter
 
 - type: remove
-  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/loggregator/app_metric_exclusion_filter
-
-- type: remove
   path: /instance_groups/name=api/jobs/name=file_server/properties/loggregator/app_metric_exclusion_filter
 
 - type: remove
