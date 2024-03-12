@@ -129,7 +129,7 @@
 # diego (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
-  value: c5.2xlarge
+  value: r6i.2xlarge
 - type: replace
   path: /instance_groups/name=diego-cell/update?
   value:
@@ -137,7 +137,7 @@
     canaries: 11%
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
-  value: c5.2xlarge
+  value: r6i.2xlarge
 
 # rotate-cc-database-key
 - type: replace
