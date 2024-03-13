@@ -28,7 +28,7 @@
   value: 6
 - type: replace
   path: /instance_groups/name=api/vm_type
-  value: t3.large
+  value: m6i.large
 
 # capi worker
 - type: replace
@@ -94,7 +94,7 @@
   value: 52
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
-  value: m5.2xlarge
+  value: r6i.2xlarge
 - type: replace
   path: /instance_groups/name=diego-cell/update?
   value:
@@ -102,7 +102,7 @@
     canaries: 3
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
-  value: m5.2xlarge
+  value: r6i.2xlarge
 - type: replace
   path: /instance_groups/name=diego-platform-cell/instances
   value: 3
