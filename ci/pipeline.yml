@@ -84,6 +84,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
       - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cf-manifests/bosh/opsfiles/aggregate_drains.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
