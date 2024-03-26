@@ -66,7 +66,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
-      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
@@ -575,7 +574,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
-      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
@@ -1089,7 +1087,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/diego-dns.yml
-      - cf-manifests/bosh/opsfiles/diego-overcommit.yml
       - cf-manifests/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
