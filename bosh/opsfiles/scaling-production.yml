@@ -20,7 +20,7 @@
   value: 4
 - type: replace
   path: /instance_groups/name=uaa/vm_type
-  value: r5.large
+  value: r6i.large
 
 # capi
 - type: replace
@@ -44,7 +44,7 @@
   value: 10
 - type: replace
   path: /instance_groups/name=router/vm_type
-  value: c5.2xlarge
+  value: c6i.2xlarge
 - type: replace
   path: /instance_groups/name=router/update?
   value:
@@ -58,7 +58,7 @@
   value: 3
 - type: replace
   path: /instance_groups/name=router-main/vm_type
-  value: c5.2xlarge
+  value: c6i.2xlarge
 - type: replace
   path: /instance_groups/name=router-main/update?
   value:
@@ -72,7 +72,7 @@
   value: 3
 - type: replace
   path: /instance_groups/name=router-logstash/vm_type
-  value: c5.2xlarge
+  value: c6i.2xlarge
 - type: replace
   path: /instance_groups/name=router-logstash/update?
   value:
@@ -113,7 +113,7 @@
   value: 10
 - type: replace
   path: /instance_groups/name=doppler/vm_type
-  value: m5.2xlarge
+  value: m6i.2xlarge
 - type: replace
   path: /instance_groups/name=doppler/update?
   value:
@@ -126,7 +126,7 @@
   value: 5
 - type: replace
   path: /instance_groups/name=log-cache/vm_type
-  value: m5.2xlarge
+  value: m6i.2xlarge
 - type: replace
   path: /instance_groups/name=log-cache/update?
   value:
@@ -139,7 +139,7 @@
   value: 7
 - type: replace
   path: /instance_groups/name=log-api/vm_type
-  value: m5.xlarge
+  value: m6i.xlarge
 - type: replace
   path: /instance_groups/name=log-api/update?
   value:
