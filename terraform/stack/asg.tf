@@ -397,6 +397,22 @@ resource "cloudfoundry_space" "dashboard" {
   ]
 }
 
+resource "cloudfoundry_space" "cg-ui" {
+  name = "cg-ui"
+  org  = cloudfoundry_org.cloud-gov.id
+  asgs = [
+    cloudfoundry_asg.trusted_local_networks.id,
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.smtp.id,
+  ]
+  staging_asgs = [
+    cloudfoundry_asg.trusted_local_networks.id,
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+  ]
+}
+
 resource "cloudfoundry_space" "uaa-extras" {
   name = "uaa-extras"
   org  = cloudfoundry_org.cloud-gov.id
