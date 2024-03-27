@@ -6,6 +6,13 @@
     cert: ((/bosh/logs-opensearch/ingestor_syslog_server_tls.certificate))
     key: ((/bosh/logs-opensearch/ingestor_syslog_server_tls.private_key))
 
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=loggr-syslog-binding-cache/properties?/aggregate_drains?/-
+  value:
+    url: syslog-tls://logs-opensearch.archiver.service.cf.internal:6972
+    ca: ((/bosh/logs-opensearch/opensearch_ca.ca))
+    cert: ((/bosh/logs-opensearch/archiver_syslog_server_tls.certificate))
+    key: ((/bosh/logs-opensearch/archiver_syslog_server_tls.private_key))
 
 - type: replace
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=logs-opensearch.ingestor.service.cf.internal?/targets/-
@@ -13,5 +20,14 @@
     deployment: logs-opensearch
     domain: bosh
     instance_group: ingestor
+    network: services
+    query: '*'
+
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=logs-opensearch.archiver.service.cf.internal?/targets/-
+  value:
+    deployment: logs-opensearch
+    domain: bosh
+    instance_group: archiver
     network: services
     query: '*'
