@@ -1,7 +1,7 @@
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=loggr-syslog-binding-cache/properties?/aggregate_drains?/-
   value:
-    url: syslog-tls://logs-opensearch.ingestor.service.cf.internal:6972
+    url: syslog-tls://logs-opensearch.ingestor.service.cf.internal:6972?drain-data=all
     ca: ((/bosh/logs-opensearch/opensearch_ca.ca))
     cert: ((/bosh/logs-opensearch/ingestor_syslog_server_tls.certificate))
     key: ((/bosh/logs-opensearch/ingestor_syslog_server_tls.private_key))
@@ -9,7 +9,7 @@
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=loggr-syslog-binding-cache/properties?/aggregate_drains?/-
   value:
-    url: syslog-tls://logs-opensearch.archiver.service.cf.internal:6972
+    url: syslog-tls://logs-opensearch.archiver.service.cf.internal:7891?drain-data=all
     ca: ((/bosh/logs-opensearch/opensearch_ca.ca))
     cert: ((/bosh/logs-opensearch/archiver_syslog_server_tls.certificate))
     key: ((/bosh/logs-opensearch/archiver_syslog_server_tls.private_key))
