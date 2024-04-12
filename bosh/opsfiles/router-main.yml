@@ -1,7 +1,7 @@
-# This combines all the places in cf-deployment and cg-deploy-cf where we override settings
+# This combines all the places in cf-deployment and cg-deploy-cf where we override settings 
 # for the router instance group for the new instance group called router-main
 
-# From cf-deployment/operations/rename-network-and-deployment.yml
+# From cf-deployment/operations/rename-network-and-deployment.yml 
 - type: replace
   path: /instance_groups/name=router-main/networks/name=default/name
   value: ((network_name))
@@ -20,7 +20,7 @@
     properties:
       secureproxy:
         https_listen_port: 443
-        https_proxy_port: 10443
+        https_proxy_port: 8443
         # Expose gorouter health check for ELB
         # For this to work, router.load_balancer_healthy_threshold must be set to 0
         custom_server_config: |-
@@ -60,7 +60,7 @@
 
 - type: replace
   path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/disable_http?
-  value: true
+  value: true          
 
 - type: replace
   path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/load_balancer_healthy_threshold?
@@ -76,9 +76,9 @@
 
 - type: replace
   path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/tls_port?
-  value: 10443
+  value: 8443
 
-# From cf-manifests/bosh/opsfiles/routing.yml
+# From cf-manifests/bosh/opsfiles/routing.yml 
 - type: replace
   path: /instance_groups/name=router-main/jobs/name=gorouter/properties/request_timeout_in_seconds?
   value: 3600
@@ -110,3 +110,8 @@
   path: /instance_groups/name=router-main/jobs/name=gorouter/provides?
   value:
     gorouter: nil
+
+# Avoid conflict with https://github.com/cloudfoundry/cf-deployment/pull/1141/files and use an alternate port
+- type: replace
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/status?/tls?/port?
+  value: 9443
