@@ -44,7 +44,7 @@
   value: 20
 - type: replace
   path: /instance_groups/name=router/vm_type
-  value: c6i.xlarge
+  value: c6i.2xlarge
 - type: replace
   path: /instance_groups/name=router/update?
   value:
