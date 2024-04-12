@@ -12,7 +12,7 @@
     properties:
       secureproxy:
         https_listen_port: 443
-        https_proxy_port: 8443
+        https_proxy_port: 10443
         # Expose gorouter health check for ELB
         # For this to work, router.load_balancer_healthy_threshold must be set to 0
         custom_server_config: |-
@@ -91,10 +91,4 @@
 
 - type: replace
   path: /instance_groups/name=router/jobs/name=gorouter/properties/router/tls_port?
-  value: 8443
-
-
-# Avoid conflict with https://github.com/cloudfoundry/cf-deployment/pull/1141/files and use an alternate port
-- type: replace
-  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/status?/tls?/port?
-  value: 9443
+  value: 10443
