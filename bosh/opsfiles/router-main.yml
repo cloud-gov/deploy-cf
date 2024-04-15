@@ -112,7 +112,7 @@
     gorouter: nil
 
 - type: replace
-  path: /instance_groups/name=router-main/jobs/name=grouter/properties/router/http_rewrite?
+  path: /instance_groups/name=router-main/jobs/name=gorouter/properties/router/http_rewrite?
   value:
     responses:
       add_headers_if_not_present:
