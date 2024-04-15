@@ -94,18 +94,19 @@
   value: 10443
 
 - type: replace
-  path: /instance_groups/name=router/jobs/name=grouter/properties/router/http_rewrite?/responses/-
+  path: /instance_groups/name=router/jobs/name=grouter/properties/router/http_rewrite?
   value:
-    add_headers_if_not_present:
-    - name: "Strict-Transport-Security"
-      value: "max-age=31536000"
-    - name: "X-Content-Type-Options"
-      value: "nosniff"
-    - name: "X-XSS-Protection"
-      value: "1; mode=block"
-    - name: "Content-Type"
-      value: "text/plain; charset=utf-8"
-    - name: "X-Frame-Options"
-      value: "DENY"
-    remove_headers:
-    - name: X-Frame-Options
+    responses:
+      add_headers_if_not_present:
+      - name: "Strict-Transport-Security"
+        value: "max-age=31536000"
+      - name: "X-Content-Type-Options"
+        value: "nosniff"
+      - name: "X-XSS-Protection"
+        value: "1; mode=block"
+      - name: "Content-Type"
+        value: "text/plain; charset=utf-8"
+      - name: "X-Frame-Options"
+        value: "DENY"
+      remove_headers:
+      - name: X-Frame-Options
