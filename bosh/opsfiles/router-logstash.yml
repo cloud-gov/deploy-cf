@@ -113,7 +113,7 @@
 
 
 - type: replace
-  path: /instance_groups/name=router-logstash/jobs/name=grouter/properties/router/http_rewrite/responses/-
+  path: /instance_groups/name=router-logstash/jobs/name=grouter/properties/router/http_rewrite?/responses/-
   value:
     add_headers_if_not_present:
     - name: "Strict-Transport-Security"
