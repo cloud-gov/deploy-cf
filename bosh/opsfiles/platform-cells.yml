@@ -9,7 +9,7 @@
     instances: 2
     vm_type: small-highmem
     vm_extensions:
-    - 100GB_ephemeral_disk
+    - 200GB_ephemeral_disk
     stemcell: default
     networks:
     - name: default
