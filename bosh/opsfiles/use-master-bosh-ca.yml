@@ -218,6 +218,11 @@
 - type: replace
   path: /variables/-
   value:
+    name: autoscaler-password
+    type: password
+- type: replace
+  path: /variables/-
+  value:
     name: user-tester-password
     type: password
 - type: replace

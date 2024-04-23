@@ -13,3 +13,11 @@
     name: broker-deployer
     password: ((broker-deployer-password))
     groups: [openid, cloud_controller.admin]
+
+# Autoscaler user
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/users/-
+  value:
+    name: autoscaler
+    password: ((autoscaler-password))
+    groups: [openid, cloud_controller.admin, scim.read, scim.write]
