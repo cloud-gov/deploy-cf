@@ -1,0 +1,6 @@
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/ca_certs?/-
+  value: ((/bosh/app-autoscaler/app_autoscaler_ca_cert.ca))
+- type: replace
+  path: /instance_groups/name=router/jobs/name=gorouter/properties/router/ca_certs?/-
+  value: ((/bosh/app-autoscaler/metric_scraper_ca.ca))
