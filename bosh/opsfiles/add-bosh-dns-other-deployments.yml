@@ -1,0 +1,74 @@
+# Adds BOSH DNS lookup to autoscaler deployment so route-registrar can communicate with the routers over TLS:
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.apiserver.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: apiserver
+      network: default
+      query: '*'
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.autoscalerscheduler.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: scheduler
+      network: default
+      query: '*'
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.servicebroker.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: apiserver
+      network: default
+      query: '*'
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.eventgenerator.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: eventgenerator
+      network: default
+      query: '*'
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.scalingengine.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: scalingengine
+      network: default
+      query: '*'
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.metricsforwarder.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: metricsforwarder
+      network: default
+      query: '*'
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: app-autoscaler.operator.service.cf.internal
+    targets:
+    - deployment: app-autoscaler
+      domain: bosh
+      instance_group: operator
+      network: default
+      query: '*'
+
+# Other deployments (tbd) to go here:
+
