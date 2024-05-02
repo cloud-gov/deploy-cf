@@ -158,7 +158,7 @@
     authorized-grant-types: authorization_code,client_credentials,refresh_token
     autoapprove: true
     secret: ((cg-ui-client-secret))
-    scope: scim.me,openid,profile,uaa.user,cloud_controller.admin
+    scope: openid,uaa.user,cloud_controller.write,cloud_controller.read,cloud_controller.admin
     authorities: scim.userids,scim.invite,scim.read
     redirect-uri: https://cg-ui.((system_domain))/auth/login/callback
 
