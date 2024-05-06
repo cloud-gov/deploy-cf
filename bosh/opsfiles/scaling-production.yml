@@ -91,7 +91,7 @@
 # diego platform (platform and customer)
 - type: replace
   path: /instance_groups/name=diego-cell/instances
-  value: 40
+  value: 42
 - type: replace
   path: /instance_groups/name=diego-cell/vm_type
   value: r6i.2xlarge
