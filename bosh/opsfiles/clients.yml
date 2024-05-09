@@ -12,7 +12,20 @@
   value:
     name: autoscaler_client_secret
     type: password
-    
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch_client_id?
+  value:
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.read,cloud_controller.global_auditor,uaa.resource
+    secret: "((opensearch_client_secret))"
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch_client_secret
+    type: password
+
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/logsearch_firehose_ingestor?
   value:
