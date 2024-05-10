@@ -17,6 +17,7 @@ jobs:
       trigger: true
     - get: cg-s3-secureproxy-release
       trigger: true
+    - get: general-task
   - task: terraform-secrets
     image: general-task
     config:
