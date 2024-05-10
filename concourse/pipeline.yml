@@ -28,7 +28,7 @@ jobs:
     file: cf-manifests/concourse/create-router-main.yml
   - task: router-logstash
     file: cf-manifests/concourse/create-router-logstash.yml
-  - put: cf-deployment-development
+  - put: cf-deployment
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
       releases:
