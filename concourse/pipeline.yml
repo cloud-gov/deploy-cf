@@ -20,6 +20,7 @@ jobs:
   - task: terraform-secrets
     image: general-task
     config:
+      platform: linux
       inputs:
       - name: cf-manifests
       - name: terraform-yaml
