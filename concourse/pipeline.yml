@@ -180,10 +180,10 @@ resources:
 - name: general-task
   type: registry-image
   source:
-    aws_access_key_id: ((aws.access_key_id))
-    aws_secret_access_key: ((aws.secret_access_key))
+    aws_access_key_id: ((hack.access_key_id))
+    aws_secret_access_key: ((hack.secret_access_key))
     repository: general-task
-    aws_region: ((aws.region))
+    aws_region: ((hack.region))
     tag: latest
 
 resource_types:
@@ -201,8 +201,8 @@ resource_types:
 - name: registry-image
   type: registry-image
   source:
-    aws_access_key_id: ((aws.access_key_id))
-    aws_secret_access_key: ((aws.secret_access_key))
+    aws_access_key_id: ((hack.access_key_id))
+    aws_secret_access_key: ((hack.secret_access_key))
     repository: registry-image-resource
-    aws_region: ((aws.region))
+    aws_region: ((hack.region))
     tag: latest
