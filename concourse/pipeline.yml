@@ -109,59 +109,6 @@ jobs:
       DISABLED_FEATURE_FLAGS: |
         user_org_creation
         hide_marketplace_from_unauthenticated_users
-  
-  serial_groups: [development]
-  plan:
-  - in_parallel:
-    - get: cf-deployment
-    - get: cf-manifests
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-deployment-development
-      trigger: true
-      passed: [deploy-cf-development]
-    - get: cf-stemcell-jammy
-      passed: [deploy-cf-development]
-  - task: deploy-test-env
-    file: cf-manifests/ci/test-headers/task-deploy-test-env.yml
-    params: &test-headers-development-params
-      CF_API_URL: ((cf-api-url-development))
-      CF_USERNAME: ((cf-username-development))
-      CF_PASSWORD: ((cf-password-development))
-      CF_ORG: platform-test-headers
-      CF_QUOTA: default
-      CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
-    on_failure: &test-headers-development-clean-tasks
-      task: clean-test-env
-      file: cf-manifests/ci/test-headers/task-clean-test-env.yml
-      params:
-        <<: *test-headers-development-params
-  - task: run-tests
-    file: cf-manifests/ci/test-headers/task-run-tests.yml
-    params:
-      <<: *test-headers-development-params
-    on_failure:
-      <<: *test-headers-development-clean-tasks
-    on_success:
-      <<: *test-headers-development-clean-tasks
-  on_success:
-    put: slack
-    params:
-      text: |
-        :white_check_mark: Tests for headers for CF on development PASSED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
-  on_failure:
-    put: slack
-    params:
-      text: |
-        :x: Tests for headers for CF on development FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: '#cg-platform-news'
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
 
 resources:
 
