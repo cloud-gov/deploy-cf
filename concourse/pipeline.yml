@@ -18,16 +18,8 @@ jobs:
     - get: cg-s3-secureproxy-release
       trigger: true
   - task: terraform-secrets
+    image: general-task
     config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          aws_access_key_id: ((aws.access_key_id))
-          aws_secret_access_key: ((aws.secret_access_key))
-          repository: general-task
-          aws_region: ((aws.region))
-          tag: latest
       inputs:
       - name: cf-manifests
       - name: terraform-yaml
@@ -183,6 +175,15 @@ resources:
     ca_cert: ((bosh_director.ca_cert))
     deployment: cf
 
+- name: general-task
+  type: registry-image
+  source:
+    aws_access_key_id: ((aws.access_key_id))
+    aws_secret_access_key: ((aws.secret_access_key))
+    repository: general-task
+    aws_region: ((aws.region))
+    tag: latest
+
 resource_types:
 
 - name: bosh-deployment
@@ -195,3 +196,11 @@ resource_types:
   source:
     repository: 18fgsa/s3-resource
 
+- name: registry-image
+  type: registry-image
+  source:
+    aws_access_key_id: ((aws.access_key_id))
+    aws_secret_access_key: ((aws.secret_access_key))
+    repository: registry-image-resource
+    aws_region: ((aws.region))
+    tag: latest
