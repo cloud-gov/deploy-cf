@@ -20,6 +20,8 @@ jobs:
     - get: general-task
   - task: terraform-secrets
     image: general-task
+    pararms: 
+        TERRAFORM_STATE_FILE: ((buckets.terraform_state_file))
     config:
       platform: linux
       inputs:
@@ -27,8 +29,6 @@ jobs:
       - name: terraform-yaml
       outputs:
       - name: terraform-secrets
-      pararms: 
-        TERRAFORM_STATE_FILE: ((buckets.terraform_state_file))
       run:
         path: cf-manifests/concourse/terraform-secrets.sh
   - task: router-main
