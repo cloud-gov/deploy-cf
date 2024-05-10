@@ -25,7 +25,7 @@ jobs:
         source:
           aws_access_key_id: ((aws.access_key_id))
           aws_secret_access_key: ((aws.secret_access_key))
-          repository: harden-concourse-task
+          repository: general-task
           aws_region: ((aws.region))
           tag: latest
       inputs:
