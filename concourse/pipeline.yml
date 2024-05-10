@@ -126,8 +126,9 @@ resources:
     uri: https://github.com/18f/cg-deploy-cf.git
     branch: main
     paths:
-    - ci/*
     - bosh/*
+    - ci/*
+    - concourse/*
 
 - name: terraform-yaml
   type: s3-iam
