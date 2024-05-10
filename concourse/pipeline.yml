@@ -168,6 +168,11 @@ resources:
 
 resource_types:
 
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
+
 - name: s3-iam
   type: docker-image
   source:
