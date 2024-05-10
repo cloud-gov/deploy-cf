@@ -511,11 +511,11 @@ resources:
 
 # The cert does not exist in the bucket. It appears the intent is to deploy if it changes.
 # - name: root-certificate
-  type: s3-iam
-  source:
-    bucket: ((cf-private-bucket))
-    region_name: ((aws-region))
-    versioned_file: master-bosh.crt
+  # type: s3-iam
+  # source:
+  #   bucket: ((cf-private-bucket))
+  #   region_name: ((aws-region))
+  #   versioned_file: master-bosh.crt
 
 - name: cf-deployment
   type: git
@@ -563,77 +563,77 @@ resources:
     region_name: ((aws.region))
 
 # - name: cf-acceptance-tests
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+  # type: git
+  # source:
+  #   branch: main
+  #   uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
 
 # - name: cf-deployment-concourse-tasks
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+  # type: git
+  # source:
+  #   branch: main
+  #   uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
 
 # - name: pipeline-tasks
-  type: git
-  source:
-    commit_verification_keys: ((commit_verification_keys))
-    uri: https://github.com/cloud-gov/pipeline-tasks
-    branch: main
+  # type: git
+  # source:
+  #   commit_verification_keys: ((commit_verification_keys))
+  #   uri: https://github.com/cloud-gov/pipeline-tasks
+  #   branch: main
 
 # - name: slack
-  type: slack-notification
-  source:
-    url: ((slack-webhook-url))
+  # type: slack-notification
+  # source:
+  #   url: ((slack-webhook-url))
 
 
 
 # - name: terraform-config
-  type: git
-  source:
-    commit_verification_keys: ((commit_verification_keys))
-    uri: https://github.com/cloud-gov/cg-deploy-cf
-    branch: f140
-    paths:
-    - terraform/*
+  # type: git
+  # source:
+  #   commit_verification_keys: ((commit_verification_keys))
+  #   uri: https://github.com/cloud-gov/cg-deploy-cf
+  #   branch: f140
+  #   paths:
+  #   - terraform/*
 
 
 
 
 
-  type: s3-iam
-  source:
-    bucket: ((tf-state-bucket))
-    versioned_file: ((tf-state-file-production))
-    region_name: ((aws-region))
+  # type: s3-iam
+  # source:
+  #   bucket: ((tf-state-bucket))
+  #   versioned_file: ((tf-state-file-production))
+  #   region_name: ((aws-region))
 
 # - name: cf-deployment
-  type: bosh-deployment
-  source:
-    target: ((bosh.development.environment))
-    client: ((bosh.development.client))
-    client_secret: ((bosh.development.client-secret))
-    ca_cert: ((bosh-ca-cert))
-    deployment: ((cf.development.name))
+  # type: bosh-deployment
+  # source:
+  #   target: ((bosh.development.environment))
+  #   client: ((bosh.development.client))
+  #   client_secret: ((bosh.development.client-secret))
+  #   ca_cert: ((bosh-ca-cert))
+  #   deployment: ((cf.development.name))
 
 
 
 
 
 # - name: tests-timer
-  type: time
-  source:
-    interval: 10m
+  # type: time
+  # source:
+  #   interval: 10m
 
-# - name: hourly-timer
-  type: time
-  source:
-    interval: 1h
+# # - name: hourly-timer
+#   type: time
+#   source:
+#     interval: 1h
 
-# - name: timestamp
+# # - name: timestamp
   type: time
 
-# resource_types:
+resource_types:
 # - name: registry-image
 #   type: registry-image
 #   source:
@@ -657,8 +657,8 @@ resources:
 #   source:
 #     repository: cloudfoundry/bosh-deployment-resource
 
-# - name: s3-iam
-#   type: docker-image
-#   source:
-#     repository: 18fgsa/s3-resource
+- name: s3-iam
+  type: docker-image
+  source:
+    repository: 18fgsa/s3-resource
 
