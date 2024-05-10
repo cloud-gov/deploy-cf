@@ -19,10 +19,16 @@ jobs:
       trigger: true
   - task: terraform-secrets
     file: cf-manifests/concourse/terraform-secrets.yml
+    params: &task-params
+      AWS_ACCESS_KEY_ID: ((aws.access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws.secret_access_key))
+      AWS_REGION: ((aws.region))
   - task: router-main
     file: cf-manifests/concourse/create-router-main.yml
+    params: *task-params
   - task: router-logstash
     file: cf-manifests/concourse/create-router-logstash.yml
+    params: *task-params
   - put: bosh-deploy
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
