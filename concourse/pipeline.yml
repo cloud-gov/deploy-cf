@@ -23,7 +23,7 @@ jobs:
     file: cf-manifests/concourse/create-router-main.yml
   - task: router-logstash
     file: cf-manifests/concourse/create-router-logstash.yml
-  - put: cf-deployment
+  - put: bosh-deploy
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
       releases:
@@ -209,6 +209,15 @@ resources:
     private: true
     regexp: secureproxy-(.*).tgz
     region_name: ((aws.region))
+
+- name: bosh-deploy
+  type: bosh-deployment
+  source:
+    target: ((bosh_director.target))
+    client: ((bosh_director.client_id))
+    client_secret: ((bosh_director.client_secret))
+    ca_cert: ((bosh_director.ca_cert))
+    deployment: cf
 
 resource_types:
 
