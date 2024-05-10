@@ -27,8 +27,10 @@ jobs:
       - name: terraform-yaml
       outputs:
       - name: terraform-secrets
+      pararms: 
+        TERRAFORM_STATE_FILE: ((buckets.terraform_state_file))
       run:
-        path: cf-manifests/ci/terraform-secrets.sh
+        path: cf-manifests/concourse/terraform-secrets.sh
   - task: router-main
     file: cf-manifests/concourse/create-router-main.yml 
   - task: router-logstash
