@@ -35,11 +35,9 @@ jobs:
     run:
       path: cf-manifests/ci/terraform-secrets.sh
   - task: router-main
-    file: cf-manifests/concourse/create-router-main.yml
-    
+    file: cf-manifests/concourse/create-router-main.yml 
   - task: router-logstash
     file: cf-manifests/concourse/create-router-logstash.yml
-    
   - put: bosh-deploy
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
