@@ -123,8 +123,8 @@ resources:
   type: git
   source:
     commit_verification_keys: ((commit_verification_keys))
-    uri: https://github.com/18f/cg-deploy-cf.git
-    branch: main
+    uri: https://github.com/cloud-gov/cg-deploy-cf.git
+    branch: f140
     paths:
     - bosh/*
     - ci/*
