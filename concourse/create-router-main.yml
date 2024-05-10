@@ -1,0 +1,20 @@
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    aws_access_key_id: ((aws.access_key_id))
+    aws_secret_access_key: ((aws.secret_access_key))
+    repository: harden-concourse-task
+    aws_region: ((aws.region))
+    tag: ((harden-concourse-task-tag))
+
+inputs:
+- name: cf-deployment
+- name: cf-manifests
+outputs:
+- name: router-main
+
+run:
+  path: cf-manifests/ci/create-router-main.sh
+

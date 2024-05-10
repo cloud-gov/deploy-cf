@@ -1,0 +1,664 @@
+---
+jobs:
+- name: deploy
+  serial: true
+  plan:
+  - in_parallel:
+    # no reference
+    # - get: root-certificate
+    #   trigger: true
+    - get: cf-deployment
+      trigger: true
+    # no reference
+    # - get: pipeline-tasks
+    - get: cf-manifests
+      resource: cf-manifests
+      trigger: true
+    - get: terraform-yaml
+      resource: terraform-yaml
+    - get: cf-stemcell-jammy
+      trigger: true
+    - get: uaa-customized-release
+      trigger: true
+    - get: cg-s3-secureproxy-release
+      trigger: true
+  - task: terraform-secrets
+    file: cf-manifests/concourse/terraform-secrets.yml
+  - task: router-main
+    file: cf-manifests/concourse/create-router-main.yml
+  - task: router-logstash
+    file: cf-manifests/concourse/create-router-logstash.yml
+  - put: cf-deployment-development
+    params: &deploy-params
+      manifest: cf-deployment/cf-deployment.yml
+      releases:
+      - uaa-customized-release/*.tgz
+      - cg-s3-secureproxy-release/*.tgz
+      stemcells:
+      - cf-stemcell-jammy/*.tgz
+      ops_files:
+      - router-main/router_main.yml
+      - router-logstash/router_logstash.yml
+      - cf-deployment/operations/rename-network-and-deployment.yml
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment/operations/enable-service-discovery.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/development-clients.yml
+      - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
+      - cf-manifests/bosh/opsfiles/users.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/apps-domain.yml
+      - cf-manifests/bosh/opsfiles/api-defaults.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-groups.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
+      - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
+      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/content-security-policy.yml
+      - cf-manifests/bosh/opsfiles/loggregator.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/router-main.yml
+      - cf-manifests/bosh/opsfiles/router-main-dev.yml
+      - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
+      - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
+      - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
+      - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cf-manifests/bosh/opsfiles/aggregate_drains.yml
+      vars_files:
+      #- cf-manifests/bosh/varsfiles/development.yml
+      - terraform-secrets/terraform.yml
+  - task: enable-cf-features
+    file: cf-manifests/ci/enable-cf-features.yml
+    params:
+      CF_API_URL: ((cf.api))
+      CF_USERNAME: ((cf.username))
+      CF_PASSWORD: ((cf.password))
+      ENABLED_FEATURE_FLAGS: |
+        private_domain_creation
+        app_bits_upload
+        app_scaling
+        route_creation
+        service_instance_creation
+        diego_docker
+        set_roles_by_username
+        unset_roles_by_username
+        task_creation
+        env_var_visibility
+        space_scoped_private_broker_creation
+        space_developer_env_var_visibility
+        service_instance_sharing
+        resource_matching
+        route_sharing
+      DISABLED_FEATURE_FLAGS: |
+        user_org_creation
+        hide_marketplace_from_unauthenticated_users
+  # on_success:
+  #   put: slack
+  #   params:
+  #     text: |
+  #       :white_check_mark: Successfully deployed CF on development
+  #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  #     channel: '#cg-platform-news'
+  #     username: ((slack-username))
+  #     icon_url: ((slack-icon-url))
+  # on_failure:
+  #   put: slack
+  #   params:
+  #     text: |
+  #       :x: FAILED to deploy CF on development
+  #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  #     channel: '#cg-platform-news'
+  #     username: ((slack-username))
+  #     icon_url: ((slack-icon-url))
+
+# - name: terraform-plan
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-plan
+    file: terraform-templates/terraform/terraform-apply.yml
+    params: &tf-development
+      TERRAFORM_ACTION: plan
+      TEMPLATE_SUBDIR: terraform/stack
+      STACK_NAME: cf-development
+      S3_TFSTATE_BUCKET: ((tf-state-bucket))
+      AWS_DEFAULT_REGION: ((aws-region))
+      CF_API_URL: ((cf-api-url-development))
+      CF_CLIENT_ID: ((cf-client-id-development))
+      CF_CLIENT_SECRET: ((cf-client-secret-development))
+      TF_VAR_remote_state_bucket: ((tf-state-bucket))
+      TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
+      TF_VAR_iaas_stack_name: development
+      TF_VAR_tooling_stack_name: tooling
+  - put: slack
+    params:
+      text_file: terraform-state/message.txt
+      text:  |
+        :terraform: $BUILD_JOB_NAME needs review
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+# - name: terraform-apply
+  plan:
+  - in_parallel:
+    - get: terraform-templates
+      resource: terraform-config
+      passed: [terraform-plan-development]
+      trigger: true
+    - get: pipeline-tasks
+  - task: terraform-apply
+    file: terraform-templates/terraform/terraform-apply.yml
+    params:
+      <<: *tf-development
+      TERRAFORM_ACTION: apply
+
+# - name: uaa-smoke-tests
+  plan:
+  - in_parallel:
+    - get: pipeline-tasks
+    - get: common
+      resource: master-bosh-root-cert
+      passed: [deploy-cf-development]
+      trigger: true
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-jammy
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-development]
+  - task: smoke-tests
+    file: pipeline-tasks/uaa-smoke-tests.yml
+    params:
+      BASE_URL: ((uaa-url-development))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: UAA Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+# - name: uaa-client-auditing
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-development]
+    - get: tests-timer
+      trigger: true
+  - task: uaa-client-audit
+    file: cf-manifests/ci/uaa-client-audit.yml
+    params:
+      UAA_URL: ((uaa-url-development))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-development))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-development))
+      CF_API_URL: ((cf-api-url-development))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
+      WHITELIST: ((uaa-audit-whitelist-development))
+
+# - name: uaa-monitor-account-creation
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      passed: [deploy-cf-development]
+    - get: hourly-timer
+      trigger: true
+  - task: uaa-monitor-account-creation
+    file: cf-manifests/ci/uaa-monitor-account-creation.yml
+    params:
+      UAA_URL: ((uaa-url-development))
+      UAA_CLIENT_ID: ((uaa-audit-client-id-development))
+      UAA_CLIENT_SECRET: ((uaa-audit-client-secret-development))
+      GATEWAY_HOST: prometheus-staging.service.cf.internal
+
+# - name: tic-smoke-tests
+  plan:
+  - in_parallel:
+    - get: master-bosh-root-cert
+      passed: [deploy-cf-development]
+      trigger: true
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-jammy
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: uaa-customized-release
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed: [deploy-cf-development]
+  - task: smoke-tests
+    file: cf-manifests/ci/tic-smoke-tests.yml
+    params:
+      CI: true
+      API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      DASHBOARD_HOSTNAME: dashboard.dev.us-gov-west-1.aws-us-gov.cloud.gov
+      BOSH_ENVIRONMENT: ((development-bosh-target))
+      BOSH_CLIENT: ((development-bosh-username))
+      BOSH_CLIENT_SECRET: ((development-bosh-password))
+      BOSH_DEPLOYMENT_NAME: cf-development
+      BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
+      RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
+      UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
+      SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
+      SOURCE_ADDRESS_FORBIDDEN: ((tic-test-source-address-forbidden))
+      PROXY_ADDRESS_ALLOWED: ((tic-test-proxy-address-allowed))
+      PROXY_ADDRESS_FORBIDDEN: ((tic-test-proxy-address-forbidden))
+      TIC_SECRET_ALLOWED: ((tic-secret-development))
+      TIC_SECRET_FORBIDDEN: ((tic-test-tic-secret-forbidden))
+      TIC_PROTOCAL: https
+      GOROUTER_PORT: 443
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: TIC Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+# - name: smoke-tests
+  serial_groups: [development]
+  plan:
+  - in_parallel:
+    - get: common
+      resource: master-bosh-root-cert
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+      trigger: true
+    - get: cf-deployment-development
+      trigger: true
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+      - test-space-egress-development
+    - get: cf-deployment
+      trigger: true
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+      - test-space-egress-development
+    - get: cf-stemcell-jammy
+      trigger: true
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+      - test-space-egress-development
+    - get: cf-manifests
+      trigger: true
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+      - test-space-egress-development
+    - get: uaa-customized-release
+      trigger: true
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+    - get: cg-s3-secureproxy-release
+      trigger: true
+      passed:
+      - tic-smoke-tests-development
+      - uaa-smoke-tests-development
+  - task: run-errand
+    attempts: 3
+    params:
+      BOSH_ENVIRONMENT: ((bosh.development.environment))
+      BOSH_CLIENT: ((bosh.development.client))
+      BOSH_CLIENT_SECRET: ((bosh.development.client-secret))
+      BOSH_DEPLOYMENT: ((cf.development.name))
+      BOSH_ERRAND: ((cf.development.smoke-tests))
+      BOSH_CA_CERT: common/master-bosh.crt
+    config: &smoke-tests-errand
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          aws_access_key_id: ((ecr_aws_key))
+          aws_secret_access_key: ((ecr_aws_secret))
+          repository: harden-concourse-task
+          aws_region: us-gov-west-1
+          tag: ((harden-concourse-task-tag))
+      inputs:
+        - name: common
+      run:
+        path: /bin/bash
+        args:
+        - -euxc
+        - |
+          bosh run-errand smoke-tests
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Smoke Tests for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Smoke Tests for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+# - name: test-space-egress
+  serial_groups: [development]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-jammy
+      passed: [deploy-cf-development]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
+    params: &test-space-egress-development-params
+      CF_API_URL: ((cf-api-url-development))
+      CF_USERNAME: ((cf-username-development))
+      CF_PASSWORD: ((cf-password-development))
+      CF_ORG: platform-test-space-egress
+      CF_QUOTA: default
+      CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
+    on_failure: &test-space-egress-development-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
+      params:
+        <<: *test-space-egress-development-params
+  - task: run-tests
+    file: cf-manifests/ci/test-space-egress/task-run-tests.yml
+    params:
+      <<: *test-space-egress-development-params
+    on_failure:
+      <<: *test-space-egress-development-clean-tasks
+    on_success:
+      <<: *test-space-egress-development-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for space egress for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for space egress for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+# - name: test-headers
+  serial_groups: [development]
+  plan:
+  - in_parallel:
+    - get: cf-deployment
+    - get: cf-manifests
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-deployment-development
+      trigger: true
+      passed: [deploy-cf-development]
+    - get: cf-stemcell-jammy
+      passed: [deploy-cf-development]
+  - task: deploy-test-env
+    file: cf-manifests/ci/test-headers/task-deploy-test-env.yml
+    params: &test-headers-development-params
+      CF_API_URL: ((cf-api-url-development))
+      CF_USERNAME: ((cf-username-development))
+      CF_PASSWORD: ((cf-password-development))
+      CF_ORG: platform-test-headers
+      CF_QUOTA: default
+      CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
+    on_failure: &test-headers-development-clean-tasks
+      task: clean-test-env
+      file: cf-manifests/ci/test-headers/task-clean-test-env.yml
+      params:
+        <<: *test-headers-development-params
+  - task: run-tests
+    file: cf-manifests/ci/test-headers/task-run-tests.yml
+    params:
+      <<: *test-headers-development-params
+    on_failure:
+      <<: *test-headers-development-clean-tasks
+    on_success:
+      <<: *test-headers-development-clean-tasks
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Tests for headers for CF on development PASSED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: Tests for headers for CF on development FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+resources:
+
+# The cert does not exist in the bucket. It appears the intent is to deploy if it changes.
+# - name: root-certificate
+  type: s3-iam
+  source:
+    bucket: ((cf-private-bucket))
+    region_name: ((aws-region))
+    versioned_file: master-bosh.crt
+
+- name: cf-deployment
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-deployment.git
+    branch: main
+    tag_filter: "v*"
+
+- name: cf-manifests
+  type: git
+  source:
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/18f/cg-deploy-cf.git
+    branch: main
+    paths:
+    - ci/*
+    - bosh/*
+
+- name: terraform-yaml
+  type: s3-iam
+  source:
+    bucket: ((buckets.terraform_state))
+    versioned_file: ((buckets.terraform_state_file))
+    region_name: ((aws.region))
+
+- name: cf-stemcell-jammy
+  type: bosh-io-stemcell
+  source:
+    name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
+
+- name: uaa-customized-release
+  type: s3-iam
+  source:
+    bucket: ((buckets.bosh_releases))
+    private: true
+    regexp: uaa-customized-(.*).tgz
+    region_name: ((aws.region))
+
+- name: cg-s3-secureproxy-release
+  type: s3-iam
+  source:
+    bucket: ((buckets.bosh_releases))
+    private: true
+    regexp: secureproxy-(.*).tgz
+    region_name: ((aws.region))
+
+# - name: cf-acceptance-tests
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+
+# - name: cf-deployment-concourse-tasks
+  type: git
+  source:
+    branch: main
+    uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+
+# - name: pipeline-tasks
+  type: git
+  source:
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/cloud-gov/pipeline-tasks
+    branch: main
+
+# - name: slack
+  type: slack-notification
+  source:
+    url: ((slack-webhook-url))
+
+
+
+# - name: terraform-config
+  type: git
+  source:
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/cloud-gov/cg-deploy-cf
+    branch: f140
+    paths:
+    - terraform/*
+
+
+
+
+
+  type: s3-iam
+  source:
+    bucket: ((tf-state-bucket))
+    versioned_file: ((tf-state-file-production))
+    region_name: ((aws-region))
+
+# - name: cf-deployment
+  type: bosh-deployment
+  source:
+    target: ((bosh.development.environment))
+    client: ((bosh.development.client))
+    client_secret: ((bosh.development.client-secret))
+    ca_cert: ((bosh-ca-cert))
+    deployment: ((cf.development.name))
+
+
+
+
+
+# - name: tests-timer
+  type: time
+  source:
+    interval: 10m
+
+# - name: hourly-timer
+  type: time
+  source:
+    interval: 1h
+
+# - name: timestamp
+  type: time
+
+# resource_types:
+# - name: registry-image
+#   type: registry-image
+#   source:
+#     aws_access_key_id: ((ecr_aws_key))
+#     aws_secret_access_key: ((ecr_aws_secret))
+#     repository: registry-image-resource
+#     aws_region: us-gov-west-1
+#     tag: latest
+
+# - name: slack-notification
+#   type: registry-image
+#   source:
+#     aws_access_key_id: ((ecr_aws_key))
+#     aws_secret_access_key: ((ecr_aws_secret))
+#     repository: slack-notification-resource
+#     aws_region: us-gov-west-1
+#     tag: latest
+
+# - name: bosh-deployment
+#   type: docker-image
+#   source:
+#     repository: cloudfoundry/bosh-deployment-resource
+
+# - name: s3-iam
+#   type: docker-image
+#   source:
+#     repository: 18fgsa/s3-resource
+
