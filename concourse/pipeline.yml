@@ -20,8 +20,6 @@ jobs:
     - get: general-task
   - task: terraform-secrets
     image: general-task
-    params: 
-        TERRAFORM_STATE_FILE: ((buckets.terraform_state_file))
     config:
       platform: linux
       inputs:

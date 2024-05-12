@@ -1,8 +1,6 @@
 #!/bin/bash
 
-ls -R
-
 bosh interpolate \
   cf-manifests/bosh/varsfiles/terraform.yml \
-  -l terraform-yaml/$TERRAFORM_STATE_FILE \
+  -l terraform-yaml/*.yml \
   > terraform-secrets/terraform.yml
