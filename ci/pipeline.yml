@@ -588,6 +588,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
