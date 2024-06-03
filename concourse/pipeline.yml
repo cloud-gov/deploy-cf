@@ -6,11 +6,11 @@ jobs:
   - in_parallel:
     - get: cg-deploy-cf
       trigger: true
-    - get: cg-provision
+    - get: cg-provision-repo
       trigger: true
   - task: terraform-plan
     tags: [iaas]
-    file: cg-provision/concourse/tasks/terraform.yml
+    file: cg-provision-repo/concourse/tasks/terraform.yml
     input_mapping: {terraform-templates: cg-deploy-cf}
     params: 
       COMPONENT: cloudfoundry
@@ -38,7 +38,7 @@ resources:
     - concourse/*
     - terraform/*
 
-- name: cg-provision
+- name: cg-provision-repo
   type: git
   source:
     commit_verification_keys: ((commit_verification_keys))
