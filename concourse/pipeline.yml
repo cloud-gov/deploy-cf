@@ -13,7 +13,9 @@ jobs:
     file: cg-provision-repo/concourse/tasks/terraform.yml
     input_mapping: {terraform-templates: cg-deploy-cf}
     params: 
+      AWS_ACCESS_KEY_ID: ((aws.access_key_id))
       AWS_REGION: ((aws.region)) 
+      AWS_SECRET_ACCESS_KEY: ((aws.secret_access_key))
       COMPONENT: cloudfoundry
       S3_TFSTATE_BUCKET: ((buckets.terraform_state))
       TEMPLATE_SUBDIR: terraform/stack/cloudfoundry
