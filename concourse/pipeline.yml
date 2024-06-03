@@ -1,135 +1,32 @@
 ---
 jobs:
-- name: deploy
-  serial: true
+
+- name: terraform-plan
   plan:
   - in_parallel:
-    - get: cf-deployment
+    - get: cg-deploy-cf
       trigger: true
-    - get: cf-manifests
-      resource: cf-manifests
+    - get: cg-provision
       trigger: true
-    - get: terraform-yaml
-      resource: terraform-yaml
-    - get: cf-stemcell-jammy
-      trigger: true
-    - get: uaa-customized-release
-      trigger: true
-    - get: cg-s3-secureproxy-release
-      trigger: true
-    - get: general-task
-  - task: terraform-secrets
-    image: general-task
-    config:
-      platform: linux
-      inputs:
-      - name: cf-manifests
-      - name: terraform-yaml
-      outputs:
-      - name: terraform-secrets
-      run:
-        path: cf-manifests/concourse/terraform-secrets.sh
-  - task: router-main
-    file: cf-manifests/concourse/create-router-main.yml 
-  - task: router-logstash
-    file: cf-manifests/concourse/create-router-logstash.yml
-  - put: bosh-deploy
-    params: &deploy-params
-      manifest: cf-deployment/cf-deployment.yml
-      releases:
-      - uaa-customized-release/*.tgz
-      - cg-s3-secureproxy-release/*.tgz
-      stemcells:
-      - cf-stemcell-jammy/*.tgz
-      ops_files:
-      - router-main/router_main.yml
-      - router-logstash/router_logstash.yml
-      - cf-deployment/operations/rename-network-and-deployment.yml
-      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
-      - cf-deployment/operations/use-external-dbs.yml
-      - cf-deployment/operations/stop-skipping-tls-validation.yml
-      - cf-deployment/operations/set-bbs-active-key.yml
-      - cf-deployment/operations/enable-service-discovery.yml
-      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-      - cf-manifests/bosh/opsfiles/clients.yml
-      - cf-manifests/bosh/opsfiles/development-clients.yml
-      - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
-      - cf-manifests/bosh/opsfiles/users.yml
-      - cf-manifests/bosh/opsfiles/secureproxy.yml
-      - cf-manifests/bosh/opsfiles/apps-domain.yml
-      - cf-manifests/bosh/opsfiles/api-defaults.yml
-      - cf-manifests/bosh/opsfiles/uaa-customized.yml
-      - cf-manifests/bosh/opsfiles/uaa-branding.yml
-      - cf-manifests/bosh/opsfiles/uaa-groups.yml
-      - cf-manifests/bosh/opsfiles/uaa-login.yml
-      - cf-manifests/bosh/opsfiles/uaa-saml.yml
-      - cf-manifests/bosh/opsfiles/uaa-user.yml
-      - cf-manifests/bosh/opsfiles/uaa-cors.yml
-      - cf-manifests/bosh/opsfiles/encryption.yml
-      - cf-manifests/bosh/opsfiles/sql.yml
-      - cf-manifests/bosh/opsfiles/log-levels.yml
-      - cf-manifests/bosh/opsfiles/instance-profiles.yml
-      - cf-manifests/bosh/opsfiles/platform-cells.yml
-      - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/diego-dns.yml
-      - cf-manifests/bosh/opsfiles/scaling-development.yml
-      - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
-      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-      - cf-manifests/bosh/opsfiles/smoke-tests.yml
-      - cf-manifests/bosh/opsfiles/routing.yml
-      - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
-      - cf-manifests/bosh/opsfiles/content-security-policy.yml
-      - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
-      - cf-manifests/bosh/opsfiles/router-main.yml
-      - cf-manifests/bosh/opsfiles/router-main-dev.yml
-      - cf-manifests/bosh/opsfiles/router-logstash.yml
-      - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
-      - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
-      - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
-      - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
-      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
-      - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-      vars_files:
-      - terraform-secrets/terraform.yml
-  - task: enable-cf-features
-    file: cf-manifests/concourse/enable-cf-features.yml
-    params:
-      CF_API_URL: ((cf.api))
-      CF_USERNAME: ((cf.username))
-      CF_PASSWORD: ((cf.password))
-      ENABLED_FEATURE_FLAGS: |
-        private_domain_creation
-        app_bits_upload
-        app_scaling
-        route_creation
-        service_instance_creation
-        diego_docker
-        set_roles_by_username
-        unset_roles_by_username
-        task_creation
-        env_var_visibility
-        space_scoped_private_broker_creation
-        space_developer_env_var_visibility
-        service_instance_sharing
-        resource_matching
-        route_sharing
-      DISABLED_FEATURE_FLAGS: |
-        user_org_creation
-        hide_marketplace_from_unauthenticated_users
+  - task: terraform-plan
+    tags: [iaas]
+    file: cg-provision/concourse/tasks/terraform.yml
+    input_mapping: {terraform-templates: cg-deploy-cf}
+    params: 
+      COMPONENT: cloudfoundry
+      S3_TFSTATE_BUCKET: ((buckets.terraform_state))
+      TEMPLATE_SUBDIR: terraform/stack/cloudfoundry
+      TERRAFORM_ACTION: plan
+      TF_VAR_environment: ((environment))
+    vars: 
+      access_key_id: ((hack.access_key_id))
+      region: ((hack.region))
+      secret_access_key: ((hack.secret_access_key))
+
 
 resources:
 
-- name: cf-deployment
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cf-deployment.git
-    branch: main
-    tag_filter: "v*"
-
-- name: cf-manifests
+- name: cg-deploy-cf
   type: git
   source:
     commit_verification_keys: ((commit_verification_keys))
@@ -139,70 +36,89 @@ resources:
     - bosh/*
     - ci/*
     - concourse/*
+    - terraform/*
 
-- name: terraform-yaml
-  type: s3-iam
+- name: cg-provision
+  type: git
   source:
-    bucket: ((buckets.terraform_state))
-    versioned_file: ((buckets.terraform_state_file))
-    region_name: ((aws.region))
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/cloud-gov/cg-provision.git
+    branch: f140
+    paths:
+    - concourse/tasks/*
 
-- name: cf-stemcell-jammy
-  type: bosh-io-stemcell
-  source:
-    name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
+# - name: terraform-yaml
+#   type: s3-iam
+#   source:
+#     bucket: ((buckets.terraform_state))
+#     versioned_file: ((buckets.terraform_state_file))
+#     region_name: ((aws.region))
 
-- name: uaa-customized-release
-  type: s3-iam
-  source:
-    bucket: ((buckets.bosh_releases))
-    private: true
-    regexp: uaa-customized-(.*).tgz
-    region_name: ((aws.region))
+# - name: cf-stemcell-jammy
+#   type: bosh-io-stemcell
+#   source:
+#     name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
 
-- name: cg-s3-secureproxy-release
-  type: s3-iam
-  source:
-    bucket: ((buckets.bosh_releases))
-    private: true
-    regexp: secureproxy-(.*).tgz
-    region_name: ((aws.region))
+# - name: uaa-customized-release
+#   type: s3-iam
+#   source:
+#     bucket: ((buckets.bosh_releases))
+#     private: true
+#     regexp: uaa-customized-(.*).tgz
+#     region_name: ((aws.region))
 
-- name: bosh-deploy
-  type: bosh-deployment
-  source:
-    target: ((bosh_director.target))
-    client: ((bosh_director.client_id))
-    client_secret: ((bosh_director.client_secret))
-    ca_cert: ((bosh_director.ca_cert))
-    deployment: cf
+# - name: cg-s3-secureproxy-release
+#   type: s3-iam
+#   source:
+#     bucket: ((buckets.bosh_releases))
+#     private: true
+#     regexp: secureproxy-(.*).tgz
+#     region_name: ((aws.region))
 
-- name: general-task
-  type: registry-image
-  source:
-    aws_access_key_id: ((hack.access_key_id))
-    aws_secret_access_key: ((hack.secret_access_key))
-    repository: general-task
-    aws_region: ((hack.region))
-    tag: latest
+# - name: bosh-deploy
+#   type: bosh-deployment
+#   source:
+#     target: ((bosh_director.target))
+#     client: ((bosh_director.client_id))
+#     client_secret: ((bosh_director.client_secret))
+#     ca_cert: ((bosh_director.ca_cert))
+#     deployment: cf
+
+# - name: general-task
+#   type: registry-image
+#   source:
+#     aws_access_key_id: ((hack.access_key_id))
+#     aws_secret_access_key: ((hack.secret_access_key))
+#     repository: general-task
+#     aws_region: ((hack.region))
+#     tag: latest
 
 resource_types:
 
-- name: bosh-deployment
-  type: docker-image
-  source:
-    repository: cloudfoundry/bosh-deployment-resource
+# - name: bosh-deployment
+#   type: docker-image
+#   source:
+#     repository: cloudfoundry/bosh-deployment-resource
 
-- name: s3-iam
-  type: docker-image
-  source:
-    repository: 18fgsa/s3-resource
-
-- name: registry-image
+- name: git
   type: registry-image
   source:
     aws_access_key_id: ((hack.access_key_id))
     aws_secret_access_key: ((hack.secret_access_key))
-    repository: registry-image-resource
-    aws_region: ((hack.region))
+    repository: git-resource
+    aws_region: ((aws.region))
     tag: latest
+
+# - name: registry-image
+#   type: registry-image
+#   source:
+#     aws_access_key_id: ((hack.access_key_id))
+#     aws_secret_access_key: ((hack.secret_access_key))
+#     repository: registry-image-resource
+#     aws_region: ((hack.region))
+#     tag: latest
+
+# - name: s3-iam
+#   type: docker-image
+#   source:
+#     repository: 18fgsa/s3-resource

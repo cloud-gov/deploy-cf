@@ -7,7 +7,7 @@ image_resource:
     aws_secret_access_key: ((aws.secret_access_key))
     repository: harden-concourse-task
     aws_region: ((aws.region))
-    tag: ((harden-concourse-task-tag))
+    tag: latest
 
 inputs:
 - name: cf-deployment
