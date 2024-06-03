@@ -34,7 +34,7 @@ jobs:
       passed: [terraform-plan]
     - get: cg-provision-repo
       trigger: true
-  - task: terraform-plan
+  - task: terraform-apply
     tags: [iaas]
     file: cg-provision-repo/concourse/tasks/terraform.yml
     input_mapping: {terraform-templates: cg-deploy-cf}
