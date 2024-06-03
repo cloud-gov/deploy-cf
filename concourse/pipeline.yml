@@ -13,6 +13,7 @@ jobs:
     file: cg-provision-repo/concourse/tasks/terraform.yml
     input_mapping: {terraform-templates: cg-deploy-cf}
     params: 
+      AWS_REGION: ((aws.region)) 
       COMPONENT: cloudfoundry
       S3_TFSTATE_BUCKET: ((buckets.terraform_state))
       TEMPLATE_SUBDIR: terraform/stack/cloudfoundry
