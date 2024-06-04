@@ -48,7 +48,7 @@ variable "rds_username" {
 
 
 module "cfdb" {
-  source = "../rds"
+  source = "github.com/cloud-gov/cg-provision//terraform/modules/rds"
 
   stack_description               = "${var.env_name}-cfdb"
   rds_instance_type               = var.rds_instance_type
