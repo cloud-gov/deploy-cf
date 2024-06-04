@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "../../bosh_vpc_v2"
+  source = "github.com/cloud-gov/cg-provision//terraform/modules//bosh_vpc_v2"
 
   stack_description                 = var.stack_description
   vpc_cidr                          = var.vpc_cidr
