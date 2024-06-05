@@ -24,6 +24,7 @@ jobs:
       TF_VAR_environment: ((environment))
       TF_VAR_rds_db_name: ((cf.db.name))
       TF_VAR_rds_password: ((cf.db.password))
+      TF_VAR_rds_private_cidrs: ((rds_private_cidrs))
       TF_VAR_rds_username: ((cf.db.username))
       TF_VAR_stack_description: ((environment))-cf
     vars: &tf-vars
