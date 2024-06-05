@@ -24,11 +24,7 @@ variable "rds_parameter_group_family" {
 variable "rds_password" {
   sensitive = true
 }
-variable "rds_security_groups" {
-  type = list(string)
-}
-variable "rds_subnet_group" {
-}
+
 variable "rds_username" {
 }
 
