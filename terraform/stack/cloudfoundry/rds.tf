@@ -8,7 +8,7 @@ variable "rds_db_engine" {
   default = "postgres"
 }
 variable "rds_db_engine_version" {
-  default = "16.2-R2"
+  default = "16"
 }
 variable "rds_db_name" {
 }
