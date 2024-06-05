@@ -47,7 +47,7 @@ module "rds_network" {
 module "cfdb" {
   source = "github.com/cloud-gov/cg-provision//terraform/modules/rds?ref=f140"
 
-  stack_description               = "${var.env_name}-cfdb"
+  stack_description               = "${var.environment}-cfdb"
   rds_instance_type               = var.rds_instance_type
   rds_db_size                     = var.rds_db_size
   rds_db_engine                   = var.rds_db_engine
