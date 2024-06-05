@@ -24,7 +24,9 @@ variable "rds_parameter_group_family" {
 variable "rds_password" {
   sensitive = true
 }
-variable "rds_private_cidrs" {}
+variable "rds_private_cidrs" {
+  type = list(string)
+}
 
 variable "rds_username" {
 }
