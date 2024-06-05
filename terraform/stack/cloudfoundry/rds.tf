@@ -40,7 +40,7 @@ module "rds_network" {
   allowed_cidrs         = var.concourse_security_group_cidrs
   security_groups       = [module.vpc.bosh_security_group]
   security_groups_count = 1
-  rds_private_cidrs     = [var.rds_private_cidrs]
+  rds_private_cidrs     = var.rds_private_cidrs
   route_table_ids       = module.vpc.private_route_table_ids
 }
 
