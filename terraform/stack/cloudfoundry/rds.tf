@@ -38,9 +38,9 @@ module "rds_network" {
   vpc_id                = module.vpc.vpc_id
   availability_zones    = var.availability_zones
   allowed_cidrs         = var.concourse_security_group_cidrs
-  security_groups       = module.vpc.bosh_security_group
-  security_groups_count = 0
-  rds_private_cidrs     = var.rds_private_cidrs
+  security_groups       = [module.vpc.bosh_security_group]
+  security_groups_count = 1
+  rds_private_cidrs     = [var.rds_private_cidrs]
   route_table_ids       = module.vpc.private_route_table_ids
 }
 
