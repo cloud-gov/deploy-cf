@@ -32,10 +32,8 @@ jobs:
   plan:
   - in_parallel:
     - get: cg-deploy-cf
-      trigger: true
       passed: [terraform-plan]
     - get: cg-provision-repo
-      trigger: true
   - task: terraform-apply
     tags: [iaas]
     file: cg-provision-repo/concourse/tasks/terraform.yml
