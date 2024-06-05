@@ -81,7 +81,7 @@ resources:
     uri: https://github.com/cloud-gov/cg-provision.git
     branch: f140
     paths:
-    - concourse/tasks/*
+    - terraform/*
 
 # - name: terraform-yaml
 #   type: s3-iam
