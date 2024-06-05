@@ -12,7 +12,7 @@ jobs:
     tags: [iaas]
     file: cg-provision-repo/concourse/tasks/terraform.yml
     input_mapping: {terraform-templates: cg-deploy-cf}
-    params: 
+    params: &tf-params
       AWS_ACCESS_KEY_ID: ((aws.access_key_id))
       AWS_REGION: ((aws.region)) 
       AWS_SECRET_ACCESS_KEY: ((aws.secret_access_key))
@@ -22,8 +22,11 @@ jobs:
       TERRAFORM_ACTION: plan
       TF_VAR_bosh_default_ssh_public_key: ((bosh_default_ssh_public_key))
       TF_VAR_environment: ((environment))
+      TF_VAR_rds_db_name: ((cf.db.name))
+      TF_VAR_rds_password: ((cf.db.password))
+      TF_VAR_rds_username: ((cf.db.username))
       TF_VAR_stack_description: ((environment))-cf
-    vars: 
+    vars: &tf-vars
       access_key_id: ((hack.access_key_id))
       region: ((hack.region))
       secret_access_key: ((hack.secret_access_key))
@@ -39,24 +42,10 @@ jobs:
     file: cg-provision-repo/concourse/tasks/terraform.yml
     input_mapping: {terraform-templates: cg-deploy-cf}
     params: 
-      AWS_ACCESS_KEY_ID: ((aws.access_key_id))
-      AWS_REGION: ((aws.region)) 
-      AWS_SECRET_ACCESS_KEY: ((aws.secret_access_key))
-      COMPONENT: cloudfoundry
-      S3_TFSTATE_BUCKET: ((buckets.terraform_state))
-      TEMPLATE_SUBDIR: terraform/stack/cloudfoundry
+      <<: *tf-params
       TERRAFORM_ACTION: apply
-      TF_VAR_bosh_default_ssh_public_key: ((bosh_default_ssh_public_key))
-      TF_VAR_environment: ((environment))
-      TF_VAR_stack_description: ((environment))-cf
     vars: 
-      access_key_id: ((hack.access_key_id))
-      region: ((hack.region))
-      secret_access_key: ((hack.secret_access_key))
-    vars: 
-      access_key_id: ((hack.access_key_id))
-      region: ((hack.region))
-      secret_access_key: ((hack.secret_access_key))
+      <<: *tf-vars
 
 resources:
 
