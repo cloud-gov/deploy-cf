@@ -32,20 +32,18 @@ variable "rds_subnet_group" {
 variable "rds_username" {
 }
 
-# module "rds_network" {
-#   source = "../../rds_network_v2"
+module "rds_network" {
+  source = "github.com/cloud-gov/cg-provision//terraform/modules/rds_network_v2?ref=f140"
 
-#   stack_description     = var.stack_description
-#   vpc_id                = module.vpc.vpc_id
-#   availability_zones    = var.availability_zones
-#   allowed_cidrs         = var.target_concourse_security_group_cidrs
-#   security_groups       = var.rds_security_groups
-#   security_groups_count = var.rds_security_groups_count
-#   rds_private_cidrs     = var.rds_private_cidrs
-#   route_table_ids       = module.vpc.private_route_table_ids
-# }
-
-
+  stack_description     = var.stack_description
+  vpc_id                = module.vpc.vpc_id
+  availability_zones    = var.availability_zones
+  allowed_cidrs         = var.target_concourse_security_group_cidrs
+  security_groups       = var.rds_security_groups
+  security_groups_count = var.rds_security_groups_count
+  rds_private_cidrs     = var.rds_private_cidrs
+  route_table_ids       = module.vpc.private_route_table_ids
+}
 
 module "cfdb" {
   source = "github.com/cloud-gov/cg-provision//terraform/modules/rds?ref=f140"
@@ -58,8 +56,8 @@ module "cfdb" {
   rds_db_name                     = var.rds_db_name
   rds_username                    = var.rds_username
   rds_password                    = var.rds_password
-  rds_subnet_group                = var.rds_subnet_group
-  rds_security_groups             = var.rds_security_groups
+  rds_subnet_group                = module.rds_network.rds_subnet_group
+  rds_security_groups             = [module.rds_network.rds_postgres_security_group]
   rds_parameter_group_family      = var.rds_parameter_group_family
   rds_allow_major_version_upgrade = var.rds_allow_major_version_upgrade
   rds_apply_immediately           = var.rds_apply_immediately
