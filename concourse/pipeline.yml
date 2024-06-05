@@ -48,7 +48,13 @@ jobs:
       S3_TFSTATE_BUCKET: ((buckets.terraform_state))
       TEMPLATE_SUBDIR: terraform/stack/cloudfoundry
       TERRAFORM_ACTION: apply
+      TF_VAR_bosh_default_ssh_public_key: ((bosh_default_ssh_public_key))
       TF_VAR_environment: ((environment))
+      TF_VAR_stack_description: ((environment))-cf
+    vars: 
+      access_key_id: ((hack.access_key_id))
+      region: ((hack.region))
+      secret_access_key: ((hack.secret_access_key))
     vars: 
       access_key_id: ((hack.access_key_id))
       region: ((hack.region))
