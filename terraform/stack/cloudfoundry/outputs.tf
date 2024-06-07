@@ -20,5 +20,5 @@ output "tcp_lb_listener_ports" {
 }
 
 output "vpc_region" {
-  value = module.vpc.vpc_region
+  value = var.aws_default_region
 }
