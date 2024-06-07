@@ -18,6 +18,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ((aws.secret_access_key))
       COMPONENT: cloudfoundry
       S3_TFSTATE_BUCKET: ((buckets.terraform_state))
+      STACK_NAME: cloudfoundry
       TEMPLATE_SUBDIR: terraform/stack/cloudfoundry
       TERRAFORM_ACTION: plan
       TF_VAR_bosh_default_ssh_public_key: ((bosh_default_ssh_public_key))
@@ -54,6 +55,8 @@ jobs:
   - in_parallel:
     - get: cg-deploy-cf
       #passed: [terraform-apply]
+    - get: terraform-yaml
+      resource: terraform-yaml-development
     # - get: master-bosh-root-cert
     #   trigger: true
     # - get: cf-deployment
