@@ -1,18 +1,18 @@
 output "cf_rds_engine" {
-  value = module.cf_database_96.rds_engine
+  value = module.cfdb.rds_engine
 }
 
 output "cf_rds_host" {
-  value = module.cf_database_96.rds_host
+  value = module.cfdb.rds_host
 }
 
 output "cf_rds_password" {
-  value     = module.cf_database_96.rds_password
+  value     = module.cfdb.rds_password
   sensitive = true
 }
 
 output "cf_rds_username" {
-  value = module.cf_database_96.rds_username
+  value = module.cfdb.rds_username
 }
 
 output "tcp_lb_listener_ports" {
