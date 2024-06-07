@@ -86,3 +86,22 @@ variable "s3_gateway_policy_accounts" {
   type    = list(string)
   default = []
 }
+
+variable "tcp_lb_count" {
+  default = 0
+}
+
+variable "listeners_per_tcp_lb" {
+  default = 10
+}
+
+variable "tcp_first_port" {
+  default = 10000
+}
+
+variable "tcp_allow_cidrs_ipv4" {
+  default = ["0.0.0.0/0"]
+}
+variable "tcp_allow_cidrs_ipv6" {
+  default = ["::/0"]
+}
