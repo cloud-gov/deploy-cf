@@ -48,6 +48,142 @@ jobs:
     vars: 
       <<: *tf-vars
 
+- name: deploy
+  serial: true
+  plan:
+  - in_parallel:
+    # - get: master-bosh-root-cert
+    #   trigger: true
+    # - get: cf-deployment
+    #   trigger: true
+    # - get: pipeline-tasks
+    # - get: cf-manifests
+    #   resource: cf-manifests
+    #   trigger: true
+    # - get: terraform-yaml
+    #   resource: terraform-yaml-development
+    # - get: cf-stemcell-jammy
+    #   trigger: true
+    # - get: uaa-customized-release
+    #   trigger: true
+    # - get: cg-s3-secureproxy-release
+    #   trigger: true
+  - task: terraform-secrets
+    file: cg-deploy-cf/ci/terraform-secrets.yml
+  # - task: router-main
+  #   file: cf-manifests/ci/create-router-main.yml
+  # - task: router-logstash
+  #   file: cf-manifests/ci/create-router-logstash.yml
+  # - put: cf-deployment-development
+    params: &deploy-params
+      manifest: cf-deployment/cf-deployment.yml
+      releases:
+      - uaa-customized-release/*.tgz
+      - cg-s3-secureproxy-release/*.tgz
+      stemcells:
+      - cf-stemcell-jammy/*.tgz
+      ops_files:
+      - router-main/router_main.yml
+      - router-logstash/router_logstash.yml
+      - cf-deployment/operations/rename-network-and-deployment.yml
+      - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment/operations/enable-service-discovery.yml
+      - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cf-manifests/bosh/opsfiles/clients.yml
+      - cf-manifests/bosh/opsfiles/development-clients.yml
+      - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
+      - cf-manifests/bosh/opsfiles/users.yml
+      - cf-manifests/bosh/opsfiles/secureproxy.yml
+      - cf-manifests/bosh/opsfiles/apps-domain.yml
+      - cf-manifests/bosh/opsfiles/api-defaults.yml
+      - cf-manifests/bosh/opsfiles/uaa-customized.yml
+      - cf-manifests/bosh/opsfiles/uaa-branding.yml
+      - cf-manifests/bosh/opsfiles/uaa-groups.yml
+      - cf-manifests/bosh/opsfiles/uaa-login.yml
+      - cf-manifests/bosh/opsfiles/uaa-saml.yml
+      - cf-manifests/bosh/opsfiles/uaa-user.yml
+      - cf-manifests/bosh/opsfiles/uaa-cors.yml
+      - cf-manifests/bosh/opsfiles/encryption.yml
+      - cf-manifests/bosh/opsfiles/sql.yml
+      - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
+      - cf-manifests/bosh/opsfiles/diego-dns.yml
+      - cf-manifests/bosh/opsfiles/scaling-development.yml
+      - cf-manifests/bosh/opsfiles/cf-networking.yml
+      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/smoke-tests.yml
+      - cf-manifests/bosh/opsfiles/routing.yml
+      - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/content-security-policy.yml
+      - cf-manifests/bosh/opsfiles/loggregator.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/router-main.yml
+      - cf-manifests/bosh/opsfiles/router-main-dev.yml
+      - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
+      - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
+      - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
+      - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cf-manifests/bosh/opsfiles/aggregate_drains.yml
+      vars_files:
+      - cf-manifests/bosh/varsfiles/development.yml
+      - terraform-secrets/terraform.yml
+
+  # - task: enable-cf-features
+  #   file: cf-manifests/ci/enable-cf-features.yml
+  #   params:
+  #     CF_API_URL: ((cf-api-url-development))
+  #     CF_USERNAME: ((cf-username-development))
+  #     CF_PASSWORD: ((cf-password-development))
+  #     ENABLED_FEATURE_FLAGS: |
+  #       private_domain_creation
+  #       app_bits_upload
+  #       app_scaling
+  #       route_creation
+  #       service_instance_creation
+  #       diego_docker
+  #       set_roles_by_username
+  #       unset_roles_by_username
+  #       task_creation
+  #       env_var_visibility
+  #       space_scoped_private_broker_creation
+  #       space_developer_env_var_visibility
+  #       service_instance_sharing
+  #       resource_matching
+  #       route_sharing
+  #     DISABLED_FEATURE_FLAGS: |
+  #       user_org_creation
+  #       hide_marketplace_from_unauthenticated_users
+
+
+  on_success:
+    put: slack
+    params:
+      text: |
+        :white_check_mark: Successfully deployed CF on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+  on_failure:
+    put: slack
+    params:
+      text: |
+        :x: FAILED to deploy CF on development
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: '#cg-platform-news'
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+
 resources:
 
 - name: cg-deploy-cf
