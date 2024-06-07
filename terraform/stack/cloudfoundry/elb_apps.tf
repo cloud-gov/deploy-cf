@@ -1,6 +1,6 @@
 resource "aws_lb" "cf_apps" {
   name            = "${var.stack_description}-cloudfoundry-apps"
-  subnets         = module.vpc.public_subnets
+  subnets         = module.vpc.public_subnet_ids
   security_groups = [module.vpc.web_traffic_security_group]
   ip_address_type = "dualstack"
   idle_timeout    = 3600
