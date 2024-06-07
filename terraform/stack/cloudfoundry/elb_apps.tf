@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "cf_apps_target_https" {
   name     = "${var.stack_description}-cf-apps-https"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = module.vpc.id
+  vpc_id   = module.vpc.vpc_id
 
   health_check {
     healthy_threshold   = 2
