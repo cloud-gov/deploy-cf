@@ -86,3 +86,7 @@ variable "s3_gateway_policy_accounts" {
   type    = list(string)
   default = []
 }
+
+variable "wildcard_apps_certificate_name_prefix" {
+  type = string
+}
