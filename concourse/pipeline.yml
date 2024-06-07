@@ -53,7 +53,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cg-deploy-cf
-      passed: [terraform-apply]
+      #passed: [terraform-apply]
     # - get: master-bosh-root-cert
     #   trigger: true
     # - get: cf-deployment
