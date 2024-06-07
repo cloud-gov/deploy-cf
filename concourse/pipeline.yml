@@ -71,7 +71,7 @@ jobs:
     # - get: cg-s3-secureproxy-release
     #   trigger: true
   - task: terraform-secrets
-    file: cg-deploy-cf/c/terraform-secrets.yml
+    file: cg-deploy-cf/concourse/terraform-secrets.yml
     vars: &task-vars
       access_key_id: ((hack.access_key_id))
       region: ((hack.region))
