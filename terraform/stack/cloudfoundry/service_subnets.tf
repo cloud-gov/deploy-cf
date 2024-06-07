@@ -13,7 +13,7 @@
 
 resource "aws_subnet" "az1_services" {
   vpc_id            = module.vpc.vpc_id
-  cidr_block        = module.vpc.private_cidrs[0]
+  cidr_block        = var.services_cidr_1
   availability_zone = var.availability_zones[0]
 
   tags = {
@@ -23,7 +23,7 @@ resource "aws_subnet" "az1_services" {
 
 resource "aws_subnet" "az2_services" {
   vpc_id            = module.vpc.vpc_id
-  cidr_block        = module.vpc.private_cidrs[1]
+  cidr_block        = var.services_cidr_2
   availability_zone = var.availability_zones[1]
 
   tags = {

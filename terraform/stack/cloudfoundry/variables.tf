@@ -105,3 +105,11 @@ variable "tcp_allow_cidrs_ipv4" {
 variable "tcp_allow_cidrs_ipv6" {
   default = ["::/0"]
 }
+
+variable "services_cidr_1" {
+  default = "10.0.3.0/24"
+}
+
+variable "services_cidr_2" {
+  default = "10.0.4.0/24"
+}
