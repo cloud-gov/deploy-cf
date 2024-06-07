@@ -1,7 +1,7 @@
 resource "aws_security_group" "nlb_traffic" {
   count       = var.tcp_lb_count > 0 ? 1 : 0
   description = "Allow traffic in to NLB"
-  vpc_id      = module.var.vpc_id
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
     from_port        = var.tcp_first_port
@@ -30,7 +30,7 @@ resource "aws_lb_target_group" "cf_apps_target_tcp" {
   name     = "${var.stack_description}-cf-tcp-${count.index}"
   port     = var.tcp_first_port + count.index
   protocol = "TCP"
-  vpc_id   = module.var.vpc_id
+  vpc_id   = module.vpc.vpc_id
 
 }
 
