@@ -52,6 +52,8 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+    - get: cg-deploy-cf
+      passed: [terraform-apply]
     # - get: master-bosh-root-cert
     #   trigger: true
     # - get: cf-deployment
@@ -69,7 +71,11 @@ jobs:
     # - get: cg-s3-secureproxy-release
     #   trigger: true
   - task: terraform-secrets
-    file: cg-deploy-cf/ci/terraform-secrets.yml
+    file: cg-deploy-cf/c/terraform-secrets.yml
+    vars: &task-vars
+      access_key_id: ((hack.access_key_id))
+      region: ((hack.region))
+      secret_access_key: ((hack.secret_access_key))
   # - task: router-main
   #   file: cf-manifests/ci/create-router-main.yml
   # - task: router-logstash
