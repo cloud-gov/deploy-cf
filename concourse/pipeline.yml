@@ -50,6 +50,7 @@ jobs:
     vars: 
       <<: *general-task-vars
   - get: terraform-state
+    tags: [iaas]
   - task: terraform-state-to-yaml
     file: pipeline-tasks/terraform-state-to-yaml.yml
     params: 
@@ -276,14 +277,14 @@ resource_types:
     aws_region: ((aws.region))
     tag: latest
 
-- name: s3-iam
-  type: registry-image
-  source:
-    aws_access_key_id: ((hack.access_key_id))
-    aws_secret_access_key: ((hack.secret_access_key))
-    repository: cloud-gov/s3-resource
-    aws_region: ((aws.region))
-    tag: latest
+# - name: s3-iam
+#   type: registry-image
+#   source:
+#     aws_access_key_id: ((hack.access_key_id))
+#     aws_secret_access_key: ((hack.secret_access_key))
+#     repository: cloud-gov/s3-resource
+#     aws_region: ((aws.region))
+#     tag: latest
 
 # - name: registry-image
 #   type: registry-image
