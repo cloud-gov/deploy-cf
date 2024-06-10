@@ -52,7 +52,7 @@ jobs:
   - task: terraform-state-to-yaml
     file: pipeline-tasks/terraform-state-to-yaml.yml
     params: 
-      STATE_FILE: terraform-state/terraform.tfstate
+      STATE_FILE: terraform.tfstate
     vars: 
       ecr_aws_key: ((hack.access_key_id))
       ecr_aws_secret: ((hack.secret_access_key))
