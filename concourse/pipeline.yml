@@ -49,6 +49,7 @@ jobs:
       TERRAFORM_ACTION: apply
     vars: 
       <<: *general-task-vars
+  - get: terraform-state
   - task: terraform-state-to-yaml
     file: pipeline-tasks/terraform-state-to-yaml.yml
     params: 
@@ -212,13 +213,13 @@ resources:
     paths:
     - terraform/*
 
-# - name: terraform-state
-#   type: s3-iam
-#   source:
-#     bucket: ((buckets.terraform_state))
-#     versioned_file: cloudfoundry/terraform.tfstate
-#     region_name: ((aws.region))
-#     server_side_encryption: AES256
+- name: terraform-state
+  type: s3-iam
+  source:
+    bucket: ((buckets.terraform_state))
+    versioned_file: cloudfoundry/terraform.tfstate
+    region_name: ((aws.region))
+    server_side_encryption: AES256
 
 # - name: cf-stemcell-jammy
 #   type: bosh-io-stemcell
@@ -275,14 +276,14 @@ resource_types:
     aws_region: ((aws.region))
     tag: latest
 
-# - name: s3-iam
-#   type: registry-image
-#   source:
-#     aws_access_key_id: ((hack.access_key_id))
-#     aws_secret_access_key: ((hack.secret_access_key))
-#     repository: cloud-gov/s3-resource
-#     aws_region: ((aws.region))
-#     tag: latest
+- name: s3-iam
+  type: registry-image
+  source:
+    aws_access_key_id: ((hack.access_key_id))
+    aws_secret_access_key: ((hack.secret_access_key))
+    repository: cloud-gov/s3-resource
+    aws_region: ((aws.region))
+    tag: latest
 
 # - name: registry-image
 #   type: registry-image
