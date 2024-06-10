@@ -54,7 +54,8 @@ jobs:
     params: 
       STATE_FILE: terraform-state/terraform.tfstate
     vars: 
-      <<: *general-task-vars
+      ecr_aws_key: ((hack.access_key_id))
+      ecr_aws_secret: ((hack.secret_access_key))
 
 # - name: deploy
 #   serial: true
