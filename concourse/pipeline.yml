@@ -198,8 +198,9 @@ resources:
   source:
     commit_verification_keys: ((commit_verification_keys))
     uri: https://github.com/cloud-gov/cg-pipeline-tasks.git
-    paths:
-    - terraform-state-to-yaml.*
+    # can't use paths b/c the last commit is not signed (too old)
+    # paths:
+    # - terraform-state-to-yaml.*
 
 - name: cg-provision-repo
   type: git
