@@ -139,8 +139,8 @@ jobs:
       - cg-deploy-cf/bosh/opsfiles/meta-data-v2.yml
       - cg-deploy-cf/bosh/opsfiles/router-main.yml
       - cg-deploy-cf/bosh/opsfiles/router-main-dev.yml
-      - cg-deploy-cf/bosh/opsfiles/router-logstash.yml
-      - cg-deploy-cf/bosh/opsfiles/router-logstash-dev.yml
+      # - cg-deploy-cf/bosh/opsfiles/router-logstash.yml
+      # - cg-deploy-cf/bosh/opsfiles/router-logstash-dev.yml
       - cg-deploy-cf/bosh/opsfiles/add-autoscaler-ca.yml
       - cg-deploy-cf/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cg-deploy-cf/bosh/opsfiles/add-opensearch-ca.yml
