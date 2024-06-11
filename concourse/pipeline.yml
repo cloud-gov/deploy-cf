@@ -56,8 +56,7 @@ jobs:
     params: 
       STATE_FILE: terraform.tfstate
     vars: 
-      ecr_aws_key: ((hack.access_key_id))
-      ecr_aws_secret: ((hack.secret_access_key))
+      <<: *general-task-vars
   - put: terraform-state-yaml
     params:
       file: terraform-yaml/state.yml
@@ -94,6 +93,9 @@ jobs:
       <<: *general-task-vars
   - task: router-main
     file: cg-deploy-cf/ci/create-router-main.yml
+    vars: 
+      <<: *general-task-vars
+
 #   # - task: router-logstash
 #   #   file: cf-manifests/ci/create-router-logstash.yml
 #   # - put: cf-deployment-development
