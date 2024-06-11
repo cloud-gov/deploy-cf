@@ -11,10 +11,10 @@ image_resource:
 
 inputs:
 - name: cf-deployment
-- name: cf-manifests
+- name: cg-deploy-cf
 outputs:
 - name: router-main
 
 run:
-  path: cf-manifests/ci/create-router-main.sh
+  path: cg-deploy-cf/ci/create-router-main.sh
 
