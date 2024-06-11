@@ -78,6 +78,8 @@ jobs:
       # trigger: true
     - get: cg-s3-secureproxy-release
       # trigger: true
+    - get: environment-config
+      # trigger: true
   - task: terraform-secrets
     file: cg-deploy-cf/concourse/terraform-secrets.yml
     vars: 
@@ -147,6 +149,7 @@ jobs:
       vars_files:
       - cg-deploy-cf/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
+      - environment-config/envs/((environment))/cloudfoundry.yml
 
 #   # - task: enable-cf-features
 #   #   file: cg-deploy-cf/ci/enable-cf-features.yml
@@ -224,6 +227,15 @@ resources:
     branch: f140
     paths:
     - terraform/*
+
+- name: environment-config
+  type: git
+  source:
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/cloud-gov/westaz.git
+    branch: f140
+    paths:
+    - envs/((environment))/cloudfoundry.yml
 
 - name: terraform-state
   type: s3-iam
