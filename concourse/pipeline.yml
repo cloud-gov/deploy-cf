@@ -72,21 +72,12 @@ jobs:
     - get: terraform-yaml
       resource: terraform-state-yaml
       passed: [terraform-apply]
-#     # - get: master-bosh-root-cert
-#     #   trigger: true
-
-#     # - get: pipeline-tasks
-#     # - get: cf-manifests
-#     #   resource: cf-manifests
-#     #   trigger: true
-#     # - get: terraform-yaml
-#     #   resource: terraform-yaml-development
-#     # - get: cf-stemcell-jammy
-#     #   trigger: true
-#     # - get: uaa-customized-release
-#     #   trigger: true
-#     # - get: cg-s3-secureproxy-release
-#     #   trigger: true
+    - get: cf-stemcell-jammy
+      trigger: true
+    - get: uaa-customized-release
+      trigger: true
+    - get: cg-s3-secureproxy-release
+      trigger: true
   - task: terraform-secrets
     file: cg-deploy-cf/concourse/terraform-secrets.yml
     vars: 
@@ -95,74 +86,70 @@ jobs:
     file: cg-deploy-cf/ci/create-router-main.yml
     vars: 
       <<: *general-task-vars
-
-#   # - task: router-logstash
-#   #   file: cf-manifests/ci/create-router-logstash.yml
-#   # - put: cf-deployment-development
-#     params: &deploy-params
-#       manifest: cf-deployment/cf-deployment.yml
-#       releases:
-#       - uaa-customized-release/*.tgz
-#       - cg-s3-secureproxy-release/*.tgz
-#       stemcells:
-#       - cf-stemcell-jammy/*.tgz
-#       ops_files:
-#       - router-main/router_main.yml
-#       - router-logstash/router_logstash.yml
-#       - cf-deployment/operations/rename-network-and-deployment.yml
-#       - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
-#       - cf-deployment/operations/use-external-dbs.yml
-#       - cf-deployment/operations/stop-skipping-tls-validation.yml
-#       - cf-deployment/operations/set-bbs-active-key.yml
-#       - cf-deployment/operations/enable-service-discovery.yml
-#       - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
-#       - cf-manifests/bosh/opsfiles/clients.yml
-#       - cf-manifests/bosh/opsfiles/development-clients.yml
-#       - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
-#       - cf-manifests/bosh/opsfiles/users.yml
-#       - cf-manifests/bosh/opsfiles/secureproxy.yml
-#       - cf-manifests/bosh/opsfiles/apps-domain.yml
-#       - cf-manifests/bosh/opsfiles/api-defaults.yml
-#       - cf-manifests/bosh/opsfiles/uaa-customized.yml
-#       - cf-manifests/bosh/opsfiles/uaa-branding.yml
-#       - cf-manifests/bosh/opsfiles/uaa-groups.yml
-#       - cf-manifests/bosh/opsfiles/uaa-login.yml
-#       - cf-manifests/bosh/opsfiles/uaa-saml.yml
-#       - cf-manifests/bosh/opsfiles/uaa-user.yml
-#       - cf-manifests/bosh/opsfiles/uaa-cors.yml
-#       - cf-manifests/bosh/opsfiles/encryption.yml
-#       - cf-manifests/bosh/opsfiles/sql.yml
-#       - cf-manifests/bosh/opsfiles/log-levels.yml
-#       - cf-manifests/bosh/opsfiles/instance-profiles.yml
-#       - cf-manifests/bosh/opsfiles/platform-cells.yml
-#       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-#       - cf-manifests/bosh/opsfiles/diego-dns.yml
-#       - cf-manifests/bosh/opsfiles/scaling-development.yml
-#       - cf-manifests/bosh/opsfiles/cf-networking.yml
-#       - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
-#       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-#       - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
-#       - cf-manifests/bosh/opsfiles/smoke-tests.yml
-#       - cf-manifests/bosh/opsfiles/routing.yml
-#       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
-#       - cf-manifests/bosh/opsfiles/content-security-policy.yml
-#       - cf-manifests/bosh/opsfiles/loggregator.yml
-#       - cf-manifests/bosh/opsfiles/meta-data-v2.yml
-#       - cf-manifests/bosh/opsfiles/router-main.yml
-#       - cf-manifests/bosh/opsfiles/router-main-dev.yml
-#       - cf-manifests/bosh/opsfiles/router-logstash.yml
-#       - cf-manifests/bosh/opsfiles/router-logstash-dev.yml
-#       - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
-#       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
-#       - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
-#       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
-#       - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-#       vars_files:
-#       - cf-manifests/bosh/varsfiles/development.yml
-#       - terraform-secrets/terraform.yml
+  - put: cf-deployment
+    params: &deploy-params
+      manifest: cf-deployment/cf-deployment.yml
+      releases:
+      - uaa-customized-release/*.tgz
+      - cg-s3-secureproxy-release/*.tgz
+      stemcells:
+      - cf-stemcell-jammy/*.tgz
+      ops_files:
+      - router-main/router_main.yml
+      - cf-deployment/operations/rename-network-and-deployment.yml
+      - cg-deploy-cf/bosh/opsfiles/use-s3-blobstore.yml
+      - cf-deployment/operations/use-external-dbs.yml
+      - cf-deployment/operations/stop-skipping-tls-validation.yml
+      - cf-deployment/operations/set-bbs-active-key.yml
+      - cf-deployment/operations/enable-service-discovery.yml
+      - cg-deploy-cf/bosh/opsfiles/remove-routing-components-for-transition.yml
+      - cg-deploy-cf/bosh/opsfiles/clients.yml
+      - cg-deploy-cf/bosh/opsfiles/development-clients.yml
+      - cg-deploy-cf/bosh/opsfiles/pages-clients-dev.yml
+      - cg-deploy-cf/bosh/opsfiles/users.yml
+      - cg-deploy-cf/bosh/opsfiles/secureproxy.yml
+      - cg-deploy-cf/bosh/opsfiles/apps-domain.yml
+      - cg-deploy-cf/bosh/opsfiles/api-defaults.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-customized.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-branding.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-groups.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-login.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-saml.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-user.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-cors.yml
+      - cg-deploy-cf/bosh/opsfiles/encryption.yml
+      - cg-deploy-cf/bosh/opsfiles/sql.yml
+      - cg-deploy-cf/bosh/opsfiles/log-levels.yml
+      - cg-deploy-cf/bosh/opsfiles/instance-profiles.yml
+      - cg-deploy-cf/bosh/opsfiles/platform-cells.yml
+      - cg-deploy-cf/bosh/opsfiles/diego-cell-disk.yml
+      - cg-deploy-cf/bosh/opsfiles/diego-dns.yml
+      - cg-deploy-cf/bosh/opsfiles/scaling-development.yml
+      - cg-deploy-cf/bosh/opsfiles/cf-networking.yml
+      - cg-deploy-cf/bosh/opsfiles/enable-cflinuxfs4.yml
+      - cg-deploy-cf/bosh/opsfiles/disable-secure-service-credentials.yml
+      - cg-deploy-cf/bosh/opsfiles/diego-rds-certs.yml
+      - cg-deploy-cf/bosh/opsfiles/smoke-tests.yml
+      - cg-deploy-cf/bosh/opsfiles/routing.yml
+      - cg-deploy-cf/bosh/opsfiles/uaa-rds-ca.yml
+      - cg-deploy-cf/bosh/opsfiles/content-security-policy.yml
+      - cg-deploy-cf/bosh/opsfiles/loggregator.yml
+      - cg-deploy-cf/bosh/opsfiles/meta-data-v2.yml
+      - cg-deploy-cf/bosh/opsfiles/router-main.yml
+      - cg-deploy-cf/bosh/opsfiles/router-main-dev.yml
+      - cg-deploy-cf/bosh/opsfiles/router-logstash.yml
+      - cg-deploy-cf/bosh/opsfiles/router-logstash-dev.yml
+      - cg-deploy-cf/bosh/opsfiles/add-autoscaler-ca.yml
+      - cg-deploy-cf/bosh/opsfiles/add-bosh-dns-other-deployments.yml
+      - cg-deploy-cf/bosh/opsfiles/add-opensearch-ca.yml
+      - cg-deploy-cf/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cg-deploy-cf/bosh/opsfiles/aggregate_drains.yml
+      vars_files:
+      - cg-deploy-cf/bosh/varsfiles/development.yml
+      - terraform-secrets/terraform.yml
 
 #   # - task: enable-cf-features
-#   #   file: cf-manifests/ci/enable-cf-features.yml
+#   #   file: cg-deploy-cf/ci/enable-cf-features.yml
 #   #   params:
 #   #     CF_API_URL: ((cf-api-url-development))
 #   #     CF_USERNAME: ((cf-username-development))
@@ -245,26 +232,26 @@ resources:
     region_name: ((aws.region))
     server_side_encryption: AES256
 
-# - name: cf-stemcell-jammy
-#   type: bosh-io-stemcell
-#   source:
-#     name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
+- name: cf-stemcell-jammy
+  type: bosh-io-stemcell
+  source:
+    name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
 
-# - name: uaa-customized-release
-#   type: s3-iam
-#   source:
-#     bucket: ((buckets.bosh_releases))
-#     private: true
-#     regexp: uaa-customized-(.*).tgz
-#     region_name: ((aws.region))
+- name: uaa-customized-release
+  type: s3-iam
+  source:
+    bucket: ((buckets.bosh_releases))
+    private: true
+    regexp: uaa-customized-(.*).tgz
+    region_name: ((aws.region))
 
-# - name: cg-s3-secureproxy-release
-#   type: s3-iam
-#   source:
-#     bucket: ((buckets.bosh_releases))
-#     private: true
-#     regexp: secureproxy-(.*).tgz
-#     region_name: ((aws.region))
+- name: cg-s3-secureproxy-release
+  type: s3-iam
+  source:
+    bucket: ((buckets.bosh_releases))
+    private: true
+    regexp: secureproxy-(.*).tgz
+    region_name: ((aws.region))
 
 # - name: bosh-deploy
 #   type: bosh-deployment
