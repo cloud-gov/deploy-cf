@@ -146,8 +146,9 @@ jobs:
       - cg-deploy-cf/bosh/opsfiles/add-opensearch-ca.yml
       - cg-deploy-cf/bosh/opsfiles/diego-cpu-entitlement.yml
       - cg-deploy-cf/bosh/opsfiles/aggregate_drains.yml
+      vars:
+        deployment_name: ((environment))-cloudfoundry
       vars_files:
-      - cg-deploy-cf/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
       - environment-config/envs/((environment))/cloudfoundry.yml
 
