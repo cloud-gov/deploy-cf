@@ -68,13 +68,14 @@ jobs:
   - in_parallel:
     - get: cg-deploy-cf
       #passed: [terraform-apply]
+    - get: cf-deployment
+      trigger: true
     - get: terraform-yaml
       resource: terraform-state-yaml
       passed: [terraform-apply]
 #     # - get: master-bosh-root-cert
 #     #   trigger: true
-#     # - get: cf-deployment
-#     #   trigger: true
+
 #     # - get: pipeline-tasks
 #     # - get: cf-manifests
 #     #   resource: cf-manifests
@@ -91,8 +92,8 @@ jobs:
     file: cg-deploy-cf/concourse/terraform-secrets.yml
     vars: 
       <<: *general-task-vars
-#   # - task: router-main
-#   #   file: cf-manifests/ci/create-router-main.yml
+  - task: router-main
+    file: cg-deploy-cf/ci/create-router-main.yml
 #   # - task: router-logstash
 #   #   file: cf-manifests/ci/create-router-logstash.yml
 #   # - put: cf-deployment-development
@@ -199,6 +200,13 @@ resources:
     - ci/*
     - concourse/*
     - terraform/*
+
+- name: cf-deployment
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/cf-deployment
+    branch: main
+    tag_filter: "v*"
 
 - name: pipeline-tasks
   type: git
