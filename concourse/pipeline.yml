@@ -62,14 +62,14 @@ jobs:
     params:
       file: terraform-yaml/state.yml
 
-# - name: deploy
-#   serial: true
-#   plan:
-#   - in_parallel:
-#     - get: cg-deploy-cf
-#       #passed: [terraform-apply]
-#     - get: terraform-yaml
-#       resource: terraform-yaml
+- name: deploy
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cg-deploy-cf
+      #passed: [terraform-apply]
+    - get: terraform-state-yaml
+      resource: terraform-yaml
 #     # - get: master-bosh-root-cert
 #     #   trigger: true
 #     # - get: cf-deployment
@@ -86,10 +86,10 @@ jobs:
 #     #   trigger: true
 #     # - get: cg-s3-secureproxy-release
 #     #   trigger: true
-#   - task: terraform-secrets
-#     file: cg-deploy-cf/concourse/terraform-secrets.yml
-#     vars: 
-#       <<: *general-task-vars
+  - task: terraform-secrets
+    file: cg-deploy-cf/concourse/terraform-secrets.yml
+    vars: 
+      <<: *general-task-vars
 #   # - task: router-main
 #   #   file: cf-manifests/ci/create-router-main.yml
 #   # - task: router-logstash
