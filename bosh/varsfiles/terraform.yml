@@ -38,5 +38,5 @@ external_routing_api_database_address: ((terraform_outputs.cf_rds_host))
 external_routing_api_database_username: ((terraform_outputs.cf_rds_username))
 external_routing_api_database_password: ((terraform_outputs.cf_rds_password))
 
-challenge_bucket: ((terraform_outputs.challenge_bucket))
+# challenge_bucket: ((terraform_outputs.challenge_bucket))
 tcp_lb_listener_ports: ((terraform_outputs.tcp_lb_listener_ports))
