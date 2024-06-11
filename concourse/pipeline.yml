@@ -68,16 +68,16 @@ jobs:
     - get: cg-deploy-cf
       #passed: [terraform-apply]
     - get: cf-deployment
-      trigger: true
+      # trigger: true
     - get: terraform-yaml
       resource: terraform-state-yaml
       passed: [terraform-apply]
     - get: cf-stemcell-jammy
-      trigger: true
+      # trigger: true
     - get: uaa-customized-release
-      trigger: true
+      # trigger: true
     - get: cg-s3-secureproxy-release
-      trigger: true
+      # trigger: true
   - task: terraform-secrets
     file: cg-deploy-cf/concourse/terraform-secrets.yml
     vars: 
@@ -86,7 +86,7 @@ jobs:
     file: cg-deploy-cf/ci/create-router-main.yml
     vars: 
       <<: *general-task-vars
-  - put: cf-deployment
+  - put: bosh-deploy
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
       releases:
@@ -178,6 +178,15 @@ jobs:
 
 resources:
 
+- name: bosh-deploy
+  type: bosh-deployment
+  source:
+    target: ((bosh_director.target))
+    client: ((bosh_director.client_id))
+    client_secret: ((bosh_director.client_secret))
+    ca_cert: ((bosh_director.ca_cert))
+    deployment: ((environment))-cloudfoundry
+
 - name: cg-deploy-cf
   type: git
   source:
@@ -193,7 +202,7 @@ resources:
 - name: cf-deployment
   type: git
   source:
-    uri: https://github.com/cloudfoundry/cf-deployment
+    uri: https://github.com/cloudfoundry/cf-deployment.git
     branch: main
     tag_filter: "v*"
 
@@ -273,10 +282,10 @@ resources:
 
 resource_types:
 
-# - name: bosh-deployment
-#   type: docker-image
-#   source:
-#     repository: cloudfoundry/bosh-deployment-resource
+- name: bosh-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
 
 - name: git
   type: registry-image
@@ -286,15 +295,6 @@ resource_types:
     repository: git-resource
     aws_region: ((aws.region))
     tag: latest
-
-# - name: s3-iam
-#   type: registry-image
-#   source:
-#     aws_access_key_id: ((hack.access_key_id))
-#     aws_secret_access_key: ((hack.secret_access_key))
-#     repository: cloud-gov/s3-resource
-#     aws_region: ((aws.region))
-#     tag: latest
 
 # - name: registry-image
 #   type: registry-image
