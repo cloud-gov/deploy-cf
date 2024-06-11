@@ -68,8 +68,8 @@ jobs:
   - in_parallel:
     - get: cg-deploy-cf
       #passed: [terraform-apply]
-    - get: terraform-state-yaml
-      resource: terraform-yaml
+    - get: terraform-yaml
+      resource: terraform-state-yaml
 #     # - get: master-bosh-root-cert
 #     #   trigger: true
 #     # - get: cf-deployment
