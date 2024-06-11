@@ -233,7 +233,7 @@ resources:
   source:
     commit_verification_keys: ((commit_verification_keys))
     # TODO temporary repo to hold configs
-    uri: https://github.com/cloud-gov/westa-env.git
+    uri: git@github.com:cloud-gov/westa-env.git
     branch: f140
     paths:
     - envs/((environment))/cloudfoundry.yml
