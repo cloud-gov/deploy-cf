@@ -70,6 +70,7 @@ jobs:
       #passed: [terraform-apply]
     - get: terraform-yaml
       resource: terraform-state-yaml
+      passed: [terraform-apply]
 #     # - get: master-bosh-root-cert
 #     #   trigger: true
 #     # - get: cf-deployment
