@@ -1,0 +1,144 @@
+# nats
+- type: replace
+  path: /instance_groups/name=nats/instances
+  value: ((cloudfoundry.nats.instances))
+- type: replace
+  path: /instance_groups/name=nats/vm_type
+  value: ((cloudfoundry.nats.vm_type))
+
+# diego api
+- type: replace
+  path: /instance_groups/name=diego-api/instances
+  value: ((cloudfoundry.diego_api.instances))
+- type: replace
+  path: /instance_groups/name=diego-api/vm_type
+  value: ((cloudfoundry.diego_api.vm_type))
+
+# uaa
+- type: replace
+  path: /instance_groups/name=uaa/instances
+  value: ((cloudfoundry.uaa.instances))
+- type: replace
+  path: /instance_groups/name=uaa/vm_type
+  value: ((cloudfoundry.uaa.vm_type))
+
+# capi
+- type: replace
+  path: /instance_groups/name=api/instances
+  value: ((api.instances))
+- type: replace
+  path: /instance_groups/name=api/vm_type
+  value: ((api.vm_type))
+
+# capi worker
+- type: replace
+  path: /instance_groups/name=cc-worker/instances
+  value: ((cc-worker.instances))
+- type: replace
+  path: /instance_groups/name=cc-worker/vm_type
+  value: ((cc-worker.vm_type))
+
+# gorouter
+- type: replace
+  path: /instance_groups/name=router/instances
+  value: ((router.instances))
+- type: replace
+  path: /instance_groups/name=router/vm_type
+  value: ((router.vm_type))
+- type: replace
+  path: /instance_groups/name=router/update?
+  value:
+    max_in_flight: ((router.max_in_flight))
+    canaries: ((router.canaries))
+
+# router-main
+- type: replace
+  path: /instance_groups/name=router-main/instances
+  value: ((router-main.instances))
+- type: replace
+  path: /instance_groups/name=router-main/vm_type
+  value: ((router-main.vm_type))
+- type: replace
+  path: /instance_groups/name=router-main/update?
+  value:
+    max_in_flight: ((router-main.max_in_flight))
+    canaries: ((router-main.canaries))
+
+
+# router-logstash
+# - type: replace
+#   path: /instance_groups/name=router-logstash/instances
+#   value: 2
+# - type: replace
+#   path: /instance_groups/name=router-logstash/vm_type
+#   value: t3.small
+# - type: replace
+#   path: /instance_groups/name=router-logstash/update?
+#   value:
+#     max_in_flight: 20%
+#     canaries: 20%  
+
+# scheduler
+- type: replace
+  path: /instance_groups/name=scheduler/instances
+  value: ((scheduler.instances))
+- type: replace
+  path: /instance_groups/name=scheduler/vm_type
+  value: ((scheduler.vm_type))
+
+# doppler
+- type: replace
+  path: /instance_groups/name=doppler/instances
+  value: ((doppler.instances))
+- type: replace
+  path: /instance_groups/name=doppler/vm_type
+  value: ((doppler.vm_type))
+- type: replace
+  path: /instance_groups/name=doppler/update?
+  value:
+    max_in_flight: ((doppler.max_in_flight))
+    canaries: ((doppler.canaries))
+    
+# log-cache
+- type: replace
+  path: /instance_groups/name=log-cache/instances
+  value: ((log-cache.instances))
+- type: replace
+  path: /instance_groups/name=log-cache/vm_type
+  value: ((log-cache.vm_type))
+- type: replace
+  path: /instance_groups/name=log-cache/update?
+  value:
+    max_in_flight: ((log-cache.max_in_flight))
+    canaries: ((log-cache.canaries))   
+    
+# log-api
+- type: replace
+  path: /instance_groups/name=log-api/instances
+  value: ((log-api.instances))
+- type: replace
+  path: /instance_groups/name=log-api/vm_type
+  value: ((log-api.vm_type))
+- type: replace
+  path: /instance_groups/name=log-api/update?
+  value:
+    max_in_flight: ((log-api.max_in_flight))
+    canaries: ((log-api.canaries))
+    
+# diego (platform and customer)
+- type: replace
+  path: /instance_groups/name=diego-cell/vm_type
+  value: ((diego-cell.vm_type))
+- type: replace
+  path: /instance_groups/name=diego-cell/update?
+  value:
+    max_in_flight: ((diego-cell.max_in_flight))
+    canaries: ((diego-cell.canaries))
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/vm_type
+  value: ((diego-platform-cell.vm_type))
+
+# rotate-cc-database-key
+- type: replace
+  path: /instance_groups/name=rotate-cc-database-key/vm_type
+  value: ((rotate-cc-database-key.vm_type))
