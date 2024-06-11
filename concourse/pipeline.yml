@@ -58,6 +58,9 @@ jobs:
     vars: 
       ecr_aws_key: ((hack.access_key_id))
       ecr_aws_secret: ((hack.secret_access_key))
+  - put: terraform-state-yaml
+    params:
+      file: terraform-yaml/state.yml
 
 # - name: deploy
 #   serial: true
@@ -220,6 +223,14 @@ resources:
   source:
     bucket: ((buckets.terraform_state))
     versioned_file: cloudfoundry/terraform.tfstate
+    region_name: ((aws.region))
+    server_side_encryption: AES256
+
+- name: terraform-state-yaml
+  type: s3-iam
+  source:
+    bucket: ((buckets.terraform_state))
+    versioned_file: cloudfoundry/state.yml
     region_name: ((aws.region))
     server_side_encryption: AES256
 
