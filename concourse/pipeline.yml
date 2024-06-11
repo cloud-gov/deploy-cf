@@ -104,8 +104,8 @@ jobs:
       - cf-deployment/operations/enable-service-discovery.yml
       - cg-deploy-cf/bosh/opsfiles/remove-routing-components-for-transition.yml
       - cg-deploy-cf/bosh/opsfiles/clients.yml
-      - cg-deploy-cf/bosh/opsfiles/development-clients.yml
-      - cg-deploy-cf/bosh/opsfiles/pages-clients-dev.yml
+      # - cg-deploy-cf/bosh/opsfiles/development-clients.yml
+      # - cg-deploy-cf/bosh/opsfiles/pages-clients-dev.yml
       - cg-deploy-cf/bosh/opsfiles/users.yml
       - cg-deploy-cf/bosh/opsfiles/secureproxy.yml
       - cg-deploy-cf/bosh/opsfiles/apps-domain.yml
@@ -124,7 +124,7 @@ jobs:
       - cg-deploy-cf/bosh/opsfiles/platform-cells.yml
       - cg-deploy-cf/bosh/opsfiles/diego-cell-disk.yml
       - cg-deploy-cf/bosh/opsfiles/diego-dns.yml
-      - cg-deploy-cf/bosh/opsfiles/scaling-development.yml
+      - cg-deploy-cf/bosh/opsfiles/scaling.yml
       - cg-deploy-cf/bosh/opsfiles/cf-networking.yml
       - cg-deploy-cf/bosh/opsfiles/enable-cflinuxfs4.yml
       - cg-deploy-cf/bosh/opsfiles/disable-secure-service-credentials.yml
