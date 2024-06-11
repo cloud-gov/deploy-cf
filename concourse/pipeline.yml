@@ -237,6 +237,7 @@ resources:
     branch: f140
     paths:
     - envs/((environment))/cloudfoundry.yml
+    private_key: ((cg_ci_bot_ssh_pk))
 
 - name: terraform-state
   type: s3-iam
