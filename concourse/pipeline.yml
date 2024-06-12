@@ -141,11 +141,11 @@ jobs:
       - cg-deploy-cf/bosh/opsfiles/router-main-dev.yml
       # - cg-deploy-cf/bosh/opsfiles/router-logstash.yml
       # - cg-deploy-cf/bosh/opsfiles/router-logstash-dev.yml
-      - cg-deploy-cf/bosh/opsfiles/add-autoscaler-ca.yml
-      - cg-deploy-cf/bosh/opsfiles/add-bosh-dns-other-deployments.yml
-      - cg-deploy-cf/bosh/opsfiles/add-opensearch-ca.yml
+      # - cg-deploy-cf/bosh/opsfiles/add-autoscaler-ca.yml
+      # - cg-deploy-cf/bosh/opsfiles/add-bosh-dns-other-deployments.yml
+      # - cg-deploy-cf/bosh/opsfiles/add-opensearch-ca.yml
       - cg-deploy-cf/bosh/opsfiles/diego-cpu-entitlement.yml
-      - cg-deploy-cf/bosh/opsfiles/aggregate_drains.yml
+      # - cg-deploy-cf/bosh/opsfiles/aggregate_drains.yml
       vars:
         deployment_name: ((environment))-cloudfoundry
       vars_files:
