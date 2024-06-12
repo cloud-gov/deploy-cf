@@ -90,6 +90,7 @@ jobs:
       <<: *general-task-vars
   - put: bosh-deploy
     params: &deploy-params
+      dry_run: true
       manifest: cf-deployment/cf-deployment.yml
       releases:
       - uaa-customized-release/*.tgz
