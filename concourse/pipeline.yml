@@ -346,3 +346,8 @@ resource_types:
   type: docker-image
   source:
     repository: 18fgsa/s3-resource
+
+- name: bosh-config
+  type: registry-image
+  source:
+    repository: cfcommunity/bosh-config-resource
