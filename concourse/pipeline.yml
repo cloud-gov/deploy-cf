@@ -61,6 +61,20 @@ jobs:
     params:
       file: terraform-yaml/state.yml
 
+- name: cloud-config
+  serial: true
+  plan:
+  # - in_parallel: 
+  - get: cg-deploy-bosh
+  - put: bosh-cloud-config
+    params:
+    manifests: 
+      cg-deploy-bosh/cloud-config/main.yml 
+      cg-deploy-bosh/cloud-config/cf.yml
+    vars_files:
+      - terraform-secrets/terraform.yml
+      - environment-config/envs/((environment))/cloudfoundry.yml
+
 - name: deploy
   serial: true
   plan:
@@ -192,6 +206,26 @@ resources:
     ca_cert: ((bosh_director.ca_cert))
     deployment: ((environment))-cloudfoundry
 
+- name: bosh-cloud-config
+  type: bosh-config
+  source:
+    target: ((bosh_director.target))
+    client: ((bosh_director.client_id))
+    client_secret: ((bosh_director.client_secret))
+    ca_cert: ((bosh_director.ca_cert))
+    config: cloud
+    name: cloudfoundry
+
+- name: cg-deploy-bosh
+  type: git
+  source:
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/cloud-gov/cg-deploy-bosh.git
+    branch: f140
+    paths:
+    - cloud-config/main.yml
+    - cloud-config/cf.yml
+
 - name: cg-deploy-cf
   type: git
   source:
@@ -278,23 +312,9 @@ resources:
     regexp: secureproxy-(.*).tgz
     region_name: ((aws.region))
 
-# - name: bosh-deploy
-#   type: bosh-deployment
-#   source:
-#     target: ((bosh_director.target))
-#     client: ((bosh_director.client_id))
-#     client_secret: ((bosh_director.client_secret))
-#     ca_cert: ((bosh_director.ca_cert))
-#     deployment: cf
 
-# - name: general-task
-#   type: registry-image
-#   source:
-#     aws_access_key_id: ((hack.access_key_id))
-#     aws_secret_access_key: ((hack.secret_access_key))
-#     repository: general-task
-#     aws_region: ((hack.region))
-#     tag: latest
+
+
 
 resource_types:
 
