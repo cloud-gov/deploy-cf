@@ -64,13 +64,14 @@ jobs:
 - name: cloud-config
   serial: true
   plan:
-  # - in_parallel: 
-  - get: cg-deploy-cf
+  - in_parallel: 
+    - get: cg-deploy-cf
+    - get: environment-config
+      # trigger: true
   - put: bosh-cloud-config
     params:
       manifest: cg-deploy-cf/bosh/config/cloudfoundry.yml
       vars_files:
-        - terraform-secrets/terraform.yml
         - environment-config/envs/((environment))/cloudfoundry.yml
 
 - name: deploy
