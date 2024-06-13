@@ -67,6 +67,7 @@ jobs:
   - in_parallel: 
     - get: cg-deploy-cf
     - get: cg-deploy-bosh
+    - get: bosh-terraform-state-yaml
     # - get: environment-config
       # trigger: true
   - put: bosh-cloud-config
@@ -74,8 +75,9 @@ jobs:
       manifest: cg-deploy-bosh/cloud-config/base.yml
       ops_files:
       - cg-deploy-cf/bosh/config/cloudfoundry.yml
-      # vars_files:
-      #   - environment-config/envs/((environment))/cloudfoundry.yml
+      vars_files:
+      # - environment-config/envs/((environment))/cloudfoundry.yml
+      - bosh-terraform-state-yaml/westa-hub/terraform-state.yml
 
 - name: deploy
   serial: true
@@ -281,6 +283,15 @@ resources:
   source:
     bucket: ((buckets.terraform_state))
     versioned_file: cloudfoundry/terraform.tfstate
+    region_name: ((aws.region))
+    server_side_encryption: AES256
+
+- name: bosh-terraform-state-yaml
+  type: s3-iam
+  source:
+    bucket: ((buckets.terraform_state))
+    # TODO: this should not be hardcoded.
+    versioned_file: westa-hub/terraform-state.yml
     region_name: ((aws.region))
     server_side_encryption: AES256
 
