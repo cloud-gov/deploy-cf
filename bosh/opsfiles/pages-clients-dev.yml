@@ -13,7 +13,7 @@
     authorized-grant-types: authorization_code,client_credentials
     authorities: groups.update,scim.read,scim.invite,scim.write
     access-token-validity: 600
-    refresh-token-validity: 259200
+    refresh-token-validity: 43200
     name: Pages
     autoapprove: true
     show-on-homepage: true
