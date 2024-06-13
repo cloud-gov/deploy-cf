@@ -66,11 +66,14 @@ jobs:
   plan:
   - in_parallel: 
     - get: cg-deploy-cf
+    - get: cg-deploy-bosh
     # - get: environment-config
       # trigger: true
   - put: bosh-cloud-config
     params:
-      manifest: cg-deploy-cf/bosh/config/cloudfoundry.yml
+      manifest: cg-deploy-bosh/cloud-config/base.yml
+      ops_files:
+      - cg-deploy-cf/bosh/config/cloudfoundry.yml
       # vars_files:
       #   - environment-config/envs/((environment))/cloudfoundry.yml
 
@@ -215,6 +218,15 @@ resources:
     config: cloud
     name: cloudfoundry
 
+- name: cg-deploy-bosh
+  type: git
+  source:
+    commit_verification_keys: ((commit_verification_keys))
+    uri: https://github.com/cloud-gov/cg-deploy-bosh.git
+    branch: f140
+    paths:
+    - cloud-config/base.yml
+  
 - name: cg-deploy-cf
   type: git
   source:
