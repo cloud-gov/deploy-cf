@@ -69,8 +69,8 @@ jobs:
   - put: bosh-cloud-config
     params:
       manifests: 
-        main: cg-deploy-bosh/cloud-config/main.yml 
         cloudfoundry: cg-deploy-bosh/cloud-config/cf.yml
+        main: cg-deploy-bosh/cloud-config/main.yml 
       vars_files:
         - terraform-secrets/terraform.yml
         - environment-config/envs/((environment))/cloudfoundry.yml
@@ -215,7 +215,9 @@ resources:
     client_secret: ((bosh_director.client_secret))
     ca_cert: ((bosh_director.ca_cert))
     config: cloud
-    name: cloudfoundry
+    includes: 
+    - cloudfoundry
+    - main
 
 - name: cg-deploy-bosh
   type: git
