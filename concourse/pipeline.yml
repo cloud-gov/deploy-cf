@@ -65,12 +65,10 @@ jobs:
   serial: true
   plan:
   # - in_parallel: 
-  - get: cg-deploy-bosh
+  - get: cg-deploy-cf
   - put: bosh-cloud-config
     params:
-      manifests: 
-        cloudfoundry: cg-deploy-bosh/cloud-config/cf.yml
-        main: cg-deploy-bosh/cloud-config/main.yml 
+      manifest: cg-deploy-cf/bosh/config/cloudfoundry.yml
       vars_files:
         - terraform-secrets/terraform.yml
         - environment-config/envs/((environment))/cloudfoundry.yml
@@ -209,25 +207,12 @@ resources:
 - name: bosh-cloud-config
   type: bosh-config
   source:
-    all: true
     target: ((bosh_director.target))
     client: ((bosh_director.client_id))
     client_secret: ((bosh_director.client_secret))
     ca_cert: ((bosh_director.ca_cert))
     config: cloud
-    includes: 
-    - cloudfoundry
-    - main
-
-- name: cg-deploy-bosh
-  type: git
-  source:
-    commit_verification_keys: ((commit_verification_keys))
-    uri: https://github.com/cloud-gov/cg-deploy-bosh.git
-    branch: f140
-    paths:
-    - cloud-config/main.yml
-    - cloud-config/cf.yml
+    name: cloudfoundry
 
 - name: cg-deploy-cf
   type: git
