@@ -66,13 +66,13 @@ jobs:
   plan:
   - in_parallel: 
     - get: cg-deploy-cf
-    - get: environment-config
+    # - get: environment-config
       # trigger: true
   - put: bosh-cloud-config
     params:
       manifest: cg-deploy-cf/bosh/config/cloudfoundry.yml
-      vars_files:
-        - environment-config/envs/((environment))/cloudfoundry.yml
+      # vars_files:
+      #   - environment-config/envs/((environment))/cloudfoundry.yml
 
 - name: deploy
   serial: true
