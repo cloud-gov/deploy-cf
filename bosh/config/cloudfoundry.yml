@@ -27,24 +27,25 @@
         - ((terraform_outputs.bosh_security_group))
 
 
-        
-- type: replace
-  path: /networks/-
-  value:
-  - name: services
-    type: manual
-    subnets:
-    - az: z1
-      range: ((terraform_outputs.az1_services)
-      gateway: ((terraform_outputs.services_subnet_az1_gateway))
-      reserved:
-      - ((terraform_outputs.services_subnet_az1_reserved))
-      static: ((terraform_outputs.services_static_ips))
-      dns: [((terraform_outputs.vpc_cidr_dns))]
-      cloud_properties:
-        subnet: ((terraform_outputs.services_subnet_az1))
-        security_groups:
-        - ((terraform_outputs.bosh_security_group))
+# aws_subnet.az1_services
+
+# - type: replace
+#   path: /networks/-
+#   value:
+#   - name: services
+#     type: manual
+#     subnets:
+#     - az: z1
+#       range: ((terraform_outputs.az1_services)
+#       gateway: ((terraform_outputs.services_subnet_az1_gateway))
+#       reserved:
+#       - ((terraform_outputs.services_subnet_az1_reserved))
+#       static: ((terraform_outputs.services_static_ips))
+#       dns: [((terraform_outputs.vpc_cidr_dns))]
+#       cloud_properties:
+#         subnet: ((terraform_outputs.services_subnet_az1))
+#         security_groups:
+#         - ((terraform_outputs.bosh_security_group))
 
 
 
