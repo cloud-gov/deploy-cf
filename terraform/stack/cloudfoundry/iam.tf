@@ -8,7 +8,13 @@ module "cf_blobstore_policy" {
   droplets_bucket   = module.droplets.bucket_name
 }
 
+module "cf_blobstore_role" {
+  source    = "../../modules/iam_role"
+  role_name = "${var.stack_description}-cf-blobstore"
+}
+
 module "platform_role" {
   source    = "github.com/cloud-gov/cg-provision//terraform/modules/iam_role"
   role_name = "${var.stack_description}-platform"
 }
+
