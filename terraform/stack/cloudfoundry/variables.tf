@@ -113,3 +113,8 @@ variable "services_cidr_1" {
 variable "services_cidr_2" {
   default = "10.0.4.0/24"
 }
+
+variable "ingress_cidrs" {
+  type    = list(string)
+  default = ["0.0.0.0"]
+}

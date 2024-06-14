@@ -15,23 +15,23 @@ resource "aws_lb" "cf" {
   # }
 }
 
-resource "aws_lb_target_group" "cf_gr_target_https" {
-  name     = "${var.stack_description}-cf-gr-https"
-  port     = 10443
-  protocol = "HTTPS"
-  vpc_id   = module.vpc.vpc_id
+# resource "aws_lb_target_group" "cf_gr_target_https" {
+#   name     = "${var.stack_description}-cf-gr-https"
+#   port     = 10443
+#   protocol = "HTTPS"
+#   vpc_id   = module.vpc.vpc_id
 
-  health_check {
-    healthy_threshold   = 2
-    interval            = 5
-    port                = 8443
-    timeout             = 4
-    unhealthy_threshold = 3
-    matcher             = 200
-    protocol            = "HTTPS"
-    path                = "/health"
-  }
-}
+#   health_check {
+#     healthy_threshold   = 2
+#     interval            = 5
+#     port                = 8443
+#     timeout             = 4
+#     unhealthy_threshold = 3
+#     matcher             = 200
+#     protocol            = "HTTPS"
+#     path                = "/health"
+#   }
+# }
 
 resource "aws_lb_target_group" "cf_target_https" {
   name     = "${var.stack_description}-cf-https"
