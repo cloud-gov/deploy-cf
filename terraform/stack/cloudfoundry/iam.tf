@@ -9,7 +9,7 @@ module "cf_blobstore_policy" {
 }
 
 module "cf_blobstore_role" {
-  source    = "../../modules/iam_role"
+  source    = "github.com/cloud-gov/cg-provision//terraform/modules/iam_role"
   role_name = "${var.stack_description}-cf-blobstore"
 }
 
