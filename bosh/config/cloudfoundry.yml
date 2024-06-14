@@ -5,10 +5,10 @@
     type: manual
     subnets:
     - az: z1
-      range: ((terraform_outputs.private_subnet_cidr_az1))
-      gateway: ((terraform_outputs.private_subnet_gateway_az1))
+      range: ((terraform_outputs.private_subnet_az1_cidr))
+      gateway: ((terraform_outputs.private_subnet_az1_gateway))
       reserved:
-      - ((terraform_outputs.private_subnet_reserved_az1))
+      - ((terraform_outputs.private_subnet_az1_reserved))
       - ((terraform_outputs.bosh_static_ip))
       dns: [((terraform_outputs.vpc_cidr_dns))]
       cloud_properties:
@@ -16,15 +16,18 @@
         security_groups:
         - ((terraform_outputs.bosh_security_group))
     - az: z2
-      range: ((terraform_outputs.private_subnet_cidr_az2))
-      gateway: ((terraform_outputs.private_subnet_gateway_az2))
+      range: ((terraform_outputs.private_subnet_az2_cidr))
+      gateway: ((terraform_outputs.private_subnet_az2_gateway))
       reserved:
-      - ((terraform_outputs.private_subnet_reserved_az2))
+      - ((terraform_outputs.private_subnet_az2_reserved))
       dns: [((terraform_outputs.vpc_cidr_dns))]
       cloud_properties:
         subnet: ((terraform_outputs.private_subnet_az2))
         security_groups:
         - ((terraform_outputs.bosh_security_group))
+
+
+        
 - type: replace
   path: /networks/-
   value:
@@ -32,17 +35,19 @@
     type: manual
     subnets:
     - az: z1
-      range: ((terraform_outputs.services_subnet_cidr_az1))
-      gateway: ((terraform_outputs.services_subnet_gateway_az1))
+      range: ((terraform_outputs.az1_services)
+      gateway: ((terraform_outputs.services_subnet_az1_gateway))
       reserved:
-      - ((terraform_outputs.services_subnet_reserved_az1))
-      - ((terraform_outputs.domains-internal-ip-az1))
+      - ((terraform_outputs.services_subnet_az1_reserved))
       static: ((terraform_outputs.services_static_ips))
       dns: [((terraform_outputs.vpc_cidr_dns))]
       cloud_properties:
         subnet: ((terraform_outputs.services_subnet_az1))
         security_groups:
         - ((terraform_outputs.bosh_security_group))
+
+
+
 - type: replace
   path: /disk_types/-
   value:
