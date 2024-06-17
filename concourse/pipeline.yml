@@ -88,6 +88,9 @@ jobs:
           - -cx
           - |
             ls -lah
+            cd bosh-cloud-config
+            ls -lah
+            cat *
             
   - put: bosh-cloud-config
     params:
