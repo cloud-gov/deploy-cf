@@ -252,7 +252,6 @@ resources:
     client_secret: ((bosh_director.client_secret))
     ca_cert: ((bosh_director.ca_cert))
     config: cloud
-    name: cloudfoundry
 
 - name: cg-deploy-bosh
   type: git
