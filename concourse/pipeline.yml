@@ -372,14 +372,14 @@ resource_types:
     aws_region: ((aws.region))
     tag: latest
 
-# - name: registry-image
-#   type: registry-image
-#   source:
-#     aws_access_key_id: ((hack.access_key_id))
-#     aws_secret_access_key: ((hack.secret_access_key))
-#     repository: registry-image-resource
-#     aws_region: ((hack.region))
-#     tag: latest
+- name: registry-image
+  type: registry-image
+  source:
+    aws_access_key_id: ((hack.access_key_id))
+    aws_secret_access_key: ((hack.secret_access_key))
+    repository: registry-image-resource
+    aws_region: ((hack.region))
+    tag: latest
 
 - name: s3-iam
   type: docker-image
