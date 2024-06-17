@@ -48,123 +48,6 @@
 #         - ((terraform_outputs.bosh_security_group))
 
 
-
-- type: replace
-  path: /disk_types/-
-  value:
-    name: nfs-volume
-    disk_size: 64_000
-
-- type: replace
-  path: /compilation/network?
-  value: default
-
-# Ephemeral disks
-- type: replace
-  path: /disk_types/-
-  value:
-    name: default
-    disk_size: 1024
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 1GB
-    disk_size: 1024
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 5GB
-    disk_size: 5120
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 10GB
-    disk_size: 10240
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 50GB
-    disk_size: 51200
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 100GB
-    disk_size: 102400
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 500GB
-    disk_size: 512000
-- type: replace
-  path: /disk_types/-
-  value:
-    name: 1TB
-    disk_size: 1048576
-
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 1GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 1024
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 5GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 5120
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 10GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 10240
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 50GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 51200
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 100GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 102400
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 200GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 204800
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 300GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 307200
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 500GB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 512000
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: 1TB_ephemeral_disk
-    cloud_properties:
-      ephemeral_disk:
-        size: 1048576
-
 # Load balancers
 - type: replace
   path: /vm_extensions/-
@@ -194,12 +77,12 @@
       security_groups: ((terraform_outputs.tcp_lb_security_groups))
 
 # Instance profiles
-- type: replace
-  path: /vm_extensions/-
-  value:
-    name: blobstore-profile
-    cloud_properties:
-      iam_instance_profile: ((terraform_outputs.cf_blobstore_profile))
+# - type: replace
+#   path: /vm_extensions/-
+#   value:
+#     name: blobstore-profile
+#     cloud_properties:
+#       iam_instance_profile: ((terraform_outputs.cf_blobstore_profile))
 - type: replace
   path: /vm_extensions/-
   value:
