@@ -68,8 +68,9 @@ jobs:
     - get: cg-deploy-cf
     - get: cg-deploy-bosh
     - get: bosh-terraform-state-yaml
+    - get: terraform-state-yaml
     # - get: environment-config
-      # trigger: true
+      # trigger: true  
   - put: bosh-cloud-config
     params:
       manifest: cg-deploy-bosh/cloud-config/base.yml
@@ -78,7 +79,8 @@ jobs:
       vars_files:
       # - environment-config/envs/((environment))/cloudfoundry.yml
       - bosh-terraform-state-yaml/westa-hub/terraform-state.yml
-
+      - terraform-state-yaml/cloudfoundry/state.yml
+  
 - name: deploy
   serial: true
   plan:
