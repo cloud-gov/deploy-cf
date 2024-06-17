@@ -71,6 +71,21 @@ jobs:
     - get: terraform-state-yaml
     # - get: environment-config
       # trigger: true  
+  - get: bosh-cloud-config
+  
+  - task: debug
+    config:
+      platform: linux
+      image_resource: registry-image
+      inputs:
+      - name: bosh-cloud-config
+      run:
+        path: /bin/sh
+        args:
+          - -cx
+          - |
+            ls -lah
+            
   - put: bosh-cloud-config
     params:
       manifest: cg-deploy-bosh/cloud-config/base.yml
@@ -80,7 +95,18 @@ jobs:
       # - environment-config/envs/((environment))/cloudfoundry.yml
       - bosh-terraform-state-yaml/westa-hub/terraform-state.yml
       - terraform-state-yaml/cloudfoundry/state.yml
-  
+
+  # - task: update-cloud-config
+  #   file: bosh-config/ci/update-cloud-config.yml
+  #   params:
+  #     OPS_PATHS: "bosh-config/cloud-config/master.yml"
+  #     BOSH_CA_CERT: ((common_ca_cert_store))
+  #     BOSH_ENVIRONMENT: ((masterbosh-target))
+  #     BOSH_CLIENT: admin
+  #     BOSH_CLIENT_SECRET: ((master_bosh_admin_password))
+
+
+
 - name: deploy
   serial: true
   plan:
