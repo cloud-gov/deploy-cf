@@ -225,19 +225,6 @@
     network: ((network_name))
     domain: bosh
 
-# Enable service discovery
-- type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=bosh-dns-adapter?
-  value:
-    name: bosh-dns-adapter
-    properties:
-      internal_domains: ["apps.internal."]
-      dnshttps:
-        client:
-          tls: ((cf_app_sd_client_tls))
-        server:
-          ca: ((cf_app_sd_server_tls.ca))
-    release: cf-networking
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
   value:
