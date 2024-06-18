@@ -225,7 +225,3 @@
     network: ((network_name))
     domain: bosh
 
-- type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=route_emitter/properties/internal_routes?
-  value:
-    enabled: true
