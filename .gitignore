@@ -25,6 +25,7 @@ jwt_*
 # Python
 __pycache__/
 *.py[cod]
+venv
 
 # Python Environments
 .venv
