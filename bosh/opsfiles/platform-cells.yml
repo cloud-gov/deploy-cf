@@ -186,34 +186,6 @@
   path: /instance_groups/name=diego-platform-cell/jobs/name=rep/properties/diego/rep/placement_tags?/-
   value: platform
 
-# Use distinct vxlan policy links for tenant cells
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/provides?/vpa
-  value: {as: vpa-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=silk-daemon/consumes?/vpa
-  value: {from: vpa-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=silk-cni/consumes?/vpa
-  value: {from: vpa-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/consumes?/iptables
-  value: {from: iptables-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=silk-daemon/consumes?/iptables
-  value: {from: iptables-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=netmon/consumes?/iptables
-  value: {from: iptables-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=garden/provides?/iptables
-  value: {as: iptables-tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/consumes?/cni_config
-  value: {from: cni_config_tenant}
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=silk-cni/provides?/cni_config
-  value: {as: cni_config_tenant}
 
 # Add platform cells to DNS aliases
 - type: replace
