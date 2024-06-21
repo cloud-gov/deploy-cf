@@ -27,6 +27,8 @@ jobs:
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    file: cf-manifests/ci/create-diego-platform-cell.yml
   - put: cf-deployment-development
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
@@ -64,6 +66,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
@@ -71,14 +74,12 @@ jobs:
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/content-security-policy.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-main-dev.yml
@@ -545,6 +546,8 @@ jobs:
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    file: cf-manifests/ci/create-diego-platform-cell.yml
   - put: cf-deployment-staging
     params:
       <<: *deploy-params
@@ -578,6 +581,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
@@ -585,13 +589,11 @@ jobs:
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
@@ -1064,6 +1066,8 @@ jobs:
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    file: cf-manifests/ci/create-diego-platform-cell.yml
   - put: cf-deployment-production
     params: &prod-deploy-params
       <<: *deploy-params
@@ -1097,6 +1101,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/log-levels.yml
       - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
       - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
@@ -1106,11 +1111,9 @@ jobs:
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
@@ -1165,6 +1168,8 @@ jobs:
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    file: cf-manifests/ci/create-diego-platform-cell.yml
   - put: cf-deployment-production
     params:
       <<: *prod-deploy-params

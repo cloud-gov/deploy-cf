@@ -1,3 +1,7 @@
+# NOTES:
+# - This ops file is used for ALL diego cell and isolation segments with ci/create-*-diego-cell.sh
+# - This ops file can ONLY contain configurations for `path: /instance_groups/name=diego-cell/`
+
 # Needed because the isolation segment(s) exist
 # Use distinct vxlan policy links for tenant cells
 - type: replace
