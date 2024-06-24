@@ -29,6 +29,13 @@ jobs:
     file: cf-manifests/ci/create-router-logstash.yml
   - task: diego-platform-cell
     file: cf-manifests/ci/create-diego-platform-cell.yml
+
+  - task: diego-cell-iso-seg
+    file: cf-manifests/ci/create-diego-cell-iso-seg.yml
+    params:
+      NUMBER_OF_ISO_SEGS: ((number_of_iso_segs_development))
+
+
   - put: cf-deployment-development
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
@@ -68,6 +75,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
       - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - diego-cell-iso-seg/diego-cell-iso-seg.yml
       - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
