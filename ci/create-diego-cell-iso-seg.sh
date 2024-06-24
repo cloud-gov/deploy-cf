@@ -5,6 +5,7 @@ set -eux
 ## Extract current base configuration for the diego-cell instance group from upstream and apply custom ops files 
 ## NOTE: These ops files can only contain remove/replace for the diego-cell instance group for this to work in the future
 
+
 ## Create the starting point of a configured diego-cell for cg (minus scaling-*.ymls)
 bosh int \
   cf-deployment/cf-deployment.yml \
