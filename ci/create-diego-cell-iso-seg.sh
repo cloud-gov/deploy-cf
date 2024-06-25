@@ -75,5 +75,13 @@ EOF
   cat diego-cell-iso-seg${iso_seg_number}.yml >> diego-cell-iso-seg.yml
 done
 
-cp  diego-cell-iso-seg.yml diego-cell-iso-seg/diego-cell-iso-seg.yml
+## Either return the iso-seg file or a comment only file so "bosh deploy" will work in the main pipeline
+if [ "$NUMBER_OF_ISO_SEGS" -gt 0 ]; then
+  cp  diego-cell-iso-seg.yml diego-cell-iso-seg/diego-cell-iso-seg.yml
+else
+  cat > diego-cell-iso-seg/diego-cell-iso-seg.yml << EOF
+# Intentionally left blank
+EOF
+fi
+
 ## return: diego-cell-iso-seg/diego-cell-iso-seg.yml
