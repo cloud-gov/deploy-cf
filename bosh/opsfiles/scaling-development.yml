@@ -148,10 +148,10 @@
 
 
 # iso-segs
-- type: replace
-  path: /instance_groups/name=diego-cell-iso-seg1/vm_type
-  value: r6i.4xlarge
-
-- type: replace
-  path: /instance_groups/name=diego-cell-iso-seg1/instances
-  value: 2
+#- type: replace
+#  path: /instance_groups/name=diego-cell-iso-seg1/vm_type
+#  value: r6i.4xlarge
+#
+#- type: replace
+#  path: /instance_groups/name=diego-cell-iso-seg1/instances
+#  value: 2
