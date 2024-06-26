@@ -154,4 +154,4 @@
 
 - type: replace
   path: /instance_groups/name=diego-cell-iso-seg1/instances
-  value: 1
+  value: 2
