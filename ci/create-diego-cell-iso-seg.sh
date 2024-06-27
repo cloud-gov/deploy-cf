@@ -80,13 +80,14 @@ done
 
 ## Either return the iso-seg file or a comment only file so "bosh deploy" will work in the main pipeline
 if [ -n "$ISO_SEG_NAMES" ]; then
+  echo "Returing iso seg ops file for ${ISO_SEG_NAMES}..."
   cp  diego-cell-iso-seg.yml diego-cell-iso-seg/diego-cell-iso-seg.yml
 else
+  echo "Returing blank iso seg ops file..."
   cat > diego-cell-iso-seg/diego-cell-iso-seg.yml << EOF
 # Intentionally left blank
 EOF
 fi
 
 echo "Final iso seg ops file written to diego-cell-iso-seg/diego-cell-iso-seg.yml"
-
 ## return: diego-cell-iso-seg/diego-cell-iso-seg.yml
