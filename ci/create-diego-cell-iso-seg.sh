@@ -79,7 +79,7 @@ EOF
 done
 
 ## Either return the iso-seg file or a comment only file so "bosh deploy" will work in the main pipeline
-if [ -z "$ISO_SEG_NAMES" ]; then
+if [ -n "$ISO_SEG_NAMES" ]; then
   cp  diego-cell-iso-seg.yml diego-cell-iso-seg/diego-cell-iso-seg.yml
 else
   cat > diego-cell-iso-seg/diego-cell-iso-seg.yml << EOF
