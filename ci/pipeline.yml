@@ -1743,6 +1743,15 @@ resource_types:
     aws_region: us-gov-west-1
     tag: latest
 
+- name: bosh-io-stemcell
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: bosh-io-stemcell-resource
+    aws_region: us-gov-west-1
+    tag: latest
+
 groups:
 - name: all
   jobs:
