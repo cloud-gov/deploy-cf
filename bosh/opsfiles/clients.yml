@@ -175,6 +175,21 @@
     authorities: scim.userids,scim.invite,scim.read
     redirect-uri: https://cg-ui.((system_domain))/auth/login/callback
 
+- type: replace
+  path: /variables/-
+  value:
+    name: external-domain-broker-client-secret
+    type: password
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/external-domain-broker?
+  value:
+    override: true
+    authorized-grant-types: client_credentials,refresh_token
+    secret: ((external-domain-broker-client-secret))
+    scope: uaa.none
+    authorities: cloud_controller.global_auditor
+
 # Update existing clients
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/access-token-validity
