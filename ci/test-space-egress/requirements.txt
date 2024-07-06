@@ -1,6 +1,6 @@
 argcomplete==1.12.3
 asgiref==3.4.1
-certifi==2023.7.22
+certifi==2024.7.4
 cfenv==0.5.3
 charset-normalizer==2.0.4
 click==8.0.1
