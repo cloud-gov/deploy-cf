@@ -94,7 +94,7 @@ resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
 
 resource "cloudfoundry_space" "external_domain_broker_tests" {
   name = "external-domain-broker-tests"
-  org  = cloudfoundry_org.cloud-gov.id
+  org  = cloudfoundry_org.acceptance_tests.id
   asgs = [
     cloudfoundry_asg.public_networks.id,
     cloudfoundry_asg.dns.id,
