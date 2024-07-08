@@ -92,6 +92,19 @@ resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
   ]
 }
 
+resource "cloudfoundry_space" "external_domain_broker_tests" {
+  name = "external-domain-broker-tests"
+  org  = cloudfoundry_org.cloud-gov.id
+  asgs = [
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+  ]
+  staging_asgs = [
+    cloudfoundry_asg.public_networks.id,
+    cloudfoundry_asg.dns.id,
+  ]
+}
+
 # Federalist/ Pages
 
 resource "cloudfoundry_space" "email" {
