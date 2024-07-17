@@ -21,12 +21,24 @@ jobs:
       trigger: true
     - get: cg-s3-secureproxy-release
       trigger: true
+    - get: general-task
   - task: terraform-secrets
+    image: general-task
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
+    image: general-task
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
+    image: general-task
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    image: general-task
+    file: cf-manifests/ci/create-diego-platform-cell.yml
+  - task: diego-cell-iso-seg
+    image: general-task
+    file: cf-manifests/ci/create-diego-cell-iso-seg.yml
+    params:
+      ISO_SEG_NAMES: "" #((names_of_iso_segs_development))    # Value in credhub
   - put: cf-deployment-development
     params: &deploy-params
       manifest: cf-deployment/cf-deployment.yml
@@ -62,21 +74,24 @@ jobs:
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - diego-cell-iso-seg/diego-cell-iso-seg.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/scaling-development.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/content-security-policy.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-main-dev.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
@@ -85,12 +100,15 @@ jobs:
       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
       - cf-manifests/bosh/opsfiles/aggregate_drains.yml
+      - cf-manifests/bosh/opsfiles/pin-capi.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
 
   - task: enable-cf-features
+    image: general-task
     file: cf-manifests/ci/enable-cf-features.yml
     params:
       CF_API_URL: ((cf-api-url-development))
@@ -144,7 +162,9 @@ jobs:
       resource: terraform-config
       trigger: true
     - get: pipeline-tasks
+    - get: general-task
   - task: terraform-plan
+    image: general-task
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-development
       TERRAFORM_ACTION: plan
@@ -177,7 +197,9 @@ jobs:
       passed: [terraform-plan-development]
       trigger: true
     - get: pipeline-tasks
+    - get: general-task
   - task: terraform-apply
+    image: general-task
     file: terraform-templates/terraform/terraform-apply.yml
     params:
       <<: *tf-development
@@ -231,7 +253,9 @@ jobs:
       passed: [deploy-cf-development]
     - get: tests-timer
       trigger: true
+    - get: general-task
   - task: uaa-client-audit
+    image: general-task
     file: cf-manifests/ci/uaa-client-audit.yml
     params:
       UAA_URL: ((uaa-url-development))
@@ -249,7 +273,9 @@ jobs:
       passed: [deploy-cf-development]
     - get: hourly-timer
       trigger: true
+    - get: general-task
   - task: uaa-monitor-account-creation
+    image: general-task
     file: cf-manifests/ci/uaa-monitor-account-creation.yml
     params:
       UAA_URL: ((uaa-url-development))
@@ -281,7 +307,9 @@ jobs:
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: [deploy-cf-development]
+    - get: general-task
   - task: smoke-tests
+    image: general-task
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
       CI: true
@@ -372,9 +400,9 @@ jobs:
         source:
           aws_access_key_id: ((ecr_aws_key))
           aws_secret_access_key: ((ecr_aws_secret))
-          repository: harden-concourse-task
+          repository: general-task
           aws_region: us-gov-west-1
-          tag: ((harden-concourse-task-tag))
+          tag: latest
       inputs:
         - name: common
       run:
@@ -415,7 +443,9 @@ jobs:
       passed: [deploy-cf-development]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-development]
+    - get: general-task
   - task: deploy-test-env
+    image: general-task
     file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
     params: &test-space-egress-development-params
       CF_API_URL: ((cf-api-url-development))
@@ -426,10 +456,12 @@ jobs:
       CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
     on_failure: &test-space-egress-development-clean-tasks
       task: clean-test-env
+      image: general-task
       file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
       params:
         <<: *test-space-egress-development-params
   - task: run-tests
+    image: general-task
     file: cf-manifests/ci/test-space-egress/task-run-tests.yml
     params:
       <<: *test-space-egress-development-params
@@ -469,7 +501,9 @@ jobs:
       passed: [deploy-cf-development]
     - get: cf-stemcell-jammy
       passed: [deploy-cf-development]
+    - get: general-task
   - task: deploy-test-env
+    image: general-task
     file: cf-manifests/ci/test-headers/task-deploy-test-env.yml
     params: &test-headers-development-params
       CF_API_URL: ((cf-api-url-development))
@@ -480,10 +514,12 @@ jobs:
       CF_APP_DOMAIN: dev.us-gov-west-1.aws-us-gov.cloud.gov
     on_failure: &test-headers-development-clean-tasks
       task: clean-test-env
+      image: general-task
       file: cf-manifests/ci/test-headers/task-clean-test-env.yml
       params:
         <<: *test-headers-development-params
   - task: run-tests
+    image: general-task
     file: cf-manifests/ci/test-headers/task-run-tests.yml
     params:
       <<: *test-headers-development-params
@@ -534,13 +570,25 @@ jobs:
     - get: cg-s3-secureproxy-release
       trigger: true
       passed: [smoke-tests-development]
+    - get: general-task
   - put: timestamp
   - task: terraform-secrets
+    image: general-task
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
+    image: general-task
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
+    image: general-task
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    image: general-task
+    file: cf-manifests/ci/create-diego-platform-cell.yml
+  - task: diego-cell-iso-seg
+    image: general-task
+    file: cf-manifests/ci/create-diego-cell-iso-seg.yml
+    params:
+      ISO_SEG_NAMES: "" #((names_of_iso_segs_staging))    # Value in credhub
   - put: cf-deployment-staging
     params:
       <<: *deploy-params
@@ -572,31 +620,37 @@ jobs:
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - diego-cell-iso-seg/diego-cell-iso-seg.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/scaling-staging.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
-      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
       - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
+      - cf-manifests/bosh/opsfiles/pin-capi.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
 
   - task: enable-cf-features
+    image: general-task
     file: cf-manifests/ci/enable-cf-features.yml
     params:
       CF_API_URL: ((cf-api-url-staging))
@@ -622,6 +676,7 @@ jobs:
         user_org_creation
         hide_marketplace_from_unauthenticated_users
   - task: validate-zdt
+    image: general-task
     file: cf-manifests/ci/check-deployment-was-zdt.yml
     params:
       HEALTH_CHECK_ID: ((staging-route53-healthcheck-id))
@@ -693,7 +748,9 @@ jobs:
       passed: [deploy-cf-staging]
     - get: tests-timer
       trigger: true
+    - get: general-task
   - task: uaa-client-audit
+    image: general-task
     file: cf-manifests/ci/uaa-client-audit.yml
     params:
       UAA_URL: ((uaa-url-staging))
@@ -711,7 +768,9 @@ jobs:
       passed: [deploy-cf-staging]
     - get: hourly-timer
       trigger: true
+    - get: general-task
   - task: uaa-monitor-account-creation
+    image: general-task
     file: cf-manifests/ci/uaa-monitor-account-creation.yml
     params:
       UAA_URL: ((uaa-url-staging))
@@ -740,7 +799,9 @@ jobs:
       passed: [terraform-apply-staging]
       trigger: true
     - get: master-bosh-root-cert
+    - get: general-task
   - task: smoke-tests
+    image: general-task
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
       CI: true
@@ -780,7 +841,9 @@ jobs:
       trigger: true
       passed: [terraform-apply-development]
     - get: pipeline-tasks
+    - get: general-task
   - task: terraform-plan
+    image: general-task
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-staging
       TERRAFORM_ACTION: plan
@@ -813,7 +876,9 @@ jobs:
       trigger: true
       passed: [terraform-plan-staging]
     - get: pipeline-tasks
+    - get: general-task
   - task: terraform-apply
+    image: general-task
     file: terraform-templates/terraform/terraform-apply.yml
     params:
       <<: *tf-staging
@@ -934,7 +999,9 @@ jobs:
       - uaa-smoke-tests-staging
       - test-space-egress-staging
       - smoke-tests-staging
+    - get: general-task
   - task: test-config
+    image: general-task
     file: cf-manifests/ci/acceptance-tests-config.yml
     params:
       API_URL: api.fr-stage.cloud.gov
@@ -988,7 +1055,9 @@ jobs:
     - get: terraform-config
       passed: [terraform-apply-staging]
       trigger: true
+    - get: general-task
   - task: deploy-test-env
+    image: general-task
     file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
     params: &test-space-egress-staging-params
       CF_API_URL: ((cf-api-url-staging))
@@ -999,10 +1068,12 @@ jobs:
       CF_APP_DOMAIN: fr-stage.cloud.gov
     on_failure: &test-space-egress-staging-clean-tasks
       task: clean-test-env
+      image: general-task
       file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
       params:
         <<: *test-space-egress-staging-params
   - task: run-tests
+    image: general-task
     file: cf-manifests/ci/test-space-egress/task-run-tests.yml
     params:
       <<: *test-space-egress-staging-params
@@ -1051,12 +1122,24 @@ jobs:
       passed: [acceptance-tests-staging]
     - get: cg-s3-secureproxy-release
       passed: [acceptance-tests-staging]
+    - get: general-task
   - task: terraform-secrets
+    image: general-task
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
+    image: general-task
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
+    image: general-task
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    image: general-task
+    file: cf-manifests/ci/create-diego-platform-cell.yml
+  - task: diego-cell-iso-seg
+    image: general-task
+    file: cf-manifests/ci/create-diego-cell-iso-seg.yml
+    params:
+      ISO_SEG_NAMES: "" #((names_of_iso_segs_production))    # Value in credhub
   - put: cf-deployment-production
     params: &prod-deploy-params
       <<: *deploy-params
@@ -1088,25 +1171,30 @@ jobs:
       - cf-manifests/bosh/opsfiles/encryption.yml
       - cf-manifests/bosh/opsfiles/sql.yml
       - cf-manifests/bosh/opsfiles/log-levels.yml
+      - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
       - cf-manifests/bosh/opsfiles/instance-profiles.yml
+      - diego-platform-cell/diego-platform-cell.yml
       - cf-manifests/bosh/opsfiles/platform-cells.yml
+      - diego-cell-iso-seg/diego-cell-iso-seg.yml
+      - cf-manifests/bosh/opsfiles/diego-cell-consumes-provides.yml
       - cf-manifests/bosh/opsfiles/diego-cell-disk.yml
-      - cf-manifests/bosh/opsfiles/diego-dns.yml
       - cf-manifests/bosh/opsfiles/scaling-production.yml
       - cf-manifests/bosh/opsfiles/cf-networking.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
-      - cf-manifests/bosh/opsfiles/enable-cflinuxfs4.yml
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials.yml
-      - cf-manifests/bosh/opsfiles/diego-rds-certs.yml
+      - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
+      - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
-      - cf-manifests/bosh/opsfiles/meta-data-v2.yml
+      - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
+      - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
+      - cf-manifests/bosh/opsfiles/pin-capi.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
@@ -1148,18 +1236,31 @@ jobs:
       passed: [plan-cf-production]
     - get: cg-s3-secureproxy-release
       passed: [plan-cf-production]
+    - get: general-task
   - task: terraform-secrets
+    image: general-task
     file: cf-manifests/ci/terraform-secrets.yml
   - task: router-main
+    image: general-task
     file: cf-manifests/ci/create-router-main.yml
   - task: router-logstash
+    image: general-task
     file: cf-manifests/ci/create-router-logstash.yml
+  - task: diego-platform-cell
+    image: general-task
+    file: cf-manifests/ci/create-diego-platform-cell.yml
+  - task: diego-cell-iso-seg
+    image: general-task
+    file: cf-manifests/ci/create-diego-cell-iso-seg.yml
+    params:
+      ISO_SEG_NAMES: "" #((names_of_iso_segs_production))    # Value in credhub
   - put: cf-deployment-production
     params:
       <<: *prod-deploy-params
       dry_run: false
 
   - task: enable-cf-features
+    image: general-task
     file: cf-manifests/ci/enable-cf-features.yml
     params:
       CF_API_URL: ((cf-api-url-production))
@@ -1234,7 +1335,9 @@ jobs:
       passed: [deploy-cf-production]
     - get: tests-timer
       trigger: true
+    - get: general-task
   - task: uaa-client-audit
+    image: general-task
     file: cf-manifests/ci/uaa-client-audit.yml
     params:
       UAA_URL: ((uaa-url-production))
@@ -1252,7 +1355,9 @@ jobs:
       passed: [deploy-cf-production]
     - get: hourly-timer
       trigger: true
+    - get: general-task
   - task: uaa-monitor-account-creation
+    image: general-task
     file: cf-manifests/ci/uaa-monitor-account-creation.yml
     params:
       UAA_URL: ((uaa-url-production))
@@ -1269,7 +1374,9 @@ jobs:
       passed: [deploy-cf-production]
       trigger: true
     - get: master-bosh-root-cert
+    - get: general-task
   - task: smoke-tests
+    image: general-task
     file: cf-manifests/ci/tic-smoke-tests.yml
     params:
       CI: true
@@ -1309,7 +1416,9 @@ jobs:
       passed: [acceptance-tests-staging]
       trigger: true
     - get: pipeline-tasks
+    - get: general-task
   - task: terraform-plan
+    image: general-task
     file: terraform-templates/terraform/terraform-apply.yml
     params: &tf-production
       TERRAFORM_ACTION: plan
@@ -1342,7 +1451,9 @@ jobs:
 
       passed: [terraform-plan-production]
     - get: pipeline-tasks
+    - get: general-task
   - task: terraform-apply
+    image: general-task
     file: terraform-templates/terraform/terraform-apply.yml
     params:
       <<: *tf-production
@@ -1396,7 +1507,9 @@ jobs:
     - get: cf-manifests
       trigger: true
       passed: [deploy-cf-production]
+    - get: general-task
   - task: deploy-test-env
+    image: general-task
     file: cf-manifests/ci/test-space-egress/task-deploy-test-env.yml
     params: &test-space-egress-production-params
       CF_API_URL: ((cf-api-url-production))
@@ -1407,10 +1520,12 @@ jobs:
       CF_APP_DOMAIN: app.cloud.gov
     on_failure: &test-space-egress-production-clean-tasks
       task: clean-test-env
+      image: general-task
       file: cf-manifests/ci/test-space-egress/task-clean-test-env.yml
       params:
         <<: *test-space-egress-production-params
   - task: run-tests
+    image: general-task
     file: cf-manifests/ci/test-space-egress/task-run-tests.yml
     params:
       <<: *test-space-egress-production-params
@@ -1577,6 +1692,15 @@ resources:
 - name: timestamp
   type: time
 
+- name: general-task
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: general-task
+    aws_region: us-gov-west-1
+    tag: latest
+
 resource_types:
 - name: registry-image
   type: registry-image
@@ -1597,14 +1721,40 @@ resource_types:
     tag: latest
 
 - name: bosh-deployment
-  type: docker-image
+  type: registry-image
   source:
-    repository: cloudfoundry/bosh-deployment-resource
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: bosh-deployment-resource
+    aws_region: us-gov-west-1
+    tag: latest
 
 - name: s3-iam
-  type: docker-image
+  type: registry-image
   source:
-    repository: 18fgsa/s3-resource
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: s3-resource
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: time
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: time-resource
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: bosh-io-stemcell
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: bosh-io-stemcell-resource
+    aws_region: us-gov-west-1
+    tag: latest
 
 groups:
 - name: all

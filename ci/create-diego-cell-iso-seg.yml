@@ -4,8 +4,7 @@ inputs:
 - name: cf-deployment
 - name: cf-manifests
 outputs:
-- name: router-logstash
+- name: diego-cell-iso-seg
 
 run:
-  path: cf-manifests/ci/create-router-logstash.sh
-
+  path: cf-manifests/ci/create-diego-cell-iso-seg.sh

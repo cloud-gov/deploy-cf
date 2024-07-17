@@ -67,7 +67,7 @@
     authorized-grant-types: authorization_code,client_credentials
     authorities: scim.read,password.write,uaa.admin,uaa.resource
     access-token-validity: 600
-    refresh-token-validity: 259200
+    refresh-token-validity: 43200
     redirect-uri: https://account.((system_domain))/oauth/login
     name: Invite Users
     autoapprove: true
@@ -134,7 +134,7 @@
     scope: cloud_controller.read,oauth.approvals,openid,scim.userids
     authorized-grant-types: authorization_code,refresh_token
     access-token-validity: 600
-    refresh-token-validity: 259200
+    refresh-token-validity: 43200
     name: Logsearch
     redirect-uri: https://logs.((system_domain))/login
     autoapprove: true
@@ -149,7 +149,7 @@
     authorized-grant-types: authorization_code,client_credentials,refresh_token
     authorities: uaa.none
     access-token-validity: 600
-    refresh-token-validity: 259200
+    refresh-token-validity: 43200
     name: "Dashboard"
     autoapprove: true
     show-on-homepage: true
@@ -175,10 +175,25 @@
     authorities: scim.userids,scim.invite,scim.read
     redirect-uri: https://cg-ui.((system_domain))/auth/login/callback
 
+- type: replace
+  path: /variables/-
+  value:
+    name: external-domain-broker-client-secret
+    type: password
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/external-domain-broker?
+  value:
+    override: true
+    authorized-grant-types: client_credentials,refresh_token
+    secret: ((external-domain-broker-client-secret))
+    scope: uaa.none
+    authorities: cloud_controller.global_auditor
+
 # Update existing clients
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/access-token-validity
   value: 600
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/refresh-token-validity
-  value: 259200
+  value: 43200

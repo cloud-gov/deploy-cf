@@ -3,5 +3,5 @@
 # - This ops file can ONLY contain configurations for `path: /instance_groups/name=diego-cell/`
 
 - type: replace
-  path: /instance_groups/name=diego-cell/vm_extensions/0
-  value: 300GB_ephemeral_disk
+  path: /instance_groups/name=diego-cell/vm_extensions/-
+  value: meta-data-v2

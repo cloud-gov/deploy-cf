@@ -1,6 +1,10 @@
+# NOTES:
+# - This ops file is used for ALL diego cell and isolation segments with ci/create-*-diego-cell.sh
+# - This ops file can ONLY contain configurations for `path: /instance_groups/name=diego-cell/`
+
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs?/trusted_certs/-
-  value: &rds-ca |-
+  value: |-
     # rds-ca-2015-root.pem - expired 3/2020 but still in use some instances
     -----BEGIN CERTIFICATE-----
     MIID9DCCAtygAwIBAgIBQjANBgkqhkiG9w0BAQUFADCBijELMAkGA1UEBhMCVVMx
@@ -258,6 +262,4 @@
     -----END CERTIFICATE-----
 
 
-- type: replace
-  path: /instance_groups/name=diego-platform-cell/jobs/name=cflinuxfs4-rootfs-setup/properties/cflinuxfs4-rootfs?/trusted_certs/-
-  value: *rds-ca
+
