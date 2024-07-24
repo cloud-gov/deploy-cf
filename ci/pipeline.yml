@@ -102,7 +102,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
       - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-      - cf-manifests/bosh/opsfiles/pin-capi.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/development.yml
       - terraform-secrets/terraform.yml
@@ -639,11 +638,12 @@ jobs:
       - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
       - cf-manifests/bosh/opsfiles/router-logstash.yml
+      - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
       - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
-      - cf-manifests/bosh/opsfiles/pin-capi.yml
+      - cf-manifests/bosh/opsfiles/aggregate_drains.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/staging.yml
       - terraform-secrets/terraform.yml
@@ -1193,7 +1193,6 @@ jobs:
       - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement.yml
       - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
-      - cf-manifests/bosh/opsfiles/pin-capi.yml
       vars_files:
       - cf-manifests/bosh/varsfiles/production.yml
       - terraform-secrets/terraform.yml
