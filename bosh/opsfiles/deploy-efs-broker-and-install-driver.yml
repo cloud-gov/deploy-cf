@@ -130,6 +130,11 @@
     - name: route_registrar
       release: routing
       properties:
+        nats:
+          tls:
+            client_cert: ((/bosh/cf-development/nats_client_cert.certificate))
+            client_key: ((/bosh/cf-development/nats_client_cert.private_key))
+            enabled: true
         route_registrar:
           routes:
           - name: efs-broker
