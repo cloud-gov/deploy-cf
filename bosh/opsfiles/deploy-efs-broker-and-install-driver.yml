@@ -1,0 +1,141 @@
+- type: replace
+  path: /releases/-
+  value:
+    name: efs-volume
+    version: latest
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/-
+  value:
+    name: efsdriver
+    release: efs-volume
+    properties:
+      efsdriver:
+        tls:
+          ca_cert: ((efs_ca.certificate))
+          server_cert: ((efsdriver_cert.certificate))
+          server_key: ((efsdriver_cert.private_key))
+          client_cert: ((efsdriver_client_cert.certificate))
+          client_key: ((efsdriver_client_cert.private_key))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: efs-broker-password
+    type: password
+
+- type: replace
+  path: /variables/-
+  value:
+    name: efs-broker-database-password
+    type: password
+
+- type: replace
+  path: /variables/-
+  value:
+    name: efs_ca
+    options:
+      common_name: efs-ca
+      is_ca: true
+    type: certificate
+
+- type: replace
+  path: /variables/-
+  value:
+    name: efsdriver_cert
+    options:
+      ca: efs_ca
+      common_name: 127.0.0.1
+      alternative_names:
+      - 127.0.0.1
+      extended_key_usage:
+      - server_auth
+    type: certificate
+
+- type: replace
+  path: /variables/-
+  value:
+    name: efsdriver_client_cert
+    options:
+      ca: efs_ca
+      common_name: efs-client
+      extended_key_usage:
+      - client_auth
+    type: certificate
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/volume_services_enabled?
+  value: true
+
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/volume_services_enabled?
+  value: true
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/volume_services_enabled?
+  value: true
+
+- type: replace
+  path: /instance_groups/name=database/jobs/name=pxc-mysql/properties/seeded_databases/-
+  value:
+    name: efs-broker
+    password: ((efs-broker-database-password))
+    username: efs-broker
+
+- type: replace
+  path: /instance_groups/-
+  value:
+    name: efsbroker
+    azs:
+    - z1
+    instances: 1
+    vm_type: minimal
+    stemcell: default
+    networks:
+      - name: default
+    jobs:
+    - name: efsbroker
+      release: efs-volume
+      properties:
+        efsbroker:
+          listen-addr: 0.0.0.0:8999
+          service-name: efs
+          service-id: d0406c23-c33f-4f10-804b-9083a486d857
+#          data-dir: /var/vcap/store/efsbroker
+          db_driver: mysql
+          db_username: efs-broker
+          db_password: ((efs-broker-database-password))
+          db_hostname: sql-db.service.cf.internal
+          db_port: 3306
+          db_name: efs-broker
+          release_level_backup: true
+          username: admin
+          password: ((efs-broker-password))
+          aws-region: ((aws-region))
+          aws-access-key-id: ((ecr_aws_key))
+          aws-secret-access-key: ((ecr_aws_secret))
+          # aws-subnet-ids: ((aws-subnet-ids))
+          # aws-security-groups: ((aws-security-groups))
+          # aws-azs: ((aws-azs))
+    - name: efsdriver
+      release: efs-volume
+      properties:
+        efsdriver:
+          listen_addr: 127.0.0.1:7089
+          efs_vol_tools_addr: 127.0.0.1:7090
+          debug_addr: 127.0.0.1:7189
+          driver_path: /var/vcap/data/voldrivers
+          cell_mount_path: /var/vcap/data/volumes/efs
+          log_level: info
+    - name: route_registrar
+      release: routing
+      properties:
+        route_registrar:
+          routes:
+          - name: efs-broker
+            port: 8999
+            registration_interval: 20s
+            tags:
+              component: efs-broker
+            uris:
+            - efs-broker.((system_domain))
