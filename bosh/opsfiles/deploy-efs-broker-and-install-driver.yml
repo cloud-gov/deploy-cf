@@ -102,11 +102,11 @@
           service-name: efs
           service-id: d0406c23-c33f-4f10-804b-9083a486d857
 #          data-dir: /var/vcap/store/efsbroker
-          db_driver: mysql
+          db_driver: postgres
           db_username: efs-broker
           db_password: ((efs-broker-database-password))
           db_hostname: sql-db.service.cf.internal
-          db_port: 3306
+          db_port: 5432
           db_name: efs-broker
           release_level_backup: true
           username: admin
@@ -114,9 +114,9 @@
           aws-region: ((aws_region))
           aws-access-key-id: ((ecr_aws_key))
           aws-secret-access-key: ((ecr_aws_secret))
-          # aws-subnet-ids: ((aws-subnet-ids))
-          # aws-security-groups: ((aws-security-groups))
-          # aws-azs: ((aws-azs))
+          aws-subnet-ids: ((aws-subnet-ids))
+          aws-security-groups: ((aws-security-groups))
+          aws-azs: ((aws-azs))
     - name: efsdriver
       release: efs-volume
       properties:
