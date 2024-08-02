@@ -10,6 +10,9 @@ droplet_directory_key: cf-development-droplets
 app_package_directory_key: cf-development-cc-packages
 resource_directory_key: cf-development-cc-resources
 
+aws-access-key-id: ((ecr_aws_key))
+aws-secret-access-key: ((ecr_aws_secret))
+
 csp-enabled: false
 csp-report-only: true
 csp-report-uri: cspr-collector.fr.cloud.gov
