@@ -1,0 +1,21 @@
+- type: remove
+  path: /variables/name=efs-broker-database-password
+- type: replace
+  path: /instance_groups/name=efsbroker/jobs/name=efsbroker/properties/efsbroker/db_driver
+  value: ((external_database_type))
+- type: replace
+  path: /instance_groups/name=efsbroker/jobs/name=efsbroker/properties/efsbroker/db_port
+  value: ((external_database_port))
+- type: replace
+  path: /instance_groups/name=efsbroker/jobs/name=efsbroker/properties/efsbroker/db_username
+  value: ((external_efsbroker_database_username))
+- type: replace
+  path: /instance_groups/name=efsbroker/jobs/name=efsbroker/properties/efsbroker/db_password
+  value: ((external_efsbroker_database_password))
+- type: replace
+  path: /instance_groups/name=efsbroker/jobs/name=efsbroker/properties/efsbroker/db_hostname
+  value: ((external_efsbroker_database_address))
+- type: replace
+  path: /instance_groups/name=efsbroker/jobs/name=efsbroker/properties/efsbroker/db_name
+  value: ((external_efsbroker_database_name))
+

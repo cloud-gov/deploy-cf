@@ -89,7 +89,7 @@
     azs:
     - z1
     instances: 1
-    vm_type: minimal
+    vm_type: t3.small
     stemcell: default
     networks:
       - name: default
