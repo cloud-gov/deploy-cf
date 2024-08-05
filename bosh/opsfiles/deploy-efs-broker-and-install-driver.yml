@@ -101,11 +101,10 @@
           listen-addr: 0.0.0.0:8999
           service-name: efs
           service-id: d0406c23-c33f-4f10-804b-9083a486d857
-#          data-dir: /var/vcap/store/efsbroker
           db_driver: postgres
           db_username: efs-broker
           db_password: ((efs-broker-database-password))
-          db_hostname: sql-db.service.cf.internal
+          db_hostname: ((external_efsbroker_database_address))
           db_port: 5432
           db_name: efs-broker
           release_level_backup: true
