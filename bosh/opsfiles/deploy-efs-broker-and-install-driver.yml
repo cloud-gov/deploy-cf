@@ -102,8 +102,8 @@
             url: taco.com
             ca:  ((uaa_ca))
           uaa:
-            clientid: ((uaa_client_id))
-            clientsecret: ((uaa_client_secret))
+            clientid: admin
+            clientsecret: ((uaa_admin_client_secret))
             ca: ((uaa_ca))
           listen-addr: 0.0.0.0:8999
           service-name: efs
