@@ -120,7 +120,7 @@
           aws-region: ((aws_region))
           aws-access-key-id: ((ecr_aws_key))
           aws-secret-access-key: ((ecr_aws_secret))
-          aws-subnet-ids: ((aws-subnet-ids))
+          aws-subnet-ids: [((aws-subnet-ids))]
           aws-security-groups: ((aws-security-groups))
           aws-azs: ((aws-azs))
     - name: efsdriver
