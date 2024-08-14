@@ -99,7 +99,7 @@
       properties:
         efsbroker:
           credhub:
-            url: taco.com
+            url: ((credhub_url))
             ca:  ((uaa_ca.ca))
           uaa:
             clientid: admin
