@@ -100,11 +100,11 @@
         efsbroker:
           credhub:
             url: ((credhub_url))
-            ca:  ((uaa_ca.ca))
+            ca:  /master-bosh-ca
           uaa:
             clientid: admin
             clientsecret: ((uaa_admin_client_secret))
-            ca: ((uaa_ca.ca))
+            ca: /master-bosh-ca
           listen-addr: 0.0.0.0:8999
           service-name: efs
           service-id: d0406c23-c33f-4f10-804b-9083a486d857
