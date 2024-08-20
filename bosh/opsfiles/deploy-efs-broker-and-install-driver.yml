@@ -102,7 +102,7 @@
             url: ((credhub_url))
             ca:  ((uaa_ssl.ca))
           uaa:
-            clientid: admin
+            clientid: credhub_cli_user
             clientsecret: ((uaa_admin_client_secret))
             ca: ((uaa_ssl.ca))
           listen-addr: 0.0.0.0:8999
