@@ -101,9 +101,9 @@
           credhub:
             url: ((credhub_url))
             ca:  ((uaa_ssl.ca))
+            clientid: ((credhub_id))
+            clientsecret: ((credhub_secret))
           uaa:
-            clientid: credhub_cli_user
-            clientsecret: ((uaa_admin_client_secret))
             ca: ((uaa_ssl.ca))
           listen-addr: 0.0.0.0:8999
           service-name: efs
@@ -118,8 +118,8 @@
           username: admin
           password: ((efs-broker-password))
           aws-region: ((aws_region))
-          aws-access-key-id: ((ecr_aws_key))
-          aws-secret-access-key: ((ecr_aws_secret))
+          aws-access-key-id: ((efs_aws_key))
+          aws-secret-access-key: ((efs_aws_secret))
           aws-subnet-ids: ((aws-subnet-ids))
           aws-security-groups: ((aws-security-groups))
           aws-azs: ((aws-azs))
