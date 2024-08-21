@@ -94,8 +94,6 @@
     networks:
       - name: default
     jobs:
-    - name: bpm
-      release: bpm
     - name: efsbroker
       release: efs-volume
       properties:
