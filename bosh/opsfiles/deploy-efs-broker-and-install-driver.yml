@@ -150,3 +150,15 @@
               component: efs-broker
             uris:
             - efs-broker.((system_domain))
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=mapfs?
+  value:
+    name: mapfs
+    release: mapfs
+
+- type: replace
+  path: /releases/name=mapfs?
+  value:
+    name: mapfs
+    version: latest
