@@ -105,7 +105,7 @@
             clientsecret: ((credhub_secret))
           uaa:
             ca: ((uaa_ssl.ca))
-          listen-addr: 0.0.0.0:8999
+          listen-addr: 0.0.0.0:7089
           service-name: efs
           service-id: d0406c23-c33f-4f10-804b-9083a486d857
           db_driver: postgres
