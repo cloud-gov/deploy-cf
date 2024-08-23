@@ -105,7 +105,7 @@
             clientsecret: ((credhub_secret))
           uaa:
             ca: ((uaa_ssl.ca))
-          listen-addr: 0.0.0.0:7089
+          listen-addr: 0.0.0.0:8999
           service-name: efs
           service-id: d0406c23-c33f-4f10-804b-9083a486d857
           db_driver: postgres
@@ -127,9 +127,9 @@
       release: efs-volume
       properties:
         efsdriver:
-          listen_addr: 127.0.0.1:7089
-          efs_vol_tools_addr: 127.0.0.1:7090
-          debug_addr: 127.0.0.1:7189
+          listen_addr: 127.0.0.1:7589
+          adminAddress: 127.0.0.1:7590
+          debug_addr: 127.0.0.1:7689
           driver_path: /var/vcap/data/voldrivers
           cell_mount_path: /var/vcap/data/volumes/efs
           log_level: info
