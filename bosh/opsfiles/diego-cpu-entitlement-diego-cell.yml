@@ -3,12 +3,8 @@
 # - This ops file can ONLY contain configurations for `path: /instance_groups/name=diego-cell/`
 
 ### This makes sure that absolute-cpu-entitlement is still emitting in addition to newer cpu_entitlement
-- type: remove
-  path: /instance_groups/name=diego-cell/jobs/name=rep/properties/loggregator/app_metric_exclusion_filter
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=rep/properties/loggregator/app_metric_exclusion_filter?
+  value: []
 
-- type: remove
-  path: /instance_groups/name=diego-cell/jobs/name=route_emitter/properties/loggregator/app_metric_exclusion_filter
-
-- type: remove
-  path: /instance_groups/name=diego-cell/jobs/name=vxlan-policy-agent/properties/loggregator/app_metric_exclusion_filter
 
