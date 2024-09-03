@@ -186,10 +186,12 @@ resource "cloudfoundry_asg" "trusted_local_networks" {
     for_each = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidrs
     iterator = rule
 
-    protocol    = "tcp"
-    description = "Allow access to AWS S3 Gateway"
-    destination = rule.value
-    ports       = "443"
+    content {
+      protocol    = "tcp"
+      description = "Allow access to AWS S3 Gateway"
+      destination = rule.value
+      ports       = "443"
+    }
   }
 }
 
@@ -269,10 +271,12 @@ resource "cloudfoundry_asg" "trusted_local_networks_egress" {
     for_each = data.terraform_remote_state.iaas.outputs.s3_gateway_endpoint_cidrs
     iterator = rule
 
-    protocol    = "tcp"
-    description = "Allow access to AWS S3 Gateway"
-    destination = rule.value
-    ports       = "443"
+    content {
+      protocol    = "tcp"
+      description = "Allow access to AWS S3 Gateway"
+      destination = rule.value
+      ports       = "443"
+    }
   }
 }
 
