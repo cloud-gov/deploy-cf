@@ -47,7 +47,7 @@ resource "cloudfoundry_route" "test_cdn_route" {
 resource "cloudfoundry_service_instance" "test_cdn_instance" {
   name         = "test-cdn-service"
   space        = data.cloudfoundry_space.hello_worlds.id
-  service_plan = data.cloudfoundry_service.external_domain.service_plans["domain-with-cdn"]
+  service_plan = data.cloudfoundry_service.external_domain.service_plans["domain-with-cdn-dedicated-waf"]
   json_params  = "{\"domains\": \"test-cdn.${local.domain_name}\"}"
 }
 
