@@ -635,6 +635,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/smoke-tests.yml
       - cf-manifests/bosh/opsfiles/routing.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
@@ -1185,6 +1186,7 @@ jobs:
       - cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml
       - cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml
       - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
+      - cf-manifests/bosh/opsfiles/rds-ca.yml
       - cf-manifests/bosh/opsfiles/loggregator.yml
       - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
       - cf-manifests/bosh/opsfiles/router-main.yml
