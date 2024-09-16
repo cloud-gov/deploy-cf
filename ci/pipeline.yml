@@ -182,6 +182,11 @@ jobs:
       TF_VAR_iaas_stack_name: development
       TF_VAR_tooling_stack_name: tooling
       TF_VAR_aws_lb_listener_ssl_policy: "ELBSecurityPolicy-TLS13-1-2-FIPS-2023-04"
+      TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+      TF_VAR_external_stack_name: external-development
+      TF_VAR_csb_aws_region_govcloud: ((aws-region))
+      TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
+      TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
   - put: slack
     params:
       text_file: terraform-state/message.txt
