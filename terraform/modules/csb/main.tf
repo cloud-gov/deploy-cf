@@ -44,7 +44,7 @@ resource "cloudfoundry_app" "csb" {
   environment = {
     # General broker configuration
     SECURITY_USER_NAME         = "broker"
-    SECURITY_USER_PASSWORD     = random_password.csb_app_password
+    SECURITY_USER_PASSWORD     = random_password.csb_app_password.result
     TERRAFORM_UPGRADES_ENABLED = true
     BROKERPAK_UPDATES_ENABLED  = true
 
