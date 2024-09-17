@@ -44,7 +44,7 @@ resource "cloudfoundry_app" "csb" {
   environment = {
     # General broker configuration
     SECURITY_USER_NAME         = "broker"
-    SECURITY_USER_PASSWORD     = random_password.csb_app_password
+    SECURITY_USER_PASSWORD     = random_password.csb_app_password.result
     TERRAFORM_UPGRADES_ENABLED = true
     BROKERPAK_UPDATES_ENABLED  = true
 
@@ -57,7 +57,7 @@ resource "cloudfoundry_app" "csb" {
     AWS_REGION_COMMERCIAL            = var.aws_region_commercial
 
     # Other values that are used by convention by all brokerpaks
-    CLOUD_GOV_ENVIRONMENT = var.stack_description
+    CLOUD_GOV_ENVIRONMENT = var.iaas_stack_name
 
     # Brokerpak-specific variables
     CG_SMTP_AWS_ZONE = var.cg_smtp_aws_ses_zone
