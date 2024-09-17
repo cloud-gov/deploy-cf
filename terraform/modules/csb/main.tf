@@ -70,7 +70,7 @@ resource "cloudfoundry_app" "csb" {
 
 resource "cloudfoundry_service_broker" "csb" {
   name     = "csb"
-  password = random_password.csb_app_password
+  password = random_password.csb_app_password.result
   url      = cloudfoundry_app.csb.routes
   username = "broker"
 }

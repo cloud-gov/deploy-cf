@@ -14,6 +14,8 @@ module "csb" {
 
   count = var.iaas_stack_name == "development" ? 1 : 0
 
+  iaas_stack_name = var.iaas_stack_name
+
   rds_host     = data.terraform_remote_state.iaas.outputs.csb.rds.host
   rds_port     = data.terraform_remote_state.iaas.outputs.csb.rds.port
   rds_url      = data.terraform_remote_state.iaas.outputs.csb.rds.url
