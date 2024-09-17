@@ -1,3 +1,8 @@
+variable "iaas_stack_name" {
+  type        = string
+  description = "Like development, staging, or production."
+}
+
 # Database credentials
 
 variable "rds_host" {
