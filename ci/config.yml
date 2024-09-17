@@ -1,0 +1,15 @@
+cf:
+  development:
+    name: cf-development
+    smoke-tests: smoke_tests
+  staging:
+    name: cf-staging
+    smoke-tests: smoke_tests
+  production:
+    name: cf-production
+    smoke-tests: smoke_tests
+# Credhub does not allow empty values, so these variables are defined here. If
+# you want to set these to something non-empty values, add them to Credhub.
+# See uaa-audit-whitelist-production in Credhub for reference.
+uaa-audit-whitelist-development: ""
+uaa-audit-whitelist-staging: ""

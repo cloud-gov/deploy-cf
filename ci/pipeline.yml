@@ -1,5 +1,14 @@
 ---
 jobs:
+  - name: set-self
+    serial_groups: [development, staging, production]
+    plan:
+      - get: src
+        trigger: true
+      - set_pipeline: self
+        file: src/ci/pipeline.yml
+        var_files:
+          - src/ci/config.yml
   - name: deploy-cf-development
     serial_groups: [development]
     serial: true
@@ -13,6 +22,10 @@ jobs:
           - get: cf-manifests
             resource: cf-manifests
             trigger: true
+          - get: src
+            resource: src
+            trigger: false
+            passed: [set-self]
           - get: terraform-yaml
             resource: terraform-yaml-development
           - get: cf-stemcell-jammy
@@ -158,6 +171,10 @@ jobs:
           - get: terraform-templates
             resource: terraform-config
             trigger: true
+          - get: src
+            resource: src
+            trigger: false
+            passed: [set-self]
           - get: terraform-yaml
             resource: terraform-yaml-development
             trigger: true
@@ -1592,19 +1609,28 @@ resources:
     type: git
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
-      uri: ((pipeline-tasks-git-url))
-      branch: ((pipeline-tasks-git-branch))
+      uri: https://github.com/cloud-gov/cg-pipeline-tasks.git
+      branch: main
 
   - name: slack
     type: slack-notification
     source:
       url: ((slack-webhook-url))
 
+  - name: src
+    type: git
+    source:
+      commit_verification_keys: ((cloud-gov-pgp-keys))
+      uri: https://github.com/cloud-gov/cg-deploy-cf.git
+      branch: main
+      paths:
+        - ci/*
+
   - name: cf-manifests
     type: git
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
-      uri: ((cf-manifests-git-url))
+      uri: https://github.com/cloud-gov/cg-deploy-cf.git
       branch: main
       paths:
         - ci/*
@@ -1614,7 +1640,7 @@ resources:
     type: git
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
-      uri: ((cf-manifests-git-url))
+      uri: https://github.com/cloud-gov/cg-deploy-cf.git
       branch: main
       paths:
         - terraform/*
@@ -1777,6 +1803,7 @@ resource_types:
 groups:
   - name: all
     jobs:
+      - set-self
       - deploy-cf-development
       - terraform-plan-development
       - terraform-apply-development
@@ -1808,6 +1835,7 @@ groups:
       - test-space-egress-production
   - name: development
     jobs:
+      - set-self
       - deploy-cf-development
       - terraform-plan-development
       - terraform-apply-development
@@ -1820,6 +1848,7 @@ groups:
       - test-headers-development
   - name: staging
     jobs:
+      - set-self
       - deploy-cf-staging
       - terraform-plan-staging
       - terraform-apply-staging
@@ -1832,6 +1861,7 @@ groups:
       - test-space-egress-staging
   - name: production
     jobs:
+      - set-self
       - plan-cf-production
       - deploy-cf-production
       - terraform-plan-production
