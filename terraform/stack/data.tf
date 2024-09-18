@@ -17,7 +17,10 @@ data "terraform_remote_state" "tooling" {
 data "terraform_remote_state" "external" {
   backend = "s3"
   config = {
-    bucket = var.remote_state_bucket
-    key    = "${var.external_stack_name}/terraform.tfstate"
+    access_key = var.external_remote_state_reader_access_key_id
+    secret_key = var.external_remote_state_reader_secret_access_key
+    region     = var.csb_aws_region_commercial
+    bucket     = var.remote_state_bucket_external
+    key        = "${var.external_stack_name}/terraform.tfstate"
   }
 }
