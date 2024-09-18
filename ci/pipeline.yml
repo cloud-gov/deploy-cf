@@ -193,8 +193,8 @@ jobs:
           CF_CLIENT_ID: ((cf-client-id-development))
           CF_CLIENT_SECRET: ((cf-client-secret-development))
           TF_VAR_remote_state_bucket: ((tf-state-bucket))
-          TF_VAR_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
-          TF_VAR_remote_state_reader_secret_access_key: ((development-tf-state-secret-access-key))
+          TF_VAR_external_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
+          TF_VAR_external_remote_state_reader_secret_access_key: ((development-tf-state-secret-access-key))
           TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_iaas_stack_name: development
           TF_VAR_tooling_stack_name: tooling
