@@ -22,6 +22,11 @@ variable "external_remote_state_reader_secret_access_key" {
   description = "Secret access key for the IAM user that has permission to read from the state bucket."
 }
 
+variable "external_remote_state_reader_region" {
+  type        = string
+  description = "The region in which the remote state bucket is located."
+}
+
 variable "external_stack_name" {
   type = string
 }
