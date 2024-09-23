@@ -205,6 +205,10 @@ jobs:
           TF_VAR_csb_aws_region_govcloud: ((aws-region))
           TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
           TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
+          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_org_name: ((csb-org-name))
+          TF_VAR_csb_space_name: ((csb-space-name))
+          TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-development))
       - put: slack
         params:
           text_file: terraform-state/message.txt

@@ -33,4 +33,9 @@ module "csb" {
   aws_access_key_id_commercial     = data.terraform_remote_state.external.outputs.csb.broker_user.access_key_id_curr
   aws_secret_access_key_commercial = data.terraform_remote_state.external.outputs.csb.broker_user.secret_access_key_curr
   aws_region_commercial            = var.csb_aws_region_commercial
+
+  org_name = var.csb_org_name
+  space_name = var.csb_space_name
+  docker_image_name = var.csb_docker_image_name
+  broker_route_domain = var.csb_broker_route_domain
 }
