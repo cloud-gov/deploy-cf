@@ -1,6 +1,11 @@
+data "cloudfoundry_space" "services" {
+  name     = var.space_name
+  org_name = var.org_name
+}
+
 resource "cloudfoundry_user_provided_service" "db" {
   name  = "csb-db"
-  space = "cloud-gov/services"
+  space = data.cloudfoundry_space.services.id
   credentials = {
     "db_name"  = var.rds_name
     "host"     = var.rds_host
@@ -23,9 +28,9 @@ resource "random_password" "csb_app_password" {
 
 resource "cloudfoundry_app" "csb" {
   name  = "csb"
-  space = "cloud-gov/services"
+  space = data.cloudfoundry_space.services.id
 
-  docker_image = "135676904304.dkr.ecr.us-gov-west-1.amazonaws.com/csb:latest"
+  docker_image = "${var.docker_image_name}${var.docker_image_version}"
   docker_credentials = {
     "username" = var.ecr_access_key_id
     "password" = var.ecr_secret_access_key
@@ -64,8 +69,18 @@ resource "cloudfoundry_app" "csb" {
   }
 
   routes {
-    route = "csb"
+    route = cloudfoundry_route.csb.id
   }
+}
+
+data "cloudfoundry_domain" "platform_components" {
+  name = var.broker_route_domain
+}
+
+resource "cloudfoundry_route" "csb" {
+  domain   = data.cloudfoundry_domain.platform_components.id
+  hostname = "services"
+  space    = data.cloudfoundry_space.services.id
 }
 
 resource "cloudfoundry_service_broker" "csb" {

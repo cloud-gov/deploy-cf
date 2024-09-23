@@ -85,3 +85,29 @@ variable "aws_secret_access_key_commercial" {
 variable "aws_region_commercial" {
   type = string
 }
+
+variable "org_name" {
+  type        = string
+  description = "The name of the Cloud Foundry organization in which the broker will be deployed."
+}
+
+variable "space_name" {
+  type        = string
+  description = "The name of the Cloud Foundry space in which the broker will be deployed."
+}
+
+variable "docker_image_name" {
+  type        = string
+  description = "Full name (but not tag or SHA) of the Docker image the broker will use."
+}
+
+variable "docker_image_version" {
+  type        = string
+  description = "Tag or SHA of the Docker image the broker will use. For example, ':latest' or '@sha256:abc123...'."
+  default     = ":latest"
+}
+
+variable "broker_route_domain" {
+  type        = string
+  description = "The domain under which the broker's route will be created. For example, 'fr.cloud.gov'."
+}

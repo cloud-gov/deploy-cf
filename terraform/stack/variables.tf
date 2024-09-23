@@ -45,3 +45,19 @@ variable "csb_aws_region_commercial" {
 variable "csb_cg_smtp_aws_ses_zone" {
   type = string
 }
+
+variable "csb_docker_image_name" {
+  type = string
+}
+
+variable "csb_org_name" {
+  type = string
+}
+
+variable "csb_space_name" {
+  type = string
+}
+
+variable "csb_broker_route_domain" {
+  type = string
+}
