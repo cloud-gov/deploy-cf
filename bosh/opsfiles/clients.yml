@@ -128,6 +128,20 @@
     secret: ((buildpack-notifier-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch-dashboards-proxy-ci?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: scim.write,uaa.admin
+    secret: ((opensearch-dashboards-proxy-ci-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-dashboards-proxy-ci-secret
+    type: password
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/kibana_oauth2_client?
   value:
     override: true
