@@ -132,7 +132,7 @@
   value:
     override: true
     authorized-grant-types: client_credentials
-    authorities: scim.write,uaa.admin
+    authorities: scim.write,uaa.admin,password.write
     secret: ((opensearch-dashboards-proxy-ci-secret))
 
 - type: replace
