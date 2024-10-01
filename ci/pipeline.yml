@@ -142,6 +142,7 @@ jobs:
             service_instance_sharing
             resource_matching
             route_sharing
+            diego_cnb
           DISABLED_FEATURE_FLAGS: |
             user_org_creation
             hide_marketplace_from_unauthenticated_users
