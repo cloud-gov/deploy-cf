@@ -1226,7 +1226,9 @@ jobs:
             - cf-manifests/bosh/opsfiles/router-logstash.yml
             - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
             - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
+            - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
+            - cf-manifests/bosh/opsfiles/aggregate_drains.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/production.yml
             - terraform-secrets/terraform.yml
