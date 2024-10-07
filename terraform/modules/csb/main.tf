@@ -15,6 +15,9 @@ resource "cloudfoundry_user_provided_service" "db" {
     "uri"      = var.rds_url
     "username" = var.rds_username
   }
+  # Required so the broker can find this entry in VCAP_SERVICES.
+  # https://github.com/cloudfoundry/cloud-service-broker/blob/d1a7c753ed878b4d3828f1db73dfcceed2f9bdce/dbservice/vcap.go#L104
+  tags = ["mysql"]
 }
 
 resource "random_password" "csb_app_password" {
@@ -38,9 +41,8 @@ resource "cloudfoundry_app" "csb" {
 
   command    = "/app/csb serve"
   instances  = var.instances
-  memory     = 1
-  disk_quota = 5
-  strategy   = "blue-green"
+  memory     = 1 * 1024 # 1GB
+  disk_quota = 7 * 1024 # 7GB
 
   service_binding {
     service_instance = cloudfoundry_user_provided_service.db.id
@@ -88,4 +90,6 @@ resource "cloudfoundry_service_broker" "csb" {
   password = random_password.csb_app_password.result
   url      = "https://${cloudfoundry_route.csb.hostname}.${data.cloudfoundry_domain.platform_components.domain}"
   username = "broker"
+
+  depends_on = [cloudfoundry_app.csb]
 }
