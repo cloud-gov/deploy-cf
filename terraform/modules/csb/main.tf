@@ -3,23 +3,6 @@ data "cloudfoundry_space" "services" {
   org_name = var.org_name
 }
 
-resource "cloudfoundry_user_provided_service" "db" {
-  name  = "csb-db"
-  space = data.cloudfoundry_space.services.id
-  credentials = {
-    "db_name"  = var.rds_name
-    "host"     = var.rds_host
-    "name"     = var.rds_name
-    "password" = var.rds_password
-    "port"     = var.rds_port
-    "uri"      = var.rds_url
-    "username" = var.rds_username
-  }
-  # Required so the broker can find this entry in VCAP_SERVICES.
-  # https://github.com/cloudfoundry/cloud-service-broker/blob/d1a7c753ed878b4d3828f1db73dfcceed2f9bdce/dbservice/vcap.go#L104
-  tags = ["mysql"]
-}
-
 resource "random_password" "csb_app_password" {
   length      = 32
   special     = false
@@ -44,12 +27,11 @@ resource "cloudfoundry_app" "csb" {
   memory     = 1 * 1024 # 1GB
   disk_quota = 7 * 1024 # 7GB
 
-  service_binding {
-    service_instance = cloudfoundry_user_provided_service.db.id
-  }
-
   environment = {
     # General broker configuration
+    DB_HOST                    = var.rds_host
+    DB_USERNAME                = var.rds_name
+    DB_PASSWORD                = var.rds_password
     SECURITY_USER_NAME         = "broker"
     SECURITY_USER_PASSWORD     = random_password.csb_app_password.result
     TERRAFORM_UPGRADES_ENABLED = true
