@@ -18,7 +18,6 @@ module "csb" {
 
   rds_host     = data.terraform_remote_state.iaas.outputs.csb.rds.host
   rds_port     = data.terraform_remote_state.iaas.outputs.csb.rds.port
-  rds_url      = data.terraform_remote_state.iaas.outputs.csb.rds.url
   rds_name     = data.terraform_remote_state.iaas.outputs.csb.rds.name
   rds_username = data.terraform_remote_state.iaas.outputs.csb.rds.username
   rds_password = data.terraform_remote_state.iaas.outputs.csb.rds.password
@@ -34,8 +33,8 @@ module "csb" {
   aws_secret_access_key_commercial = data.terraform_remote_state.external.outputs.csb.broker_user.secret_access_key_curr
   aws_region_commercial            = var.csb_aws_region_commercial
 
-  org_name = var.csb_org_name
-  space_name = var.csb_space_name
-  docker_image_name = var.csb_docker_image_name
+  org_name            = var.csb_org_name
+  space_name          = var.csb_space_name
+  docker_image_name   = var.csb_docker_image_name
   broker_route_domain = var.csb_broker_route_domain
 }
