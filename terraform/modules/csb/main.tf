@@ -29,13 +29,16 @@ resource "cloudfoundry_app" "csb" {
 
   environment = {
     # General broker configuration
+    BROKERPAK_UPDATES_ENABLED  = true
     DB_HOST                    = var.rds_host
-    DB_USERNAME                = var.rds_name
+    DB_NAME                    = var.rds_name
     DB_PASSWORD                = var.rds_password
+    DB_PORT                    = var.rds_port
+    DB_TLS                     = true
+    DB_USERNAME                = var.rds_name
     SECURITY_USER_NAME         = "broker"
     SECURITY_USER_PASSWORD     = random_password.csb_app_password.result
     TERRAFORM_UPGRADES_ENABLED = true
-    BROKERPAK_UPDATES_ENABLED  = true
 
     # Access keys for managing resources provisioned by brokerpaks
     AWS_ACCESS_KEY_ID_GOVCLOUD       = var.aws_access_key_id_govcloud
@@ -74,4 +77,9 @@ resource "cloudfoundry_service_broker" "csb" {
   username = "broker"
 
   depends_on = [cloudfoundry_app.csb]
+}
+
+resource "cloudfoundry_service_plan_access" "smtp" {
+  plan   = cloudfoundry_service_broker.csb.service_plans["cg-smtp/base"]
+  public = true
 }

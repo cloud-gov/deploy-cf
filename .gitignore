@@ -31,3 +31,6 @@ venv
 .venv
 .terraform
 .terraform.lock.hcl
+
+# Terraform
+*.tfvars

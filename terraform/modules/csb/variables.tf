@@ -15,11 +15,6 @@ variable "rds_port" {
   description = "Port of the RDS instance for the Cloud Service Broker."
 }
 
-variable "rds_url" {
-  type        = string
-  description = "Full URL of the RDS instance for the Cloud Service Broker."
-}
-
 variable "rds_name" {
   type        = string
   description = "Database name within the RDS instance for the Cloud Service Broker."
