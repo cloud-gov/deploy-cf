@@ -78,3 +78,8 @@ resource "cloudfoundry_service_broker" "csb" {
 
   depends_on = [cloudfoundry_app.csb]
 }
+
+resource "cloudfoundry_service_plan_access" "smtp" {
+  plan   = cloudfoundry_service_broker.csb.service_plans["cg-smtp/base"]
+  public = true
+}
