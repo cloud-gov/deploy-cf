@@ -1,0 +1,14 @@
+# NOTES:
+# - This should only be used in development until this message is removed
+# - This is experimental
+
+# Add All In One Wazuh to DNS aliases
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
+  value:
+    query: '_'
+    instance_group: wazuh
+    deployment: wazuh
+    network: ((network_name))
+    domain: bosh
+
