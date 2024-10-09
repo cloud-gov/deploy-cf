@@ -3,12 +3,15 @@
 # - This is experimental
 
 # Add All In One Wazuh to DNS aliases
-- type: replace
-  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=_.cell.service.cf.internal/targets/-
-  value:
-    query: '_'
-    instance_group: wazuh
-    deployment: wazuh
-    network: ((network_name))
-    domain: bosh
 
+
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
+  value:
+    domain: wazuh.service.cf.internal
+    targets:
+    - deployment: wazuh
+      domain: bosh
+      instance_group: wazuh
+      network: default
+      query: '*'
