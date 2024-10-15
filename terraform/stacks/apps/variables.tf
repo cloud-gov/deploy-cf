@@ -3,12 +3,14 @@ variable "stack_name" {
   description = "One of development, staging, production."
 }
 
-variable "remote_state_bucket" {
-  type = string
+variable "remote_state_bucket_iaas" {
+  type        = string
+  description = "Bucket where remote state for AWS GovCloud is stored."
 }
 
 variable "remote_state_bucket_external" {
-  type = string
+  type        = string
+  description = "Bucket where remote state for AWS Commercial is stored."
 }
 
 variable "external_remote_state_reader_access_key_id" {
@@ -29,9 +31,6 @@ variable "external_remote_state_reader_region" {
 
 variable "external_stack_name" {
   type = string
-}
-
-variable "domain_name" {
 }
 
 variable "csb_aws_region_govcloud" {

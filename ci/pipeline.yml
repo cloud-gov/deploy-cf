@@ -235,6 +235,12 @@ jobs:
             resource: terraform-config
             trigger: true
             passed: [set-self]
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
+          - get: terraform-yaml
+            resource: terraform-yaml-development
+            trigger: true
           - get: pipeline-tasks
           - get: general-task
       - task: terraform-plan
@@ -256,13 +262,12 @@ jobs:
           TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
-          TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_external_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
           TF_VAR_external_remote_state_reader_region: ((development-tf-state-region))
           TF_VAR_external_remote_state_reader_secret_access_key: ((development-tf-state-secret-access-key))
           TF_VAR_external_stack_name: external-development
-          TF_VAR_remote_state_bucket: ((tf-state-bucket))
           TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+          TF_VAR_remote_state_bucket_iaas: ((tf-state-bucket))
           TF_VAR_stack_name: development
       - put: slack
         params:
@@ -981,6 +986,12 @@ jobs:
             resource: terraform-config
             trigger: true
             passed: [terraform-apply-apps-development]
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
+          - get: terraform-yaml
+            resource: terraform-yaml-staging
+            trigger: true
           - get: pipeline-tasks
           - get: general-task
       - task: terraform-plan
@@ -1002,13 +1013,12 @@ jobs:
           TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
-          TF_VAR_domain_name: fr-stage.cloud.gov
           TF_VAR_external_remote_state_reader_access_key_id: ((staging-tf-state-access-key-id))
           TF_VAR_external_remote_state_reader_region: ((staging-tf-state-region))
           TF_VAR_external_remote_state_reader_secret_access_key: ((staging-tf-state-secret-access-key))
           TF_VAR_external_stack_name: external-staging
-          TF_VAR_remote_state_bucket: ((tf-state-bucket))
           TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+          TF_VAR_remote_state_bucket_iaas: ((tf-state-bucket))
           TF_VAR_stack_name: staging
       - put: slack
         params:
@@ -1624,6 +1634,12 @@ jobs:
             resource: terraform-config
             passed: [terraform-apply-apps-staging]
             trigger: true
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
+          - get: terraform-yaml
+            resource: terraform-yaml-production
+            trigger: true
           - get: pipeline-tasks
           - get: general-task
       - task: terraform-plan
@@ -1645,13 +1661,12 @@ jobs:
           TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
-          TF_VAR_domain_name: cloud.gov
           TF_VAR_external_remote_state_reader_access_key_id: ((production-tf-state-access-key-id))
           TF_VAR_external_remote_state_reader_region: ((production-tf-state-region))
           TF_VAR_external_remote_state_reader_secret_access_key: ((production-tf-state-secret-access-key))
           TF_VAR_external_stack_name: external-production
-          TF_VAR_remote_state_bucket: ((tf-state-bucket))
           TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+          TF_VAR_remote_state_bucket_iaas: ((tf-state-bucket))
           TF_VAR_stack_name: production
       - put: slack
         params:
