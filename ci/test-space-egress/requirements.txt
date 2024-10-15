@@ -20,7 +20,7 @@ pyparsing==2.4.7
 regex==2021.8.28
 requests==2.32.2
 six==1.16.0
-starlette==0.37.2
+starlette==0.40.0
 tomli==1.2.1
 typing-extensions==4.8.0
 urllib3==1.26.19
