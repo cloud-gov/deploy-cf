@@ -234,6 +234,9 @@ jobs:
           - get: terraform-templates
             resource: terraform-config
             trigger: true
+          - get: src
+            resource: src
+            trigger: false
             passed: [set-self]
           # Changes to the iaas state file trigger a build. This is not a step
           # input because the state is accessed separately using a
