@@ -3,23 +3,6 @@ data "cloudfoundry_space" "services" {
   org_name = var.org_name
 }
 
-resource "cloudfoundry_user_provided_service" "db" {
-  name  = "csb-db"
-  space = data.cloudfoundry_space.services.id
-  credentials = {
-    "db_name"  = var.rds_name
-    "host"     = var.rds_host
-    "name"     = var.rds_name
-    "password" = var.rds_password
-    "port"     = var.rds_port
-    "uri"      = var.rds_url
-    "username" = var.rds_username
-  }
-  # Required so the broker can find this entry in VCAP_SERVICES.
-  # https://github.com/cloudfoundry/cloud-service-broker/blob/d1a7c753ed878b4d3828f1db73dfcceed2f9bdce/dbservice/vcap.go#L104
-  tags = ["mysql"]
-}
-
 resource "random_password" "csb_app_password" {
   length      = 32
   special     = false
@@ -44,16 +27,18 @@ resource "cloudfoundry_app" "csb" {
   memory     = 1 * 1024 # 1GB
   disk_quota = 7 * 1024 # 7GB
 
-  service_binding {
-    service_instance = cloudfoundry_user_provided_service.db.id
-  }
-
   environment = {
     # General broker configuration
+    BROKERPAK_UPDATES_ENABLED  = true
+    DB_HOST                    = var.rds_host
+    DB_NAME                    = var.rds_name
+    DB_PASSWORD                = var.rds_password
+    DB_PORT                    = var.rds_port
+    DB_TLS                     = true
+    DB_USERNAME                = var.rds_name
     SECURITY_USER_NAME         = "broker"
     SECURITY_USER_PASSWORD     = random_password.csb_app_password.result
     TERRAFORM_UPGRADES_ENABLED = true
-    BROKERPAK_UPDATES_ENABLED  = true
 
     # Access keys for managing resources provisioned by brokerpaks
     AWS_ACCESS_KEY_ID_GOVCLOUD       = var.aws_access_key_id_govcloud
@@ -64,7 +49,7 @@ resource "cloudfoundry_app" "csb" {
     AWS_REGION_COMMERCIAL            = var.aws_region_commercial
 
     # Other values that are used by convention by all brokerpaks
-    CLOUD_GOV_ENVIRONMENT = var.iaas_stack_name
+    CLOUD_GOV_ENVIRONMENT = var.stack_name
 
     # Brokerpak-specific variables
     CG_SMTP_AWS_ZONE = var.cg_smtp_aws_ses_zone
@@ -92,4 +77,9 @@ resource "cloudfoundry_service_broker" "csb" {
   username = "broker"
 
   depends_on = [cloudfoundry_app.csb]
+}
+
+resource "cloudfoundry_service_plan_access" "smtp" {
+  plan   = cloudfoundry_service_broker.csb.service_plans["cg-smtp/base"]
+  public = true
 }

@@ -10,7 +10,6 @@
 - type: remove
   path: /instance_groups/name=router-logstash/jobs/name=gorouter/properties/routing_api
 
-
 # From cf-manifests/bosh/opsfiles/secureproxy.yml
 - type: replace
   path: /instance_groups/name=router-logstash/jobs/-
@@ -46,11 +45,11 @@
           }
         tic:
           host_whitelist:
-          - hostname: api.((system_domain))
-            exclude:
-            - ^/v2/info
-          - hostname: dashboard.((system_domain))
-            exclude: []
+            - hostname: api.((system_domain))
+              exclude:
+                - ^/v2/info
+            - hostname: dashboard.((system_domain))
+              exclude: []
           secret: ((tic-secret))
           whitelist: ((tic-whitelist))
           proxy_whitelist: ((tic-proxy-whitelist))
@@ -83,7 +82,6 @@
   path: /instance_groups/name=router-logstash/jobs/name=gorouter/properties/request_timeout_in_seconds?
   value: 3600
 
-
 # Needed for BOSH DNS, concatenate the new router group to the existing one (not overwrite)
 - type: replace
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=gorouter.service.cf.internal/targets/instance_group=router:after
@@ -92,9 +90,7 @@
     domain: bosh
     instance_group: router-logstash
     network: ((network_name))
-    query: '*'
-
-
+    query: "*"
 
 # Set vm_extension, need to wipe the existing default array value of cf-router-network-properties with cf-router-logstash-network-properties
 - type: remove
@@ -102,8 +98,7 @@
 - type: replace
   path: /instance_groups/name=router-logstash/vm_extensions?
   value:
-  - cf-router-logstash-network-properties
-
+    - cf-router-logstash-network-properties
 
 # Used to avoid bosh link error: "Failed to resolve link 'router' with type 'http-router'..."
 - type: replace
@@ -111,19 +106,22 @@
   value:
     gorouter: nil
 
-
 - type: replace
   path: /instance_groups/name=router-logstash/jobs/name=gorouter/properties/router/http_rewrite?
   value:
     responses:
       add_headers_if_not_present:
-      - name: "Strict-Transport-Security"
-        value: "max-age=31536000"
-      - name: "X-Content-Type-Options"
-        value: "nosniff"
-      - name: "X-XSS-Protection"
-        value: "1; mode=block"
-      - name: "Content-Type"
-        value: "text/plain; charset=utf-8"
-      - name: "X-Frame-Options"
-        value: "DENY"
+        - name: "Strict-Transport-Security"
+          value: "max-age=31536000"
+        - name: "X-Content-Type-Options"
+          value: "nosniff"
+        - name: "X-XSS-Protection"
+          value: "1; mode=block"
+        - name: "Content-Type"
+          value: "text/plain; charset=utf-8"
+        - name: "X-Frame-Options"
+          value: "DENY"
+
+- type: replace
+  path: /instance_groups/name=router-logstash/jobs/name=gorouter/properties/router/max_tls_version?
+  value: TLSv1.3

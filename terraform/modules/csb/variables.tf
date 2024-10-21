@@ -1,4 +1,4 @@
-variable "iaas_stack_name" {
+variable "stack_name" {
   type        = string
   description = "Like development, staging, or production."
 }
@@ -13,11 +13,6 @@ variable "rds_host" {
 variable "rds_port" {
   type        = string
   description = "Port of the RDS instance for the Cloud Service Broker."
-}
-
-variable "rds_url" {
-  type        = string
-  description = "Full URL of the RDS instance for the Cloud Service Broker."
 }
 
 variable "rds_name" {

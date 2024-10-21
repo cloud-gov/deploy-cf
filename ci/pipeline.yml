@@ -115,6 +115,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
+            - cf-manifests/bosh/opsfiles/wazuh.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
@@ -176,6 +177,9 @@ jobs:
             resource: src
             trigger: false
             passed: [set-self]
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
           - get: terraform-yaml
             resource: terraform-yaml-development
             trigger: true
@@ -186,7 +190,7 @@ jobs:
         file: terraform-templates/terraform/terraform-apply.yml
         params: &tf-development
           TERRAFORM_ACTION: plan
-          TEMPLATE_SUBDIR: terraform/stack
+          TEMPLATE_SUBDIR: terraform/stacks/cf
           STACK_NAME: cf-development
           S3_TFSTATE_BUCKET: ((tf-state-bucket))
           AWS_DEFAULT_REGION: ((aws-region))
@@ -194,22 +198,10 @@ jobs:
           CF_CLIENT_ID: ((cf-client-id-development))
           CF_CLIENT_SECRET: ((cf-client-secret-development))
           TF_VAR_remote_state_bucket: ((tf-state-bucket))
-          TF_VAR_external_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
-          TF_VAR_external_remote_state_reader_secret_access_key: ((development-tf-state-secret-access-key))
-          TF_VAR_external_remote_state_reader_region: ((development-tf-state-region))
           TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_iaas_stack_name: development
           TF_VAR_tooling_stack_name: tooling
           TF_VAR_aws_lb_listener_ssl_policy: "ELBSecurityPolicy-TLS13-1-2-FIPS-2023-04"
-          TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
-          TF_VAR_external_stack_name: external-development
-          TF_VAR_csb_aws_region_govcloud: ((aws-region))
-          TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
-          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
-          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
-          TF_VAR_csb_org_name: ((csb-org-name))
-          TF_VAR_csb_space_name: ((csb-space-name))
-          TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-development))
       - put: slack
         params:
           text_file: terraform-state/message.txt
@@ -234,6 +226,76 @@ jobs:
         file: terraform-templates/terraform/terraform-apply.yml
         params:
           <<: *tf-development
+          TERRAFORM_ACTION: apply
+
+  - name: terraform-plan-apps-development
+    plan:
+      - in_parallel:
+          - get: terraform-templates
+            resource: terraform-config
+            trigger: true
+          - get: src
+            resource: src
+            trigger: false
+            passed: [set-self]
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
+          - get: terraform-yaml
+            resource: terraform-yaml-development
+            trigger: true
+          - get: pipeline-tasks
+          - get: general-task
+      - task: terraform-plan
+        image: general-task
+        file: terraform-templates/terraform/terraform-apply.yml
+        params: &tf-apps-development
+          TERRAFORM_ACTION: plan
+          TEMPLATE_SUBDIR: terraform/stacks/apps
+          STACK_NAME: cf-apps-development
+          S3_TFSTATE_BUCKET: ((tf-state-bucket))
+          AWS_DEFAULT_REGION: ((aws-region))
+          CF_API_URL: ((cf-api-url-development))
+          CF_CLIENT_ID: ((cf-client-id-development))
+          CF_CLIENT_SECRET: ((cf-client-secret-development))
+          TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
+          TF_VAR_csb_aws_region_govcloud: ((aws-region))
+          TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-development))
+          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
+          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_org_name: ((csb-org-name))
+          TF_VAR_csb_space_name: ((csb-space-name))
+          TF_VAR_external_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
+          TF_VAR_external_remote_state_reader_region: ((development-tf-state-region))
+          TF_VAR_external_remote_state_reader_secret_access_key: ((development-tf-state-secret-access-key))
+          TF_VAR_external_stack_name: external-development
+          TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+          TF_VAR_remote_state_bucket_iaas: ((tf-state-bucket))
+          TF_VAR_stack_name: development
+      - put: slack
+        params:
+          text_file: terraform-state/message.txt
+          text: |
+            :terraform: $BUILD_JOB_NAME needs review
+            <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          channel: "#cg-platform-news"
+          username: ((slack-username))
+          icon_url: ((slack-icon-url))
+
+  - name: terraform-apply-apps-development
+    plan:
+      - in_parallel:
+          - get: terraform-templates
+            resource: terraform-config
+            passed: [terraform-plan-apps-development]
+            trigger: true
+          - get: pipeline-tasks
+          - get: general-task
+      - task: terraform-apply
+        image: general-task
+        file: terraform-templates/terraform/terraform-apply.yml
+        params:
+          <<: *tf-apps-development
           TERRAFORM_ACTION: apply
 
   - name: uaa-smoke-tests-development
@@ -870,6 +932,9 @@ jobs:
             resource: terraform-config
             trigger: true
             passed: [terraform-apply-development]
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
           - get: terraform-yaml
             resource: terraform-yaml-staging
             trigger: true
@@ -880,7 +945,7 @@ jobs:
         file: terraform-templates/terraform/terraform-apply.yml
         params: &tf-staging
           TERRAFORM_ACTION: plan
-          TEMPLATE_SUBDIR: terraform/stack
+          TEMPLATE_SUBDIR: terraform/stacks/cf
           STACK_NAME: cf-staging
           S3_TFSTATE_BUCKET: ((tf-state-bucket))
           AWS_DEFAULT_REGION: ((aws-region))
@@ -915,6 +980,73 @@ jobs:
         file: terraform-templates/terraform/terraform-apply.yml
         params:
           <<: *tf-staging
+          TERRAFORM_ACTION: apply
+
+  - name: terraform-plan-apps-staging
+    plan:
+      - in_parallel:
+          - get: terraform-templates
+            resource: terraform-config
+            trigger: true
+            passed: [terraform-apply-apps-development]
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
+          - get: terraform-yaml
+            resource: terraform-yaml-staging
+            trigger: true
+          - get: pipeline-tasks
+          - get: general-task
+      - task: terraform-plan
+        image: general-task
+        file: terraform-templates/terraform/terraform-apply.yml
+        params: &tf-apps-staging
+          TERRAFORM_ACTION: plan
+          TEMPLATE_SUBDIR: terraform/stacks/apps
+          STACK_NAME: cf-apps-staging
+          S3_TFSTATE_BUCKET: ((tf-state-bucket))
+          AWS_DEFAULT_REGION: ((aws-region))
+          CF_API_URL: ((cf-api-url-staging))
+          CF_CLIENT_ID: ((cf-client-id-staging))
+          CF_CLIENT_SECRET: ((cf-client-secret-staging))
+          TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
+          TF_VAR_csb_aws_region_govcloud: ((aws-region))
+          TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-staging))
+          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.fr-stage.cloud.gov
+          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_org_name: ((csb-org-name))
+          TF_VAR_csb_space_name: ((csb-space-name))
+          TF_VAR_external_remote_state_reader_access_key_id: ((staging-tf-state-access-key-id))
+          TF_VAR_external_remote_state_reader_region: ((staging-tf-state-region))
+          TF_VAR_external_remote_state_reader_secret_access_key: ((staging-tf-state-secret-access-key))
+          TF_VAR_external_stack_name: external-staging
+          TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+          TF_VAR_remote_state_bucket_iaas: ((tf-state-bucket))
+          TF_VAR_stack_name: staging
+      - put: slack
+        params:
+          text_file: terraform-state/message.txt
+          text: |
+            :terraform: $BUILD_JOB_NAME needs review
+            <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          channel: "#cg-platform-news"
+          username: ((slack-username))
+          icon_url: ((slack-icon-url))
+
+  - name: terraform-apply-apps-staging
+    plan:
+      - in_parallel:
+          - get: terraform-templates
+            resource: terraform-config
+            trigger: true
+            passed: [terraform-plan-apps-staging]
+          - get: pipeline-tasks
+          - get: general-task
+      - task: terraform-apply
+        image: general-task
+        file: terraform-templates/terraform/terraform-apply.yml
+        params:
+          <<: *tf-apps-staging
           TERRAFORM_ACTION: apply
 
   - name: smoke-tests-staging
@@ -1448,6 +1580,9 @@ jobs:
             resource: terraform-config
             passed: [acceptance-tests-staging]
             trigger: true
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
           - get: terraform-yaml
             resource: terraform-yaml-production
             trigger: true
@@ -1458,7 +1593,7 @@ jobs:
         file: terraform-templates/terraform/terraform-apply.yml
         params: &tf-production
           TERRAFORM_ACTION: plan
-          TEMPLATE_SUBDIR: terraform/stack
+          TEMPLATE_SUBDIR: terraform/stacks/cf
           STACK_NAME: cf-production
           S3_TFSTATE_BUCKET: ((tf-state-bucket))
           AWS_DEFAULT_REGION: ((aws-region))
@@ -1493,6 +1628,72 @@ jobs:
         file: terraform-templates/terraform/terraform-apply.yml
         params:
           <<: *tf-production
+          TERRAFORM_ACTION: apply
+
+  - name: terraform-plan-apps-production
+    plan:
+      - in_parallel:
+          - get: terraform-templates
+            resource: terraform-config
+            passed: [terraform-apply-apps-staging]
+            trigger: true
+          # Changes to the iaas state file trigger a build. This is not a step
+          # input because the state is accessed separately using a
+          # terraform_remote_state data source.
+          - get: terraform-yaml
+            resource: terraform-yaml-production
+            trigger: true
+          - get: pipeline-tasks
+          - get: general-task
+      - task: terraform-plan
+        image: general-task
+        file: terraform-templates/terraform/terraform-apply.yml
+        params: &tf-apps-production
+          TERRAFORM_ACTION: plan
+          TEMPLATE_SUBDIR: terraform/stacks/apps
+          STACK_NAME: cf-apps-production
+          S3_TFSTATE_BUCKET: ((tf-state-bucket))
+          AWS_DEFAULT_REGION: ((aws-region))
+          CF_API_URL: ((cf-api-url-production))
+          CF_CLIENT_ID: ((cf-client-id-production))
+          CF_CLIENT_SECRET: ((cf-client-secret-production))
+          TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
+          TF_VAR_csb_aws_region_govcloud: ((aws-region))
+          TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-production))
+          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.cloud.gov
+          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_org_name: ((csb-org-name))
+          TF_VAR_csb_space_name: ((csb-space-name))
+          TF_VAR_external_remote_state_reader_access_key_id: ((production-tf-state-access-key-id))
+          TF_VAR_external_remote_state_reader_region: ((production-tf-state-region))
+          TF_VAR_external_remote_state_reader_secret_access_key: ((production-tf-state-secret-access-key))
+          TF_VAR_external_stack_name: external-production
+          TF_VAR_remote_state_bucket_external: ((tf-state-bucket-external))
+          TF_VAR_remote_state_bucket_iaas: ((tf-state-bucket))
+          TF_VAR_stack_name: production
+      - put: slack
+        params:
+          text_file: terraform-state/message.txt
+          text: |
+            :terraform: $BUILD_JOB_NAME needs review
+            <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+          channel: "#cg-platform"
+          username: ((slack-username))
+          icon_url: ((slack-icon-url))
+
+  - name: terraform-apply-apps-production
+    plan:
+      - in_parallel:
+          - get: terraform-templates
+            resource: terraform-config
+            passed: [terraform-plan-apps-production]
+          - get: pipeline-tasks
+          - get: general-task
+      - task: terraform-apply
+        image: general-task
+        file: terraform-templates/terraform/terraform-apply.yml
+        params:
+          <<: *tf-apps-production
           TERRAFORM_ACTION: apply
 
   - name: smoke-tests-production
@@ -1843,6 +2044,12 @@ groups:
       - uaa-monitor-account-creation-production
       - tic-smoke-tests-production
       - test-space-egress-production
+      - terraform-plan-apps-development
+      - terraform-apply-apps-development
+      - terraform-plan-apps-staging
+      - terraform-apply-apps-staging
+      - terraform-plan-apps-production
+      - terraform-apply-apps-production
   - name: development
     jobs:
       - set-self
@@ -1856,6 +2063,8 @@ groups:
       - smoke-tests-development
       - test-space-egress-development
       - test-headers-development
+      - terraform-plan-apps-development
+      - terraform-apply-apps-development
   - name: staging
     jobs:
       - set-self
@@ -1869,6 +2078,8 @@ groups:
       - smoke-tests-staging
       - acceptance-tests-staging
       - test-space-egress-staging
+      - terraform-plan-apps-staging
+      - terraform-apply-apps-staging
   - name: production
     jobs:
       - set-self
@@ -1882,3 +2093,5 @@ groups:
       - uaa-monitor-account-creation-production
       - tic-smoke-tests-production
       - test-space-egress-production
+      - terraform-plan-apps-production
+      - terraform-apply-apps-production
