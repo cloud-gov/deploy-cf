@@ -134,7 +134,7 @@
     scope: cloud_controller.read openid scim.read
     authorized-grant-types: refresh_token client_credentials authorization_code
     authorities: scim.read
-    redirect_uri: ((redirect_uri))
+    redirect-uri: ((redirect_uri))
     secret: ((opensearch-dashboards-proxy-ci-secret))
 
 - type: replace
