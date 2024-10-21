@@ -58,6 +58,9 @@ resource "cloudfoundry_app" "csb" {
   routes {
     route = cloudfoundry_route.csb.id
   }
+
+  health_check_type          = "http"
+  health_check_http_endpoint = "/ready"
 }
 
 data "cloudfoundry_domain" "platform_components" {
