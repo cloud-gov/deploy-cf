@@ -73,13 +73,21 @@ resource "cloudfoundry_route" "csb" {
   space    = data.cloudfoundry_space.services.id
 }
 
+// The cloudfoundry-community provider does not wait appropriately for the broker to be ready.
+// Until we can switch to https://registry.terraform.io/providers/cloudfoundry/cloudfoundry/latest/docs,
+// use this workaround.
+resource "time_sleep" "wait_for_csb_ready" {
+  create_duration = "60s"
+  depends_on      = [cloudfoundry_app.csb]
+}
+
 resource "cloudfoundry_service_broker" "csb" {
   name     = "csb"
   password = random_password.csb_app_password.result
-  url      = "https://${cloudfoundry_route.csb.hostname}.${data.cloudfoundry_domain.platform_components.domain}"
+  url      = "https://${cloudfoundry_route.csb.endpoint}"
   username = "broker"
 
-  depends_on = [cloudfoundry_app.csb]
+  depends_on = [time_sleep.wait_for_csb_ready]
 }
 
 resource "cloudfoundry_service_plan_access" "smtp" {
