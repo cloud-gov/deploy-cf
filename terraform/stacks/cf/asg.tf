@@ -1,8 +1,3 @@
-terraform {
-  backend "s3" {
-  }
-}
-
 resource "cloudfoundry_asg" "public_networks" {
   name = "public_networks"
 
@@ -66,14 +61,14 @@ resource "cloudfoundry_asg" "public_networks_egress" {
     description = "Rule for private endpoint to s3 in region"
     protocol    = "tcp"
     destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_if1_ip
-    ports="443"
+    ports       = "443"
   }
 
-  rule{
+  rule {
     description = "Rule for private endpoint to s3 in region"
     protocol    = "tcp"
     destination = data.terraform_remote_state.iaas.outputs.vpc_endpoint_customer_s3_if2_ip
-    ports="443"
+    ports       = "443"
   }
 
 }
@@ -321,17 +316,17 @@ resource "cloudfoundry_asg" "internal_services_egress" {
 
 # Default global running ASG
 resource "cloudfoundry_default_asg" "running" {
-    name = "running"
-    asgs = [ cloudfoundry_asg.dns.id ]
+  name = "running"
+  asgs = [cloudfoundry_asg.dns.id]
 }
 
 # Default global staging ASG
 resource "cloudfoundry_default_asg" "staging" {
-    name = "staging"
-    asgs = [
-      cloudfoundry_asg.dns.id,
-      cloudfoundry_asg.public_networks_egress.id,
-      cloudfoundry_asg.trusted_local_networks_egress.id,
-    ]
+  name = "staging"
+  asgs = [
+    cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.public_networks_egress.id,
+    cloudfoundry_asg.trusted_local_networks_egress.id,
+  ]
 }
 
