@@ -49,6 +49,10 @@ variable "csb_docker_image_name" {
   type = string
 }
 
+variable "csb_docker_image_version" {
+  type = string
+}
+
 variable "csb_org_name" {
   type = string
 }

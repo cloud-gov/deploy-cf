@@ -246,6 +246,10 @@ jobs:
             trigger: true
           - get: pipeline-tasks
           - get: general-task
+          - get: csb-image
+            trigger: true
+      - load_var: csb-image-digest
+        file: csb-image/digest
       - task: terraform-plan
         image: general-task
         file: terraform-templates/terraform/terraform-apply.yml
@@ -263,6 +267,7 @@ jobs:
           TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-development))
           TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_docker_image_version: "@((.:csb-image-digest))"
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
           TF_VAR_external_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
@@ -1944,6 +1949,15 @@ resources:
       aws_access_key_id: ((ecr_aws_key))
       aws_secret_access_key: ((ecr_aws_secret))
       repository: general-task
+      aws_region: us-gov-west-1
+      tag: latest
+
+  - name: csb-image
+    type: registry-image
+    source:
+      aws_access_key_id: ((ecr_aws_key))
+      aws_secret_access_key: ((ecr_aws_secret))
+      repository: csb
       aws_region: us-gov-west-1
       tag: latest
 
