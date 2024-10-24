@@ -296,6 +296,8 @@ jobs:
             trigger: true
           - get: pipeline-tasks
           - get: general-task
+      - load_var: csb-image-digest
+        file: csb-image/digest
       - task: terraform-apply
         image: general-task
         file: terraform-templates/terraform/terraform-apply.yml
