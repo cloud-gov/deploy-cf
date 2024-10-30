@@ -131,16 +131,30 @@
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch-dashboards-proxy-ci?
   value:
     override: true
-    scope: cloud_controller.read openid scim.read
-    authorized-grant-types: refresh_token client_credentials authorization_code
-    authorities: scim.read
-    redirect-uri: ((redirect_uri))
+    authorized-grant-types: client_credentials
+    authorities: scim.write,uaa.admin,password.write
     secret: ((opensearch-dashboards-proxy-ci-secret))
 
 - type: replace
   path: /variables/-
   value:
     name: opensearch-dashboards-proxy-ci-secret
+    type: password
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch_dashboards_proxy?
+  value:
+    override: true
+    scope: cloud_controller.read,openid,scim.read
+    authorized-grant-types: refresh_token,authorization_code
+    authorities: scim.read
+    redirect-uri: ((opensearch_dashboards_proxy_redirect_uri))
+    secret: ((opensearch-dashboards-proxy-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-dashboards-proxy-secret
     type: password
 
 - type: replace
