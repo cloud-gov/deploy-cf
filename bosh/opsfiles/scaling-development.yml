@@ -139,7 +139,7 @@
   value: t3.xlarge
 - type: replace
   path: /instance_groups/name=diego-platform-cell/instances
-  value: 2
+  value: 3
   
 # rotate-cc-database-key
 - type: replace
