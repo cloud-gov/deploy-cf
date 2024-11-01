@@ -86,9 +86,11 @@ resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
   asgs = [
     cloudfoundry_asg.public_networks_egress.id,
     cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.trusted_local_networks.id
   ]
   staging_asgs = [
     cloudfoundry_asg.dns.id,
+    cloudfoundry_asg.public_networks_egress.id
   ]
 }
 
