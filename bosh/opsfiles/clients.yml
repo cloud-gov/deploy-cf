@@ -146,7 +146,7 @@
   value:
     override: true
     scope: cloud_controller.read,openid,scim.read
-    authorized-grant-types: refresh_token,authorization_code
+    authorized-grant-types: refresh_token,authorization_code,client_credentials
     authorities: scim.read
     redirect-uri: ((opensearch_dashboards_proxy_redirect_uri))
     secret: ((opensearch-dashboards-proxy-secret))
