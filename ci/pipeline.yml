@@ -105,7 +105,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/rds-ca.yml
             - cf-manifests/bosh/opsfiles/content-security-policy.yml
             - cf-manifests/bosh/opsfiles/loggregator.yml
-            - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
             - cf-manifests/bosh/opsfiles/router-main.yml
             - cf-manifests/bosh/opsfiles/router-main-dev.yml
             - cf-manifests/bosh/opsfiles/router-logstash.yml
@@ -739,7 +738,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
             - cf-manifests/bosh/opsfiles/rds-ca.yml
             - cf-manifests/bosh/opsfiles/loggregator.yml
-            - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
             - cf-manifests/bosh/opsfiles/router-main.yml
             - cf-manifests/bosh/opsfiles/router-logstash.yml
             - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
@@ -1362,7 +1360,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/uaa-rds-ca.yml
             - cf-manifests/bosh/opsfiles/rds-ca.yml
             - cf-manifests/bosh/opsfiles/loggregator.yml
-            - cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml
             - cf-manifests/bosh/opsfiles/router-main.yml
             - cf-manifests/bosh/opsfiles/router-logstash.yml
             - cf-manifests/bosh/opsfiles/add-autoscaler-ca.yml
