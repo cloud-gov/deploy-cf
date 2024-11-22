@@ -11,7 +11,6 @@ bosh int \
   -o cf-manifests/bosh/opsfiles/diego-cell-disk.yml \
   -o cf-manifests/bosh/opsfiles/disable-secure-service-credentials-diego-cell.yml \
   -o cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml \
-  -o cf-manifests/bosh/opsfiles/meta-data-v2-diego-cell.yml \
   -o cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml \
   --path /instance_groups/name=diego-cell > diego-cell_raw.yml
 
