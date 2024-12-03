@@ -8,10 +8,10 @@
 - type: replace
   path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/-
   value:
-    domain: wazuh.service.cf.internal
+    domain: wazuh-dashboard.service.cf.internal
     targets:
     - deployment: wazuh
       domain: bosh
-      instance_group: wazuh
+      instance_group: wazuh-dashboard
       network: default
       query: '*'
