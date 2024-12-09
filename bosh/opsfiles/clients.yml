@@ -166,7 +166,7 @@
     access-token-validity: 600
     refresh-token-validity: 43200
     name: Logsearch
-    redirect-uri: https://logs.((system_domain))/login
+    redirect-uri: https://logs-deprecated.((system_domain))/login
     autoapprove: true
     secret: ((kibana-client-secret))
 
