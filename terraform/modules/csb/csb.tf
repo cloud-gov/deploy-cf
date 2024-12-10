@@ -85,3 +85,6 @@ resource "cloudfoundry_service_broker" "csb" {
   url      = "https://${cloudfoundry_route.csb.url}"
   username = "broker"
 }
+
+resource "cloudfoundry_" "name" {
+}
