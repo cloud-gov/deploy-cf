@@ -69,6 +69,7 @@ jobs:
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
             - cf-deployment/operations/enable-service-discovery.yml
+            - cf-deployment/operations/enable-v2-api.yml
             - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
             - cf-manifests/bosh/opsfiles/clients.yml
             - cf-manifests/bosh/opsfiles/development-clients.yml
@@ -703,6 +704,7 @@ jobs:
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
             - cf-deployment/operations/enable-service-discovery.yml
+            - cf-deployment/operations/enable-v2-api.yml
             - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
             - cf-manifests/bosh/opsfiles/clients.yml
             - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
@@ -1327,6 +1329,7 @@ jobs:
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
             - cf-deployment/operations/enable-service-discovery.yml
+            - cf-deployment/operations/enable-v2-api.yml
             - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
             - cf-manifests/bosh/opsfiles/clients.yml
             - cf-manifests/bosh/opsfiles/pages-clients-production.yml
