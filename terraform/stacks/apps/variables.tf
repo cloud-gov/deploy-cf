@@ -41,7 +41,7 @@ variable "csb_aws_region_commercial" {
   type = string
 }
 
-variable "csb_cg_smtp_aws_ses_zone" {
+variable "csb_aws_ses_default_zone" {
   type = string
 }
 
@@ -63,4 +63,21 @@ variable "csb_space_name" {
 
 variable "csb_broker_route_domain" {
   type = string
+}
+
+variable "csb_docproxy_domain" {
+  type = string
+}
+
+variable "csb_docproxy_docker_image_name" {
+  type = string
+}
+
+variable "csb_docproxy_docker_image_version" {
+  type = string
+}
+
+variable "csb_docproxy_instances" {
+  type    = number
+  default = 1
 }
