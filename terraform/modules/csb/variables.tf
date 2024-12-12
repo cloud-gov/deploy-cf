@@ -77,7 +77,7 @@ variable "rds_password" {
 
 # CSB Configuration
 
-variable "cg_smtp_aws_ses_zone" {
+variable "aws_ses_default_zone" {
   type        = string
   description = "When the user does not provide a domain, a subdomain will be created for them under this DNS zone."
 }

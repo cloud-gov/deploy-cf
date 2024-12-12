@@ -58,7 +58,7 @@ resource "cloudfoundry_app" "csb" {
     CLOUD_GOV_ENVIRONMENT = var.stack_name
 
     # Brokerpak-specific variables
-    CG_SMTP_AWS_ZONE = var.cg_smtp_aws_ses_zone
+    BP_AWS_SES_DEFAULT_ZONE = var.aws_ses_default_zone
   }
 
   readiness_health_check_type          = "http"
