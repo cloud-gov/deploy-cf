@@ -1,12 +1,3 @@
-data "cloudfoundry_org" "platform" {
-  name = var.org_name
-}
-
-data "cloudfoundry_space" "brokers" {
-  name = var.space_name
-  org  = data.cloudfoundry_org.platform.id
-}
-
 resource "random_password" "csb_app_password" {
   length      = 32
   special     = false
@@ -79,12 +70,20 @@ resource "cloudfoundry_route" "csb" {
   }]
 }
 
+resource "cloudfoundry_route" "csb_docs" {
+  space  = data.cloudfoundry_space.brokers.id
+  domain = data.cloudfoundry_domain.brokers_domain.id
+  host   = "csb"
+  path   = "docs"
+
+  destinations = [{
+    app_id = cloudfoundry_app.csb.id
+  }]
+}
+
 resource "cloudfoundry_service_broker" "csb" {
   name     = "csb"
   password = random_password.csb_app_password.result
   url      = "https://${cloudfoundry_route.csb.url}"
   username = "broker"
-}
-
-resource "cloudfoundry_" "name" {
 }
