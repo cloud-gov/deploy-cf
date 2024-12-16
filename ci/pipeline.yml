@@ -248,8 +248,16 @@ jobs:
           - get: general-task
           - get: csb-image
             trigger: true
+          - get: csb-docproxy-image
+            trigger: true
+      - load_var: csb-image-repository
+        file: csb-image/repository
       - load_var: csb-image-digest
         file: csb-image/digest
+      - load_var: csb-docproxy-image-repository
+        file: csb-docproxy-image/repository
+      - load_var: csb-docproxy-image-digest
+        file: csb-docproxy-image/digest
       - task: terraform-plan
         image: general-task
         file: terraform-templates/terraform/terraform-apply.yml
@@ -264,10 +272,13 @@ jobs:
           CF_CLIENT_SECRET: ((cf-client-secret-development))
           TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
           TF_VAR_csb_aws_region_govcloud: ((aws-region))
+          TF_VAR_csb_aws_ses_default_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-development))
-          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.dev.us-gov-west-1.aws-us-gov.cloud.gov
-          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_docker_image_name: "((.:csb-image-repository))"
           TF_VAR_csb_docker_image_version: "@((.:csb-image-digest))"
+          TF_VAR_csb_docproxy_docker_image_name: "((.:csb-docproxy-image-repository))"
+          TF_VAR_csb_docproxy_docker_image_version: "@((.:csb-docproxy-image-digest))"
+          TF_VAR_csb_docproxy_domain: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
           TF_VAR_external_remote_state_reader_access_key_id: ((development-tf-state-access-key-id))
@@ -1006,6 +1017,18 @@ jobs:
             trigger: true
           - get: pipeline-tasks
           - get: general-task
+          - get: csb-image
+            trigger: true
+          - get: csb-docproxy-image
+            trigger: true
+      - load_var: csb-image-repository
+        file: csb-image/repository
+      - load_var: csb-image-digest
+        file: csb-image/digest
+      - load_var: csb-docproxy-image-repository
+        file: csb-docproxy-image/repository
+      - load_var: csb-docproxy-image-digest
+        file: csb-docproxy-image/digest
       - task: terraform-plan
         image: general-task
         file: terraform-templates/terraform/terraform-apply.yml
@@ -1020,9 +1043,13 @@ jobs:
           CF_CLIENT_SECRET: ((cf-client-secret-staging))
           TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
           TF_VAR_csb_aws_region_govcloud: ((aws-region))
+          TF_VAR_csb_aws_ses_default_zone: appmail.fr-stage.cloud.gov
           TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-staging))
-          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.fr-stage.cloud.gov
-          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_docker_image_name: "((.:csb-image-repository))"
+          TF_VAR_csb_docker_image_version: "@((.:csb-image-digest))"
+          TF_VAR_csb_docproxy_docker_image_name: "((.:csb-docproxy-image-repository))"
+          TF_VAR_csb_docproxy_docker_image_version: "@((.:csb-docproxy-image-digest))"
+          TF_VAR_csb_docproxy_domain: fr-stage.cloud.gov
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
           TF_VAR_external_remote_state_reader_access_key_id: ((staging-tf-state-access-key-id))
@@ -1654,6 +1681,18 @@ jobs:
             trigger: true
           - get: pipeline-tasks
           - get: general-task
+          - get: csb-image
+            trigger: true
+          - get: csb-docproxy-image
+            trigger: true
+      - load_var: csb-image-repository
+        file: csb-image/repository
+      - load_var: csb-image-digest
+        file: csb-image/digest
+      - load_var: csb-docproxy-image-repository
+        file: csb-docproxy-image/repository
+      - load_var: csb-docproxy-image-digest
+        file: csb-docproxy-image/digest
       - task: terraform-plan
         image: general-task
         file: terraform-templates/terraform/terraform-apply.yml
@@ -1668,9 +1707,14 @@ jobs:
           CF_CLIENT_SECRET: ((cf-client-secret-production))
           TF_VAR_csb_aws_region_commercial: ((csb-aws-region-commercial))
           TF_VAR_csb_aws_region_govcloud: ((aws-region))
+          TF_VAR_csb_aws_ses_default_zone: appmail.cloud.gov
           TF_VAR_csb_broker_route_domain: ((csb-broker-route-domain-production))
-          TF_VAR_csb_cg_smtp_aws_ses_zone: appmail.cloud.gov
-          TF_VAR_csb_docker_image_name: ((csb-docker-image-name))
+          TF_VAR_csb_docker_image_name: "((.:csb-image-repository))"
+          TF_VAR_csb_docker_image_version: "@((.:csb-image-digest))"
+          TF_VAR_csb_docproxy_docker_image_name: "((.:csb-docproxy-image-repository))"
+          TF_VAR_csb_docproxy_docker_image_version: "@((.:csb-docproxy-image-digest))"
+          TF_VAR_csb_docproxy_domain: fr.cloud.gov
+          TF_VAR_csb_docproxy_instances: 2
           TF_VAR_csb_org_name: ((csb-org-name))
           TF_VAR_csb_space_name: ((csb-space-name))
           TF_VAR_external_remote_state_reader_access_key_id: ((production-tf-state-access-key-id))
@@ -1962,6 +2006,15 @@ resources:
       aws_access_key_id: ((ecr_aws_key))
       aws_secret_access_key: ((ecr_aws_secret))
       repository: csb
+      aws_region: us-gov-west-1
+      tag: latest
+
+  - name: csb-docproxy-image
+    type: registry-image
+    source:
+      aws_access_key_id: ((ecr_aws_key))
+      aws_secret_access_key: ((ecr_aws_secret))
+      repository: csb-docproxy
       aws_region: us-gov-west-1
       tag: latest
 

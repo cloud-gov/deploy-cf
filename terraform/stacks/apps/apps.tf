@@ -14,7 +14,7 @@ module "csb" {
   ecr_access_key_id                = data.terraform_remote_state.iaas.outputs.csb.ecr_user.access_key_id_curr
   ecr_secret_access_key            = data.terraform_remote_state.iaas.outputs.csb.ecr_user.secret_access_key_curr
   instances                        = 1
-  cg_smtp_aws_ses_zone             = var.csb_cg_smtp_aws_ses_zone
+  aws_ses_default_zone             = var.csb_aws_ses_default_zone
   aws_access_key_id_govcloud       = data.terraform_remote_state.iaas.outputs.csb.broker_user.access_key_id_curr
   aws_secret_access_key_govcloud   = data.terraform_remote_state.iaas.outputs.csb.broker_user.secret_access_key_curr
   aws_region_govcloud              = var.csb_aws_region_govcloud
@@ -27,4 +27,9 @@ module "csb" {
   docker_image_name    = var.csb_docker_image_name
   docker_image_version = var.csb_docker_image_version
   broker_route_domain  = var.csb_broker_route_domain
+
+  docproxy_domain               = var.csb_docproxy_domain
+  docproxy_instances            = var.csb_docproxy_instances
+  docproxy_docker_image_name    = var.csb_docproxy_docker_image_name
+  docproxy_docker_image_version = var.csb_docproxy_docker_image_version
 }
