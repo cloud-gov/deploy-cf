@@ -32,3 +32,21 @@ resource "cloudfoundry_route" "docproxy" {
     app_id = cloudfoundry_app.docproxy.id
   }]
 }
+
+data "cloudfoundry_service_plans" "external_domain" {
+  service_offering_name = "external-domain"
+  name                  = "domain"
+  service_broker_name   = "external-domain-broker"
+}
+
+resource "cloudfoundry_service_instance" "docproxy_external_domain" {
+  name  = "docproxy-domain"
+  space = data.cloudfoundry_space.brokers.id
+  type  = "managed"
+
+  service_plan = data.cloudfoundry_service_plans.external_domain.service_plans[0].id
+
+  parameters = jsonencode({
+    domains = ["services.${var.docproxy_domain}"]
+  })
+}
