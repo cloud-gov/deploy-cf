@@ -111,6 +111,20 @@
     secret: ((terraform-client-secret))
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/deploy-csb?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.admin
+    secret: ((deploy-csb-client-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: deploy-csb-client-secret
+    type: password
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-credentials-broker?
   value:
     override: true
