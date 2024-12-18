@@ -8,7 +8,5 @@
 
 
 - type: replace
-  path: /releases/name=uaa-customized
-  value:
-    name: uaa-customized
-    version: 59
+  path: /releases/name=uaa-customized/version?
+  value: "59"
