@@ -145,9 +145,9 @@ jobs:
             resource_matching
             route_sharing
             diego_cnb
+            hide_marketplace_from_unauthenticated_users
           DISABLED_FEATURE_FLAGS: |
             user_org_creation
-            hide_marketplace_from_unauthenticated_users
 
     on_success:
       put: slack
@@ -697,9 +697,9 @@ jobs:
             service_instance_sharing
             resource_matching
             route_sharing
+            hide_marketplace_from_unauthenticated_users
           DISABLED_FEATURE_FLAGS: |
             user_org_creation
-            hide_marketplace_from_unauthenticated_users
       - task: validate-zdt
         image: general-task
         file: cf-manifests/ci/check-deployment-was-zdt.yml
