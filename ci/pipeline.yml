@@ -35,8 +35,6 @@ jobs:
           - get: cg-s3-secureproxy-release
             trigger: true
           - get: general-task
-          - get: wazuh-agent
-            trigger: true
       - task: terraform-secrets
         image: general-task
         file: cf-manifests/ci/terraform-secrets.yml
@@ -55,7 +53,7 @@ jobs:
         params:
           ISO_SEG_NAMES: "" #((names_of_iso_segs_development))    # Value in credhub
       - put: cf-deployment-development
-        params: 
+        params: &deploy-params
           manifest: cf-deployment/cf-deployment.yml
           releases:
             - uaa-customized-release/*.tgz
@@ -119,13 +117,9 @@ jobs:
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/wazuh.yml
             - cf-manifests/bosh/opsfiles/pin-uaa.yml
-            - wazuh-agent/ops/add-wazuh-agent.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
-          vars:
-            environment: dev
-            wazuh_server_address: wazuh-server.service.cf.internal
 
       - task: enable-cf-features
         image: general-task
@@ -621,12 +615,7 @@ jobs:
           ISO_SEG_NAMES: "" #((names_of_iso_segs_staging))    # Value in credhub
       - put: cf-deployment-staging
         params:
-          manifest: cf-deployment/cf-deployment.yml
-          releases:
-            - uaa-customized-release/*.tgz
-            - cg-s3-secureproxy-release/*.tgz
-          stemcells:
-            - cf-stemcell-jammy/*.tgz
+          <<: *deploy-params
           ops_files:
             - router-main/router_main.yml
             - router-logstash/router_logstash.yml
@@ -1183,12 +1172,7 @@ jobs:
           ISO_SEG_NAMES: "" #((names_of_iso_segs_production))    # Value in credhub
       - put: cf-deployment-production
         params: &prod-deploy-params
-          manifest: cf-deployment/cf-deployment.yml
-          releases:
-            - uaa-customized-release/*.tgz
-            - cg-s3-secureproxy-release/*.tgz
-          stemcells:
-            - cf-stemcell-jammy/*.tgz
+          <<: *deploy-params
           dry_run: true
           ops_files:
             - router-main/router_main.yml
@@ -1762,21 +1746,6 @@ resources:
       repository: general-task
       aws_region: us-gov-west-1
       tag: latest
-
-  - name: wazuh-agent
-    type: git
-    source:
-      branch: main
-      commit_verification_keys: ((cloud-gov-pgp-keys))
-      git_config:
-      - name: "user.name"
-        value: "cg-ci-bot"
-      - name: "user.email"
-        value: "no-reply@cloud.gov"
-      paths: [ops/add-wazuh-agent.yml]
-      private_key: ((cg-ci-bot-sshkey.private_key))
-      uri: git@github.com:cloud-gov/wazuh-agent.git
-      username: cg-ci-bot
 
 resource_types:
   - name: registry-image
