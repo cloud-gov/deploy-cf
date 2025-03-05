@@ -177,6 +177,20 @@
     type: password
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch-ci?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: scim.write,uaa.admin,password.write
+    secret: ((opensearch-ci-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-ci-secret
+    type: password
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/kibana_oauth2_client?
   value:
     override: true
