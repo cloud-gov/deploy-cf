@@ -2,12 +2,8 @@
 
 set -eu
 
-# Use client credentials in CF_CLIENT_ID and CF_CLIENT_SECRET to fetch a token
-API_RESPONSE=$(curl -s $CF_API_URL/v2/info)
-TOKEN_ENDPOINT=$(echo ${API_RESPONSE} | jq -r '.token_endpoint // empty')
-
 if [ -z "${TOKEN_ENDPOINT}" ]; then
-  echo "API didn't return a token endpoint: ${API_RESPONSE}"
+  echo "TOKEN_ENDPOINT not set"
   exit 99;
 fi
 
