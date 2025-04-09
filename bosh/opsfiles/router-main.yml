@@ -48,6 +48,7 @@
             - hostname: api.((system_domain))
               exclude:
                 - ^/v2/info
+                - ^/v3/info
             - hostname: dashboard.((system_domain))
               exclude: []
           secret: ((tic-secret))

@@ -198,6 +198,7 @@ jobs:
           CF_API_URL: ((cf-api-url-development))
           CF_CLIENT_ID: ((cf-client-id-development))
           CF_CLIENT_SECRET: ((cf-client-secret-development))
+          TOKEN_ENDPOINT: ((token-endpoint-development))
           TF_VAR_remote_state_bucket: ((tf-state-bucket))
           TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_iaas_stack_name: development
@@ -885,6 +886,7 @@ jobs:
           CF_API_URL: ((cf-api-url-staging))
           CF_CLIENT_ID: ((cf-client-id-staging))
           CF_CLIENT_SECRET: ((cf-client-secret-staging))
+          TOKEN_ENDPOINT: ((token-endpoint-staging))
           TF_VAR_remote_state_bucket: ((tf-state-bucket))
           TF_VAR_domain_name: fr-stage.cloud.gov
           TF_VAR_iaas_stack_name: staging
@@ -1468,6 +1470,7 @@ jobs:
           CF_API_URL: ((cf-api-url-production))
           CF_CLIENT_ID: ((cf-client-id-production))
           CF_CLIENT_SECRET: ((cf-client-secret-production))
+          TOKEN_ENDPOINT: ((token-endpoint-production))
           TF_VAR_remote_state_bucket: ((tf-state-bucket))
           TF_VAR_domain_name: cloud.gov
           TF_VAR_iaas_stack_name: production

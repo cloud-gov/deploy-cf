@@ -18,7 +18,7 @@ gorouter_ip=$(
 
 @test "restricted user from allowed address can reach API" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_ALLOWED}" \
@@ -31,7 +31,7 @@ gorouter_ip=$(
 
 @test "restricted user from unallowed is blocked by secureproxy when requesting API" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_FORBIDDEN}" \
@@ -42,7 +42,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is trusted when x-forwarded-for is a trusted proxy, allowing restricted user to access API from allowed address" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -57,7 +57,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is not trusted when x-forwarded-for is untrusted, disallowing restricted user from accessing API with allowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_FORBIDDEN}" \
@@ -70,7 +70,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is not trusted when x-tic-secret is invalid, disallowing restricted user from accessing API with allowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -83,7 +83,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is trusted when x-tic-secret and proxy address are trusted, disallowing restricted user from accessing API with disallowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -96,7 +96,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is not trusted when x-tic-secret is empty, disallowing restricted user from accessing API with allowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -109,7 +109,7 @@ gorouter_ip=$(
 
 @test "unrestricted user can access API from forbidden address" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/v3/apps \
     -H "Host: ${API_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${unrestricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_FORBIDDEN}" \
@@ -122,7 +122,7 @@ gorouter_ip=$(
 
 @test "restricted user can access the dashboard from an allowed address" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_ALLOWED}" \
@@ -136,7 +136,7 @@ gorouter_ip=$(
 
 @test "restricted user cannot access the dashboard from an unallowed address" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_FORBIDDEN}" \
@@ -147,7 +147,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is trusted when x-forwarded-for is a trusted proxy, allowing restricted user to access dashboard from allowed address" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -162,7 +162,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is not trusted when x-forwarded-for is untrusted, disallowing restricted user from accessing dashboard with allowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_FORBIDDEN}" \
@@ -175,7 +175,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is not trusted when x-tic-secret is invalid, disallowing restricted user from accessing dashboard with allowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -188,7 +188,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is trusted when x-tic-secret and proxy address are trusted, disallowing restricted user from accessing dashboard with disallowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -201,7 +201,7 @@ gorouter_ip=$(
 
 @test "x-client-ip is not trusted when x-tic-secret is empty, disallowing restricted user from accessing dashboard with allowed address in x-client-ip" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${restricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${PROXY_ADDRESS_ALLOWED}" \
@@ -214,7 +214,7 @@ gorouter_ip=$(
 
 @test "unrestricted user can access the dashboard from unallowed address" {
   resp=$(curl -s -k \
-    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v2/apps \
+    ${TIC_PROTOCAL}://${gorouter_ip}:${GOROUTER_PORT:-443}/pp/v1/proxy/v3/apps \
     -H "Host: ${DASHBOARD_HOSTNAME}" \
     -H "Authorization: $(echo '{}' | base64).$(echo ${unrestricted_payload} | base64).$(echo '{}' | base64)" \
     -H "X-Forwarded-For: ${SOURCE_ADDRESS_FORBIDDEN}" \

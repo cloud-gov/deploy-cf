@@ -13,16 +13,16 @@ cfcurl() {
 }
 
 paginate() {
-  query=$1
-  selector=$2
+  local query=$1
+  local selector=$2
 
   local page next_url results
   page=$(cfcurl -s "${CF_API_URL}${query}")
-  next_url=$(echo -n "${page}" | jq -r '.next_url // ""')
+  next_url=$(echo -n "${page}" | jq -r '.pagination.next.href // ""')
   results=$(echo -n "${page}" | jq -r "${selector}")
   while [ -n "${next_url}" ]; do
-    page=$(cfcurl -s "${CF_API_URL}${next_url}")
-    next_url=$(echo -n "${page}" | jq -r '.next_url // ""')
+    page=$(cfcurl -s "${next_url}")
+    next_url=$(echo -n "${page}" | jq -r '.pagination.next.href // ""')
     results="${results}\n$(echo -n "${page}" | jq -r "${selector}")"
   done
 
@@ -50,15 +50,15 @@ uaapaginate() {
 # Get known clients from broker
 service_label="cloud-gov-identity-provider"
 
-service_guid=$(cfcurl -s "${CF_API_URL}/v2/services?q=label:${service_label}" | jq -r '.resources[0].metadata.guid')
-service_plan_guids=$(paginate "/v2/service_plans?q=service_guid:${service_guid}" ".resources[] | .metadata.guid")
+service_guid=$(cf curl "/v3/service_offerings?names=${service_label}" | jq -r '.resources[0].guid')
+service_plan_guids=$(paginate "/v3/service_plans?service_offering_guids=${service_guid}" ".resources[].guid")
 
 service_plan_list=$(echo "${service_plan_guids}" | paste -sd "," -)
-service_instance_guids=$(paginate "/v2/service_instances?q=service_plan_guid%20IN%20${service_plan_list}" ".resources[] | .metadata.guid")
+service_instance_guids=$(paginate "/v3/service_instances?service_plan_guids=${service_plan_list}" ".resources[].guid")
 
 service_instance_list=$(echo "${service_instance_guids}" | paste -sd "," -)
-service_binding_guids=$(paginate "/v2/service_bindings?q=service_instance_guid%20IN%20${service_instance_list}" ".resources[] | .metadata.guid")
-service_key_guids=$(paginate "/v2/service_keys?q=service_instance_guid%20IN%20${service_instance_list}" ".resources[] | .metadata.guid")
+service_binding_guids=$(paginate "/v3/service_credential_bindings?type=app&service_instance_guids=${service_instance_list}" ".resources[].guid")
+service_key_guids=$(paginate "/v3/service_credential_bindings?type=key&service_instance_guids=${service_instance_list}" ".resources[].guid")
 
 # Get known clients from manifests
 upstream_clients=$(cat cf-deployment/cf-deployment.yml \
