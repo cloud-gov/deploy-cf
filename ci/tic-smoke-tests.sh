@@ -26,7 +26,7 @@ gorouter_ip=$(
   # 401 because our Authorization header is bogus
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the code in the body to make sure it looks like we really reached CAPI
-  [ $(echo "${resp}" | head -n -1 | jq -r '.code') = "10002" ]
+  [ $(echo "${resp}" | head -n -1 | jq -r '.errors[0].code') = "10002" ]
 }
 
 @test "restricted user from unallowed is blocked by secureproxy when requesting API" {
@@ -52,7 +52,7 @@ gorouter_ip=$(
   # 401 because our Authorization header is bogus
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the code in the body to make sure it looks like we really reached CAPI
-  [ $(echo "${resp}" | head -n -1 | jq -r '.code') = "10002" ]
+  [ $(echo "${resp}" | head -n -1 | jq -r '.errors[0].code') = "10002" ]
 }
 
 @test "x-client-ip is not trusted when x-forwarded-for is untrusted, disallowing restricted user from accessing API with allowed address in x-client-ip" {
@@ -117,7 +117,7 @@ gorouter_ip=$(
   # 401 because our Authorization header is bogus
   [ $(echo "${resp}" | tail -n 1) = "401" ]
   # validate the code in the body to make sure it looks like we really reached CAPI
-  [ $(echo "${resp}" | head -n -1 | jq -r '.code') = "10002" ]
+  [ $(echo "${resp}" | head -n -1 | jq -r '.errors[0].code') = "10002" ]
 }
 
 @test "restricted user can access the dashboard from an allowed address" {
