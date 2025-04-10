@@ -203,7 +203,6 @@ jobs:
           TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_iaas_stack_name: development
           TF_VAR_tooling_stack_name: tooling
-          TF_VAR_aws_lb_listener_ssl_policy: "ELBSecurityPolicy-TLS13-1-2-FIPS-2023-04"
       - put: slack
         params:
           text_file: terraform-state/message.txt
@@ -1317,7 +1316,7 @@ jobs:
             service_instance_sharing
             resource_matching
             route_sharing
-            diego_cnb            
+            diego_cnb
           DISABLED_FEATURE_FLAGS: |
             user_org_creation
             hide_marketplace_from_unauthenticated_users
