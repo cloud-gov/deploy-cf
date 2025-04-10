@@ -5,3 +5,6 @@ terraform {
 
 provider "cloudfoundry" {
 }
+
+provider "cloudfoundryV3" {
+}
