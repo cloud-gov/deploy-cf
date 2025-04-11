@@ -50,7 +50,7 @@ uaapaginate() {
 # Get known clients from broker
 service_label="cloud-gov-identity-provider"
 
-service_guid=$(cfcurl "/v3/service_offerings?names=${service_label}" | jq -r '.resources[0].guid')
+service_guid=$(cfcurl "${CF_API_URL}/v3/service_offerings?names=${service_label}" | jq -r '.resources[0].guid')
 service_plan_guids=$(paginate "/v3/service_plans?service_offering_guids=${service_guid}" ".resources[].guid")
 
 service_plan_list=$(echo "${service_plan_guids}" | paste -sd "," -)
