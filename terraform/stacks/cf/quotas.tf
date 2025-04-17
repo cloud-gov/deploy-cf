@@ -5,16 +5,19 @@ resource "cloudfoundry_org_quota" "default-tts" {
   total_routes             = 1000
   total_services           = 200
   total_route_ports        = -1
+  orgs                     = [cloudfoundry_org.cloud-gov.id, cloudfoundry_org.acceptance_tests.id]
+  provider = cloudfoundryv3
 }
 
 # Federalist/ Pages
 
 resource "cloudfoundry_space_quota" "tiny" {
-    name = "tiny-tf-managed"
-    allow_paid_service_plans = true
-    total_memory = 1024
-    total_routes             = -1
-    total_services           = -1
-    total_route_ports        = -1
-    org = data.cloudfoundry_org.gsa-18f-federalist.id
+  name                     = "tiny-tf-managed"
+  allow_paid_service_plans = true
+  total_memory             = 1024
+  total_routes             = -1
+  total_services           = -1
+  total_route_ports        = -1
+  org                     = data.cloudfoundry_org.gsa-18f-federalist.id
+  provider = cloudfoundryv3
 }

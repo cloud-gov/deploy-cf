@@ -6,15 +6,18 @@ locals {
 
 data "cloudfoundry_domain" "fr_domain" {
   name = local.domain_name
+  provider = cloudfoundryv3
 }
 
 data "cloudfoundry_service" "external_domain" {
   name = "external-domain"
+  provider = cloudfoundryv3
 }
 
 data "cloudfoundry_space" "hello_worlds" {
   name = var.space_name
   org  = var.organization_id
+  provider = cloudfoundryv3
 }
 
 resource "null_resource" "git_clone" {
@@ -38,7 +41,8 @@ data "archive_file" "test_cdn_app_src" {
 resource "cloudfoundry_route" "test_cdn_route" {
   domain   = data.cloudfoundry_domain.fr_domain.id
   space    = data.cloudfoundry_space.hello_worlds.id
-  hostname = "test-cdn"
+  host = "test-cdn"
+  provider = cloudfoundryv3
 }
 
 # DNS records:
@@ -48,17 +52,20 @@ resource "cloudfoundry_service_instance" "test_cdn_instance" {
   name         = "test-cdn-service"
   space        = data.cloudfoundry_space.hello_worlds.id
   service_plan = data.cloudfoundry_service.external_domain.service_plans["domain-with-cdn-dedicated-waf"]
-  json_params  = "{\"domains\": \"test-cdn.${local.domain_name}\"}"
+  parameters  = "{\"domains\": \"test-cdn.${local.domain_name}\"}"
+  provider = cloudfoundryv3
 }
 
 resource "cloudfoundry_app" "test-cdn" {
   name             = "test-cdn"
-  buildpack        = "staticfile_buildpack"
-  space            = data.cloudfoundry_space.hello_worlds.id
+  buildpacks        = ["staticfile_buildpack"]
+  org_name = var.organization_id  
+  space_name            = data.cloudfoundry_space.hello_worlds.id
   path             = local.zip_output_filepath
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
 
   routes {
     route = cloudfoundry_route.test_cdn_route.id
   }
+  provider = cloudfoundryv3
 }
