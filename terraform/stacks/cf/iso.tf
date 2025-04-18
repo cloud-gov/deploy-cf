@@ -8,5 +8,6 @@ resource "cloudfoundry_isolation_segment_entitlement" "platform" {
   orgs = [
     cloudfoundry_org.cloud-gov.id
   ]
+  default = false
   provider = cloudfoundryv3
 }
