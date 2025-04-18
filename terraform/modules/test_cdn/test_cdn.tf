@@ -9,8 +9,9 @@ data "cloudfoundry_domain" "fr_domain" {
   provider = cloudfoundryv3
 }
 
-data "cloudfoundry_service" "external_domain" {
-  name = "external-domain"
+data "cloudfoundry_service_plan" "external_domain" {
+  service_offering_name = "external-domain"
+  name = "domain-with-cdn-dedicated-waf"
   provider = cloudfoundryv3
 }
 
@@ -50,8 +51,9 @@ resource "cloudfoundry_route" "test_cdn_route" {
 # https://github.com/cloud-gov/cg-provision/blob/417000c786a101988c3edd965f7c78f66ad334fe/terraform/stacks/dns/production.tf#L12-L17
 resource "cloudfoundry_service_instance" "test_cdn_instance" {
   name         = "test-cdn-service"
+  type = "managed"
   space        = data.cloudfoundry_space.hello_worlds.id
-  service_plan = data.cloudfoundry_service.external_domain.service_plans["domain-with-cdn-dedicated-waf"]
+  service_plan = data.cloudfoundry_service_plan.external_domain.id
   parameters  = "{\"domains\": \"test-cdn.${local.domain_name}\"}"
   provider = cloudfoundryv3
 }
@@ -64,8 +66,8 @@ resource "cloudfoundry_app" "test-cdn" {
   path             = local.zip_output_filepath
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
 
-  routes {
+  routes = [{
     route = cloudfoundry_route.test_cdn_route.id
-  }
+  }]
   provider = cloudfoundryv3
 }
