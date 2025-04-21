@@ -36,7 +36,7 @@ pushd $this_directory/../stacks/cf
     read user_input
 
     # Dual provider with v3 tf
-    git checkout a8462c6e15ba095b768cd65c57c8c48330985258
+    git checkout 5e53d6637c3495bc08d3f606466ab2111fd1d77a
 
     for address in $addresses; do
         if [[ "$address" =~ ^data* ]]; then
