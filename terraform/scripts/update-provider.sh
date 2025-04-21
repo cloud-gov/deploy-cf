@@ -62,7 +62,7 @@ pushd $this_directory/../stacks/cf
                     ;;
             esac
             echo "Importing "${new_type}.${name}" $tf_id"
-            terraform import -var-file=${env}-vars.tfvars "${new_type}.${name}" "$tf_id"
+            terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
         fi
     done
     #rm existing.json
