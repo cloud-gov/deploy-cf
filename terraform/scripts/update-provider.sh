@@ -32,7 +32,7 @@ pushd $this_directory/../stacks/cf
             esac
     done
 
-    echo -n "Download, modify, and upload the tfstate file for the entitlement resource. Then hit any key to continue."
+    echo -n "Download, modify, and upload the tfstate file for the entitlement resource (remove the id and update the provider). Then hit any key to continue."
     read user_input
 
     # Dual provider with v3 tf
