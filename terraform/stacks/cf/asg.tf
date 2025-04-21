@@ -37,6 +37,7 @@ resource "cloudfoundry_security_group" "public_networks" {
 resource "cloudfoundry_security_group" "public_networks_egress" {
   name = "public_networks_egress"
 
+  globally_enabled_running = false
   globally_enabled_staging = true
 
   rules = [
@@ -111,6 +112,9 @@ resource "cloudfoundry_security_group" "dns" {
 # New dns asg to apply to spaces individually, not globally.
 resource "cloudfoundry_security_group" "dns_egress" {
   name = "dns_egress"
+
+  globally_enabled_running = false
+  globally_enabled_staging = false
 
   rules = [
     {
@@ -326,6 +330,7 @@ locals {
 resource "cloudfoundry_security_group" "trusted_local_networks_egress" {
   name = "trusted_local_networks_egress"
 
+  globally_enabled_running = false
   globally_enabled_staging = true
 
   # RDS access for postgres, mysql, mssql, oracle
