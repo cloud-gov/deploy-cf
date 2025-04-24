@@ -156,6 +156,21 @@
     type: password
 
 - type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch-ci-cf-read-only?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    scope: cloud_controller.read,openid,scim.read
+    authorities: scim.read
+    secret: ((opensearch-ci-cf-read-only-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-ci-cf-read-only-secret
+    type: password
+
+- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch_dashboards_proxy?
   value:
     override: true
