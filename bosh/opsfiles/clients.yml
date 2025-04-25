@@ -160,8 +160,7 @@
   value:
     override: true
     authorized-grant-types: client_credentials
-    scope: cloud_controller.read,openid,scim.read
-    authorities: scim.read
+    authorities: scim.read,cloud_controller.global_auditor
     secret: ((opensearch-ci-cf-read-only-secret))
 
 - type: replace
