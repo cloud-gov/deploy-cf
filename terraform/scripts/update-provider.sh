@@ -36,7 +36,7 @@ pushd $this_directory/../stacks/cf
     read user_input
 
     # Dual provider with v3 tf
-    git checkout 28732f5381e1eda685048fdcab8cfb839418e1a2
+    git checkout 286dc0c83f1b413ed67067d311e67b977aa85b1f
 
     for address in $addresses; do
         if [[ "$address" =~ ^data* ]]; then
@@ -65,5 +65,31 @@ pushd $this_directory/../stacks/cf
             terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
         fi
     done
-    #rm existing.json
+    changes=$(terraform plan -json -var-file=dev.tfvars -out output | tail -n 1 | jq -r '.changes')
+    to_add=$(echo "$changes" | jq -r '.add')
+    to_change=$(echo "$changes" | jq -r '.change')
+    to_import=$(echo "$changes" | jq -r '.import')
+    to_remove=$(echo "$changes" | jq -r '.remove')
+    if [ $to_add -gt 0 ] || [ $to_change -gt 0 ] || [ $to_import -gt 0 ] || [ $to_remove -gt 0 ]; then
+        echo "CHANGES DETECTED. Exiting."
+        terraform show output
+        exit 1
+    else 
+        echo "No changes detected. Continuing..."
+        echo "Removing old provider"
+        git checkout 430db263a0abc3f3217d3f9ae0c565c399e5833e
+        changes=$(terraform plan -json -var-file=dev.tfvars -out output | tail -n 1 | jq -r '.changes')
+        to_add=$(echo "$changes" | jq -r '.add')
+        to_change=$(echo "$changes" | jq -r '.change')
+        to_import=$(echo "$changes" | jq -r '.import')
+        to_remove=$(echo "$changes" | jq -r '.remove')
+        if [ $to_add -gt 0 ] || [ $to_change -gt 0 ] || [ $to_import -gt 0 ] || [ $to_remove -gt 0 ]; then
+            echo "CHANGES DETECTED. Something is still wrong. Exiting."
+            terraform show output
+            exit 1
+        else 
+            echo "Old provider removed. Good work."
+        fi
+    fi 
+    
 popd
