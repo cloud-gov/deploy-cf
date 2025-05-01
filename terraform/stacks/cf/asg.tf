@@ -31,7 +31,6 @@ resource "cloudfoundry_security_group" "public_networks" {
   ]
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
-  provider       = cloudfoundryv3
 }
 
 
@@ -84,7 +83,6 @@ resource "cloudfoundry_security_group" "public_networks_egress" {
       log         = false
     },
   ]
-  provider = cloudfoundryv3
 }
 
 resource "cloudfoundry_security_group" "dns" {
@@ -108,7 +106,6 @@ resource "cloudfoundry_security_group" "dns" {
   ]
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
-  provider       = cloudfoundryv3
 }
 
 # New dns asg to apply to spaces individually, not globally.
@@ -132,10 +129,7 @@ resource "cloudfoundry_security_group" "dns_egress" {
       log         = false
     },
   ]
-  provider = cloudfoundryv3
 }
-
-
 
 locals {
   trusted_local_networks_rules_1 = [
@@ -235,7 +229,6 @@ resource "cloudfoundry_security_group" "trusted_local_networks" {
 
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.email.id]
-  provider       = cloudfoundryv3
 }
 
 locals {
@@ -337,8 +330,6 @@ resource "cloudfoundry_security_group" "trusted_local_networks_egress" {
 
   # RDS access for postgres, mysql, mssql, oracle
   rules = local.trusted_local_networks_egress_rules
-
-  provider = cloudfoundryv3
 }
 
 resource "cloudfoundry_security_group" "brokers" {
@@ -351,7 +342,6 @@ resource "cloudfoundry_security_group" "brokers" {
     log         = false
   }]
   running_spaces = [cloudfoundry_space.services.id]
-  provider       = cloudfoundryv3
 }
 
 resource "cloudfoundry_security_group" "smtp" {
@@ -363,7 +353,6 @@ resource "cloudfoundry_security_group" "smtp" {
     ports       = "25"
   }]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.email.id]
-  provider       = cloudfoundryv3
 }
 
 resource "cloudfoundry_security_group" "internal_services_egress" {
@@ -385,5 +374,4 @@ resource "cloudfoundry_security_group" "internal_services_egress" {
       log         = false
     },
   ]
-  provider = cloudfoundryv3
 }

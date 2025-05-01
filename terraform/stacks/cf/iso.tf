@@ -1,6 +1,5 @@
 resource "cloudfoundry_isolation_segment" "platform" {
   name = "platform"
-  provider = cloudfoundryv3
 }
 
 resource "cloudfoundry_isolation_segment_entitlement" "platform" {
@@ -9,5 +8,4 @@ resource "cloudfoundry_isolation_segment_entitlement" "platform" {
     cloudfoundry_org.cloud-gov.id
   ]
   default = false
-  provider = cloudfoundryv3
 }
