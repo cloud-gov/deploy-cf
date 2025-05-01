@@ -80,6 +80,9 @@ popd
 pushd $this_directory/..
     echo "Removing old provider"
     git checkout cf-provider-v3
+popd    
+
+pushd $this_directory/../stacks/cf
     if [[ "$env" == "dev" ]]; then
         backend_config_key="cf-development/terraform.tfstate"
     elif [[ "$env" == "stage" ]]; then
@@ -97,9 +100,6 @@ pushd $this_directory/..
         "-backend-config=region=us-gov-west-1"
     )
     terraform init -upgrade "${init_args[@]}"
-popd    
-
-pushd $this_directory/../stacks/cf
     changes=$(terraform plan -json -var-file=dev.tfvars -out output | tail -n 1 | jq -r '.changes')
     to_add=$(echo "$changes" | jq -r '.add')
     to_change=$(echo "$changes" | jq -r '.change')
