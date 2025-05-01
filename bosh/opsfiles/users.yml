@@ -26,3 +26,17 @@
   value:
     name: autoscaler-password
     type: password
+
+# Sandbox Bot user
+# Note: this user is used by the acceptance tests, the sandbox-bot client is used inside the app and doesn't need the higher level of permissions
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/scim/users/-
+  value:
+    name: sandbox-bot-user
+    password: ((sandbox-bot-password))
+    groups: [openid, cloud_controller.admin, scim.read, scim.write]
+- type: replace
+  path: /variables/-
+  value:
+    name: sandbox-bot-password
+    type: password
