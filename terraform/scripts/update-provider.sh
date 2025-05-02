@@ -9,6 +9,8 @@ env=$1
 
 this_directory=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+source $this_directory/sensitive.cfg
+
 pushd $this_directory/../stacks/cf
     git checkout d7c0aaefe5db36a530d2190713e5fb30c99fd969
 
