@@ -12,12 +12,32 @@ this_directory=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 pushd $this_directory/../stacks/cf
 
     # # Add provider
+    if [[ "$env" == "dev" ]]; then
+        backend_config_key="cf-development/terraform.tfstate"
+    elif [[ "$env" == "stage" ]]; then
+        backend_config_key="cf-staging/terraform.tfstate"
+    elif [[ "$env" == "prod" ]]; then
+        backend_config_key="cf-production/terraform.tfstate"
+    else 
+        echo "Missing backend_config_key for the environment ${env}. Exiting."
+    fi
+    init_args=(
+        "-backend=true"
+        "-backend-config=encrypt=true"
+        "-backend-config=bucket=terraform-state"
+        "-backend-config=key=${backend_config_key}"
+        "-backend-config=region=us-gov-west-1"
+    )
+    terraform init -upgrade "${init_args[@]}"
     git checkout d7c0aaefe5db36a530d2190713e5fb30c99fd969
 
     terraform show -json > existing.json
 
     addresses=$(cat existing.json | jq -r '.values.root_module.resources[] | select(.provider_name == "registry.terraform.io/cloudfoundry-community/cloudfoundry") | .address')
     
+    echo -n "Ready to roll? Then hit any key to continue."
+    read user_input
+
     for address in $addresses; do
         existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .type')
         case $existing_type in
@@ -65,7 +85,7 @@ pushd $this_directory/../stacks/cf
             terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
         fi
     done
-    changes=$(terraform plan -json -var-file=dev.tfvars -out output | tail -n 1 | jq -r '.changes')
+    changes=$(terraform plan -json -var-file=${env}.tfvars -out output | tail -n 1 | jq -r '.changes')
     to_add=$(echo "$changes" | jq -r '.add')
     to_change=$(echo "$changes" | jq -r '.change')
     to_import=$(echo "$changes" | jq -r '.import')
