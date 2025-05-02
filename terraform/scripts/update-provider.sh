@@ -10,6 +10,7 @@ env=$1
 this_directory=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 pushd $this_directory/../stacks/cf
+    git checkout d7c0aaefe5db36a530d2190713e5fb30c99fd969
 
     # # Add provider
     if [[ "$env" == "dev" ]]; then
@@ -29,7 +30,6 @@ pushd $this_directory/../stacks/cf
         "-backend-config=region=us-gov-west-1"
     )
     terraform init -upgrade "${init_args[@]}"
-    git checkout d7c0aaefe5db36a530d2190713e5fb30c99fd969
 
     terraform show -json > existing.json
 
