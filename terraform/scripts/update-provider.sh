@@ -60,6 +60,24 @@ pushd $this_directory/../stacks/cf
     # Dual provider with v3 tf
     git checkout 286dc0c83f1b413ed67067d311e67b977aa85b1f
 
+    if [[ "$env" == "dev" ]]; then
+        backend_config_key="cf-development/terraform.tfstate"
+    elif [[ "$env" == "stage" ]]; then
+        backend_config_key="cf-staging/terraform.tfstate"
+    elif [[ "$env" == "prod" ]]; then
+        backend_config_key="cf-production/terraform.tfstate"
+    else 
+        echo "Missing backend_config_key for the environment ${env}. Exiting."
+    fi
+    init_args=(
+        "-backend=true"
+        "-backend-config=encrypt=true"
+        "-backend-config=bucket=terraform-state"
+        "-backend-config=key=${backend_config_key}"
+        "-backend-config=region=us-gov-west-1"
+    )
+    terraform init -upgrade "${init_args[@]}"
+
     for address in $addresses; do
         if [[ "$address" =~ ^data* ]]; then
             echo "Skipping import of data object: $address"
