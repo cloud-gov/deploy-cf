@@ -37,7 +37,7 @@ pushd $this_directory/../stacks/cf
 
     root_addresses=$(cat existing.json | jq -r '.values.root_module.resources[] | select(.provider_name == "registry.terraform.io/cloudfoundry-community/cloudfoundry") | .address')
     module_addresses=$(cat existing.json | jq -r '.values.root_module.child_modules[].resources[] | select(.provider_name == "registry.terraform.io/cloudfoundry-community/cloudfoundry") | .address')
-    addresses="${root_addresses}\n${module_addresses}" 
+    addresses="${root_addresses} ${module_addresses}" 
     for address in $addresses; do
         existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .type')
         case $existing_type in
