@@ -50,7 +50,11 @@ resource "cloudfoundry_service_instance" "test_cdn_instance" {
   type         = "managed"
   space        = data.cloudfoundry_space.hello_worlds.id
   service_plan = data.cloudfoundry_service_plan.external_domain.id
-  parameters   = "{\"domains\": \"test-cdn.${local.domain_name}\"}"
+  parameters = jsonencode({
+    "domains"               = "test-cdn.${local.domain_name}",
+    "cache_policy"          = "Managed-CachingOptimized",
+    "origin_request_policy" = "Managed-AllViewer"
+  })
 }
 
 resource "cloudfoundry_app" "test-cdn" {
