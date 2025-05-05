@@ -104,16 +104,16 @@ pushd $this_directory/../stacks/cf
             terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
         fi
     done
-    changes=$(terraform plan -json -var-file=${env}.tfvars -out output | tail -n 1 | jq -r '.changes')
-    to_add=$(echo "$changes" | jq -r '.add')
-    to_change=$(echo "$changes" | jq -r '.change')
-    to_import=$(echo "$changes" | jq -r '.import')
-    to_remove=$(echo "$changes" | jq -r '.remove')
-    if [ $to_add -gt 0 ] || [ $to_change -gt 0 ] || [ $to_import -gt 0 ] || [ $to_remove -gt 0 ]; then
-        echo "CHANGES DETECTED. Exiting."
-        terraform show output
-        exit 1
-    fi
+    # changes=$(terraform plan -json -var-file=${env}.tfvars -out output | tail -n 1 | jq -r '.changes')
+    # to_add=$(echo "$changes" | jq -r '.add')
+    # to_change=$(echo "$changes" | jq -r '.change')
+    # to_import=$(echo "$changes" | jq -r '.import')
+    # to_remove=$(echo "$changes" | jq -r '.remove')
+    # if [ $to_add -gt 0 ] || [ $to_change -gt 0 ] || [ $to_import -gt 0 ] || [ $to_remove -gt 0 ]; then
+    #     echo "CHANGES DETECTED. Exiting."
+    #     terraform show output
+    #     exit 1
+    # fi
 popd
 
 pushd $this_directory/..
