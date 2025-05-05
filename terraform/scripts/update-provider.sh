@@ -82,26 +82,28 @@ pushd $this_directory/../stacks/cf
             echo "Skipping import of data object: $address"
         else
             existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .type')
-            tf_id=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .values.id')
-            name=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .name')
-            case $existing_type in
-                cloudfoundry_asg)
-                    new_type="cloudfoundry_security_group"
-                    ;;
-                cloudfoundry_default_asg)
-                    echo "Skipping import of cloudfoundry_default_asg.${name} as it no longer exists in the new provider."
-                    continue
-                    ;;
-                cloudfoundry_isolation_segment_entitlement)
-                    echo "Skipping import of cloudfoundry_isolation_segment_entitlement.${name} as it is not currently importable."
-                    continue
-                    ;;
-                *)
-                    new_type="$existing_type"
-                    ;;
-            esac
-            echo "Importing "${new_type}.${name}" $tf_id"
-            terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
+            if [ ! -z "$existing_type" ]; then
+                tf_id=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .values.id')
+                name=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .name')
+                case $existing_type in
+                    cloudfoundry_asg)
+                        new_type="cloudfoundry_security_group"
+                        ;;
+                    cloudfoundry_default_asg)
+                        echo "Skipping import of cloudfoundry_default_asg.${name} as it no longer exists in the new provider."
+                        continue
+                        ;;
+                    cloudfoundry_isolation_segment_entitlement)
+                        echo "Skipping import of cloudfoundry_isolation_segment_entitlement.${name} as it is not currently importable."
+                        continue
+                        ;;
+                    *)
+                        new_type="$existing_type"
+                        ;;
+                esac
+                echo "Importing "${new_type}.${name}" $tf_id"
+                terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
+            fi
         fi
     done
     # changes=$(terraform plan -json -var-file=${env}.tfvars -out output | tail -n 1 | jq -r '.changes')
