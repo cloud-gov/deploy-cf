@@ -35,11 +35,9 @@ pushd $this_directory/../stacks/cf
 
     terraform show -json > existing.json
 
-    addresses=$(cat existing.json | jq -r '.values.root_module.resources[] | select(.provider_name == "registry.terraform.io/cloudfoundry-community/cloudfoundry") | .address')
-    
-    echo -n "Ready to roll? Then hit any key to continue."
-    read user_input
-
+    root_addresses=$(cat existing.json | jq -r '.values.root_module.resources[] | select(.provider_name == "registry.terraform.io/cloudfoundry-community/cloudfoundry") | .address')
+    module_addresses=$(cat existing.json | jq -r '.values.root_module.child_modules[].resources[] | select(.provider_name == "registry.terraform.io/cloudfoundry-community/cloudfoundry") | .address')
+    addresses="${root_addresses}\n${module_addresses}" 
     for address in $addresses; do
         existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .type')
         case $existing_type in
@@ -77,6 +75,7 @@ pushd $this_directory/../stacks/cf
         "-backend-config=region=us-gov-west-1"
     )
     terraform init -upgrade "${init_args[@]}"
+
 
     for address in $addresses; do
         if [[ "$address" =~ ^data* ]]; then
