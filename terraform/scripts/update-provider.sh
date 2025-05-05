@@ -12,7 +12,7 @@ this_directory=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pw
 source $this_directory/sensitive.cfg
 
 pushd $this_directory/../stacks/cf
-    git checkout d7c0aaefe5db36a530d2190713e5fb30c99fd969
+    git checkout 2389b98bb44dd870224d7725900d6196eb6f02d5
 
     # # Add provider
     if [[ "$env" == "dev" ]]; then
