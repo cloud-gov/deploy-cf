@@ -56,7 +56,7 @@ pushd $this_directory/../stacks/cf
     read user_input
 
     # Dual provider with v3 tf
-    git checkout 7749388b8db0d6f0c325d2393af77ccbb63f0295
+    git checkout 1ab655c7ddf9ffdf346870dc2ca32bf20d8c1caf
 
     if [[ "$env" == "dev" ]]; then
         backend_config_key="cf-development/terraform.tfstate"
