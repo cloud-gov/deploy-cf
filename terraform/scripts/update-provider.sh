@@ -90,7 +90,13 @@ pushd $this_directory/../stacks/cf
                 exit 1
             else 
                 tf_id=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .values.id')
+                if [ -z "$tf_id" ]; then
+                    tf_id=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.child_modules[].resources[] | select(.address==$address) | .values.id')
+                fi 
                 name=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .name')
+                if [ -z "$name" ]; then
+                    name=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.child_modules[].resources[] | select(.address==$address) | .name')
+                fi 
                 case $existing_type in
                     cloudfoundry_asg)
                         new_type="cloudfoundry_security_group"
