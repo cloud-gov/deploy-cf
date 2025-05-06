@@ -62,6 +62,6 @@ resource "cloudfoundry_app" "test-cdn" {
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
 
   routes = [{
-    route = cloudfoundry_route.test_cdn_route.id
+    route = cloudfoundry_route.test_cdn_route.url
   }]
 }
