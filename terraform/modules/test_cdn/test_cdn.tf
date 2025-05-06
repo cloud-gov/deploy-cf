@@ -57,11 +57,12 @@ resource "cloudfoundry_app" "test-cdn" {
   name             = "test-cdn"
   buildpacks       = ["staticfile_buildpack"]
   org_name         = var.organization_id
-  space_name       = data.cloudfoundry_space.hello_worlds.id
+  space_name       = data.cloudfoundry_space.hello_worlds.name
   path             = local.zip_output_filepath
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
 
   routes = [{
+    protocol = "http1"
     route = cloudfoundry_route.test_cdn_route.url
   }]
 }
