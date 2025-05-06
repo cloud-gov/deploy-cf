@@ -117,8 +117,13 @@ pushd $this_directory/../stacks/cf
                         new_type="$existing_type"
                         ;;
                 esac
-                echo "Importing "${new_type}.${name}" $tf_id"
-                terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
+                if [[ "$address" =~ ^module* ]]; then
+                    echo "Importing ${address} $tf_id"
+                    terraform import -var-file=${env}.tfvars "${address}" "$tf_id"
+                else 
+                    echo "Importing ${new_type}.${name} $tf_id"
+                    terraform import -var-file=${env}.tfvars "${new_type}.${name}" "$tf_id"
+                fi
             fi
         fi
     done
