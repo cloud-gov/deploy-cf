@@ -1,9 +1,9 @@
 variable "iaas_stack_name" {
 }
 
-variable "organization_id" {
+variable "organization_name" {
   type = string
-  description = "Organization GUID to use for test CDN app"
+  description = "Organization name to use for test CDN app"
 }
 
 variable "space_name" {

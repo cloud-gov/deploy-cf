@@ -13,6 +13,10 @@ data "cloudfoundry_service_plan" "external_domain" {
   name                  = "domain-with-cdn-dedicated-waf"
 }
 
+data "cloudfoundry_org" "org" {
+  name = var.organization_name
+}
+
 data "cloudfoundry_space" "hello_worlds" {
   name = var.space_name
   org  = var.organization_id
@@ -56,7 +60,7 @@ resource "cloudfoundry_service_instance" "test_cdn_instance" {
 resource "cloudfoundry_app" "test-cdn" {
   name             = "test-cdn"
   buildpacks       = ["staticfile_buildpack"]
-  org_name         = var.organization_id
+  org_name         = data.cloudfoundry_org.org.name
   space_name       = data.cloudfoundry_space.hello_worlds.name
   path             = local.zip_output_filepath
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
