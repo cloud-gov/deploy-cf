@@ -19,7 +19,7 @@ data "cloudfoundry_org" "org" {
 
 data "cloudfoundry_space" "hello_worlds" {
   name = var.space_name
-  org  = var.organization_id
+  org  = data.cloudfoundry_org.org.id
 }
 
 resource "null_resource" "git_clone" {
@@ -64,6 +64,15 @@ resource "cloudfoundry_app" "test-cdn" {
   space_name       = data.cloudfoundry_space.hello_worlds.name
   path             = local.zip_output_filepath
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
+  memory = "512M"
+  disk_quota = "1024M"
+  enable_ssh = true
+  health_check_type = "port"
+  instances = 1
+  log_rate_limit_per_second = "-1"
+  readiness_health_check_type = "process"
+  stack = "cflinuxfs4"
+
 
   routes = [{
     protocol = "http1"
