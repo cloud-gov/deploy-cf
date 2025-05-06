@@ -78,7 +78,11 @@ pushd $this_directory/../stacks/cf
 
 
     for address in $addresses; do
-        if [[ "$address" =~ ^data* ]]; then
+        mode=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .mode')
+        if [ -z "$mode" ]; then
+            mode=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.child_modules[].resources[] | select(.address==$address) | .mode')
+        fi 
+        if [[ "data" == "$mode" ]] || [[ "$address" =~ ^data* ]]; then
             echo "Skipping import of data object: $address"
         else
             existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .type')
