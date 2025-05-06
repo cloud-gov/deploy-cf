@@ -82,7 +82,13 @@ pushd $this_directory/../stacks/cf
             echo "Skipping import of data object: $address"
         else
             existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .type')
-            if [ ! -z "$existing_type" ]; then
+            if [ -z "$existing_type" ]; then
+                existing_type=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.child_modules[].resources[] | select(.address==$address) | .type')
+            fi 
+            if [ -z "$existing_type" ]; then
+                echo "ERROR: Missing type for $address"
+                exit 1
+            else 
                 tf_id=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .values.id')
                 name=$(cat existing.json | jq -r --arg address "$address" '.values.root_module.resources[] | select(.address==$address) | .name')
                 case $existing_type in
@@ -106,16 +112,6 @@ pushd $this_directory/../stacks/cf
             fi
         fi
     done
-    # changes=$(terraform plan -json -var-file=${env}.tfvars -out output | tail -n 1 | jq -r '.changes')
-    # to_add=$(echo "$changes" | jq -r '.add')
-    # to_change=$(echo "$changes" | jq -r '.change')
-    # to_import=$(echo "$changes" | jq -r '.import')
-    # to_remove=$(echo "$changes" | jq -r '.remove')
-    # if [ $to_add -gt 0 ] || [ $to_change -gt 0 ] || [ $to_import -gt 0 ] || [ $to_remove -gt 0 ]; then
-    #     echo "CHANGES DETECTED. Exiting."
-    #     terraform show output
-    #     exit 1
-    # fi
 popd
 
 pushd $this_directory/..
