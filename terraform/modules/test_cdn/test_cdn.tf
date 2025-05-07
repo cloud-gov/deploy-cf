@@ -13,9 +13,13 @@ data "cloudfoundry_service_plan" "external_domain" {
   name                  = "domain-with-cdn-dedicated-waf"
 }
 
+data "cloudfoundry_org" "org" {
+  name = var.organization_name
+}
+
 data "cloudfoundry_space" "hello_worlds" {
   name = var.space_name
-  org  = var.organization_id
+  org  = data.cloudfoundry_org.org.id
 }
 
 resource "null_resource" "git_clone" {
@@ -56,12 +60,22 @@ resource "cloudfoundry_service_instance" "test_cdn_instance" {
 resource "cloudfoundry_app" "test-cdn" {
   name             = "test-cdn"
   buildpacks       = ["staticfile_buildpack"]
-  org_name         = var.organization_id
-  space_name       = data.cloudfoundry_space.hello_worlds.id
+  org_name         = data.cloudfoundry_org.org.name
+  space_name       = data.cloudfoundry_space.hello_worlds.name
   path             = local.zip_output_filepath
   source_code_hash = data.archive_file.test_cdn_app_src.output_sha256
+  memory = "512M"
+  disk_quota = "1024M"
+  enable_ssh = true
+  health_check_type = "port"
+  instances = 1
+  log_rate_limit_per_second = "-1"
+  readiness_health_check_type = "process"
+  stack = "cflinuxfs4"
+
 
   routes = [{
-    route = cloudfoundry_route.test_cdn_route.id
+    protocol = "http1"
+    route = cloudfoundry_route.test_cdn_route.url
   }]
 }

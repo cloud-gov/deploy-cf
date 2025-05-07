@@ -104,8 +104,11 @@ resource "cloudfoundry_security_group" "dns" {
       log         = false
     },
   ]
-  staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
-  running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
+  # cloudfoundry_space.uaa-extras.id
+  # cloudfoundry_space.dashboard.id
+  # cloudfoundry_space.services.id
+  staging_spaces = [cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
+  running_spaces = [cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
 }
 
 # New dns asg to apply to spaces individually, not globally.
