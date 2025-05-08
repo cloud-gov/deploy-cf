@@ -29,10 +29,13 @@ resource "cloudfoundry_security_group" "public_networks" {
       log         = false
     },
   ]
+}
+
+resource "cloudfoundry_security_group_space_bindings" "public_networks_bindings" {
+  security_group = cloudfoundry_security_group.public_networks.id
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
 }
-
 
 # New public_networks asg to apply to spaces individually, not globally.
 resource "cloudfoundry_security_group" "public_networks_egress" {
@@ -104,11 +107,12 @@ resource "cloudfoundry_security_group" "dns" {
       log         = false
     },
   ]
-  # cloudfoundry_space.uaa-extras.id
-  # cloudfoundry_space.dashboard.id
-  # cloudfoundry_space.services.id
-  staging_spaces = [cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
-  running_spaces = [cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
+}
+
+resource "cloudfoundry_security_group_space_bindings" "dns_bindings" {
+  security_group = cloudfoundry_security_group.dns.id
+  staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
+  running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
 }
 
 # New dns asg to apply to spaces individually, not globally.
@@ -230,6 +234,10 @@ resource "cloudfoundry_security_group" "trusted_local_networks" {
   # RDS access for postgres, mysql, mssql, oracle
   rules = local.trusted_local_networks_rules
 
+}
+
+resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks_bindings" {
+  security_group = cloudfoundry_security_group.trusted_local_networks.id
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.email.id]
 }
@@ -344,6 +352,10 @@ resource "cloudfoundry_security_group" "brokers" {
     description = "AWS Metadata Service"
     log         = false
   }]
+}
+
+resource "cloudfoundry_security_group_space_bindings" "brokers_bindings" {
+  security_group = cloudfoundry_security_group.brokers.id
   running_spaces = [cloudfoundry_space.services.id]
 }
 
@@ -355,6 +367,10 @@ resource "cloudfoundry_security_group" "smtp" {
     protocol    = "tcp"
     ports       = "25"
   }]
+}
+
+resource "cloudfoundry_security_group_space_bindings" "smtp_bindings" {
+  security_group = cloudfoundry_security_group.smtp.id
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.email.id]
 }
 

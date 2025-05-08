@@ -4,7 +4,7 @@ resource "cloudfoundry_org_quota" "default-tts" {
   total_memory             = 81920
   total_routes             = 1000
   total_services           = 200
-  orgs                     = [cloudfoundry_org.cloud-gov.id, cloudfoundry_org.acceptance_tests.id]
+  orgs                     = [cloudfoundry_org.cloud-gov.id, cloudfoundry_org.acceptance_tests.id, data.cloudfoundry_org.cloud-gov-operators.id]
 }
 
 # Federalist/ Pages
