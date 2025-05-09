@@ -31,7 +31,7 @@ resource "cloudfoundry_security_group" "public_networks" {
   ]
 }
 
-resource "cloudfoundry_security_group_space_bindings" "public_networks_bindings" {
+resource "cloudfoundry_security_group_space_bindings" "public_networks" {
   security_group = cloudfoundry_security_group.public_networks.id
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
@@ -88,6 +88,12 @@ resource "cloudfoundry_security_group" "public_networks_egress" {
   ]
 }
 
+resource "cloudfoundry_security_group_space_bindings" "public_networks_egress" {
+  security_group = cloudfoundry_security_group.public_networks_egress.id
+  staging_spaces = [cloudfoundry_space.opensearch-dashboards-proxy.id]
+  running_spaces = [cloudfoundry_space.opensearch-dashboards-proxy.id]
+}
+
 resource "cloudfoundry_security_group" "dns" {
   name                     = "dns"
   globally_enabled_running = true
@@ -109,7 +115,7 @@ resource "cloudfoundry_security_group" "dns" {
   ]
 }
 
-resource "cloudfoundry_security_group_space_bindings" "dns_bindings" {
+resource "cloudfoundry_security_group_space_bindings" "dns" {
   security_group = cloudfoundry_security_group.dns.id
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
@@ -236,7 +242,7 @@ resource "cloudfoundry_security_group" "trusted_local_networks" {
 
 }
 
-resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks_bindings" {
+resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks" {
   security_group = cloudfoundry_security_group.trusted_local_networks.id
   staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.email.id]
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.email.id]
@@ -354,7 +360,7 @@ resource "cloudfoundry_security_group" "brokers" {
   }]
 }
 
-resource "cloudfoundry_security_group_space_bindings" "brokers_bindings" {
+resource "cloudfoundry_security_group_space_bindings" "brokers" {
   security_group = cloudfoundry_security_group.brokers.id
   running_spaces = [cloudfoundry_space.services.id]
 }
@@ -369,7 +375,7 @@ resource "cloudfoundry_security_group" "smtp" {
   }]
 }
 
-resource "cloudfoundry_security_group_space_bindings" "smtp_bindings" {
+resource "cloudfoundry_security_group_space_bindings" "smtp" {
   security_group = cloudfoundry_security_group.smtp.id
   running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.email.id]
 }
