@@ -890,6 +890,7 @@ jobs:
           TF_VAR_domain_name: fr-stage.cloud.gov
           TF_VAR_iaas_stack_name: staging
           TF_VAR_tooling_stack_name: tooling
+          TF_VAR_devtools_org_name: cloud-gov-devtools-development
       - put: slack
         params:
           text_file: terraform-state/message.txt
@@ -1474,6 +1475,7 @@ jobs:
           TF_VAR_domain_name: cloud.gov
           TF_VAR_iaas_stack_name: production
           TF_VAR_tooling_stack_name: tooling
+          TF_VAR_devtools_secondary_org: true
       - put: slack
         params:
           text_file: terraform-state/message.txt
