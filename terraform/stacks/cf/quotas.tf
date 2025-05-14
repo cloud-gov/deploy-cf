@@ -17,3 +17,23 @@ resource "cloudfoundry_space_quota" "tiny" {
   org                      = data.cloudfoundry_org.gsa-18f-federalist.id
   spaces                   = [cloudfoundry_space.email.id]
 }
+
+# Devtools
+
+resource "cloudfoundry_space_quota" "devtools" {
+  name                     = "devtools"
+  allow_paid_service_plans = true
+  total_memory             = 40960
+  total_routes             = 100
+  total_services           = 100
+  org                      = [cloudfoundry_org.cloud-gov-devtools.id]
+}
+
+resource "cloudfoundry_space_quota" "devtools-secondary" {
+  name                     = "devtools-secondary"
+  allow_paid_service_plans = true
+  total_memory             = 10240
+  total_routes             = 100
+  total_services           = 100
+  org                      = [cloudfoundry_org.cloud-gov-devtools-secondary.id]
+}

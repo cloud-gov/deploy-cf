@@ -15,3 +15,14 @@ data "cloudfoundry_org" "cloud-gov-operators" {
 data "cloudfoundry_org" "gsa-18f-federalist" {
   name = "gsa-18f-federalist"
 }
+
+# Devtools
+
+resource "cloudfoundry_org" "cloud-gov-devtools" {
+  name = var.devtools_org_name
+}
+
+resource "cloudfoundry_org" "cloud-gov-devtools-secondary" {
+  count = var.devtools_secondary_org ? 1 : 0
+  name  = var.devtools_org_name_secondary
+}
