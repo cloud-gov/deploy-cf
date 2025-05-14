@@ -20,7 +20,7 @@ resource "cloudfoundry_space_quota" "tiny" {
 
 # Devtools
 
-resource "cloudfoundry_space_quota" "devtools" {
+resource "cloudfoundry_org_quota" "devtools" {
   name                     = "devtools"
   allow_paid_service_plans = true
   total_memory             = 40960
@@ -29,11 +29,12 @@ resource "cloudfoundry_space_quota" "devtools" {
   org                      = [cloudfoundry_org.cloud-gov-devtools.id]
 }
 
-resource "cloudfoundry_space_quota" "devtools-secondary" {
+resource "cloudfoundry_org_quota" "devtools-secondary" {
+  count                    = var.devtools_secondary_org ? 1 : 0
   name                     = "devtools-secondary"
   allow_paid_service_plans = true
   total_memory             = 10240
   total_routes             = 100
   total_services           = 100
-  org                      = [cloudfoundry_org.cloud-gov-devtools-secondary.id]
+  org                      = [cloudfoundry_org.cloud-gov-devtools-secondary[0].id]
 }
