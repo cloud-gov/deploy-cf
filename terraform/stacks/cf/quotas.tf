@@ -26,7 +26,7 @@ resource "cloudfoundry_org_quota" "devtools" {
   total_memory             = 40960
   total_routes             = 100
   total_services           = 100
-  org                      = [cloudfoundry_org.cloud-gov-devtools.id]
+  orgs                     = [cloudfoundry_org.cloud-gov-devtools.id]
 }
 
 resource "cloudfoundry_org_quota" "devtools-secondary" {
@@ -36,5 +36,5 @@ resource "cloudfoundry_org_quota" "devtools-secondary" {
   total_memory             = 10240
   total_routes             = 100
   total_services           = 100
-  org                      = [cloudfoundry_org.cloud-gov-devtools-secondary[0].id]
+  orgs                     = [cloudfoundry_org.cloud-gov-devtools-secondary[0].id]
 }
