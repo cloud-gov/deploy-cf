@@ -19,5 +19,5 @@ resource "cloudfoundry_isolation_segment_entitlement" "devtools" {
   orgs = [
     cloudfoundry_org.cloud-gov-devtools.id
   ]
-  default = false
+  default = true
 }
