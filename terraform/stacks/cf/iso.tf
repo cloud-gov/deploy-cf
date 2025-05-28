@@ -11,7 +11,7 @@ resource "cloudfoundry_isolation_segment_entitlement" "platform" {
 }
 
 resource "cloudfoundry_isolation_segment" "devtools" {
-  name = "devtools"
+  name = "diego-cell-iso-seg-devtools"
 }
 
 resource "cloudfoundry_isolation_segment_entitlement" "devtools" {
