@@ -146,3 +146,12 @@
 - type: replace
   path: /instance_groups/name=rotate-cc-database-key/vm_type
   value: t3.medium
+
+# iso-segs
+- type: replace
+  path: /instance_groups/name=diego-cell-iso-seg-devtools/vm_type
+  value: r6i.2xlarge
+
+- type: replace
+  path: /instance_groups/name=diego-cell-iso-seg-devtools/instances
+  value: 1

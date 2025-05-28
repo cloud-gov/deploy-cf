@@ -51,7 +51,7 @@ jobs:
         image: general-task
         file: cf-manifests/ci/create-diego-cell-iso-seg.yml
         params:
-          ISO_SEG_NAMES: "" #((names_of_iso_segs_development))    # Value in credhub
+          ISO_SEG_NAMES: ((names_of_iso_segs_development))
       - put: cf-deployment-development
         params: &deploy-params
           manifest: cf-deployment/cf-deployment.yml
@@ -612,7 +612,7 @@ jobs:
         image: general-task
         file: cf-manifests/ci/create-diego-cell-iso-seg.yml
         params:
-          ISO_SEG_NAMES: "" #((names_of_iso_segs_staging))    # Value in credhub
+          ISO_SEG_NAMES: ((names_of_iso_segs_staging))
       - put: cf-deployment-staging
         params:
           <<: *deploy-params
@@ -1172,7 +1172,7 @@ jobs:
         image: general-task
         file: cf-manifests/ci/create-diego-cell-iso-seg.yml
         params:
-          ISO_SEG_NAMES: "" #((names_of_iso_segs_production))    # Value in credhub
+          ISO_SEG_NAMES: ((names_of_iso_segs_production))
       - put: cf-deployment-production
         params: &prod-deploy-params
           <<: *deploy-params
@@ -1288,7 +1288,7 @@ jobs:
         image: general-task
         file: cf-manifests/ci/create-diego-cell-iso-seg.yml
         params:
-          ISO_SEG_NAMES: "" #((names_of_iso_segs_production))    # Value in credhub
+          ISO_SEG_NAMES: ((names_of_iso_segs_production))
       - put: cf-deployment-production
         params:
           <<: *prod-deploy-params
