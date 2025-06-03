@@ -40,7 +40,7 @@
           host_whitelist:
           - hostname: api.((system_domain))
             exclude:
-              - ^/v2/info  
+              - ^/v2/info
               - ^/v3/info
           - hostname: dashboard.((system_domain))
             exclude: []
@@ -103,8 +103,6 @@
         value: "max-age=31536000"
       - name: "X-Content-Type-Options"
         value: "nosniff"
-      - name: "X-XSS-Protection"
-        value: "1; mode=block"
       - name: "Content-Type"
         value: "text/plain; charset=utf-8"
       - name: "X-Frame-Options"
