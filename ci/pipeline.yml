@@ -117,6 +117,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/wazuh.yml
             - cf-manifests/bosh/opsfiles/pin-uaa.yml
+            - src/bosh/opsfiles/add-cflinuxfs4-hardened.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
@@ -1639,9 +1640,10 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/cg-deploy-cf.git
-      branch: main
+      branch: cflinuxfs4-hardened
       paths:
         - ci/*
+        - bosh/opsfiles/add-cflinuxfs4-hardened.yml
 
   - name: cf-manifests
     type: git
