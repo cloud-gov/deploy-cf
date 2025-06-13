@@ -5,6 +5,12 @@
     version: latest
 
 - type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks/-
+  value:
+    name: cflinuxfs4-hardened
+    description: Hardened Cloud Foundry Linux-based filesystem (Ubuntu 22.04)
+
+- type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/diego/lifecycle_bundles
   value: 
     buildpack/cflinuxfs4: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
@@ -39,7 +45,7 @@
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
     buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
-    
+
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/-
   value:
