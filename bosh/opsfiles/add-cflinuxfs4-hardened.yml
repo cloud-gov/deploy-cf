@@ -18,6 +18,7 @@
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
     buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/diego/lifecycle_bundles
@@ -27,6 +28,7 @@
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
     buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/diego/lifecycle_bundles
@@ -36,6 +38,7 @@
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
     buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cc_deployment_updater/properties/cc/diego/lifecycle_bundles
@@ -45,6 +48,7 @@
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
     buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/-
