@@ -27,7 +27,7 @@ do
   cf delete-route $DOMAIN --hostname app-test-$space -f
 
   # Delete service instance db
-  cf delete-service $space-db -f
+  cf delete-service $space-db -f -w
 done
 
 ## Delete spaces
