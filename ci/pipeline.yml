@@ -9,6 +9,7 @@ jobs:
         file: src/ci/pipeline.yml
         var_files:
           - src/ci/config.yml
+
   - name: deploy-cf-development
     serial_groups: [development]
     serial: true
@@ -16,22 +17,28 @@ jobs:
       - in_parallel:
           - get: master-bosh-root-cert
             trigger: true
+            passed: [plan-cf-development]
           - get: cf-deployment
             trigger: true
+            passed: [plan-cf-development]
           - get: pipeline-tasks
           - get: cf-manifests
             resource: cf-manifests
             trigger: true
+            passed: [plan-cf-development]
           - get: src
             resource: src
             trigger: false
-            passed: [set-self]
+            passed: [plan-cf-development]
           - get: terraform-yaml
             resource: terraform-yaml-development
+            passed: [plan-cf-development]
           - get: cf-stemcell-jammy
             trigger: true
+            passed: [plan-cf-development]
           - get: uaa-customized-release
             trigger: true
+            passed: [plan-cf-development]
           - get: cg-s3-secureproxy-release
             trigger: true
           - get: general-task
@@ -167,6 +174,54 @@ jobs:
         channel: "#cg-platform-news"
         username: ((slack-username))
         icon_url: ((slack-icon-url))
+
+  - name: plan-cf-development
+    serial_groups: [development]
+    serial: true
+    plan:
+      - in_parallel:
+          - get: master-bosh-root-cert
+            trigger: true
+          - get: cf-deployment
+            trigger: true
+          - get: pipeline-tasks
+          - get: cf-manifests
+            resource: cf-manifests
+            trigger: true
+          - get: src
+            resource: src
+            trigger: false
+            passed: [set-self]
+          - get: terraform-yaml
+            resource: terraform-yaml-development
+          - get: cf-stemcell-jammy
+            trigger: true
+          - get: uaa-customized-release
+            trigger: true
+          - get: cg-s3-secureproxy-release
+            trigger: true
+          - get: general-task
+      - task: terraform-secrets
+        image: general-task
+        file: cf-manifests/ci/terraform-secrets.yml
+      - task: router-main
+        image: general-task
+        file: cf-manifests/ci/create-router-main.yml
+      - task: router-logstash
+        image: general-task
+        file: cf-manifests/ci/create-router-logstash.yml
+      - task: diego-platform-cell
+        image: general-task
+        file: cf-manifests/ci/create-diego-platform-cell.yml
+      - task: diego-cell-iso-seg
+        image: general-task
+        file: cf-manifests/ci/create-diego-cell-iso-seg.yml
+        params:
+          ISO_SEG_NAMES: ((names_of_iso_segs_development))
+      - put: cf-deployment-development
+        params:
+          <<: *deploy-params
+          dry_run: true
 
   - name: terraform-plan-development
     plan:
@@ -1821,6 +1876,7 @@ groups:
   - name: all
     jobs:
       - set-self
+      - plan-cf-development
       - deploy-cf-development
       - terraform-plan-development
       - terraform-apply-development
@@ -1853,6 +1909,7 @@ groups:
   - name: development
     jobs:
       - set-self
+      - plan-cf-development
       - deploy-cf-development
       - terraform-plan-development
       - terraform-apply-development
