@@ -155,16 +155,6 @@ jobs:
           DISABLED_FEATURE_FLAGS: |
             user_org_creation
             hide_marketplace_from_unauthenticated_users
-
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed CF on development
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -490,15 +480,6 @@ jobs:
               - -euxc
               - |
                 bosh run-errand smoke-tests
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Smoke Tests for CF on development PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -548,15 +529,6 @@ jobs:
           <<: *test-space-egress-development-clean-tasks
         on_success:
           <<: *test-space-egress-development-clean-tasks
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Tests for space egress for CF on development PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -606,15 +578,6 @@ jobs:
           <<: *test-headers-development-clean-tasks
         on_success:
           <<: *test-headers-development-clean-tasks
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Tests for headers for CF on development PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -765,15 +728,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ((staging-route53-aws-access-key))
           AWS_SECRET_ACCESS_KEY: ((staging-route53-secret-access-key))
 
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed CF on staging
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1012,15 +966,6 @@ jobs:
           BOSH_ERRAND: ((cf.staging.smoke-tests))
           BOSH_CA_CERT: common/master-bosh.crt
         config: *smoke-tests-errand
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Smoke Tests for CF on staging PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1103,15 +1048,6 @@ jobs:
         params:
           FLAKE_ATTEMPTS: 3
           SKIP_REGEXP: routing.API|allows\spreviously-blocked\sip|Adding\sa\swildcard\sroute\sto\sa\sdomain|forwards\sapp\smessages\sto\sregistered\ssyslog\sdrains|uses\sa\sbuildpack\sfrom\sa\sgit\surl|when\sapp\shas\smultiple\sports\smapped
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Acceptance Tests for CF on staging PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1169,15 +1105,6 @@ jobs:
           <<: *test-space-egress-staging-clean-tasks
         on_success:
           <<: *test-space-egress-staging-clean-tasks
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Tests for space egress for CF on staging PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1288,15 +1215,6 @@ jobs:
           vars_files:
             - cf-manifests/bosh/varsfiles/production.yml
             - terraform-secrets/terraform.yml
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: CF Production plan ready for review
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1377,15 +1295,6 @@ jobs:
             user_org_creation
             hide_marketplace_from_unauthenticated_users
 
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Successfully deployed CF on prod
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1578,15 +1487,6 @@ jobs:
           BOSH_ERRAND: ((cf.production.smoke-tests))
           BOSH_CA_CERT: common/master-bosh.crt
         config: *smoke-tests-errand
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Smoke Tests for CF on prod PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
@@ -1631,15 +1531,6 @@ jobs:
           <<: *test-space-egress-production-clean-tasks
         on_success:
           <<: *test-space-egress-production-clean-tasks
-    on_success:
-      put: slack
-      params:
-        text: |
-          :white_check_mark: Tests for space egress for CF on production PASSED
-          <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
     on_failure:
       put: slack
       params:
