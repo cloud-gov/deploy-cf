@@ -124,6 +124,36 @@
     name: deploy-csb-client-secret
     type: password
 
+# Used in Concourse to deploy the billing service.
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/deploy-billing?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.admin
+    secret: ((deploy-billing-client-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: deploy-billing-client-secret
+    type: password
+
+# Use by the billing service to read usage information.
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/billing?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.admin_read_only
+    secret: ((billing-client-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: billing-client-secret
+    type: password
+
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-credentials-broker?
   value:
