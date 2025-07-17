@@ -13,6 +13,7 @@ cat > integration-config/integration_config.json <<EOF
   "include_service_discovery": true,
   "include_docker": true,
   "include_v3": true,
+  "include_tasks": true,
   "skip_ssl_validation": false,
   "use_log_cache": true
 }
