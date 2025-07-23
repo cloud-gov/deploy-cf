@@ -147,6 +147,7 @@
     authorized-grant-types: client_credentials
     authorities: cloud_controller.admin_read_only
     secret: ((billing-client-secret))
+    scope: usage.admin,usage.read
 
 - type: replace
   path: /variables/-
