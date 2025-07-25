@@ -145,7 +145,7 @@
   value:
     override: true
     authorized-grant-types: client_credentials
-    authorities: cloud_controller.admin_read_only
+    authorities: cloud_controller.admin_read_only,usage.admin,usage.read
     secret: ((billing-client-secret))
     scope: usage.admin,usage.read
 
