@@ -155,6 +155,24 @@
     name: billing-client-secret
     type: password
 
+# Used by zap-scan pipeline
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/zap-scan?
+  value:
+    override: true 
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.admin_read_only
+    secret: ((zap-scan-client-secret))
+    scope: openid,scim.read,uaa.user,cloud_controller.write,cloud_controller.admin_read_only,cloud_controller.read
+    access-token-validity: 600
+    refresh-token-validity: 43200
+
+- type: replace
+  path: /variables/-
+  value:
+    name: zap-scan-client-secret
+    type: password
+
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-credentials-broker?
   value:
