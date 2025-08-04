@@ -1529,6 +1529,7 @@ resources:
       uri: https://github.com/cloudfoundry/cf-deployment
       branch: main
       tag_filter: "v*"
+      version_depth: 8
 
   - name: cf-acceptance-tests
     type: git
