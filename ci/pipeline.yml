@@ -157,11 +157,11 @@ jobs:
             hide_marketplace_from_unauthenticated_users
     on_failure:
       put: slack
-      params:
+      params: &slack-failure-params
         text: |
           :x: FAILED to deploy CF on development
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
+        channel: ((slack-channel-notifications))
         username: ((slack-username))
         icon_url: ((slack-icon-url))
 
@@ -250,13 +250,11 @@ jobs:
           TF_VAR_tooling_stack_name: tooling
       - put: slack
         params:
+          <<: *slack-failure-params
           text_file: terraform-state/message.txt
           text: |
             :terraform: $BUILD_JOB_NAME needs review
             <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-          channel: "#cg-platform-news"
-          username: ((slack-username))
-          icon_url: ((slack-icon-url))
 
   - name: terraform-apply-development
     plan:
@@ -307,12 +305,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: UAA Smoke Tests for CF on development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: uaa-client-auditing-development
     plan:
@@ -402,12 +398,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: TIC Smoke Tests for CF on development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: smoke-tests-development
     serial_groups: [development]
@@ -483,12 +477,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: Smoke Tests for CF on development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: test-space-egress-development
     serial_groups: [development]
@@ -532,12 +524,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: Tests for space egress for CF on development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: test-headers-development
     serial_groups: [development]
@@ -581,12 +571,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: Tests for headers for CF on development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: deploy-cf-staging
     serial_groups: [staging]
@@ -731,12 +719,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: FAILED to deploy CF on staging
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: uaa-smoke-tests-staging
     plan:
@@ -768,12 +754,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: UAA Smoke Tests for CF on staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: uaa-client-auditing-staging
     plan:
@@ -860,12 +844,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: TIC Smoke Tests for CF on staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: terraform-plan-staging
     plan:
@@ -902,13 +884,11 @@ jobs:
           TF_VAR_devtools_org_name: cloud-gov-devtools-development
       - put: slack
         params:
+          <<: *slack-failure-params
           text_file: terraform-state/message.txt
           text: |
             :terraform: $BUILD_JOB_NAME needs review
             <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-          channel: "#cg-platform-news"
-          username: ((slack-username))
-          icon_url: ((slack-icon-url))
 
   - name: terraform-apply-staging
     plan:
@@ -969,12 +949,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: Smoke Tests for CF on staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: acceptance-tests-staging
     serial_groups: [staging]
@@ -1051,12 +1029,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: Acceptance Tests for CF on staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: test-space-egress-staging
     serial_groups: [staging]
@@ -1108,12 +1084,10 @@ jobs:
     on_failure:
       put: slack
       params:
+        <<: *slack-failure-params
         text: |
           :x: Tests for space egress for CF on staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-        channel: "#cg-platform-news"
-        username: ((slack-username))
-        icon_url: ((slack-icon-url))
 
   - name: plan-cf-production
     serial_groups: [production]
