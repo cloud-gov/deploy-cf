@@ -34,3 +34,5 @@ venv
 
 # Terraform
 *.tfvars
+
+.vscode
