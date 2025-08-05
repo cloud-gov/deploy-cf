@@ -33,3 +33,20 @@
   value:
     name: opensearch-dashboards-test-proxy-secret
     type: password
+
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch_dashboards_proxy_ci_test?
+  value:
+    override: true
+    scope: cloud_controller.read,openid,scim.read
+    authorized-grant-types: refresh_token,authorization_code,client_credentials
+    authorities: scim.read
+    autoapprove: true
+    redirect-uri: https://test-auth-proxy.((system_domain))
+    secret: ((opensearch-dashboards-ci-test-proxy-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-dashboards-ci-test-proxy-secret
+    type: password
