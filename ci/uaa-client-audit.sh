@@ -23,7 +23,7 @@ paginate() {
   while [ -n "${next_url}" ]; do
     page=$(cfcurl -s "${next_url}")
     next_url=$(echo -n "${page}" | jq -r '.pagination.next.href // ""')
-    results="${results}\n$(echo -n "${page}" | jq -r "${selector}")"
+    results="${results},$(echo -n "${page}" | jq -r "${selector}")"
   done
 
   echo "${results}"
