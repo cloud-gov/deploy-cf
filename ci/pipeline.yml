@@ -125,7 +125,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/wazuh.yml
             - cf-manifests/bosh/opsfiles/pin-uaa.yml
             - cf-manifests/bosh/opsfiles/pin-capi.yml
-            - src/bosh/opsfiles/add-paketo-jammy-full-hardened.yml
+            - cf-manifests/bosh/opsfiles/add-paketo-jammy-full-hardened.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
