@@ -1,73 +1,73 @@
 - type: replace
   path: /releases/-
   value:
-    name: paketo-jammy-full-hardened
+    name: cflinuxfs4-hardened
     version: latest
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks/-
   value:
-    name: paketo-jammy-full-hardened
-    description: Hardened Paketo Linux-based filesystem (Ubuntu 22.04)
+    name: cflinuxfs4-hardened
+    description: Hardened Cloud Foundry Linux-based filesystem (Ubuntu 22.04)
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/diego/lifecycle_bundles
   value: 
     buildpack/cflinuxfs4: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
-    buildpack/paketo-jammy-full-hardened: cnb_app_lifecycle/buildpack_app_lifecycle.tgz
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
-    cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/diego/lifecycle_bundles
   value: 
     buildpack/cflinuxfs4: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
-    buildpack/paketo-jammy-full-hardened: buildpack_app_lifecycle/cnb_app_lifecycle.tgz
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
-    cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/diego/lifecycle_bundles
   value: 
     buildpack/cflinuxfs4: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
-    buildpack/paketo-jammy-full-hardened: buildpack_app_lifecycle/cnb_app_lifecycle.tgz
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
-    cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cc_deployment_updater/properties/cc/diego/lifecycle_bundles
   value: 
     buildpack/cflinuxfs4: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
-    buildpack/paketo-jammy-full-hardened: buildpack_app_lifecycle/cnb_app_lifecycle.tgz
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
-    cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/-
   value:
-    name: paketo-jammy-full-hardened-rootfs-setup
+    name: cflinuxfs4-hardened-rootfs-setup
     properties:
-      rootfs:
+      cflinuxfs4-rootfs:
         trusted_certs:
         - ((diego_instance_identity_ca.ca))
         - ((uaa_ssl.ca))
-    release: paketo-jammy-full-hardened
+    release: cflinuxfs4-hardened
     # Credhub certs are omitted as we remove them from cflinuxfs4 in disable-secure-service-credentials-diego-cell.yml 
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=rep/properties/diego/rep/preloaded_rootfses/-
-  value: paketo-jammy-full-hardened:/var/vcap/packages/paketo-jammy-full-hardened/rootfs.tar
+  value: cflinuxfs4-hardened:/var/vcap/packages/cflinuxfs4-hardened/rootfs.tar
 
 - type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=paketo-jammy-full-hardened-rootfs-setup/properties/rootfs?/trusted_certs/-
+  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-hardened-rootfs-setup/properties/cflinuxfs4-hardened-rootfs?/trusted_certs/-
   value: |-
     # rds-ca-2015-root.pem - expired 3/2020 but still in use some instances
     -----BEGIN CERTIFICATE-----
