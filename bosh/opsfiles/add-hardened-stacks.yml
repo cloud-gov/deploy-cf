@@ -1,8 +1,20 @@
 - type: replace
   path: /releases/-
   value:
+    name: cflinuxfs4-hardened
+    version: latest
+
+- type: replace
+  path: /releases/-
+  value:
     name: paketo-jammy-full-hardened
     version: latest
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks/-
+  value:
+    name: cflinuxfs4-hardened
+    description: Hardened Cloud Foundry Linux-based filesystem (Ubuntu 22.04)
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/stacks/-
@@ -17,6 +29,9 @@
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/paketo-jammy-full-hardened: cnb_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
@@ -26,6 +41,9 @@
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/paketo-jammy-full-hardened: cnb_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
@@ -35,6 +53,9 @@
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/paketo-jammy-full-hardened: cnb_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
 - type: replace
@@ -44,8 +65,23 @@
     buildpack/windows: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/cflinuxfs4: cnb_app_lifecycle/cnb_app_lifecycle.tgz
     docker: docker_app_lifecycle/docker_app_lifecycle.tgz
+    buildpack/cflinuxfs4-hardened: buildpack_app_lifecycle/buildpack_app_lifecycle.tgz
+    cnb/cflinuxfs4-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
+    buildpack/paketo-jammy-full-hardened: cnb_app_lifecycle/buildpack_app_lifecycle.tgz
     cnb/paketo-jammy-full-hardened: cnb_app_lifecycle/cnb_app_lifecycle.tgz
 
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/-
+  value:
+    name: cflinuxfs4-hardened-rootfs-setup
+    properties:
+      cflinuxfs4-rootfs:
+        trusted_certs:
+        - ((diego_instance_identity_ca.ca))
+        - ((uaa_ssl.ca))
+    release: cflinuxfs4-hardened
+    # Credhub certs are omitted as we remove them from cflinuxfs4 in disable-secure-service-credentials-diego-cell.yml 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/-
   value:
@@ -56,11 +92,273 @@
         - ((diego_instance_identity_ca.ca))
         - ((uaa_ssl.ca))
     release: paketo-jammy-full-hardened
-    # Credhub certs are omitted as we remove them from cflinuxfs4 in disable-secure-service-credentials-diego-cell.yml 
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=rep/properties/diego/rep/preloaded_rootfses/-
+  value: cflinuxfs4-hardened:/var/vcap/packages/cflinuxfs4-hardened/rootfs.tar
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=rep/properties/diego/rep/preloaded_rootfses/-
   value: paketo-jammy-full-hardened:/var/vcap/packages/paketo-jammy-full-hardened/rootfs.tar
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs4-hardened-rootfs-setup/properties/cflinuxfs4-hardened-rootfs?/trusted_certs/-
+  value: |-
+    # rds-ca-2015-root.pem - expired 3/2020 but still in use some instances
+    -----BEGIN CERTIFICATE-----
+    MIID9DCCAtygAwIBAgIBQjANBgkqhkiG9w0BAQUFADCBijELMAkGA1UEBhMCVVMx
+    EzARBgNVBAgMCldhc2hpbmd0b24xEDAOBgNVBAcMB1NlYXR0bGUxIjAgBgNVBAoM
+    GUFtYXpvbiBXZWIgU2VydmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMx
+    GzAZBgNVBAMMEkFtYXpvbiBSRFMgUm9vdCBDQTAeFw0xNTAyMDUwOTExMzFaFw0y
+    MDAzMDUwOTExMzFaMIGKMQswCQYDVQQGEwJVUzETMBEGA1UECAwKV2FzaGluZ3Rv
+    bjEQMA4GA1UEBwwHU2VhdHRsZTEiMCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNl
+    cywgSW5jLjETMBEGA1UECwwKQW1hem9uIFJEUzEbMBkGA1UEAwwSQW1hem9uIFJE
+    UyBSb290IENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuD8nrZ8V
+    u+VA8yVlUipCZIKPTDcOILYpUe8Tct0YeQQr0uyl018StdBsa3CjBgvwpDRq1HgF
+    Ji2N3+39+shCNspQeE6aYU+BHXhKhIIStt3r7gl/4NqYiDDMWKHxHq0nsGDFfArf
+    AOcjZdJagOMqb3fF46flc8k2E7THTm9Sz4L7RY1WdABMuurpICLFE3oHcGdapOb9
+    T53pQR+xpHW9atkcf3pf7gbO0rlKVSIoUenBlZipUlp1VZl/OD/E+TtRhDDNdI2J
+    P/DSMM3aEsq6ZQkfbz/Ilml+Lx3tJYXUDmp+ZjzMPLk/+3beT8EhrwtcG3VPpvwp
+    BIOqsqVVTvw/CwIDAQABo2MwYTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUw
+    AwEB/zAdBgNVHQ4EFgQUTgLurD72FchM7Sz1BcGPnIQISYMwHwYDVR0jBBgwFoAU
+    TgLurD72FchM7Sz1BcGPnIQISYMwDQYJKoZIhvcNAQEFBQADggEBAHZcgIio8pAm
+    MjHD5cl6wKjXxScXKtXygWH2BoDMYBJF9yfyKO2jEFxYKbHePpnXB1R04zJSWAw5
+    2EUuDI1pSBh9BA82/5PkuNlNeSTB3dXDD2PEPdzVWbSKvUB8ZdooV+2vngL0Zm4r
+    47QPyd18yPHrRIbtBtHR/6CwKevLZ394zgExqhnekYKIqqEX41xsUV0Gm6x4vpjf
+    2u6O/+YE2U+qyyxHE5Wd5oqde0oo9UUpFETJPVb6Q2cEeQib8PBAyi0i6KnF+kIV
+    A9dY7IHSubtCK/i8wxMVqfd5GtbA8mmpeJFwnDvm9rBEsHybl08qlax9syEwsUYr
+    /40NawZfTUU=
+    -----END CERTIFICATE-----
+    # rds-ca-2012-us-gov-west-1.pem - expired 8/17 but still in use some instances
+    -----BEGIN CERTIFICATE-----
+    MIIDQzCCAqygAwIBAgIJAMGs6m/j+u8sMA0GCSqGSIb3DQEBBQUAMHUxCzAJBgNV
+    BAYTAlVTMRMwEQYDVQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMRMw
+    EQYDVQQKEwpBbWF6b24uY29tMQwwCgYDVQQLEwNSRFMxHDAaBgNVBAMTE2F3cy5h
+    bWF6b24uY29tL3Jkcy8wHhcNMTIwODE2MDY0MjAwWhcNMTcwODE1MDY0MjAwWjB1
+    MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHU2Vh
+    dHRsZTETMBEGA1UEChMKQW1hem9uLmNvbTEMMAoGA1UECxMDUkRTMRwwGgYDVQQD
+    ExNhd3MuYW1hem9uLmNvbS9yZHMvMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB
+    gQCnTB7AkRR4xuhfAuOt5foNeCRBPeUujkzmJu1yfnTbtFi+g7zmovQ9BJcRoPYL
+    45McnXyaT/7UjhJhCI5gnYlTIyBTRFh7lXFJryypFx8AIh6q3D/ht8b6cVro3sJ2
+    k4x1w/c7akKKsZJtf0ZyhbMvNnBz3K3TWVB6c9DChbfyUQIDAQABo4HaMIHXMB0G
+    A1UdDgQWBBS/OwyfNJHDnAmnZBbq9ACiXz7O1jCBpwYDVR0jBIGfMIGcgBS/Owyf
+    NJHDnAmnZBbq9ACiXz7O1qF5pHcwdTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldh
+    c2hpbmd0b24xEDAOBgNVBAcTB1NlYXR0bGUxEzARBgNVBAoTCkFtYXpvbi5jb20x
+    DDAKBgNVBAsTA1JEUzEcMBoGA1UEAxMTYXdzLmFtYXpvbi5jb20vcmRzL4IJAMGs
+    6m/j+u8sMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEACR37LqHlzjSH
+    9gHCaiVJgCb0CCxSg3PHaQuv8h4ugAqQpGxpX3Zo97VgHnjEve21gXA74kzGUUAo
+    7YNTZWbF2VkHUDqekXimvL3q1JEvHDKPkLJrxEic1zTU1uazb9uJeb1aVWTq6N8R
+    bx56xd/e3o7RYcPfLD45y7RRXKz3AmE=
+    -----END CERTIFICATE-----
+    # rds-ca-bundle-us-gov-west-1.pem - expires 5/22
+    -----BEGIN CERTIFICATE-----
+    MIIECjCCAvKgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgZMxCzAJBgNVBAYTAlVT
+    MRAwDgYDVQQHDAdTZWF0dGxlMRMwEQYDVQQIDApXYXNoaW5ndG9uMSIwIAYDVQQK
+    DBlBbWF6b24gV2ViIFNlcnZpY2VzLCBJbmMuMRMwEQYDVQQLDApBbWF6b24gUkRT
+    MSQwIgYDVQQDDBtBbWF6b24gUkRTIEdvdkNsb3VkIFJvb3QgQ0EwHhcNMTcwNTE5
+    MjIzMTE5WhcNMjIwNTE4MTIwMDAwWjCBkzELMAkGA1UEBhMCVVMxEzARBgNVBAgM
+    Cldhc2hpbmd0b24xEDAOBgNVBAcMB1NlYXR0bGUxIjAgBgNVBAoMGUFtYXpvbiBX
+    ZWIgU2VydmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMxJDAiBgNVBAMM
+    G0FtYXpvbiBSRFMgdXMtZ292LXdlc3QtMSBDQTCCASIwDQYJKoZIhvcNAQEBBQAD
+    ggEPADCCAQoCggEBAM8YZLKAzzOdNnoi7Klih26Zkj+OCpDfwx4ZYB6f8L8UoQi5
+    8z9ZtIwMjiJ/kO08P1yl4gfc7YZcNFvhGruQZNat3YNpxwUpQcr4mszjuffbL4uz
+    +/8FBxALdqCVOJ5Q0EVSfz3d9Bd1pUPL7ARtSpy7bn/tUPyQeI+lODYO906C0TQ3
+    b9bjOsgAdBKkHfjLdsknsOZYYIzYWOJyFJJa0B11XjDUNBy/3IuC0KvDl6At0V5b
+    8M6cWcKhte2hgjwTYepV+/GTadeube1z5z6mWsN5arOAQUtYDLH6Aztq9mCJzLHm
+    RccBugnGl3fRLJ2VjioN8PoGoN9l9hFBy5fnFgsCAwEAAaNmMGQwDgYDVR0PAQH/
+    BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFEG7+br8KkvwPd5g
+    71Rvh2stclJbMB8GA1UdIwQYMBaAFEkQz6S4NS5lOYKcDjBSuCcVpdzjMA0GCSqG
+    SIb3DQEBCwUAA4IBAQBMA327u5ABmhX+aPxljoIbxnydmAFWxW6wNp5+rZrvPig8
+    zDRqGQWWr7wWOIjfcWugSElYtf/m9KZHG/Z6+NG7nAoUrdcd1h/IQhb+lFQ2b5g9
+    sVzQv/H2JNkfZA8fL/Ko/Tm/f9tcqe0zrGCtT+5u0Nvz35Wl8CEUKLloS5xEb3k5
+    7D9IhG3fsE3vHWlWrGCk1cKry3j12wdPG5cUsug0vt34u6rdhP+FsM0tHI15Kjch
+    RuUCvyQecy2ZFNAa3jmd5ycNdL63RWe8oayRBpQBxPPCbHfILxGZEdJbCH9aJ2D/
+    l8oHIDnvOLdv7/cBjyYuvmprgPtu3QEkbre5Hln/
+    -----END CERTIFICATE-----
+    # Amazon RDS GovCloud Root CA - expires 5/22
+    -----BEGIN CERTIFICATE-----
+    MIIEDjCCAvagAwIBAgIJAMM61RQn3/kdMA0GCSqGSIb3DQEBCwUAMIGTMQswCQYD
+    VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
+    MCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjETMBEGA1UECwwKQW1h
+    em9uIFJEUzEkMCIGA1UEAwwbQW1hem9uIFJEUyBHb3ZDbG91ZCBSb290IENBMB4X
+    DTE3MDUxOTIyMjkxMVoXDTIyMDUxODIyMjkxMVowgZMxCzAJBgNVBAYTAlVTMRAw
+    DgYDVQQHDAdTZWF0dGxlMRMwEQYDVQQIDApXYXNoaW5ndG9uMSIwIAYDVQQKDBlB
+    bWF6b24gV2ViIFNlcnZpY2VzLCBJbmMuMRMwEQYDVQQLDApBbWF6b24gUkRTMSQw
+    IgYDVQQDDBtBbWF6b24gUkRTIEdvdkNsb3VkIFJvb3QgQ0EwggEiMA0GCSqGSIb3
+    DQEBAQUAA4IBDwAwggEKAoIBAQDGS9bh1FGiJPT+GRb3C5aKypJVDC1H2gbh6n3u
+    j8cUiyMXfmm+ak402zdLpSYMaxiQ7oL/B3wEmumIpRDAsQrSp3B/qEeY7ipQGOfh
+    q2TXjXGIUjiJ/FaoGqkymHRLG+XkNNBtb7MRItsjlMVNELXECwSiMa3nJL2/YyHW
+    nTr1+11/weeZEKgVbCUrOugFkMXnfZIBSn40j6EnRlO2u/NFU5ksK5ak2+j8raZ7
+    xW7VXp9S1Tgf1IsWHjGZZZguwCkkh1tHOlHC9gVA3p63WecjrIzcrR/V27atul4m
+    tn56s5NwFvYPUIx1dbC8IajLUrepVm6XOwdQCfd02DmOyjWJAgMBAAGjYzBhMA4G
+    A1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRJEM+kuDUu
+    ZTmCnA4wUrgnFaXc4zAfBgNVHSMEGDAWgBRJEM+kuDUuZTmCnA4wUrgnFaXc4zAN
+    BgkqhkiG9w0BAQsFAAOCAQEAcfA7uirXsNZyI2j4AJFVtOTKOZlQwqbyNducnmlg
+    /5nug9fAkwM4AgvF5bBOD1Hw6khdsccMwIj+1S7wpL+EYb/nSc8G0qe1p/9lZ/mZ
+    ff5g4JOa26lLuCrZDqAk4TzYnt6sQKfa5ZXVUUn0BK3okhiXS0i+NloMyaBCL7vk
+    kDwkHwEqflRKfZ9/oFTcCfoiHPA7AdBtaPVr0/Kj9L7k+ouz122huqG5KqX0Zpo8
+    S0IGvcd2FZjNSNPttNAK7YuBVsZ0m2nIH1SLp//00v7yAHIgytQwwB17PBcp4NXD
+    pCfTa27ng9mMMC2YLqWQpW4TkqjDin2ZC+5X/mbrjzTvVg==
+    -----END CERTIFICATE-----
+    # rds-ca-bundle-us-gov-east-1.pem - expires 7/23
+    -----BEGIN CERTIFICATE-----
+    MIIEAjCCAuqgAwIBAgIJANmdqLPF/hNbMA0GCSqGSIb3DQEBCwUAMIGNMQswCQYD
+    VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
+    MCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjETMBEGA1UECwwKQW1h
+    em9uIFJEUzEeMBwGA1UEAwwVQW1hem9uIFJEUyBDTiBSb290IENBMB4XDTE4MDcy
+    ODAwNTIyNloXDTIzMDcyNzAwNTIyNlowgY0xCzAJBgNVBAYTAlVTMRAwDgYDVQQH
+    DAdTZWF0dGxlMRMwEQYDVQQIDApXYXNoaW5ndG9uMSIwIAYDVQQKDBlBbWF6b24g
+    V2ViIFNlcnZpY2VzLCBJbmMuMRMwEQYDVQQLDApBbWF6b24gUkRTMR4wHAYDVQQD
+    DBVBbWF6b24gUkRTIENOIFJvb3QgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+    ggEKAoIBAQCuwuQHbUOevOTFx49xrBLDXHP9P7LR7n5t18tWLG/dB8ouXcpmUIk8
+    XFgN3GXtfuHTheOaXhAZqzTCYza7gUP6KXHCN/dOoXqgaaOJbpVwnitLHHUt5maA
+    cgwRtLZTteyT92wGG2leb8WgA6MZTGx09In0D31OEwa5NbbAzVBClZgMbV/6D9IE
+    +/GUuu7qmGXXcj24Vnsem7L6Us8zmEO3sT9hCj1yldHyluwj1eSUaIv1NQ0M4iO5
+    2a1W8TmXGFgGMth2uFax6APVk++pB6kJoKGhgm49+IFLVnSzwMqNut0RC/nTCMXS
+    hDntHe7QiaWnhrU9zpYh5VmLu37n6lg7AgMBAAGjYzBhMA4GA1UdDwEB/wQEAwIB
+    BjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTPi7UAEXJ3JaMf3Yh4didZKro5
+    /TAfBgNVHSMEGDAWgBTPi7UAEXJ3JaMf3Yh4didZKro5/TANBgkqhkiG9w0BAQsF
+    AAOCAQEAgXyl/JSg6D9hnGjhD+cdEIgnKV4L7VVpY396IHFT+m0y3VupAsEC98XY
+    nB9lWKW0ALj2JxqKQOtJe6ZposMAnWZ+WctPQKdUnDyKT7/uZf/WMo/Lfs+IaiV4
+    Dii9HcvdGPMO5qlMzeH4zGCl/QvtVp5mwaxfkqTCWBkxApb0gdhHaMYyH+J//e0O
+    CS4sR6S95R2d+OXsGEd3Se2BoKaL3KQGpIoI85lwt8l+YRd+O7Ig0taEE1T1SVAY
+    rirVdtCyK+dEDq2xKoyR79VesgiPKTMcJPou6gXdeezJE1nL8te47yZlJFoAUL6v
+    EP9EpISn/Jp+QPoFSUFL/FssWEfdLw==
+    -----END CERTIFICATE-----
+    # Amazon RDS us-gov-east-1 CA - expires 6/22
+    -----BEGIN CERTIFICATE-----
+    MIIEBDCCAuygAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwgY0xCzAJBgNVBAYTAlVT
+    MRAwDgYDVQQHDAdTZWF0dGxlMRMwEQYDVQQIDApXYXNoaW5ndG9uMSIwIAYDVQQK
+    DBlBbWF6b24gV2ViIFNlcnZpY2VzLCBJbmMuMRMwEQYDVQQLDApBbWF6b24gUkRT
+    MR4wHAYDVQQDDBVBbWF6b24gUkRTIENOIFJvb3QgQ0EwHhcNMTgwNzI4MDA1MjMz
+    WhcNMjIwNjAxMTIwMDAwWjCBkzELMAkGA1UEBhMCVVMxEzARBgNVBAgMCldhc2hp
+    bmd0b24xEDAOBgNVBAcMB1NlYXR0bGUxIjAgBgNVBAoMGUFtYXpvbiBXZWIgU2Vy
+    dmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMxJDAiBgNVBAMMG0FtYXpv
+    biBSRFMgdXMtZ292LWVhc3QtMSBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+    AQoCggEBANcmOUZZiG+PdIVFlXpCrWmMrDZaU7tlou3B/bH1ECT/nFkLBncLrXJ/
+    VItIsEoiKbjtqikuxfOuTOEtlreH4OCogS1fam1I8IYWTcXe1YwFXVfDRVauw9Mr
+    Up+Ng0iaoZX4ACjHEgDE5Vr7zh69U3S8+NIWO5mRJQJb3QHXCedp3lKOLXOdEzcZ
+    VT+IfgpFXTpi7+PXK8RVAFrWV6fKLjFYNzFHcaQz1nH/tH1dQCGm+OMOIaTAQ0vQ
+    jV1iBwoAbzwayvLCil7sGMsKp8t5gWj08NU4KFY1YlA+vvam3HeZV3xDjKyY0YIO
+    f47+wL3WBwock/0cz7nJo+zZMSPLxJMCAwEAAaNmMGQwDgYDVR0PAQH/BAQDAgEG
+    MBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFBpaY4ioEu0rZrIPWaevervN
+    X6s/MB8GA1UdIwQYMBaAFM+LtQARcnclox/diHh2J1kqujn9MA0GCSqGSIb3DQEB
+    CwUAA4IBAQBvUChSX19imujJHUqoJUfUFj1tSFhgZSm8av4F98KKIoJIxA9bIF9R
+    8tSkLWRTZEXaBlmol7UXbMUDQUMmYNuST41bI2/4VQqMHg526Ja/MbfHVrYqiXUK
+    vmeF525/PTH9H1B2LvUNuwmO0S+tl0jwKL0dMHn62Giz8u6sGgOmwfhbJohUq3CD
+    KuwHwfZXlg0yiA7OSEUAGe9RK0MpoVppKF/lotEzcIcilStfEZQce4h3q2/rAc5d
+    e7tNxfZRKhtuGPR5/G0Z3j5z8yQMRZxnCDbq6JvE3vUggWSjBNXoSlhvzj6BiEBy
+    B4rKazWN1OzrKIX0yoiXx6SgtooVPx0k
+    -----END CERTIFICATE-----
+    # Amazon RDS us-gov-east-1 Root CA ECC384 G1 - expires 5/2121
+    -----BEGIN CERTIFICATE-----
+    MIICtjCCAjugAwIBAgIQCojG1Zix0YArC/bBkU7eOjAKBggqhkjOPQQDAzCBmjEL
+    MAkGA1UEBhMCVVMxIjAgBgNVBAoMGUFtYXpvbiBXZWIgU2VydmljZXMsIEluYy4x
+    EzARBgNVBAsMCkFtYXpvbiBSRFMxCzAJBgNVBAgMAldBMTMwMQYDVQQDDCpBbWF6
+    b24gUkRTIHVzLWdvdi1lYXN0LTEgUm9vdCBDQSBFQ0MzODQgRzExEDAOBgNVBAcM
+    B1NlYXR0bGUwIBcNMjEwNTI2MjIyODU4WhgPMjEyMTA1MjYyMzI4NThaMIGaMQsw
+    CQYDVQQGEwJVUzEiMCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjET
+    MBEGA1UECwwKQW1hem9uIFJEUzELMAkGA1UECAwCV0ExMzAxBgNVBAMMKkFtYXpv
+    biBSRFMgdXMtZ292LWVhc3QtMSBSb290IENBIEVDQzM4NCBHMTEQMA4GA1UEBwwH
+    U2VhdHRsZTB2MBAGByqGSM49AgEGBSuBBAAiA2IABKZfn/XfCIlHTE/YF5lH9D2h
+    H71kG3RaC92hBPbyncbDMf2Q7JeYwhknKahWmSO/EP0Nj+9iCFimT/Jb9o9ykkKl
+    gOvv/M6SQAuKsC/24PxwC8QV1miuTMUd7fGhNjQUHKNCMEAwDwYDVR0TAQH/BAUw
+    AwEB/zAdBgNVHQ4EFgQUniTlDl2igVgummx44YNMd5t4mMgwDgYDVR0PAQH/BAQD
+    AgGGMAoGCCqGSM49BAMDA2kAMGYCMQCSb8X09cnFdS90i1nqRLhancNU8bCFoI86
+    hqyctq0ftvXXmEe0bA+JnpIm5p/UKUUCMQCYYYQFfkeZtD4SOxSIE+WzfghJFaAq
+    /s17Q6LU2tCl4/csuzsTAl/vCc0JVynH340=
+    -----END CERTIFICATE-----
+    # Amazon RDS us-gov-east-1 Root CA RSA4096 G1 - expires 5/2121
+    -----BEGIN CERTIFICATE-----
+    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
+    JFiKTJMbfPV2uQ==
+    -----END CERTIFICATE-----
+    #New certs 2/22 
+    #Amazon RDS us-gov-west-1 Root CA RSA4096 G1 - expires 5/2121
+    -----BEGIN CERTIFICATE-----
+    MIIGBzCCA++gAwIBAgIRAOzQCoOR21YG2noWOfFcuNIwDQYJKoZIhvcNAQEMBQAw
+    gZsxCzAJBgNVBAYTAlVTMSIwIAYDVQQKDBlBbWF6b24gV2ViIFNlcnZpY2VzLCBJ
+    bmMuMRMwEQYDVQQLDApBbWF6b24gUkRTMQswCQYDVQQIDAJXQTE0MDIGA1UEAwwr
+    QW1hem9uIFJEUyB1cy1nb3Ytd2VzdC0xIFJvb3QgQ0EgUlNBNDA5NiBHMTEQMA4G
+    A1UEBwwHU2VhdHRsZTAgFw0yMTA1MjYyMTQ0MzlaGA8yMTIxMDUyNjIyNDQzOVow
+    gZsxCzAJBgNVBAYTAlVTMSIwIAYDVQQKDBlBbWF6b24gV2ViIFNlcnZpY2VzLCBJ
+    bmMuMRMwEQYDVQQLDApBbWF6b24gUkRTMQswCQYDVQQIDAJXQTE0MDIGA1UEAwwr
+    QW1hem9uIFJEUyB1cy1nb3Ytd2VzdC0xIFJvb3QgQ0EgUlNBNDA5NiBHMTEQMA4G
+    A1UEBwwHU2VhdHRsZTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBANwY
+    M2iZdnnlMutI9nfn2fWBICAQHWmMmpPmtSka/ziBFyaCxkHDF8RLmooW+GLe+FEF
+    9CQKSVqRa7X5AFiqRFF1KvgxWvazawyScuw88JW6Eqhaw0Rlm2p1Iow3TE8FSCDo
+    Is1vEV3Brbf26CMiXbqI+aCuTOy0fjRzjl5igViTgZxt2ZXOwyKkF+2T8LQp4b4F
+    Mh85Ctw1An1DhAemsc3SmcYnPKyFUP90DxGuTjFtfNR01GbBtVYwVvOBgIJe59Zs
+    OWcEFOO2mU53Ik6oKcLYu4+PmE5aDvQewb6bkQZchClb7Eg0BPYekWwTPsKUTS3H
+    bgdwVxgzjdAdU9fvaaoQmS9xdHWlonKq8CubJdLUduV3WVmDAg7MQgiT3p8JF9W2
+    KbQpUbYxqd7j9OIe3IS3rVPwYA8PVh1hUJ+OBLw61sbGRAuN3H+B1DlJh1smg6bR
+    g9W+oLRzfjZa32EzFmaQIxtgRfiyjxB/vqAHdl5zPou30X1CyRYquS870O02bvTN
+    zzWSOfRY4KPmS1YFVsN+m+R4+hSUOAE//bJ25ACP9oDO5w9NWkAux4e0UUAuWCra
+    jRROYN2J0KCogdru5G7lOQerD12zi3C2iibty6ou4tQX+MIKMMUVq8cfUH7oKv/R
+    8mL5PV/NUsgO248llo0lr9QBwQKdiw17wCxFR+8vAgMBAAGjQjBAMA8GA1UdEwEB
+    /wQFMAMBAf8wHQYDVR0OBBYEFPDYnx2xYIPDDAEjb6UcF29I6DgKMA4GA1UdDwEB
+    /wQEAwIBhjANBgkqhkiG9w0BAQwFAAOCAgEANTrAGs/GpXCADAwMGlrjXTdohp+p
+    CIp3gbnryVYZBXvO+f8hjJ8bHk0D/DiBrkjE8o0IpNaAadOZa+WvTNMsanPmGf1A
+    kD0vA9nm4gwEhBbzj9HRYX+dIhZhVWny9Kugm80s0h0hvbwTakUPOdMqkz6wn+xx
+    Owh7AIwaC5TTCsQyKlv5rjVblvU1XFgBf3Pf3wvMAfjDoAEPTXER/9mLVbXe+EmW
+    osP1JmgyDd+0WQFVK/LEDW81L5hsV5JvthAAFhGVtRw9ko5Ep28+EQUJE1wmLTdL
+    PyjB/KfJrTMDq94WolzFv4JpUStHbclkKlXtigjKeiYZ5Yvo+vLMSkXemccSfYn7
+    vdaUFD5vqWXvM4xhiYRq/tigw2E1bjmyd9L3XD7XalufZtMGWn7zT8HMPP+/Lch1
+    JjZ9LL2Y99VIqhoHcuSa95FtLpYDRQ28K03uwqxqFnOQLyPVmYwsaHKnmmwaZDjF
+    K1XxLVRLGRWvKEuSoWrsGcs3ehoxX4Knz/BaJzr/ioU1VnItj53tmOSJO0eMA6k+
+    egaVEb0FTa2F5xeLCKjgfDDWMz3v0TdL+kt+9z0THMlPWfOzd1C35ZzSIcTcRj22
+    SAzsL0t5ZTI4XvoPFF8dga78/KsBRolqdPjs0UzdlKhwh1ADOkTRgLOaaidMEgsT
+    JS/rbzD4FPbvc/g=
+    -----END CERTIFICATE-----
+    #Amazon RDS us-gov-west-1 Root CA ECC384 G1 - expires 5/2121
+    -----BEGIN CERTIFICATE-----
+    MIICtDCCAjugAwIBAgIQPyg+edjKVnM2PB4KZVu66jAKBggqhkjOPQQDAzCBmjEL
+    MAkGA1UEBhMCVVMxIjAgBgNVBAoMGUFtYXpvbiBXZWIgU2VydmljZXMsIEluYy4x
+    EzARBgNVBAsMCkFtYXpvbiBSRFMxCzAJBgNVBAgMAldBMTMwMQYDVQQDDCpBbWF6
+    b24gUkRTIHVzLWdvdi13ZXN0LTEgUm9vdCBDQSBFQ0MzODQgRzExEDAOBgNVBAcM
+    B1NlYXR0bGUwIBcNMjEwNTI2MjE1MzI3WhgPMjEyMTA1MjYyMjUzMjdaMIGaMQsw
+    CQYDVQQGEwJVUzEiMCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjET
+    MBEGA1UECwwKQW1hem9uIFJEUzELMAkGA1UECAwCV0ExMzAxBgNVBAMMKkFtYXpv
+    biBSRFMgdXMtZ292LXdlc3QtMSBSb290IENBIEVDQzM4NCBHMTEQMA4GA1UEBwwH
+    U2VhdHRsZTB2MBAGByqGSM49AgEGBSuBBAAiA2IABFaqyIYrbpPfhiKzLEkmzp1j
+    3OYO/e1VE3vCf5c62bN5xYKFKH/MnKgsUFNsFpJ1t0p9cexi+607aiYOo1sOWvOj
+    q3PUu+ltklQdvunU/Se5++qqsh7lylL5OF/F19uqfqNCMEAwDwYDVR0TAQH/BAUw
+    AwEB/zAdBgNVHQ4EFgQUJHPtPhijPquZxTz2UGh4YV1npYMwDgYDVR0PAQH/BAQD
+    AgGGMAoGCCqGSM49BAMDA2cAMGQCMHWDFuIZ9LZgysbL4vx/Ox9z8fbegb3352bM
+    BFr6JV1x8VLbePblHd0V1MwDdRWeAwIwarWfOVdB1ijrwzjROzCwE0uBkHYUPr0Z
+    vgwdtlsnwDw9TnjsBrTJkQ0aS8c0Ahl1
+    -----END CERTIFICATE-----
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=paketo-jammy-full-hardened-rootfs-setup/properties/rootfs?/trusted_certs/-
