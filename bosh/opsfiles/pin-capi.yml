@@ -1,4 +1,5 @@
 # Pin CAPI because of Service instance counts on space quotas
+# No longer used as of Aug 28, 2025 but leaving in place for future use/pin
 - type: replace
   path: /releases/name=capi
   value:
