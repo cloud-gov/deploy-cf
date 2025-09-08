@@ -166,6 +166,16 @@ jobs:
         username: ((slack-username))
         icon_url: ((slack-icon-url))
 
+  - name: cf-deployment-gatekeeper
+    serial_groups: [development]
+    serial: true
+    plan:
+      - in_parallel:
+          - get: weekly-timer
+            trigger: true
+          - get: cf-deployment
+            trigger: true
+
   - name: plan-cf-development
     serial_groups: [development]
     serial: true
@@ -175,6 +185,7 @@ jobs:
             trigger: true
           - get: cf-deployment
             trigger: true
+            passed: [cf-deployment-gatekeeper]
           - get: pipeline-tasks
           - get: cf-manifests
             resource: cf-manifests
@@ -1675,6 +1686,16 @@ resources:
       aws_region: us-gov-west-1
       tag: latest
 
+  - name: weekly-timer
+    type: time
+    source:
+      initial_version: true
+      location: America/New_York
+      start: 9:00 AM
+      stop: 9:30 AM
+      days: [Sunday]
+      initial_version: true
+
 resource_types:
   - name: registry-image
     type: registry-image
@@ -1743,6 +1764,7 @@ groups:
   - name: all
     jobs:
       - set-self
+      - cf-deployment-gatekeeper
       - plan-cf-development
       - deploy-cf-development
       - terraform-plan-development
@@ -1776,6 +1798,7 @@ groups:
   - name: development
     jobs:
       - set-self
+      - cf-deployment-gatekeeper
       - plan-cf-development
       - deploy-cf-development
       - terraform-plan-development
