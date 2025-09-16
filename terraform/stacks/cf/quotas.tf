@@ -38,3 +38,25 @@ resource "cloudfoundry_org_quota" "devtools-secondary" {
   total_services           = 100
   orgs                     = [cloudfoundry_org.cloud-gov-devtools-secondary[0].id]
 }
+
+
+# Notify
+
+resource "cloudfoundry_org_quota" "notify" {
+  name                     = "notify"
+  allow_paid_service_plans = true
+  total_memory             = 20480
+  total_routes             = 100
+  total_services           = 100
+  orgs                     = [cloudfoundry_org.cloud-gov-notify.id]
+}
+
+resource "cloudfoundry_org_quota" "notify-secondary" {
+  count                    = var.notify_secondary_org ? 1 : 0
+  name                     = "notify-secondary"
+  allow_paid_service_plans = true
+  total_memory             = 10240
+  total_routes             = 100
+  total_services           = 100
+  orgs                     = [cloudfoundry_org.cloud-gov-notify-secondary[0].id]
+}
