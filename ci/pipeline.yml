@@ -894,6 +894,7 @@ jobs:
           TF_VAR_iaas_stack_name: staging
           TF_VAR_tooling_stack_name: tooling
           TF_VAR_devtools_org_name: cloud-gov-devtools-development
+          TF_VAR_notify_org_name: cloud-gov-notify-development
       - put: slack
         params:
           <<: *slack-failure-params
@@ -1426,6 +1427,7 @@ jobs:
           TF_VAR_iaas_stack_name: production
           TF_VAR_tooling_stack_name: tooling
           TF_VAR_devtools_secondary_org: true
+          TF_VAR_notify_secondary_org: true
       - put: slack
         params:
           text_file: terraform-state/message.txt

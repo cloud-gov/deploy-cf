@@ -26,3 +26,15 @@ resource "cloudfoundry_org" "cloud-gov-devtools-secondary" {
   count = var.devtools_secondary_org ? 1 : 0
   name  = var.devtools_org_name_secondary
 }
+
+
+# Notify
+
+resource "cloudfoundry_org" "cloud-gov-notify" {
+  name = var.notify_org_name
+}
+
+resource "cloudfoundry_org" "cloud-gov-notify-secondary" {
+  count = var.notify_secondary_org ? 1 : 0
+  name  = var.notify_org_name_secondary
+}
