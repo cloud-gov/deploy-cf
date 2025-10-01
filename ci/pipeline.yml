@@ -174,7 +174,6 @@ jobs:
           - get: weekly-timer
             trigger: true
           - get: cf-deployment
-            trigger: true
 
   - name: plan-cf-development
     serial_groups: [development]
