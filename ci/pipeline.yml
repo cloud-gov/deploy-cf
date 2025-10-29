@@ -633,6 +633,8 @@ jobs:
       - put: cf-deployment-staging
         params:
           <<: *deploy-params
+          releases:
+            - cg-s3-secureproxy-release/*.tgz
           ops_files:
             - router-main/router_main.yml
             - router-logstash/router_logstash.yml
