@@ -1,0 +1,24 @@
+# Adds falco to diego cells
+- path: /releases?/name=falco
+  type: replace
+  value:
+    name: falco
+    version: latest
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs?/name=falco/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs?/name=falco/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=isolated-diego-cell/jobs?/name=falco/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-cell-iso-seg-devtools/jobs?/name=falco/release
+  value: falco
+
+
