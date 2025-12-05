@@ -122,8 +122,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-            - cf-manifests/bosh/opsfiles/wazuh.yml
-            - cf-manifests/bosh/opsfiles/pin-uaa.yml
             - cf-manifests/bosh/opsfiles/falco.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
@@ -688,7 +686,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-            - cf-manifests/bosh/opsfiles/pin-uaa-v78.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/staging.yml
             - terraform-secrets/terraform.yml
