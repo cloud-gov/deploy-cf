@@ -6,6 +6,18 @@
     version: latest
 
 - type: replace
+  path: /instance_groups/name=diego-cell/jobs?/name=falco-cf-logger/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs?/name=falco-cf-logger/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-cell-iso-seg-devtools/jobs?/name=falco-cf-logger/release
+  value: falco
+
+- type: replace
   path: /instance_groups/name=diego-cell/jobs?/name=falco/release
   value: falco
 
