@@ -29,4 +29,16 @@
   path: /instance_groups/name=diego-cell-iso-seg-devtools/jobs?/name=falco/release
   value: falco
 
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs?/name=falcosidekick/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-platform-cell/jobs?/name=falcosidekick/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-cell-iso-seg-devtools/jobs?/name=falcosidekick/release
+  value: falco
+
 
