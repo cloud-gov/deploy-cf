@@ -1,11 +1,11 @@
 # Get organization
 data "cloudfoundry_org" "org" {
-  name = "cf_smoke_tests_org"
+  name = "opensearch_smoke_test_org"
 }
 
 # Get space
 data "cloudfoundry_space" "space" {
-  name = "cf_smoke_tests_space"
+  name = "opensearch_smoke_tests_space"
   org  = data.cloudfoundry_org.org.id
 }
 
