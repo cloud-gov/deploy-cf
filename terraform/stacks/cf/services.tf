@@ -17,3 +17,8 @@ data "cloudfoundry_service_plan" "rds_plan" {
   name = "micro-psql" 
   service_offering_name = "aws-rds"  
 }
+
+resource "cloudfoundry_service_key" "rds_key" {
+  name             = "opensearch-test-db-creds"
+  service_instance = cloudfoundry_service_instance.rds_instance.id
+}
