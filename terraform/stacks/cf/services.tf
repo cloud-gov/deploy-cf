@@ -1,7 +1,7 @@
 resource "cloudfoundry_service_instance" "rds_instance" {
   name             = "opensearch-test-db"
   space        = data.cloudfoundry_space.space.id
-  service_plan = data.cloudfoundry_service.rds.service_plans["micro-psql"]
+  service_plan = data.cloudfoundry_service_plan.rds_plan.id
 }
 
 data "cloudfoundry_org" "org" {
@@ -13,6 +13,6 @@ data "cloudfoundry_space" "space" {
   org  = data.cloudfoundry_org.org.id
 }
 
-data "cloudfoundry_service" "rds" {
-  name = "aws-rds"
+data "cloudfoundry_service_plan" "rds_plan" {
+  name = "micro-psql" 
 }
