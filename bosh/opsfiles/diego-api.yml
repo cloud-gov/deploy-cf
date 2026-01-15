@@ -1,0 +1,6 @@
+# This is used to add the internal bbs nlb for prometheus scraping of diego-api metrics with cf_exporter
+
+- type: replace
+  path: /instance_groups/name=diego-api/vm_extensions?
+  value:
+    - diego-api-bbs-lb
