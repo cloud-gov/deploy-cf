@@ -15,4 +15,5 @@ data "cloudfoundry_space" "space" {
 
 data "cloudfoundry_service_plan" "rds_plan" {
   name = "micro-psql" 
+  service_offering_name = "aws-rds"  
 }
