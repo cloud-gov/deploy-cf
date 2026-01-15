@@ -1,12 +1,12 @@
 # Get organization
-data "cloudfoundry_org" "org" {
-  name = "opensearch_smoke_test_org"
+resource "cloudfoundry_org" "opensearch_smoke_test_org" {
+  name = ""opensearch_smoke_test_org"
 }
 
 # Get space
-data "cloudfoundry_space" "space" {
+resource "cloudfoundry_space" "opensearch_smoke_test_space" {
   name = "opensearch_smoke_tests_space"
-  org  = data.cloudfoundry_org.org.id
+  org  = cloudfoundry_org.opensearch_smoke_test_org.id
 }
 
 # Get service plan
@@ -18,7 +18,7 @@ data "cloudfoundry_service_plan" "rds_plan" {
 # Create RDS service instance
 resource "cloudfoundry_service_instance" "rds_instance" {
   name         = "opensearch-test-db"
-  space        = data.cloudfoundry_space.space.id
+  space        = cloudfoundry_space.opensearch_smoke_test_space.id
   service_plan = data.cloudfoundry_service_plan.rds_plan.id
   type         = "managed"
 }
