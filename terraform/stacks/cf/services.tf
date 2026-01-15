@@ -1,6 +1,6 @@
 # Get organization
 resource "cloudfoundry_org" "opensearch_smoke_test_org" {
-  name = ""opensearch_smoke_test_org"
+  name = "opensearch_smoke_test_org"
 }
 
 # Get space
