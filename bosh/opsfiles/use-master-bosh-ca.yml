@@ -278,11 +278,6 @@
 - type: replace
   path: /variables/-
   value:
-    name: cdn-broker-secret
-    type: password
-- type: replace
-  path: /variables/-
-  value:
     name: buildpack-notifier-client-secret
     type: password
 - type: replace
