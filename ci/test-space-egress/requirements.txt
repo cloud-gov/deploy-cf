@@ -13,7 +13,7 @@ orderedmultidict==1.0.1
 packaging==21.0
 pathspec==0.9.0
 platformdirs==2.3.0
-protobuf==4.25.8
+protobuf==6.33.5
 psycopg2==2.9.1
 pydantic==1.10.13
 pyparsing==2.4.7
@@ -23,6 +23,6 @@ six==1.16.0
 starlette==0.49.1
 tomli==1.2.1
 typing-extensions==4.15.0
-urllib3==2.6.0
+urllib3==2.6.3
 userpath==1.7.0
 uvicorn==0.15.0
