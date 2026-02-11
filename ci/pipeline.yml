@@ -122,7 +122,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/add-opensearch-ca.yml
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-            - cf-manifests/bosh/opsfiles/falco.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
@@ -685,7 +684,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/add-bosh-dns-other-deployments.yml
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
-            - cf-manifests/bosh/opsfiles/falco.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/staging.yml
