@@ -123,6 +123,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
+            - cf-manifests/bosh/opsfiles/falco.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
