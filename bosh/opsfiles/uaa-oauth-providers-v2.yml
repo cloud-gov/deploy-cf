@@ -1,0 +1,5 @@
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/login/oauth?/providers?
+  value:
+    ssa.gov: ((uaa-oidc-provider-ssa-gov))
+    login.gov: ((uaa-oidc-provider-login-gov))
