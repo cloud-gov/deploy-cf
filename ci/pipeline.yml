@@ -427,14 +427,11 @@ jobs:
       - get: cf-hello-worlds
         params: {depth: 1}
     - in_parallel:
-      - try:
-        task: build-java-hello
+      - task: build-java-hello
         file: cf-hello-worlds/java-hello/build-java-hello.yml
-      - try: 
-        task: build-java-spring-actuator
+      - task: build-java-spring-actuator
         file: cf-hello-worlds/java-spring-actuator/build-java-spring-actuator.yml
-    - try:
-      task: run-rule-tests
+    - task: run-rule-tests
       file: source/ci/tasks/run-rule-tests.yml
       tags: [iaas]
       params: 
@@ -1743,7 +1740,7 @@ resources:
   - name: falco-source
     type: git
     source:
-      branch: rule-tests
+      branch: main
       commit_verification_keys: ((cloud-gov-pgp-keys))
       git_config:
       - name: "user.name"
