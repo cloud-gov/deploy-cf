@@ -413,6 +413,40 @@ jobs:
           :x: TIC Smoke Tests for CF on development FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+  - name: falco-rule-tests-development
+    serial_groups: [development]
+    plan: 
+    - in_parallel:
+      - get: cf-deployment
+        trigger: true
+        passed: [deploy-cf-development]
+      - get: source
+        params: {depth: 1}
+        resource: falco-source
+      - get: general-task
+      - get: cf-hello-worlds
+        params: {depth: 1}
+    - in_parallel:
+      - task: build-java-hello
+        file: cf-hello-worlds/java-hello/build-java-hello.yml
+      - task: build-java-spring-actuator
+        file: cf-hello-worlds/java-spring-actuator/build-java-spring-actuator.yml
+    - task: run-rule-tests
+      file: source/ci/tasks/run-rule-tests.yml
+      tags: [iaas]
+      params: 
+        AWS_DEFAULT_REGION: ((aws-region))
+        BUCKET_NAME: logs-opensearch-falco-development
+        CF_API: ((cf-api-url-development))
+        CF_ORG: ((cf-dev-falco-test-org))
+        CF_SPACE: ((cf-dev-falco-test-space))
+        CF_USERNAME: ((cf-dev-falco-test-username))
+        CF_PASSWORD: ((cf-dev-falco-test-password))
+        TESTS_YML: source/ci/tests/tests.yml
+        CLAMAV_REST_ECR_REPOSITORY: ((ecr_aws_repo))
+        CLAMAV_REST_DOCKER_USERNAME: ((ecr_aws_key))
+        CF_DOCKER_PASSWORD: ((ecr_aws_secret)) 
+
   - name: smoke-tests-development
     serial_groups: [development]
     plan:
@@ -1696,6 +1730,31 @@ resources:
       days: [Sunday]
       initial_version: true
 
+  - name: cf-hello-worlds
+    type: git
+    source:
+      commit_verification_keys: ((cloud-gov-pgp-keys))
+      uri: https://github.com/cloud-gov/cf-hello-worlds.git
+      branch: main
+
+  - name: falco-source
+    type: git
+    source:
+      branch: main
+      commit_verification_keys: ((cloud-gov-pgp-keys))
+      git_config:
+      - name: "user.name"
+        value: "cg-ci-bot"
+      - name: "user.email"
+        value: "no-reply@cloud.gov"
+      ignore_paths:
+      - ci/*
+      - ops/*
+      - util/*
+      private_key: ((cg-ci-bot-sshkey.private_key))
+      uri: git@github.com:cloud-gov/falco-boshrelease.git
+      username: cg-ci-bot
+
 resource_types:
   - name: registry-image
     type: registry-image
@@ -1795,6 +1854,7 @@ groups:
       - uaa-monitor-account-creation-production
       - tic-smoke-tests-production
       - test-space-egress-production
+      - falco-rule-tests-development
   - name: development
     jobs:
       - set-self
@@ -1810,6 +1870,7 @@ groups:
       - smoke-tests-development
       - test-space-egress-development
       - test-headers-development
+      - falco-rule-tests-development
   - name: staging
     jobs:
       - set-self
