@@ -34,6 +34,16 @@ resource "cloudfoundry_space" "external_domain_broker_tests" {
   org  = cloudfoundry_org.acceptance_tests.id
 }
 
+resource "cloudfoundry_space" "aws_broker_tests" {
+  name = "aws-broker-tests"
+  org  = cloudfoundry_org.acceptance_tests.id
+}
+
+resource "cloudfoundry_space" "s3_broker_tests" {
+  name = "s3-broker-tests"
+  org  = cloudfoundry_org.acceptance_tests.id
+}
+
 # Federalist/ Pages
 
 resource "cloudfoundry_space" "email" {
