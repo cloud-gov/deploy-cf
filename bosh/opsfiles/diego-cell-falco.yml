@@ -1,0 +1,16 @@
+# Adds falco to diego cells - this ops file is used for ALL diego cell and isolation segments with ci/create-*-diego-cell.sh
+# NOTES:
+# - This ops file is used for ALL diego cell and isolation segments with ci/create-*-diego-cell.sh
+# - This ops file can ONLY contain configurations for `path: /instance_groups/name=diego-cell/`
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs?/name=falco-cf-logger/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs?/name=falco/release
+  value: falco
+
+- type: replace
+  path: /instance_groups/name=diego-cell/jobs?/name=falcosidekick/release
+  value: falco
