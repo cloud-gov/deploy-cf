@@ -896,6 +896,37 @@ jobs:
           :x: TIC Smoke Tests for CF on staging FAILED
           <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
+  - name: falco-smoke-tests-staging
+    plan: 
+    - in_parallel:
+      - get: cf-deployment
+        trigger: true
+        passed: [deploy-cf-staging]
+      - get: source
+        params: {depth: 1}
+        resource: falco-source
+      - get: general-task
+    - task: push-event-generator
+      file: source/ci/tasks/push-event-generator.yml
+      params: &cf-falco-staging
+        AWS_DEFAULT_REGION: ((aws-region))
+        BUCKET_NAME: logs-opensearch-falco-staging
+        CF_API: ((cf-api-url-staging))
+        CF_ORG: ((cf-staging-falco-test-org))
+        CF_SPACE: ((cf-staging-falco-test-space))
+        CF_USERNAME: ((cf-staging-falco-test-username))
+        CF_PASSWORD: ((cf-staging-falco-test-password))
+    - task: check-bucket
+      file: source/ci/tasks/check-bucket.yml
+      tags: [iaas]
+      params:
+        <<: *cf-falco-staging
+      ensure:
+        task: delete-event-generator  
+        file: source/ci/tasks/delete-event-generator.yml
+        params:
+          <<: *cf-falco-staging
+
   - name: terraform-plan-staging
     plan:
       - in_parallel:
@@ -1859,6 +1890,7 @@ groups:
       - tic-smoke-tests-production
       - test-space-egress-production
       - falco-rule-tests-development
+      - falco-smoke-tests-staging
   - name: development
     jobs:
       - set-self
@@ -1888,6 +1920,7 @@ groups:
       - smoke-tests-staging
       - acceptance-tests-staging
       - test-space-egress-staging
+      - falco-smoke-tests-staging
   - name: production
     jobs:
       - set-self
