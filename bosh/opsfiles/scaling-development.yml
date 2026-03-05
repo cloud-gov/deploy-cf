@@ -136,10 +136,10 @@
     canaries: 11%
 - type: replace
   path: /instance_groups/name=diego-platform-cell/vm_type
-  value: t3.xlarge
+  value: t3.2xlarge
 - type: replace
   path: /instance_groups/name=diego-platform-cell/instances
-  value: 3
+  value: 2
   
 # rotate-cc-database-key
 - type: replace
