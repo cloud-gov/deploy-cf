@@ -1,4 +1,3 @@
-# Adds falco to diego cells
 - path: /releases?/name=falco
   type: replace
   value:
