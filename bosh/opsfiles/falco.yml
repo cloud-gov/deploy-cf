@@ -31,24 +31,30 @@
 
 - type: replace
   path: /instance_groups/name=diego-cell/jobs?/name=falcosidekick
-  value: 
+  value:
     name: falcosidekick
     release: falco
     properties:
-      aws.s3.bucket: logs-opensearch-falco-((environment))
+      aws:
+        s3:
+          bucket: logs-opensearch-falco-((environment))
 
 - type: replace
   path: /instance_groups/name=diego-platform-cell/jobs?/name=falcosidekick
-  value: 
+  value:
     name: falcosidekick
     release: falco
     properties:
-      aws.s3.bucket: logs-opensearch-falco-((environment))
+      aws:
+        s3:
+          bucket: logs-opensearch-falco-((environment))
 
 - type: replace
   path: /instance_groups/name=diego-cell-iso-seg-devtools/jobs?/name=falcosidekick
-  value: 
+  value:
     name: falcosidekick
     release: falco
     properties:
-      aws.s3.bucket: logs-opensearch-falco-((environment))
+      aws:
+        s3:
+          bucket: logs-opensearch-falco-((environment))
