@@ -49,6 +49,11 @@ resource "cloudfoundry_space" "ses_broker_tests" {
   org  = cloudfoundry_org.acceptance_tests.id
 }
 
+resource "cloudfoundry_space" "uaa_credentials_broker_tests" {
+  name = "uaa-credentials-broker-tests"
+  org  = cloudfoundry_org.acceptance_tests.id
+}
+
 # Federalist/ Pages
 
 resource "cloudfoundry_space" "email" {
