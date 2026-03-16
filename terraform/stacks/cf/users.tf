@@ -8,7 +8,7 @@ data "cloudfoundry_service_plan" "space_deployer_plan" {
 resource "cloudfoundry_service_instance" "uaa_credentials_broker_test_user" {
   name         = "uaa-credentials-broker-test"
   type         = "managed"
-  space        = data.cloudfoundry_space.uaa_credentials_broker_tests.id
+  space        = cloudfoundry_space.uaa_credentials_broker_tests.id
   service_plan = data.cloudfoundry_service_plan.space_deployer_plan.id
 }
 
@@ -23,7 +23,7 @@ resource "cloudfoundry_service_credential_binding" "uaa_credentials_broker_test_
 resource "cloudfoundry_service_instance" "ses_broker_test_user" {
   name         = "ses-broker-test"
   type         = "managed"
-  space        = data.cloudfoundry_space.ses_broker_tests.id
+  space        = cloudfoundry_space.ses_broker_tests.id
   service_plan = data.cloudfoundry_service_plan.space_deployer_plan.id
 }
 
