@@ -250,8 +250,7 @@ resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks" {
     cloudfoundry_space.cg-ui.id,
     cloudfoundry_space.uaa-extras.id,
     cloudfoundry_space.cspr-collector.id,
-    cloudfoundry_space.email.id,
-    cloudfoundry_space.aws_broker_tests.id
+    cloudfoundry_space.email.id
   ]
   running_spaces = [
     cloudfoundry_space.services.id,
