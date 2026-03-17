@@ -296,3 +296,19 @@
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/cf/refresh-token-validity
   value: 43200
+
+
+# Add clients for login-migrator-bot, which is used by the login migrator to migrate user accounts from the old cloud.gov idp to login.gov idp.  This can be removed after the migration is complete and the login migrator is no longer needed.
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/login-migrator-bot?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: cloud_controller.admin,cloud_controller.read,cloud_controller.write,openid,scim.read
+    secret: ((login-migrator-bot-client-secret))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: login-migrator-bot-client-secret
+    type: password
