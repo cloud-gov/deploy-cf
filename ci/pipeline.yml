@@ -1672,7 +1672,7 @@ resources:
     source:
       name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
 
-  - name: shibboleth-stemcell-jammy-fips
+  - name: cf-stemcell-jammy-fips
     type: s3-iam
     source: 
       bucket: ((s3-fips-stemcell-bucket))
