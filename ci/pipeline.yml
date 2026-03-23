@@ -36,6 +36,7 @@ jobs:
           - get: cf-stemcell-jammy
             trigger: true
             passed: [plan-cf-development]
+            resource: cf-stemcell-jammy-fips
           - get: uaa-customized-release
             trigger: true
             passed: [plan-cf-development]
@@ -125,6 +126,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
             - cf-manifests/bosh/opsfiles/falco.yml
+            - cf-manifests/bosh/opsfiles/ubuntu-jammy-fips-stemcell.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
@@ -197,6 +199,7 @@ jobs:
             resource: terraform-yaml-development
           - get: cf-stemcell-jammy
             trigger: true
+            resource: cf-stemcell-jammy-fips
           - get: uaa-customized-release
             trigger: true
           - get: cg-s3-secureproxy-release
@@ -1668,6 +1671,15 @@ resources:
     type: bosh-io-stemcell
     source:
       name: bosh-aws-xen-hvm-ubuntu-jammy-go_agent
+
+  - name: cf-stemcell-jammy-fips
+    type: s3-iam
+    source: 
+      bucket: ((s3-fips-stemcell-bucket))
+      region_name: ((aws-region))
+      private: true
+      regexp: bosh-stemcell-aws-xen-ubuntu-jammy-amd64-go_agent-(.*).tgz
+      tags: [iaas]
 
   - name: terraform-yaml-development
     type: s3-iam
