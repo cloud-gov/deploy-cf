@@ -303,6 +303,7 @@ jobs:
           - get: cf-stemcell-jammy
             trigger: true
             passed: [deploy-cf-development]
+            resource: cf-stemcell-jammy-fips
           - get: cf-manifests
             trigger: true
             passed: [deploy-cf-development]
@@ -377,6 +378,7 @@ jobs:
           - get: cf-stemcell-jammy
             trigger: true
             passed: [deploy-cf-development]
+            resource: cf-stemcell-jammy-fips
           - get: cf-manifests
             trigger: true
             passed: [deploy-cf-development]
@@ -479,6 +481,7 @@ jobs:
               - tic-smoke-tests-development
               - uaa-smoke-tests-development
               - test-space-egress-development
+            resource: cf-stemcell-jammy-fips
           - get: cf-manifests
             trigger: true
             passed:
@@ -543,6 +546,7 @@ jobs:
             passed: [deploy-cf-development]
           - get: cf-stemcell-jammy
             passed: [deploy-cf-development]
+            resource: cf-stemcell-jammy-fips
           - get: general-task
       - task: deploy-test-env
         image: general-task
@@ -590,6 +594,7 @@ jobs:
             passed: [deploy-cf-development]
           - get: cf-stemcell-jammy
             passed: [deploy-cf-development]
+            resource: cf-stemcell-jammy-fips
           - get: general-task
       - task: deploy-test-env
         image: general-task
@@ -641,7 +646,7 @@ jobs:
             resource: terraform-yaml-staging
           - get: cf-stemcell-jammy
             trigger: true
-            passed: [smoke-tests-development]
+            # passed: [smoke-tests-development]
           - get: uaa-customized-release
             trigger: true
             passed: [smoke-tests-development]
