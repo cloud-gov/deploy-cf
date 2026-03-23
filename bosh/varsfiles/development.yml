@@ -22,3 +22,5 @@ csp-host-patterns:
 - login.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - account.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - idp.dev.us-gov-west-1.aws-us-gov.cloud.gov
+
+workshop_login_redirect_uri: https://workshop.cloud.gov

@@ -9,3 +9,5 @@ buildpack_directory_key: cf-production-buildpacks
 droplet_directory_key: cf-production-droplets
 app_package_directory_key: cf-production-cc-packages
 resource_directory_key: cf-production-cc-resources
+
+workshop_login_redirect_uri: https://workshop.cloud.gov/users/auth/94ae430d/callback
