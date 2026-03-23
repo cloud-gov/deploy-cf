@@ -2,7 +2,7 @@
 - type: replace
   path: /variables/-
   value:
-    name: workshop_client_secret
+    name: workshop_uaa_client_secret
     type: password
 
 - type: replace
@@ -10,14 +10,14 @@
   value:
     override: true
     scope: openid
-    authorized-grant-types: authorization_code,client_credentials
-    authorities: groups.update,scim.read,scim.invite,scim.write
+    authorized-grant-types: authorization_code,refresh_token
+    authorities: uaa.none
     access-token-validity: 600
-    refresh-token-validity: 43200
+    refresh-token-validity: 86400
     name: Workshop
     autoapprove: true
     show-on-homepage: true
     app-icon: ''
     app-launch-url: https://workshop.cloud.gov
     redirect-uri: https://workshop.cloud.gov/users/auth/94ae430d/callback
-    secret: ((workshop_client_secret))
+    secret: ((workshop_uaa_client_secret))
