@@ -1767,7 +1767,6 @@ resources:
       start: 9:00 AM
       stop: 9:30 AM
       days: [Sunday]
-      initial_version: true
 
   - name: cf-hello-worlds
     type: git
