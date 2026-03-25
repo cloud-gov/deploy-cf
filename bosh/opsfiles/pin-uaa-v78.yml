@@ -4,7 +4,7 @@
     name: uaa
     url: https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=78.9.0
     version: 78.9.0
-    sha1: sha256:2fc092c0c59d9d79a1c3bc7c7008e4e4ece73f0a0cf4be131980a68718918ea3
+    sha1: sha256:0ddb42c22f1cf9217fa9eb5aae7a54c6b62e89333445d4265a53dfc342440507
 
 
 - type: replace
