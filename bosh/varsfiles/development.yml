@@ -17,6 +17,7 @@ csp-host-patterns:
 - logs.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - dashboard.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - logs-platform.dev.us-gov-west-1.aws-us-gov.cloud.gov
+- logs-platform-test.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - admin.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - uaa.dev.us-gov-west-1.aws-us-gov.cloud.gov
 - login.dev.us-gov-west-1.aws-us-gov.cloud.gov
