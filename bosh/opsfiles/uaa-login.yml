@@ -8,9 +8,9 @@
     requireSpecialCharacter: 0
     expirePasswordInMonths: 0
 
-- type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa-customized/properties?/uaa/password/policy
-  value: *password-policy
+#- type: replace
+#  path: /instance_groups/name=uaa/jobs/name=uaa-customized/properties?/uaa/password/policy
+#  value: *password-policy
 
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/authentication?/policy
