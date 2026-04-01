@@ -124,7 +124,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/diego-cell-container-metrics.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
-            - cf-manifests/bosh/opsfiles/pin-uaa-v78.yml
             - cf-manifests/bosh/opsfiles/falco.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
@@ -723,7 +722,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/diego-cell-container-metrics.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
-            - cf-manifests/bosh/opsfiles/pin-uaa-v78.yml
             - cf-manifests/bosh/opsfiles/falco.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/staging.yml
@@ -1269,7 +1267,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/diego-cell-container-metrics.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
-            - cf-manifests/bosh/opsfiles/pin-uaa-v78.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/production.yml
             - terraform-secrets/terraform.yml
