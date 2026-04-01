@@ -4,6 +4,11 @@
     name: uaa-customized
     version: latest
 
+# Rename the references to the uaa bosh release to uaa-customized
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/release
   value: uaa-customized
+
+# Remove the now unused uaa bosh release
+- type: remove
+  path: /releases/name=uaa
