@@ -5,10 +5,10 @@ jobs:
     plan:
       - get: src
         trigger: true
-      - set_pipeline: self
-        file: src/ci/pipeline.yml
-        var_files:
-          - src/ci/config.yml
+#      - set_pipeline: self
+#        file: src/ci/pipeline.yml
+#        var_files:
+#          - src/ci/config.yml
 
   - name: deploy-cf-development
     serial_groups: [development]
@@ -1654,7 +1654,7 @@ resources:
     source:
       commit_verification_keys: ((cloud-gov-pgp-keys))
       uri: https://github.com/cloud-gov/cg-deploy-cf.git
-      branch: main
+      branch: uaa-customized #main
       paths:
         - ci/*
         - bosh/*

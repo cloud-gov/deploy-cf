@@ -5,12 +5,6 @@
     version: latest
 
 - type: replace
-  path: /instance_groups/name=uaa/jobs/-
+  path: /instance_groups/name=uaa/jobs/name=uaa/release
   value:
-    name: uaa-customized
-    release: uaa-customized
-
-- type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/runtime?/tomcat?
-  value:
-    enabled: true
+    enabled: uaa-customized
