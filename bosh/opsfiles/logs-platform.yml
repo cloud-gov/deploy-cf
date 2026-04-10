@@ -1,0 +1,16 @@
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=loggr-syslog-binding-cache/properties?/aggregate_drains?/-
+  value:
+    url: syslog-tls://logs-platform.ingestor.service.cf.internal:6972?drain-data=all
+    ca: ((/bosh/logs-platform/opensearch_ca.ca))
+    cert: ((/bosh/logs-platform/ingestor_syslog_client_tls.certificate))
+    key: ((/bosh/logs-platform/ingestor_syslog_client_tls.private_key))
+
+- type: replace
+  path: /addons/name=bosh-dns-aliases/jobs/name=bosh-dns-aliases/properties/aliases/domain=logs-platform.ingestor.service.cf.internal?/targets/-
+  value:
+    deployment: logs-platform
+    domain: bosh
+    instance_group: ingestor
+    network: services
+    query: '*'
