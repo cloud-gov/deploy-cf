@@ -20,7 +20,7 @@
   value: 2
 - type: replace
   path: /instance_groups/name=uaa/vm_type
-  value: t3.medium
+  value: t3.large
 
 # capi
 - type: replace
@@ -28,7 +28,7 @@
   value: 2
 - type: replace
   path: /instance_groups/name=api/vm_type
-  value: t3.medium
+  value: t3.large
 
 # capi worker
 - type: replace
@@ -36,7 +36,7 @@
   value: 1
 - type: replace
   path: /instance_groups/name=cc-worker/vm_type
-  value: t3.medium
+  value: t3.large
 
 # gorouter
 - type: replace
@@ -84,7 +84,7 @@
   value: 1
 - type: replace
   path: /instance_groups/name=scheduler/vm_type
-  value: t3.medium
+  value: t3.large
 
 # doppler
 - type: replace
