@@ -1,0 +1,29 @@
+# Overwrite upstream cf-deployment yaml anchor to use iam profile instead of key/secret
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/buildpacks/connection_config?
+  value: &buildpack-blobstore-properties
+    bucket_name: ((buildpack_directory_key))
+    use_iam_profile: true
+    region: ((aws_region))
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/droplets/connection_config?
+  value: &droplet-blobstore-properties
+    bucket_name: ((droplet_directory_key))
+=   use_iam_profile: true
+    region: ((aws_region))
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/packages/connection_config?
+  value: &package-blobstore-properties
+    bucket_name: ((app_package_directory_key))
+    use_iam_profile: true
+    region: ((aws_region))
+
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/resource_pool/connection_config?
+  value: &resource-pool-blobstore-properties
+    bucket_name: ((resource_directory_key))
+    use_iam_profile: true
+    region: ((aws_region))
