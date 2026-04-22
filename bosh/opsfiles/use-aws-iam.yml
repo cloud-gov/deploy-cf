@@ -27,3 +27,36 @@
     bucket_name: ((resource_directory_key))
     use_iam_profile: true
     region: ((aws_region))
+
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/buildpacks/connection_config?
+  value: *buildpack-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/droplets/connection_config?
+  value: *droplet-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/packages/connection_config?
+  value: *package-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/resource_pool/connection_config?
+  value: *resource-pool-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/buildpacks/connection_config?
+  value: *buildpack-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/droplets/connection_config?
+  value: *droplet-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/packages/connection_config?
+  value: *package-blobstore-properties
+
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/resource_pool/connection_config?
+  value: *resource-pool-blobstore-properties
+
