@@ -28,6 +28,10 @@
     use_iam_profile: true
     region: ((aws_region))
 
+# Fun BOSH int/ops file fact - when you create and reference yaml anchors in a single ops file, they are rendered at that time to children
+# so overwriting the yaml anchor in another ops file does not apply to the kids.
+# Hence these explicit overrides here
+
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/buildpacks/connection_config?
   value: *buildpack-blobstore-properties

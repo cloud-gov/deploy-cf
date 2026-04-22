@@ -71,7 +71,9 @@ jobs:
             - router-main/router_main.yml
             - router-logstash/router_logstash.yml
             - cf-deployment/operations/rename-network-and-deployment.yml
-            - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+            - cf-deployment/operations/use-external-blobstore.yml
+            - cf-deployment/operations/use-s3-blobstore.yml
+            - cf-manifests/bosh/opsfiles/use-aws-iam.yml 
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
@@ -672,7 +674,9 @@ jobs:
             - router-main/router_main.yml
             - router-logstash/router_logstash.yml
             - cf-deployment/operations/rename-network-and-deployment.yml
-            - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+            - cf-deployment/operations/use-external-blobstore.yml
+            - cf-deployment/operations/use-s3-blobstore.yml
+            - cf-manifests/bosh/opsfiles/use-aws-iam.yml 
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
@@ -1217,7 +1221,9 @@ jobs:
             - router-main/router_main.yml
             - router-logstash/router_logstash.yml
             - cf-deployment/operations/rename-network-and-deployment.yml
-            - cf-manifests/bosh/opsfiles/use-s3-blobstore.yml
+            - cf-deployment/operations/use-external-blobstore.yml
+            - cf-deployment/operations/use-s3-blobstore.yml
+            - cf-manifests/bosh/opsfiles/use-aws-iam.yml 
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml

@@ -1,11 +1,8 @@
 ---
 # Modified from https://github.com/cloudfoundry/cf-deployment/blob/master/operations/use-s3-blobstore.yml
-
-# taken out by cf-deployment/operations/use-external-blobstore.yml
 - type: remove
   path: /instance_groups/name=singleton-blobstore
 
-# taken out by cf-deployment/operations/use-external-blobstore.yml
 - type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/buildpacks
 - type: remove
@@ -15,7 +12,6 @@
 - type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/resource_pool
 
-# taken out by cf-deployment/operations/use-external-blobstore.yml
 - type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/buildpacks
 - type: remove
@@ -25,7 +21,6 @@
 - type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/resource_pool
 
-# taken out by cf-deployment/operations/use-external-blobstore.yml
 - type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/buildpacks
 - type: remove
@@ -35,11 +30,9 @@
 - type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/resource_pool
 
-# taken out by cf-deployment/operations/use-external-blobstore.yml
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/buildpacks?/fog_connection?
   value: &blobstore-properties
-# We set this - need to FOLLOW UP
     provider: AWS
     use_iam_profile: true
     region: ((aws_region))
@@ -88,17 +81,9 @@
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/resource_pool?/fog_connection?
   value: *blobstore-properties
 
-# This block is in cf-deployment.yml
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/buildpacks/webdav_config?
   value: &webdav_config
-#cf-deployment adds which we are missing
-            #ca_cert: "((blobstore_tls.ca))"
-            #blobstore_timeout: 5
-            #password: "((blobstore_admin_users_password))"
-            #private_endpoint: https://blobstore.service.cf.internal:4443
-            #public_endpoint: https://blobstore.((system_domain))
-            #username: blobstore-user
     public_endpoint: blobstore.((system_domain))
 
 - type: replace
@@ -144,10 +129,6 @@
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/resource_pool/webdav_config?
   value: *webdav_config
-
-
-# taken out by cf-deployment/operations/use-external-blobstore.yml
-# variable names are the same
 
 # replace s3 bucket names
 - type: replace
@@ -197,9 +178,6 @@
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/resource_pool/resource_directory_key?
   value: ((resource_directory_key))
-
-# taken out by cf-deployment/operations/use-external-blobstore.yml
-# we are missing removal of path: /variables/name=blobstore_public
 
 # remove unnecessary variables for internal blobstore
 
