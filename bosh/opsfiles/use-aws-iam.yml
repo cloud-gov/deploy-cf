@@ -11,7 +11,7 @@
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/droplets/connection_config?
   value: &droplet-blobstore-properties
     bucket_name: ((droplet_directory_key))
-=   use_iam_profile: true
+    use_iam_profile: true
     region: ((aws_region))
 
 - type: replace
