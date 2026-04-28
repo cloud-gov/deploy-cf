@@ -5,7 +5,7 @@
   value: &buildpack-blobstore-properties
     bucket_name: ((buildpack_directory_key))
     use_iam_profile: true
-    encryption:: AES256
+    encryption: AES256
     region: ((aws_region))
 
 - type: replace
@@ -13,7 +13,7 @@
   value: &droplet-blobstore-properties
     bucket_name: ((droplet_directory_key))
     use_iam_profile: true
-    encryption:: AES256
+    encryption: AES256
     region: ((aws_region))
 
 - type: replace
@@ -21,7 +21,7 @@
   value: &package-blobstore-properties
     bucket_name: ((app_package_directory_key))
     use_iam_profile: true
-    encryption:: AES256
+    encryption: AES256
     region: ((aws_region))
 
 - type: replace
@@ -29,7 +29,7 @@
   value: &resource-pool-blobstore-properties
     bucket_name: ((resource_directory_key))
     use_iam_profile: true
-    encryption:: AES256
+    encryption: AES256
     region: ((aws_region))
 
 # Fun BOSH int/ops file fact - when you create and reference yaml anchors in a single ops file, they are rendered at that time to children
