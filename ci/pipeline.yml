@@ -94,7 +94,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/uaa-saml.yml
             - cf-manifests/bosh/opsfiles/uaa-user.yml
             - cf-manifests/bosh/opsfiles/uaa-cors.yml
-            - cf-manifests/bosh/opsfiles/encryption.yml
             - cf-manifests/bosh/opsfiles/sql.yml
             - cf-manifests/bosh/opsfiles/log-levels.yml
             - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
@@ -698,7 +697,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/uaa-oauth-providers-v2.yml
             - cf-manifests/bosh/opsfiles/uaa-user.yml
             - cf-manifests/bosh/opsfiles/uaa-cors.yml
-            - cf-manifests/bosh/opsfiles/encryption.yml
             - cf-manifests/bosh/opsfiles/sql.yml
             - cf-manifests/bosh/opsfiles/log-levels.yml
             - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
@@ -1245,7 +1243,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/uaa-oauth-providers.yml
             - cf-manifests/bosh/opsfiles/uaa-user.yml
             - cf-manifests/bosh/opsfiles/uaa-cors.yml
-            - cf-manifests/bosh/opsfiles/encryption.yml
             - cf-manifests/bosh/opsfiles/sql.yml
             - cf-manifests/bosh/opsfiles/log-levels.yml
             - cf-manifests/bosh/opsfiles/log-levels-diego-cell.yml
