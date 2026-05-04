@@ -127,7 +127,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
             - cf-manifests/bosh/opsfiles/falco.yml
-            - cf-manifests/bosh/opsfiles/use-jammy-stemcell.yml
+            - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
@@ -728,7 +728,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
             - cf-manifests/bosh/opsfiles/falco.yml
-            - cf-manifests/bosh/opsfiles/use-jammy-stemcell.yml
+            - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/staging.yml
@@ -1276,7 +1276,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
             - cf-manifests/bosh/opsfiles/falco-platform-and-devtools-only.yml
-            - cf-manifests/bosh/opsfiles/use-jammy-stemcell.yml
+            - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/production.yml

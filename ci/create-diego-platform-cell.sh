@@ -13,6 +13,7 @@ bosh int \
   -o cf-manifests/bosh/opsfiles/diego-rds-certs-diego-cell.yml \
   -o cf-manifests/bosh/opsfiles/diego-cpu-entitlement-diego-cell.yml \
   -o cf-manifests/bosh/opsfiles/diego-cell-container-metrics.yml \
+  -o cf-deployment/operations/use-jammy-stemcell.yml \
   --path /instance_groups/name=diego-cell > diego-cell_raw.yml
 
 ## Create ops file header
