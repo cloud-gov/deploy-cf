@@ -1,0 +1,19 @@
+- path: /stemcells/alias=default
+  type: replace
+  value:
+    alias: default
+    os: ubuntu-jammy
+    version: latest
+- path: /instance_groups/name=diego-cell/jobs/name=silk-cni/properties/dns_servers/0
+  type: replace
+  value: 169.254.0.2
+
+# Above this line is the original upstream ops file `operations/use-jammy-stemcell
+# Will need to go back later, pull this, to add to pipeline shell script which auto generates iso segs
+- path: /instance_groups/name=diego-platform-cell/jobs/name=silk-cni/properties/dns_servers/0
+  type: replace
+  value: 169.254.0.2
+
+- path: /instance_groups/name=diego-cell-iso-seg-devtools/jobs/name=silk-cni/properties/dns_servers/0
+  type: replace
+  value: 169.254.0.2  
