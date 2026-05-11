@@ -22,7 +22,7 @@ get_table_data_to_be_reencrypted() {
     local encrypted_column=$3
     local salt_column=$4
  
-    local psql_command="SELECT json_agg(t) FROM (SELECT ${id_column}, ${encrypted_column}, ${salt_column} FROM ${table_name} WHERE LENGTH(salt) < 16) t"
+    local psql_command="SELECT json_agg(t) FROM (SELECT ${id_column}, ${encrypted_column}, ${salt_column} FROM ${table_name} WHERE LENGTH(${salt_column}) < 16) t"
     psql -Atq -c "${psql_command}"
 }
 
@@ -39,7 +39,7 @@ get_updated_encrypted_values() {
 }
 
 # PGDump - search for encrypted string to determine if it could be stored/copied in another column somewhere else. 
-pg_dump > ccdb-dumb-fips.sql
+pg_dump > ${this_directory}/ccdb-dumb-fips.sql
 
 while read -r table; do
     table_name=$(echo "$table" | jq -r '.table_name')
@@ -48,9 +48,11 @@ while read -r table; do
     salt_column=$(echo "$table" | jq -r '.salt_column')
 
     table_data_to_be_reencrypted_json=$(get_table_data_to_be_reencrypted "$table_name" "$id_column" "$encrypted_column" "$salt_column")
-    echo "$table_data_to_be_reencrypted_json"
-    # while row
     
+    while read -r table_row_to_update; do
+        echo "table_row_to_update: $table_row_to_update"
+        
+    done < <(echo "$table_data_to_be_reencrypted_json" | jq -c '.tables[]')
     
     # echo "$table_name"
-done < <(cat "${this_directory}/tables.json" | jq -c '.tables.[]')
+done < <(cat "${this_directory}/tables.json" | jq -c '.tables[]')
