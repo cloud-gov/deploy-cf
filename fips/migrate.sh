@@ -37,9 +37,9 @@ get_updated_encrypted_values() {
 
     local ruby_output
     set -x
-    ruby_output=$(cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console | grep "^[[:space:]]*UPDATE_ENCRYPTION_RESULT")
+    ruby_output=$(cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console)
+    echo "$ruby_output" | grep "^[[:space:]]*UPDATE_ENCRYPTION_RESULT"
     # | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
-    echo "$ruby_output"
     set +x
 }
 
