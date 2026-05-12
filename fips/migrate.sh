@@ -37,7 +37,7 @@ get_updated_encrypted_values() {
 
     rm -fr ${this_directory}/ruby_output.json
     touch ${this_directory}/ruby_output.json
-    cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console
+    cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console &> /dev/null
     cat ruby_output.json
 }
 
