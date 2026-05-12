@@ -9,7 +9,7 @@ new_encrypted_value = Encryptor.encrypt(decrypted_value, new_salt)
 decrypted_new_value = Encryptor.decrypt(new_encrypted_value, new_salt, iterations: 2048, label: current_key_name)
 
 if decrypted_new_value = decrypted_value 
-    puts "UPDATE_ENCRYPTION_RESULT: {\"error\": \"Encypted values don't match\"}"
+    puts "UPDATE_ENCRYPTION_RESULT: {\"error\": \"Encypted values do not match\"}"
 else     
     puts "UPDATE_ENCRYPTION_RESULT: {\"existing_encrypted_value\": \"#{existing_encrypted_value}\", \"existing_salt\": \"#{existing_salt}\", \"new_encrypted_value\": \"#{new_encrypted_value}\", \"new_salt\": \"#{new_salt}\"}"
 end
