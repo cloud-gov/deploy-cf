@@ -14,8 +14,8 @@ else
     content="{\"existing_encrypted_value\": \"#{existing_encrypted_value}\", \"existing_salt\": \"#{existing_salt}\", \"new_encrypted_value\": \"#{new_encrypted_value}\", \"new_salt\": \"#{new_salt}\"}"
 end
 
-file = File.join(File.dirname('/var/vcap/tmp/deploy-cf/fips'), 'ruby_output.json')
-File.open('ruby_output.json', 'w') do |fo|
+# file = File.join(File.dirname('/var/vcap/tmp/deploy-cf/fips'), 'ruby_output.json')
+File.open('/var/vcap/tmp/deploy-cf/fips/ruby_output.json', 'w') do |fo|
   fo.write(content)
 end
 
