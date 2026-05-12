@@ -30,17 +30,12 @@ get_updated_encrypted_values() {
     local existing_encrypted_value=$1
     local existing_salt=$2
     local current_key_name=$3 
-    local ruby_output
 
     export EXISTING_ENCRYPTED_VALUE="$existing_encrypted_value"
     export EXISTING_SALT="$existing_salt"
     export CURRENT_KEY_NAME="$current_key_name"
 
-    set -x
-    ruby_output=$(cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console)
-    ruby_line=$(echo "$ruby_output" | grep "UPDATE_ENCRYPTION_RESULT: " )
-    echo "$ruby_line" | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
-    set +x
+    cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console | grep "^UPDATE_ENCRYPTION_RESULT: " | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
 }
 
 # PGDump - search for encrypted string to determine if it could be stored/copied in another column somewhere else. 
