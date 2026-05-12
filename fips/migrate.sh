@@ -35,7 +35,8 @@ get_updated_encrypted_values() {
     export EXISTING_SALT="$existing_salt"
     export CURRENT_KEY_NAME="$current_key_name"
 
-    "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console
+    local ruby_output
+    ruby_output=$("${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console)
     cat ruby_output.json
 }
 
