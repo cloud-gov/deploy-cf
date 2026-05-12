@@ -35,7 +35,9 @@ get_updated_encrypted_values() {
     export EXISTING_SALT="$existing_salt"
     export CURRENT_KEY_NAME="$current_key_name"
 
+    set -x
     cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console | grep "^UPDATE_ENCRYPTION_RESULT: " | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
+    set +x
 }
 
 # PGDump - search for encrypted string to determine if it could be stored/copied in another column somewhere else. 
