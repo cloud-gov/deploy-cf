@@ -37,10 +37,10 @@ get_updated_encrypted_values() {
 
     local ruby_output result
     ruby_output=$(cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console)
-    result=$(echo "$ruby_output" | grep "^UPDATE_ENCRYPTION_RESULT:")
+    set -x
+    result=$(echo "$ruby_output" | grep "^UPDATE_ENCRYPTION_RESULT:") # | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
     echo "$result"
-    
-    # | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
+    set +x
 }
 
 # PGDump - search for encrypted string to determine if it could be stored/copied in another column somewhere else. 
