@@ -26,6 +26,16 @@ get_table_data_to_be_reencrypted() {
     psql -Atq -c "${psql_command}"
 }
 
+check_dump_file() {
+    local existing_encrypted_value=$1
+    count=$(cat "${this_directory}/ccdb-dumb-fips.sql" | grep -c "$existing_encrypted_value") 
+    if [ $count -gt 1 ]; then
+        echo "BADD"
+    fi
+
+
+}
+
 get_updated_encrypted_values() {
     local existing_encrypted_value=$1
     local existing_salt=$2
@@ -41,6 +51,20 @@ get_updated_encrypted_values() {
     cat ruby_output.json
 }
 
+update_encrypted_values() {
+    local table_name=$1
+    local id_column=$2
+    local encrypted_column=$3
+    local salt_column=$4
+    local id=$5
+    local encrypted_value=$6
+    local salt_value=$7
+
+    local psql_command="UPDATE ${table_name} SET  ${encrypted_column} = \"${encrypted_value}\", ${salt_column} = \"${salt_value}\" WHERE ${id_column} = \"${id}\""
+    echo "TODO: UPDATE CMD: $psql_command"
+    #psql -q -c "${psql_command}"
+}
+
 # PGDump - search for encrypted string to determine if it could be stored/copied in another column somewhere else. 
 pg_dump > ${this_directory}/ccdb-dumb-fips.sql
 
@@ -53,18 +77,26 @@ while read -r table; do
     table_data_to_be_reencrypted_json=$(get_table_data_to_be_reencrypted "$table_name" "$id_column" "$encrypted_column" "$salt_column")
     
     while read -r table_row_to_update; do
-        echo " "
-        echo "table_row_to_update: $table_row_to_update"
-        echo " "
+        id=existing_salt=$(echo "$table_row_to_update" | jq -r --arg id_column_name "$id_column" '.[$id_column_name]')
         existing_encrypted_value=$(echo "$table_row_to_update" | jq -r --arg encrypted_column_name "$encrypted_column" '.[$encrypted_column_name]')
         existing_salt=$(echo "$table_row_to_update" | jq -r --arg salt_column_name "$salt_column" '.[$salt_column_name]')
         current_key_name="$CURRENT_KEY_NAME"
+        
+        count=$(cat "${this_directory}/ccdb-dumb-fips.sql" | grep -c "$existing_encrypted_value") 
+        if [ $count -gt 1 ]; then
+            echo "WARNING: Found encrypted value in dump file: table_name=${table_name} encrypted_column=${encrypted_column} existing_encrypted_value=${existing_encrypted_value} count_in_dump=${count} (expected 1)"
+        fi
 
         updated_encrypted_values=$(get_updated_encrypted_values "$existing_encrypted_value" "$existing_salt" "$current_key_name")
-        echo " "
-        echo "updated_encrypted_values $updated_encrypted_values"
-        echo " "
-        
+        is_error=$(echo "$updated_encrypted_values" | jq -r '.error' )
+        new_encrypted_value=$(echo "$updated_encrypted_values" | jq -r '.new_encrypted_value' )
+        new_salt=$(echo "$updated_encrypted_values" | jq -r '.new_salt' )
+        if [ -z "$is_error" ]; then 
+            echo "Error re-encrypting value: table_name=${table_name} encrypted_column=${encrypted_column} existing_encrypted_value=${existing_encrypted_value} existing_salt=${existing_salt} new_encrypted_value=${new_encrypted_value} new_salt=${new_salt}"
+        else
+            # update the db 
+            update_encrypted_values "$table_name"  "$id_column" "$encrypted_column" "$salt_column" "$id" "$new_encrypted_value" "$new_salt"
+        fi        
 
     done < <(echo "$table_data_to_be_reencrypted_json" | jq -c '.[]')
     
