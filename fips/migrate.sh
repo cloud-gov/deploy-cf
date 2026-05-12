@@ -22,7 +22,7 @@ get_table_data_to_be_reencrypted() {
     local encrypted_column=$3
     local salt_column=$4
  
-    local psql_command="SELECT json_agg(t) FROM (SELECT ${id_column}, ${encrypted_column}, ${salt_column} FROM ${table_name} WHERE LENGTH(${salt_column}) < 16) t"
+    local psql_command="SELECT json_agg(t) FROM (SELECT ${id_column}, ${encrypted_column}, ${salt_column} FROM ${table_name} WHERE LENGTH(${salt_column}) BETWEEN 1 AND 16) t"
     psql -Atq -c "${psql_command}"
 }
 
@@ -61,7 +61,7 @@ update_encrypted_values() {
     local salt_value=$7
 
     local psql_command="UPDATE ${table_name} SET  ${encrypted_column} = \"${encrypted_value}\", ${salt_column} = \"${salt_value}\" WHERE ${id_column} = \"${id}\""
-    echo "TODO: UPDATE CMD: $psql_command"
+    echo "TODO: qUPDATE CMD: $psql_command"
     #psql -q -c "${psql_command}"
 }
 
