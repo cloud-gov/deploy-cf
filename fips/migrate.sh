@@ -50,16 +50,20 @@ while read -r table; do
     table_data_to_be_reencrypted_json=$(get_table_data_to_be_reencrypted "$table_name" "$id_column" "$encrypted_column" "$salt_column")
     
     while read -r table_row_to_update; do
+        echo " "
         echo "table_row_to_update: $table_row_to_update"
-        existing_encrypted_value=$(echo "$table_row_to_update" | jq -r --arg encrypted_column_name "$encrypted_column" '.$encrypted_column_name')
-        existing_salt=$(echo "$table_row_to_update" | jq -r --arg salt_column_name "$salt_column" '.$salt_column_name')
+        echo " "
+        existing_encrypted_value=$(echo "$table_row_to_update" | jq -r --arg encrypted_column_name "$encrypted_column" '.[$encrypted_column_name]')
+        existing_salt=$(echo "$table_row_to_update" | jq -r --arg salt_column_name "$salt_column" '.[$salt_column_name]')
         current_key_name="$CURRENT_KEY_NAME"
 
         updated_encrypted_values=$(get_updated_encrypted_values "$existing_encrypted_value" "$existing_salt" "$current_key_name")
+        echo " "
         echo "updated_encrypted_values $updated_encrypted_values"
+        echo " "
         
 
-    done < <(echo "$table_data_to_be_reencrypted_json" | jq -c '.tables[]')
+    done < <(echo "$table_data_to_be_reencrypted_json" | jq -c '.[]')
     
     # echo "$table_name"
 done < <(cat "${this_directory}/tables.json" | jq -c '.tables[]')
