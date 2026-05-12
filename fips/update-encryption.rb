@@ -15,7 +15,7 @@ else
 end
 
 file = File.join(File.dirname(__FILE__), 'ruby_output.json')
-File.open('text.txt', 'w') do |fo|
+File.open('ruby_output.json', 'w') do |fo|
   fo.write(content)
 end
 
