@@ -35,11 +35,11 @@ get_updated_encrypted_values() {
     export EXISTING_SALT="$existing_salt"
     export CURRENT_KEY_NAME="$current_key_name"
 
-    local ruby_output result
-    ruby_output=$(cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console)
+    local ruby_output
     set -x
-    result=$(echo "$ruby_output" | grep "^[[:space:]]*UPDATE_ENCRYPTION_RESULT:") # | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
-    echo "$result"
+    ruby_output=$(cat "${this_directory}/update-encryption.rb" | /var/vcap/jobs/cloud_controller_ng/bin/console | grep "^[[:space:]]*UPDATE_ENCRYPTION_RESULT")
+    # | sed 's/UPDATE_ENCRYPTION_RESULT: //' 
+    echo "$ruby_output"
     set +x
 }
 
