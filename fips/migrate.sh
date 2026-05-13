@@ -67,7 +67,7 @@ while read -r table; do
     table_data_to_be_reencrypted_json=$(get_table_data_to_be_reencrypted "$table_name" "$id_column" "$encrypted_column" "$salt_column")
     
     while read -r table_row_to_update; do
-        id=existing_salt=$(echo "$table_row_to_update" | jq -r --arg id_column_name "$id_column" '.[$id_column_name]')
+        id=$(echo "$table_row_to_update" | jq -r --arg id_column_name "$id_column" '.[$id_column_name]')
         existing_encrypted_value=$(echo "$table_row_to_update" | jq -r --arg encrypted_column_name "$encrypted_column" '.[$encrypted_column_name]')
         existing_salt=$(echo "$table_row_to_update" | jq -r --arg salt_column_name "$salt_column" '.[$salt_column_name]')
         current_key_name="$CURRENT_KEY_NAME"
