@@ -64,6 +64,8 @@ while read -r table; do
     encrypted_column=$(echo "$table" | jq -r '.encrypted_column')
     salt_column=$(echo "$table" | jq -r '.salt_column')
 
+    echo "Checking table $table_name with id ${id_column}, encrypted column ${encrypted_column}, and salt column ${salt_column}"
+
     table_data_to_be_reencrypted_json=$(get_table_data_to_be_reencrypted "$table_name" "$id_column" "$encrypted_column" "$salt_column")
     
     while read -r table_row_to_update; do
