@@ -3,8 +3,8 @@ existing_salt = ENV['EXISTING_SALT']
 current_key_name = ENV['CURRENT_KEY_NAME']
 
 new_salt = VCAP::CloudController::Encryptor.generate_salt
-if existing_encrypted_value == ""
-    content="{\"existing_encrypted_value\": \"#{existing_encrypted_value}\", \"existing_salt\": \"#{existing_salt}\", \"new_encrypted_value\": \"\", \"new_salt\": \"#{new_salt}\"}"
+if existing_encrypted_value == "" || existing_encrypted_value == "null"
+    content="{\"existing_encrypted_value\": \"\", \"existing_salt\": \"#{existing_salt}\", \"new_encrypted_value\": \"\", \"new_salt\": \"#{new_salt}\"}"
 else 
     decrypted_value = Encryptor.decrypt(existing_encrypted_value, existing_salt, iterations: 2048, label: current_key_name)
     new_encrypted_value = Encryptor.encrypt(decrypted_value, new_salt)
