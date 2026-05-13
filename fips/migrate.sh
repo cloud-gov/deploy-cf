@@ -50,8 +50,8 @@ update_encrypted_values() {
     local encrypted_value=$6
     local salt_value=$7
 
-    local psql_command="UPDATE ${table_name} SET  ${encrypted_column} = \"${encrypted_value}\", ${salt_column} = \"${salt_value}\" WHERE ${id_column} = \"${id}\""
-    #echo "TODO: qUPDATE CMD: $psql_command"
+    local psql_command="UPDATE ${table_name} SET  ${encrypted_column} = \'${encrypted_value}\', ${salt_column} = \'${salt_value}\' WHERE ${id_column} = \'${id}\'"
+    echo "UPDATING: $psql_command"
     psql -q -c "${psql_command}"
 }
 
