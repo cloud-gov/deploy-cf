@@ -74,7 +74,7 @@ while read -r table; do
         existing_salt=$(echo "$table_row_to_update" | jq -r --arg salt_column_name "$salt_column" '.[$salt_column_name]')
         current_key_name="$CURRENT_KEY_NAME"
         
-        if [ ! -z "$existing_encrypted_value" ]; then 
+        if [[ ! -z "$existing_encrypted_value" ]] && [[ "$existing_encrypted_value" != "null" ]]; then 
             count=$(cat "${this_directory}/ccdb-dumb-fips.sql" | grep -c "$existing_encrypted_value") 
             if [ $count -gt 1 ]; then
                 echo "WARNING: Found encrypted value in dump file: table_name=${table_name} encrypted_column=${encrypted_column} existing_encrypted_value=${existing_encrypted_value} count_in_dump=${count} (expected 1)"
