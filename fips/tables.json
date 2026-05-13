@@ -2,6 +2,7 @@
     {"table_name": "apps", "id_column": "id", "encrypted_column": "encrypted_environment_variables", "salt_column": "salt"},
     {"table_name": "buildpack_lifecycle_buildpacks", "id_column": "id", "encrypted_column": "encrypted_buildpack_url", "salt_column": "encrypted_buildpack_url_salt"},
     {"table_name": "buildpack_lifecycle_data", "id_column": "id", "encrypted_column": "encrypted_buildpack_url", "salt_column": "encrypted_buildpack_url_salt"},
+    {"table_name": "cnb_lifecycle_data", "id_column": "id", "encrypted_column": "encrypted_registry_credentials_json", "salt_column": "encrypted_registry_credentials_json_salt"},
     {"table_name": "droplets", "id_column": "id", "encrypted_column": "encrypted_docker_receipt_password", "salt_column": "docker_receipt_password_salt"},
     {"table_name": "env_groups", "id_column": "id", "encrypted_column": "environment_json", "salt_column": "salt"},
     {"table_name": "packages", "id_column": "id", "encrypted_column": "encrypted_docker_password", "salt_column": "docker_password_salt"},
@@ -11,6 +12,6 @@
     {"table_name": "service_instances", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
     {"table_name": "service_keys", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
     {"table_name": "service_broker_update_requests", "id_column": "id", "encrypted_column": "authentication", "salt_column": "salt"},
-    {"table_name": "service_brokers", "id_column": "id", "encrypted_column": "service_brokers", "salt_column": "salt"},
+    {"table_name": "service_brokers", "id_column": "id", "encrypted_column": "auth_password", "salt_column": "salt"},
     {"table_name": "tasks", "id_column": "id", "encrypted_column": "encrypted_environment_variables", "salt_column": "salt"}
 ]}
