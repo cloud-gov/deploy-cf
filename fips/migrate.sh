@@ -22,7 +22,7 @@ get_table_data_to_be_reencrypted() {
     local encrypted_column=$3
     local salt_column=$4
  
-    local psql_command="SELECT json_agg(t) FROM (SELECT ${id_column}, ${encrypted_column}, ${salt_column} FROM ${table_name} WHERE LENGTH(${salt_column}) BETWEEN 1 AND 16) t"
+    local psql_command="SELECT json_agg(t) FROM (SELECT ${id_column}, ${encrypted_column}, ${salt_column} FROM ${table_name} WHERE ${encrypted_column} NOT NULL AND LENGTH(${salt_column}) BETWEEN 1 AND 15) t"
     psql -Atq -c "${psql_command}"
 }
 
