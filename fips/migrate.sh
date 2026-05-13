@@ -51,7 +51,8 @@ update_encrypted_values() {
     local salt_value=$7
 
     local psql_command="UPDATE ${table_name} SET  ${encrypted_column} = \"${encrypted_value}\", ${salt_column} = \"${salt_value}\" WHERE ${id_column} = \"${id}\""
-    psql -c "${psql_command}"
+    echo "TODO: qUPDATE CMD: $psql_command"
+    #psql -q -c "${psql_command}"
 }
 
 # PGDump - search for encrypted string to determine if it could be stored/copied in another column somewhere else. 
