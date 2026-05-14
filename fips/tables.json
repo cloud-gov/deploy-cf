@@ -11,9 +11,9 @@
     {"table_name": "revisions", "id_column": "id", "encrypted_column": "encrypted_environment_variables", "salt_column": "salt"},
     {"table_name": "service_bindings", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
     {"table_name": "service_bindings", "id_column": "id", "encrypted_column": "volume_mounts", "salt_column": "volume_mounts_salt"},
-    {"table_name": "service_instances", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
-    {"table_name": "service_keys", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
     {"table_name": "service_broker_update_requests", "id_column": "id", "encrypted_column": "authentication", "salt_column": "salt"},
     {"table_name": "service_brokers", "id_column": "id", "encrypted_column": "auth_password", "salt_column": "salt"},
+    {"table_name": "service_instances", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
+    {"table_name": "service_keys", "id_column": "id", "encrypted_column": "credentials", "salt_column": "salt"},
     {"table_name": "tasks", "id_column": "id", "encrypted_column": "encrypted_environment_variables", "salt_column": "salt"}
 ]}
