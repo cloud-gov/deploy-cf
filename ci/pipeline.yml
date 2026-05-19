@@ -1936,6 +1936,7 @@ groups:
       - test-space-egress-production
       - falco-rule-tests-development
       - falco-smoke-tests-staging
+      - falco-smoke-tests-production
   - name: development
     jobs:
       - set-self
