@@ -73,7 +73,7 @@ jobs:
             - cf-deployment/operations/rename-network-and-deployment.yml
             - cf-deployment/operations/use-external-blobstore.yml
             - cf-deployment/operations/use-s3-blobstore.yml
-            - cf-manifests/bosh/opsfiles/use-aws-iam.yml 
+            - cf-manifests/bosh/opsfiles/use-aws-iam.yml
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
@@ -678,7 +678,7 @@ jobs:
             - cf-deployment/operations/rename-network-and-deployment.yml
             - cf-deployment/operations/use-external-blobstore.yml
             - cf-deployment/operations/use-s3-blobstore.yml
-            - cf-manifests/bosh/opsfiles/use-aws-iam.yml 
+            - cf-manifests/bosh/opsfiles/use-aws-iam.yml
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
@@ -1227,7 +1227,7 @@ jobs:
             - cf-deployment/operations/rename-network-and-deployment.yml
             - cf-deployment/operations/use-external-blobstore.yml
             - cf-deployment/operations/use-s3-blobstore.yml
-            - cf-manifests/bosh/opsfiles/use-aws-iam.yml 
+            - cf-manifests/bosh/opsfiles/use-aws-iam.yml
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
@@ -1277,7 +1277,7 @@ jobs:
             - cf-manifests/bosh/opsfiles/diego-cell-container-metrics.yml
             - cf-manifests/bosh/opsfiles/aggregate_drains.yml
             - cf-manifests/bosh/opsfiles/diego-api.yml
-            - cf-manifests/bosh/opsfiles/falco-platform-and-devtools-only.yml
+            - cf-manifests/bosh/opsfiles/falco.yml
             - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
             - cf-manifests/bosh/opsfiles/pin-capi.yml
@@ -1475,6 +1475,37 @@ jobs:
         channel: "#cg-platform"
         username: ((slack-username))
         icon_url: ((slack-icon-url))
+
+  - name: falco-smoke-tests-production
+    plan:
+    - in_parallel:
+      - get: cf-deployment
+        trigger: true
+        passed: [deploy-cf-production]
+      - get: source
+        params: {depth: 1}
+        resource: falco-source
+      - get: general-task
+    - task: push-event-generator
+      file: source/ci/tasks/push-event-generator.yml
+      params: &cf-falco-production
+        AWS_DEFAULT_REGION: ((aws-region))
+        BUCKET_NAME: logs-opensearch-falco-production
+        CF_API: ((cf-api-url-production))
+        CF_ORG: ((cf-production-falco-test-org))
+        CF_SPACE: ((cf-production-falco-test-space))
+        CF_USERNAME: ((cf-production-falco-test-username))
+        CF_PASSWORD: ((cf-production-falco-test-password))
+    - task: check-bucket
+      file: source/ci/tasks/check-bucket.yml
+      tags: [iaas]
+      params:
+        <<: *cf-falco-production
+      ensure:
+        task: delete-event-generator
+        file: source/ci/tasks/delete-event-generator.yml
+        params:
+          <<: *cf-falco-production
 
   - name: terraform-plan-production
     plan:
@@ -1948,3 +1979,4 @@ groups:
       - uaa-monitor-account-creation-production
       - tic-smoke-tests-production
       - test-space-egress-production
+      - falco-smoke-tests-production
