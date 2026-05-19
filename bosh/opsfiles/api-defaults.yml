@@ -8,7 +8,7 @@
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/maximum_app_disk_in_mb?
-  value: 7168
+  value: 10240
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/min_recommended_cli_version?
@@ -17,7 +17,7 @@
 
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/maximum_app_disk_in_mb?
-  value: 7168
+  value: 10240
 
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/client_max_body_size?
@@ -25,7 +25,7 @@
 
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cc_deployment_updater/properties/cc/maximum_app_disk_in_mb?
-  value: 7168
+  value: 10240
 
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/thresholds?
