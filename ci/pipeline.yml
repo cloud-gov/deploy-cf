@@ -129,7 +129,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/falco.yml
             - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
-            - cf-manifests/bosh/opsfiles/pin-capi.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/development.yml
             - terraform-secrets/terraform.yml
@@ -731,7 +730,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/falco.yml
             - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
-            - cf-manifests/bosh/opsfiles/pin-capi.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/staging.yml
             - terraform-secrets/terraform.yml
@@ -1280,7 +1278,6 @@ jobs:
             - cf-manifests/bosh/opsfiles/falco.yml
             - cf-deployment/operations/use-jammy-stemcell.yml
             - cf-manifests/bosh/opsfiles/pin-java-buildpack.yml
-            - cf-manifests/bosh/opsfiles/pin-capi.yml
           vars_files:
             - cf-manifests/bosh/varsfiles/production.yml
             - terraform-secrets/terraform.yml
