@@ -18,7 +18,7 @@ else
     end
 end
 
-File.open('/var/vcap/tmp/deploy-cf/fips/ruby_output.json', 'w') do |fo|
+File.open('/var/vcap/data/tmp-fips/deploy-cf/fips/ruby_output.json', 'w') do |fo|
   fo.write(content)
 end
 
