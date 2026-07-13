@@ -261,7 +261,7 @@
     vgwdtlsnwDw9TnjsBrTJkQ0aS8c0Ahl1
     -----END CERTIFICATE-----
 - type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs5-rootfs-setup/properties/cflinuxfs4-rootfs?/trusted_certs/-
+  path: /instance_groups/name=diego-cell/jobs/name=cflinuxfs5-rootfs-setup/properties/cflinuxfs5-rootfs?/trusted_certs/-
   value: |-
     # rds-ca-2015-root.pem - expired 3/2020 but still in use some instances
     -----BEGIN CERTIFICATE-----
