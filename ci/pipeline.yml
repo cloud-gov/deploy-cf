@@ -61,6 +61,7 @@ jobs:
           ISO_SEG_NAMES: ((names_of_iso_segs_development))
       - put: cf-deployment-development
         params: &deploy-params
+          no_redact: true
           manifest: cf-deployment/cf-deployment.yml
           releases:
             - uaa-customized-release/*.tgz
