@@ -270,7 +270,7 @@ locals {
       protocol    = "tcp"
       description = "Allow access to RDS"
       destination = data.terraform_remote_state.iaas.outputs.rds_subnet_cidr_az1
-      ports       = "5432,3306,1433,2484"
+      ports       = "5432,3306,1433,1521,2484"
       log         = false
     },
     {
