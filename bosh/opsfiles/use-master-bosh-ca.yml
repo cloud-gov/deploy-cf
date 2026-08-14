@@ -258,11 +258,6 @@
 - type: replace
   path: /variables/-
   value:
-    name: logsearch-firehose-ingestor-client-secret
-    type: password
-- type: replace
-  path: /variables/-
-  value:
     name: kibana-client-secret
     type: password
 - type: replace
