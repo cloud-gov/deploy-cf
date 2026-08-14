@@ -27,15 +27,6 @@
     type: password
 
 - type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/logsearch_firehose_ingestor?
-  value:
-    override: true
-    access-token-validity: 172800
-    authorized-grant-types: client_credentials
-    authorities: doppler.firehose,cloud_controller.global_auditor
-    secret: ((logsearch-firehose-ingestor-client-secret))
-
-- type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/uaa-client-audit?
   value:
     override: true
@@ -226,19 +217,6 @@
   value:
     name: opensearch-ci-secret
     type: password
-
-- type: replace
-  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/kibana_oauth2_client?
-  value:
-    override: true
-    scope: cloud_controller.read,oauth.approvals,openid,scim.userids
-    authorized-grant-types: authorization_code,refresh_token
-    access-token-validity: 600
-    refresh-token-validity: 43200
-    name: Logsearch
-    redirect-uri: https://logs-deprecated-waiting-for-delete.((system_domain))/login
-    autoapprove: true
-    secret: ((kibana-client-secret))
 
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/stratos?
