@@ -78,7 +78,6 @@ jobs:
             - cf-deployment/operations/use-external-dbs.yml
             - cf-deployment/operations/stop-skipping-tls-validation.yml
             - cf-deployment/operations/set-bbs-active-key.yml
-            - cf-deployment/operations/enable-service-discovery.yml
             - cf-deployment/operations/enable-v2-api.yml
             - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
             - cf-manifests/bosh/opsfiles/clients.yml
