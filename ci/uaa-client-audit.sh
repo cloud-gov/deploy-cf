@@ -26,7 +26,7 @@ paginate() {
     results="${results},$(echo -n "${page}" | jq -r "${selector}")"
   done
 
-  echo "${results}"
+  echo "${results}" | tr "," "\n"
 }
 
 uaapaginate() {
