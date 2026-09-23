@@ -18,4 +18,7 @@ variable "devtools_secondary_org" {
   default = false
 }
 
+variable "devtools_org_name_secondary" {
+  default = "cloud-gov-devtools-staging"
+}
 
