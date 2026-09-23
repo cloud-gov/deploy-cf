@@ -18,18 +18,4 @@ variable "devtools_secondary_org" {
   default = false
 }
 
-variable "devtools_org_name_secondary" {
-  default = "cloud-gov-devtools-staging"
-}
 
-variable "notify_org_name" {
-  default = "cloud-gov-notify-production"
-}
-
-variable "notify_secondary_org" {
-  default = false
-}
-
-variable "notify_org_name_secondary" {
-  default = "cloud-gov-notify-staging"
-}
