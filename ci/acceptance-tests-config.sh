@@ -15,6 +15,7 @@ cat > integration-config/integration_config.json <<EOF
   "include_v3": true,
   "include_tasks": true,
   "skip_ssl_validation": false,
-  "use_log_cache": true
+  "use_log_cache": true,
+  "include_app_syslog_tcp": false
 }
 EOF
