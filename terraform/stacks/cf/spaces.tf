@@ -29,6 +29,11 @@ resource "cloudfoundry_space" "opensearch-dashboards-proxy" {
   org  = cloudfoundry_org.cloud-gov.id
 }
 
+resource "cloudfoundry_space" "notifications" {
+  name = "notifications"
+  org  = cloudfoundry_org.cloud-gov.id
+}
+
 resource "cloudfoundry_space" "external_domain_broker_tests" {
   name = "external-domain-broker-tests"
   org  = cloudfoundry_org.acceptance_tests.id
