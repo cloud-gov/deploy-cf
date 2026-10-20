@@ -262,6 +262,7 @@ jobs:
           TF_VAR_domain_name: dev.us-gov-west-1.aws-us-gov.cloud.gov
           TF_VAR_iaas_stack_name: development
           TF_VAR_tooling_stack_name: tooling
+          TF_VAR_platform_admin_email: ((platform-admin-email))
       - put: slack
         params:
           <<: *slack-failure-params
@@ -964,6 +965,7 @@ jobs:
           TF_VAR_iaas_stack_name: staging
           TF_VAR_tooling_stack_name: tooling
           TF_VAR_devtools_org_name: cloud-gov-devtools-development
+          TF_VAR_platform_admin_email: ((platform-admin-email))
       - put: slack
         params:
           <<: *slack-failure-params
@@ -1532,6 +1534,7 @@ jobs:
           TF_VAR_iaas_stack_name: production
           TF_VAR_tooling_stack_name: tooling
           TF_VAR_devtools_secondary_org: true
+          TF_VAR_platform_admin_email: ((platform-admin-email))
       - put: slack
         params:
           text_file: terraform-state/message.txt

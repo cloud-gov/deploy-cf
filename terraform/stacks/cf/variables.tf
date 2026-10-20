@@ -22,3 +22,8 @@ variable "devtools_org_name_secondary" {
   default = "cloud-gov-devtools-staging"
 }
 
+variable "platform_admin_email" {
+  description = "Email for administrators of platform"
+  type        = string
+}
+
