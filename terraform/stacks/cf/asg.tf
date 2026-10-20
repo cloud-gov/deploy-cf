@@ -29,6 +29,10 @@ resource "cloudfoundry_security_group" "public_networks" {
       log         = false
     },
   ]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group_space_bindings" "public_networks" {
@@ -86,6 +90,10 @@ resource "cloudfoundry_security_group" "public_networks_egress" {
       log         = false
     },
   ]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group_space_bindings" "public_networks_egress" {
@@ -113,6 +121,10 @@ resource "cloudfoundry_security_group" "dns" {
       log         = false
     },
   ]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group_space_bindings" "dns" {
@@ -142,6 +154,10 @@ resource "cloudfoundry_security_group" "dns_egress" {
       log         = false
     },
   ]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 locals {
@@ -240,6 +256,9 @@ resource "cloudfoundry_security_group" "trusted_local_networks" {
   # RDS access for postgres, mysql, mssql, oracle
   rules = local.trusted_local_networks_rules
 
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks" {
@@ -363,6 +382,10 @@ resource "cloudfoundry_security_group" "trusted_local_networks_egress" {
 
   # RDS access for postgres, mysql, mssql, oracle
   rules = local.trusted_local_networks_egress_rules
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group" "brokers" {
@@ -374,6 +397,10 @@ resource "cloudfoundry_security_group" "brokers" {
     description = "AWS Metadata Service"
     log         = false
   }]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group_space_bindings" "brokers" {
@@ -389,6 +416,10 @@ resource "cloudfoundry_security_group" "smtp" {
     protocol    = "tcp"
     ports       = "25"
   }]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
 
 resource "cloudfoundry_security_group_space_bindings" "smtp" {
@@ -415,4 +446,8 @@ resource "cloudfoundry_security_group" "internal_services_egress" {
       log         = false
     },
   ]
+
+  lifecycle {
+    ignore_changes = [staging_spaces, running_spaces]
+  }
 }
