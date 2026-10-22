@@ -33,7 +33,7 @@ resource "cloudfoundry_org_quota" "devtools-secondary" {
   count                    = var.devtools_secondary_org ? 1 : 0
   name                     = "devtools-secondary"
   allow_paid_service_plans = true
-  total_memory             = 10240
+  total_memory             = 20480
   total_routes             = 100
   total_services           = 100
   orgs                     = [cloudfoundry_org.cloud-gov-devtools-secondary[0].id]
