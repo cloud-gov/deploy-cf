@@ -14,7 +14,7 @@ resource "cloudfoundry_service_instance" "platform_notifications_domain" {
   service_plan = data.cloudfoundry_service_plan.ses_domain_plan.id
   parameters   = <<EOT
 {
-  "mail_from_subdomain": "notifications.${var.domain_name}",
+  "domain": "notifications.${var.domain_name}",
   "admin_email": "${var.platform_admin_email}"
 }
 EOT
