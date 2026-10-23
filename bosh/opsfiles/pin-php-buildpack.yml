@@ -1,0 +1,7 @@
+- type: replace
+  path: /releases/name=php-buildpack
+  value:
+    name: php-buildpack
+    url: https://bosh.io/d/github.com/cloudfoundry/php-buildpack-release?v=5.1.5
+    version: 5.1.5
+    sha1: sha256:b1ab2809e319587591aeab66eecb08eb8c248a5cd4119fa02d60bd9d964800a1
