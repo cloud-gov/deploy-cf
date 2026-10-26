@@ -23,5 +23,5 @@ EOT
 resource "cloudfoundry_service_credential_binding" "platform_notifications_ses_domain_key" {
   type             = "key"
   name             = "${local.platform_notifications_service_name}-key"
-  service_instance = cloudfoundry_service_instance.platform_notifications_domain.id
+  service_instance = cloudfoundry_service_instance.platform_notifications_ses_domain.id
 }
