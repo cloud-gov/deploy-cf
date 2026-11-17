@@ -4,6 +4,12 @@ resource "cloudfoundry_space" "services" {
   isolation_segment = cloudfoundry_isolation_segment.platform.id
 }
 
+resource "cloudfoundry_space" "billing" {
+  name              = "billing"
+  org               = cloudfoundry_org.cloud-gov.id
+  isolation_segment = cloudfoundry_isolation_segment.platform.id
+}
+
 resource "cloudfoundry_space" "dashboard" {
   name = "dashboard"
   org  = cloudfoundry_org.cloud-gov.id
