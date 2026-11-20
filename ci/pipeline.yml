@@ -77,7 +77,6 @@ jobs:
             - cf-deployment/operations/set-bbs-active-key.yml
             - cf-manifests/bosh/opsfiles/remove-routing-components-for-transition.yml
             - cf-manifests/bosh/opsfiles/clients.yml
-            - cf-manifests/bosh/opsfiles/opensearch-proxy-ci-test-client.yml
             - cf-manifests/bosh/opsfiles/development-clients.yml
             - cf-manifests/bosh/opsfiles/pages-clients-dev.yml
             - cf-manifests/bosh/opsfiles/users.yml
