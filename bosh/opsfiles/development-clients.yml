@@ -27,7 +27,7 @@
     authorized-grant-types: refresh_token,authorization_code,client_credentials
     authorities: scim.read
     autoapprove: true
-    redirect-uri: https://test-auth-proxy.((system_domain))
+    redirect-uri: https://test-auth-proxy.((system_domain))/cb
     secret: ((opensearch-dashboards-ci-test-proxy-secret))
 
 - type: replace
