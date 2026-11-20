@@ -15,9 +15,6 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: master-bosh-root-cert
-            trigger: true
-            passed: [plan-cf-development]
           - get: cf-deployment
             trigger: true
             passed: [plan-cf-development]
@@ -183,8 +180,6 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: master-bosh-root-cert
-            trigger: true
           - get: cf-deployment
             trigger: true
             passed: [cf-deployment-gatekeeper]
@@ -291,10 +286,6 @@ jobs:
     plan:
       - in_parallel:
           - get: pipeline-tasks
-          - get: common
-            resource: master-bosh-root-cert
-            passed: [deploy-cf-development]
-            trigger: true
           - get: cf-deployment-development
             trigger: true
             passed: [deploy-cf-development]
@@ -366,9 +357,6 @@ jobs:
   - name: tic-smoke-tests-development
     plan:
       - in_parallel:
-          - get: master-bosh-root-cert
-            passed: [deploy-cf-development]
-            trigger: true
           - get: cf-deployment-development
             trigger: true
             passed: [deploy-cf-development]
@@ -395,11 +383,11 @@ jobs:
           CI: true
           API_HOSTNAME: api.dev.us-gov-west-1.aws-us-gov.cloud.gov
           DASHBOARD_HOSTNAME: dashboard.dev.us-gov-west-1.aws-us-gov.cloud.gov
-          BOSH_ENVIRONMENT: ((development-bosh-target))
-          BOSH_CLIENT: ((development-bosh-username))
-          BOSH_CLIENT_SECRET: ((development-bosh-password))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
           BOSH_DEPLOYMENT_NAME: cf-development
-          BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
           RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
           UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
           SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
@@ -456,12 +444,6 @@ jobs:
     serial_groups: [development]
     plan:
       - in_parallel:
-          - get: common
-            resource: master-bosh-root-cert
-            passed:
-              - tic-smoke-tests-development
-              - uaa-smoke-tests-development
-            trigger: true
           - get: cf-deployment-development
             trigger: true
             passed:
@@ -499,12 +481,12 @@ jobs:
       - task: run-errand
         attempts: 3
         params:
-          BOSH_ENVIRONMENT: ((bosh.development.environment))
-          BOSH_CLIENT: ((bosh.development.client))
-          BOSH_CLIENT_SECRET: ((bosh.development.client-secret))
+          BOSH_CA_CERT: ((bosh-director-info.development.ca_cert))
+          BOSH_ENVIRONMENT: ((bosh-director-info.development.environment))
+          BOSH_CLIENT: ((bosh-director-info.development.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.development.client_secret))
           BOSH_DEPLOYMENT: ((cf.development.name))
           BOSH_ERRAND: ((cf.development.smoke-tests))
-          BOSH_CA_CERT: common/master-bosh.crt
         config: &smoke-tests-errand
           platform: linux
           image_resource:
@@ -515,8 +497,6 @@ jobs:
               repository: general-task
               aws_region: us-gov-west-1
               tag: latest
-          inputs:
-            - name: common
           run:
             path: /bin/bash
             args:
@@ -630,7 +610,6 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: master-bosh-root-cert
           - get: cf-deployment
             trigger: true
             passed: [smoke-tests-development]
@@ -869,7 +848,6 @@ jobs:
           - get: terraform-config
             passed: [terraform-apply-staging]
             trigger: true
-          - get: master-bosh-root-cert
           - get: general-task
       - task: smoke-tests
         image: general-task
@@ -878,11 +856,11 @@ jobs:
           CI: true
           API_HOSTNAME: api.fr-stage.cloud.gov
           DASHBOARD_HOSTNAME: dashboard.fr-stage.cloud.gov
-          BOSH_ENVIRONMENT: ((staging-bosh-target))
-          BOSH_CLIENT: ((staging-bosh-username))
-          BOSH_CLIENT_SECRET: ((staging-bosh-password))
+          BOSH_CA_CERT: ((bosh-director-info.staging.ca_cert))
+          BOSH_ENVIRONMENT: ((bosh-director-info.staging.environment))
+          BOSH_CLIENT: ((bosh-director-info.staging.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.staging.client_secret))
           BOSH_DEPLOYMENT_NAME: cf-staging
-          BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
           RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
           UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
           SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
@@ -994,10 +972,6 @@ jobs:
     serial_groups: [staging]
     plan:
       - in_parallel:
-          - get: common
-            resource: master-bosh-root-cert
-            trigger: true
-            passed: [deploy-cf-staging]
           - get: cf-deployment-staging
             passed: [deploy-cf-staging]
             trigger: true
@@ -1023,12 +997,12 @@ jobs:
       - task: run-errand
         attempts: 3
         params:
-          BOSH_ENVIRONMENT: ((bosh.staging.environment))
-          BOSH_CLIENT: ((bosh.staging.client))
-          BOSH_CLIENT_SECRET: ((bosh.staging.client-secret))
+          BOSH_CA_CERT: ((bosh-director-info.staging.ca_cert))
+          BOSH_ENVIRONMENT: ((bosh-director-info.staging.environment))
+          BOSH_CLIENT: ((bosh-director-info.staging.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.staging.client_secret))
           BOSH_DEPLOYMENT: ((cf.staging.name))
           BOSH_ERRAND: ((cf.staging.smoke-tests))
-          BOSH_CA_CERT: common/master-bosh.crt
         config: *smoke-tests-errand
     on_failure:
       put: slack
@@ -1178,7 +1152,6 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: master-bosh-root-cert
           - get: pipeline-tasks
           - get: cf-deployment
             passed: [acceptance-tests-staging]
@@ -1293,7 +1266,6 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: master-bosh-root-cert
           - get: pipeline-tasks
           - get: cf-deployment
             passed: [plan-cf-production]
@@ -1436,7 +1408,6 @@ jobs:
           - get: cf-deployment-production
             passed: [deploy-cf-production]
             trigger: true
-          - get: master-bosh-root-cert
           - get: general-task
       - task: smoke-tests
         image: general-task
@@ -1445,11 +1416,11 @@ jobs:
           CI: true
           API_HOSTNAME: api.fr.cloud.gov
           DASHBOARD_HOSTNAME: dashboard.fr.cloud.gov
-          BOSH_ENVIRONMENT: ((production-bosh-target))
-          BOSH_CLIENT: ((production-bosh-username))
-          BOSH_CLIENT_SECRET: ((production-bosh-password))
+          BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+          BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
+          BOSH_CLIENT: ((bosh-director-info.production.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
           BOSH_DEPLOYMENT_NAME: cf-production
-          BOSH_CA_CERT: master-bosh-root-cert/master-bosh.crt
           RESTRICTED_DOMAIN: ((tic-test-restricted-domain))
           UNRESTRICTED_DOMAIN: ((tic-test-unrestricted-domain))
           SOURCE_ADDRESS_ALLOWED: ((tic-test-source-address-allowed))
@@ -1565,9 +1536,6 @@ jobs:
     serial_groups: [production]
     plan:
       - in_parallel:
-          - get: common
-            resource: master-bosh-root-cert
-            passed: [deploy-cf-production]
           - get: cf-deployment-production
             trigger: true
           - get: tests-timer
@@ -1575,12 +1543,12 @@ jobs:
       - task: run-errand
         attempts: 3
         params:
-          BOSH_ENVIRONMENT: ((bosh.production.environment))
-          BOSH_CLIENT: ((bosh.production.client))
-          BOSH_CLIENT_SECRET: ((bosh.production.client-secret))
+          BOSH_CA_CERT: ((bosh-director-info.production.ca_cert))
+          BOSH_ENVIRONMENT: ((bosh-director-info.production.environment))
+          BOSH_CLIENT: ((bosh-director-info.production.client))
+          BOSH_CLIENT_SECRET: ((bosh-director-info.production.client_secret))
           BOSH_DEPLOYMENT: ((cf.production.name))
           BOSH_ERRAND: ((cf.production.smoke-tests))
-          BOSH_CA_CERT: common/master-bosh.crt
         config: *smoke-tests-errand
     on_failure:
       put: slack
@@ -1637,12 +1605,6 @@ jobs:
         icon_url: ((slack-icon-url))
 
 resources:
-  - name: master-bosh-root-cert
-    type: s3-iam
-    source:
-      bucket: ((cf-private-bucket))
-      region_name: ((aws-region))
-      versioned_file: master-bosh.crt
 
   - name: cf-deployment
     type: git
@@ -1733,28 +1695,28 @@ resources:
   - name: cf-deployment-development
     type: bosh-deployment
     source:
-      target: ((bosh.development.environment))
-      client: ((bosh.development.client))
-      client_secret: ((bosh.development.client-secret))
-      ca_cert: ((bosh-ca-cert))
+      ca_cert: ((bosh-director-info.development.ca_cert))
+      client: ((bosh-director-info.development.client))
+      client_secret: ((bosh-director-info.development.client_secret))
+      target: ((bosh-director-info.development.environment))
       deployment: ((cf.development.name))
 
   - name: cf-deployment-staging
     type: bosh-deployment
     source:
-      target: ((bosh.staging.environment))
-      client: ((bosh.staging.client))
-      client_secret: ((bosh.staging.client-secret))
-      ca_cert: ((bosh-ca-cert))
+      ca_cert: ((bosh-director-info.staging.ca_cert))
+      client: ((bosh-director-info.staging.client))
+      client_secret: ((bosh-director-info.staging.client_secret))
+      target: ((bosh-director-info.staging.environment))
       deployment: ((cf.staging.name))
 
   - name: cf-deployment-production
     type: bosh-deployment
     source:
-      target: ((production-bosh-target))
-      client: ((production-bosh-client))
-      client_secret: ((production-bosh-client-secret))
-      ca_cert: ((bosh-ca-cert))
+      ca_cert: ((bosh-director-info.production.ca_cert))
+      client: ((bosh-director-info.production.client))
+      client_secret: ((bosh-director-info.production.client_secret))
+      target: ((bosh-director-info.production.environment))
       deployment: cf-production
 
   - name: uaa-customized-release
