@@ -1,0 +1,14 @@
+- type: replace
+  path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa/clients/opensearch-dashboards-proxy-ci?
+  value:
+    override: true
+    authorized-grant-types: client_credentials
+    authorities: scim.write,uaa.admin,password.write
+    secret: ((opensearch-dashboards-proxy-ci-secret))
+    redirect-uri: ((opensearch-dashboards-proxy-ci-redirect-uri))
+
+- type: replace
+  path: /variables/-
+  value:
+    name: opensearch-dashboards-proxy-ci-secret
+    type: password
