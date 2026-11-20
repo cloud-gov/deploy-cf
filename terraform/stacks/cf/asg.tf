@@ -37,8 +37,26 @@ resource "cloudfoundry_security_group" "public_networks" {
 
 resource "cloudfoundry_security_group_space_bindings" "public_networks" {
   security_group = cloudfoundry_security_group.public_networks.id
-  staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
-  running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
+  staging_spaces = [
+    cloudfoundry_space.services.id,
+    cloudfoundry_space.dashboard.id,
+    cloudfoundry_space.cg-ui.id,
+    cloudfoundry_space.uaa-extras.id,
+    cloudfoundry_space.cspr-collector.id,
+    cloudfoundry_space.external_domain_broker_tests.id,
+    cloudfoundry_space.email.id,
+    cloudfoundry_space.billing.id
+  ]
+  running_spaces = [
+    cloudfoundry_space.services.id,
+    cloudfoundry_space.dashboard.id,
+    cloudfoundry_space.cg-ui.id,
+    cloudfoundry_space.uaa-extras.id,
+    cloudfoundry_space.cspr-collector.id,
+    cloudfoundry_space.external_domain_broker_tests.id,
+    cloudfoundry_space.email.id,
+    cloudfoundry_space.billing.id
+  ]
 }
 
 # New public_networks asg to apply to spaces individually, not globally.
@@ -129,8 +147,28 @@ resource "cloudfoundry_security_group" "dns" {
 
 resource "cloudfoundry_security_group_space_bindings" "dns" {
   security_group = cloudfoundry_security_group.dns.id
-  staging_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
-  running_spaces = [cloudfoundry_space.services.id, cloudfoundry_space.dashboard.id, cloudfoundry_space.uaa-extras.id, cloudfoundry_space.cg-ui.id, cloudfoundry_space.cspr-collector.id, cloudfoundry_space.opensearch-dashboards-proxy.id, cloudfoundry_space.external_domain_broker_tests.id, cloudfoundry_space.email.id]
+  staging_spaces = [
+    cloudfoundry_space.services.id,
+    cloudfoundry_space.dashboard.id,
+    cloudfoundry_space.uaa-extras.id,
+    cloudfoundry_space.cg-ui.id,
+    cloudfoundry_space.cspr-collector.id,
+    cloudfoundry_space.opensearch-dashboards-proxy.id,
+    cloudfoundry_space.external_domain_broker_tests.id,
+    cloudfoundry_space.email.id,
+    cloudfoundry_space.billing.id
+  ]
+  running_spaces = [
+    cloudfoundry_space.services.id,
+    cloudfoundry_space.dashboard.id,
+    cloudfoundry_space.uaa-extras.id,
+    cloudfoundry_space.cg-ui.id,
+    cloudfoundry_space.cspr-collector.id,
+    cloudfoundry_space.opensearch-dashboards-proxy.id,
+    cloudfoundry_space.external_domain_broker_tests.id,
+    cloudfoundry_space.email.id,
+    cloudfoundry_space.billing.id
+  ]
 }
 
 # New dns asg to apply to spaces individually, not globally.
@@ -269,7 +307,8 @@ resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks" {
     cloudfoundry_space.cg-ui.id,
     cloudfoundry_space.uaa-extras.id,
     cloudfoundry_space.cspr-collector.id,
-    cloudfoundry_space.email.id
+    cloudfoundry_space.email.id,
+    cloudfoundry_space.billing.id
   ]
   running_spaces = [
     cloudfoundry_space.services.id,
@@ -279,7 +318,8 @@ resource "cloudfoundry_security_group_space_bindings" "trusted_local_networks" {
     cloudfoundry_space.cspr-collector.id,
     cloudfoundry_space.opensearch-dashboards-proxy.id,
     cloudfoundry_space.email.id,
-    cloudfoundry_space.aws_broker_tests.id
+    cloudfoundry_space.aws_broker_tests.id,
+    cloudfoundry_space.billing.id
   ]
 }
 
