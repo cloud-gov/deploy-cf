@@ -1537,6 +1537,7 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-production
+            passed: [deploy-cf-production]
             trigger: true
           - get: tests-timer
             trigger: true
